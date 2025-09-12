@@ -91,6 +91,11 @@ func DekRotatedAt(v time.Time) predicate.WebOAuth {
 	return predicate.WebOAuth(sql.FieldEQ(FieldDekRotatedAt, v))
 }
 
+// RedirectURI applies equality check predicate on the "redirect_uri" field. It's identical to RedirectURIEQ.
+func RedirectURI(v string) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldEQ(FieldRedirectURI, v))
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.WebOAuth {
 	return predicate.WebOAuth(sql.FieldEQ(FieldCreatedAt, v))
@@ -416,14 +421,79 @@ func DekRotatedAtLTE(v time.Time) predicate.WebOAuth {
 	return predicate.WebOAuth(sql.FieldLTE(FieldDekRotatedAt, v))
 }
 
-// RedirectUrisIsNil applies the IsNil predicate on the "redirect_uris" field.
-func RedirectUrisIsNil() predicate.WebOAuth {
-	return predicate.WebOAuth(sql.FieldIsNull(FieldRedirectUris))
+// RedirectURIEQ applies the EQ predicate on the "redirect_uri" field.
+func RedirectURIEQ(v string) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldEQ(FieldRedirectURI, v))
 }
 
-// RedirectUrisNotNil applies the NotNil predicate on the "redirect_uris" field.
-func RedirectUrisNotNil() predicate.WebOAuth {
-	return predicate.WebOAuth(sql.FieldNotNull(FieldRedirectUris))
+// RedirectURINEQ applies the NEQ predicate on the "redirect_uri" field.
+func RedirectURINEQ(v string) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldNEQ(FieldRedirectURI, v))
+}
+
+// RedirectURIIn applies the In predicate on the "redirect_uri" field.
+func RedirectURIIn(vs ...string) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldIn(FieldRedirectURI, vs...))
+}
+
+// RedirectURINotIn applies the NotIn predicate on the "redirect_uri" field.
+func RedirectURINotIn(vs ...string) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldNotIn(FieldRedirectURI, vs...))
+}
+
+// RedirectURIGT applies the GT predicate on the "redirect_uri" field.
+func RedirectURIGT(v string) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldGT(FieldRedirectURI, v))
+}
+
+// RedirectURIGTE applies the GTE predicate on the "redirect_uri" field.
+func RedirectURIGTE(v string) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldGTE(FieldRedirectURI, v))
+}
+
+// RedirectURILT applies the LT predicate on the "redirect_uri" field.
+func RedirectURILT(v string) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldLT(FieldRedirectURI, v))
+}
+
+// RedirectURILTE applies the LTE predicate on the "redirect_uri" field.
+func RedirectURILTE(v string) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldLTE(FieldRedirectURI, v))
+}
+
+// RedirectURIContains applies the Contains predicate on the "redirect_uri" field.
+func RedirectURIContains(v string) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldContains(FieldRedirectURI, v))
+}
+
+// RedirectURIHasPrefix applies the HasPrefix predicate on the "redirect_uri" field.
+func RedirectURIHasPrefix(v string) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldHasPrefix(FieldRedirectURI, v))
+}
+
+// RedirectURIHasSuffix applies the HasSuffix predicate on the "redirect_uri" field.
+func RedirectURIHasSuffix(v string) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldHasSuffix(FieldRedirectURI, v))
+}
+
+// RedirectURIIsNil applies the IsNil predicate on the "redirect_uri" field.
+func RedirectURIIsNil() predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldIsNull(FieldRedirectURI))
+}
+
+// RedirectURINotNil applies the NotNil predicate on the "redirect_uri" field.
+func RedirectURINotNil() predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldNotNull(FieldRedirectURI))
+}
+
+// RedirectURIEqualFold applies the EqualFold predicate on the "redirect_uri" field.
+func RedirectURIEqualFold(v string) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldEqualFold(FieldRedirectURI, v))
+}
+
+// RedirectURIContainsFold applies the ContainsFold predicate on the "redirect_uri" field.
+func RedirectURIContainsFold(v string) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldContainsFold(FieldRedirectURI, v))
 }
 
 // ScopesIsNil applies the IsNil predicate on the "scopes" field.

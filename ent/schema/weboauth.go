@@ -36,7 +36,7 @@ func (WebOAuth) Fields() []ent.Field {
 			NotEmpty(),
 		field.Time("dek_rotated_at").
 			Default(time.Now),
-		field.Strings("redirect_uris").
+		field.String("redirect_uri").
 			Optional(),
 		field.Strings("scopes").
 			Optional(),

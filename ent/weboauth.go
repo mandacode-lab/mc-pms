@@ -36,8 +36,8 @@ type WebOAuth struct {
 	DekNonce []byte `json:"dek_nonce,omitempty"`
 	// DekRotatedAt holds the value of the "dek_rotated_at" field.
 	DekRotatedAt time.Time `json:"dek_rotated_at,omitempty"`
-	// RedirectUris holds the value of the "redirect_uris" field.
-	RedirectUris []string `json:"redirect_uris,omitempty"`
+	// RedirectURI holds the value of the "redirect_uri" field.
+	RedirectURI string `json:"redirect_uri,omitempty"`
 	// Scopes holds the value of the "scopes" field.
 	Scopes []string `json:"scopes,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -75,11 +75,11 @@ func (*WebOAuth) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case weboauth.FieldOauthSecretCt, weboauth.FieldOauthSecretNonce, weboauth.FieldDekWrapped, weboauth.FieldDekNonce, weboauth.FieldRedirectUris, weboauth.FieldScopes:
+		case weboauth.FieldOauthSecretCt, weboauth.FieldOauthSecretNonce, weboauth.FieldDekWrapped, weboauth.FieldDekNonce, weboauth.FieldScopes:
 			values[i] = new([]byte)
 		case weboauth.FieldID, weboauth.FieldClientAppID:
 			values[i] = new(sql.NullInt64)
-		case weboauth.FieldProvider, weboauth.FieldOauthClientID:
+		case weboauth.FieldProvider, weboauth.FieldOauthClientID, weboauth.FieldRedirectURI:
 			values[i] = new(sql.NullString)
 		case weboauth.FieldDekRotatedAt, weboauth.FieldCreatedAt, weboauth.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -152,13 +152,11 @@ func (_m *WebOAuth) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.DekRotatedAt = value.Time
 			}
-		case weboauth.FieldRedirectUris:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field redirect_uris", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &_m.RedirectUris); err != nil {
-					return fmt.Errorf("unmarshal field redirect_uris: %w", err)
-				}
+		case weboauth.FieldRedirectURI:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field redirect_uri", values[i])
+			} else if value.Valid {
+				_m.RedirectURI = value.String
 			}
 		case weboauth.FieldScopes:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -245,8 +243,8 @@ func (_m *WebOAuth) String() string {
 	builder.WriteString("dek_rotated_at=")
 	builder.WriteString(_m.DekRotatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("redirect_uris=")
-	builder.WriteString(fmt.Sprintf("%v", _m.RedirectUris))
+	builder.WriteString("redirect_uri=")
+	builder.WriteString(_m.RedirectURI)
 	builder.WriteString(", ")
 	builder.WriteString("scopes=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Scopes))

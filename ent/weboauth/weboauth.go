@@ -32,8 +32,8 @@ const (
 	FieldDekNonce = "dek_nonce"
 	// FieldDekRotatedAt holds the string denoting the dek_rotated_at field in the database.
 	FieldDekRotatedAt = "dek_rotated_at"
-	// FieldRedirectUris holds the string denoting the redirect_uris field in the database.
-	FieldRedirectUris = "redirect_uris"
+	// FieldRedirectURI holds the string denoting the redirect_uri field in the database.
+	FieldRedirectURI = "redirect_uri"
 	// FieldScopes holds the string denoting the scopes field in the database.
 	FieldScopes = "scopes"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -64,7 +64,7 @@ var Columns = []string{
 	FieldDekWrapped,
 	FieldDekNonce,
 	FieldDekRotatedAt,
-	FieldRedirectUris,
+	FieldRedirectURI,
 	FieldScopes,
 	FieldCreatedAt,
 	FieldUpdatedAt,
@@ -139,6 +139,11 @@ func ByOauthClientID(opts ...sql.OrderTermOption) OrderOption {
 // ByDekRotatedAt orders the results by the dek_rotated_at field.
 func ByDekRotatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDekRotatedAt, opts...).ToFunc()
+}
+
+// ByRedirectURI orders the results by the redirect_uri field.
+func ByRedirectURI(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRedirectURI, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

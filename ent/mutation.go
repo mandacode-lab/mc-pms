@@ -3123,28 +3123,27 @@ func (m *UserInfoMutation) ResetEdge(name string) error {
 // WebOAuthMutation represents an operation that mutates the WebOAuth nodes in the graph.
 type WebOAuthMutation struct {
 	config
-	op                  Op
-	typ                 string
-	id                  *int64
-	provider            *shared.Provider
-	oauth_client_id     *string
-	oauth_secret_ct     *[]byte
-	oauth_secret_nonce  *[]byte
-	dek_wrapped         *[]byte
-	dek_nonce           *[]byte
-	dek_rotated_at      *time.Time
-	redirect_uris       *[]string
-	appendredirect_uris []string
-	scopes              *[]string
-	appendscopes        []string
-	created_at          *time.Time
-	updated_at          *time.Time
-	clearedFields       map[string]struct{}
-	client_app          *int64
-	clearedclient_app   bool
-	done                bool
-	oldValue            func(context.Context) (*WebOAuth, error)
-	predicates          []predicate.WebOAuth
+	op                 Op
+	typ                string
+	id                 *int64
+	provider           *shared.Provider
+	oauth_client_id    *string
+	oauth_secret_ct    *[]byte
+	oauth_secret_nonce *[]byte
+	dek_wrapped        *[]byte
+	dek_nonce          *[]byte
+	dek_rotated_at     *time.Time
+	redirect_uri       *string
+	scopes             *[]string
+	appendscopes       []string
+	created_at         *time.Time
+	updated_at         *time.Time
+	clearedFields      map[string]struct{}
+	client_app         *int64
+	clearedclient_app  bool
+	done               bool
+	oldValue           func(context.Context) (*WebOAuth, error)
+	predicates         []predicate.WebOAuth
 }
 
 var _ ent.Mutation = (*WebOAuthMutation)(nil)
@@ -3539,69 +3538,53 @@ func (m *WebOAuthMutation) ResetDekRotatedAt() {
 	m.dek_rotated_at = nil
 }
 
-// SetRedirectUris sets the "redirect_uris" field.
-func (m *WebOAuthMutation) SetRedirectUris(s []string) {
-	m.redirect_uris = &s
-	m.appendredirect_uris = nil
+// SetRedirectURI sets the "redirect_uri" field.
+func (m *WebOAuthMutation) SetRedirectURI(s string) {
+	m.redirect_uri = &s
 }
 
-// RedirectUris returns the value of the "redirect_uris" field in the mutation.
-func (m *WebOAuthMutation) RedirectUris() (r []string, exists bool) {
-	v := m.redirect_uris
+// RedirectURI returns the value of the "redirect_uri" field in the mutation.
+func (m *WebOAuthMutation) RedirectURI() (r string, exists bool) {
+	v := m.redirect_uri
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldRedirectUris returns the old "redirect_uris" field's value of the WebOAuth entity.
+// OldRedirectURI returns the old "redirect_uri" field's value of the WebOAuth entity.
 // If the WebOAuth object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WebOAuthMutation) OldRedirectUris(ctx context.Context) (v []string, err error) {
+func (m *WebOAuthMutation) OldRedirectURI(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRedirectUris is only allowed on UpdateOne operations")
+		return v, errors.New("OldRedirectURI is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRedirectUris requires an ID field in the mutation")
+		return v, errors.New("OldRedirectURI requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRedirectUris: %w", err)
+		return v, fmt.Errorf("querying old value for OldRedirectURI: %w", err)
 	}
-	return oldValue.RedirectUris, nil
+	return oldValue.RedirectURI, nil
 }
 
-// AppendRedirectUris adds s to the "redirect_uris" field.
-func (m *WebOAuthMutation) AppendRedirectUris(s []string) {
-	m.appendredirect_uris = append(m.appendredirect_uris, s...)
+// ClearRedirectURI clears the value of the "redirect_uri" field.
+func (m *WebOAuthMutation) ClearRedirectURI() {
+	m.redirect_uri = nil
+	m.clearedFields[weboauth.FieldRedirectURI] = struct{}{}
 }
 
-// AppendedRedirectUris returns the list of values that were appended to the "redirect_uris" field in this mutation.
-func (m *WebOAuthMutation) AppendedRedirectUris() ([]string, bool) {
-	if len(m.appendredirect_uris) == 0 {
-		return nil, false
-	}
-	return m.appendredirect_uris, true
-}
-
-// ClearRedirectUris clears the value of the "redirect_uris" field.
-func (m *WebOAuthMutation) ClearRedirectUris() {
-	m.redirect_uris = nil
-	m.appendredirect_uris = nil
-	m.clearedFields[weboauth.FieldRedirectUris] = struct{}{}
-}
-
-// RedirectUrisCleared returns if the "redirect_uris" field was cleared in this mutation.
-func (m *WebOAuthMutation) RedirectUrisCleared() bool {
-	_, ok := m.clearedFields[weboauth.FieldRedirectUris]
+// RedirectURICleared returns if the "redirect_uri" field was cleared in this mutation.
+func (m *WebOAuthMutation) RedirectURICleared() bool {
+	_, ok := m.clearedFields[weboauth.FieldRedirectURI]
 	return ok
 }
 
-// ResetRedirectUris resets all changes to the "redirect_uris" field.
-func (m *WebOAuthMutation) ResetRedirectUris() {
-	m.redirect_uris = nil
-	m.appendredirect_uris = nil
-	delete(m.clearedFields, weboauth.FieldRedirectUris)
+// ResetRedirectURI resets all changes to the "redirect_uri" field.
+func (m *WebOAuthMutation) ResetRedirectURI() {
+	m.redirect_uri = nil
+	delete(m.clearedFields, weboauth.FieldRedirectURI)
 }
 
 // SetScopes sets the "scopes" field.
@@ -3827,8 +3810,8 @@ func (m *WebOAuthMutation) Fields() []string {
 	if m.dek_rotated_at != nil {
 		fields = append(fields, weboauth.FieldDekRotatedAt)
 	}
-	if m.redirect_uris != nil {
-		fields = append(fields, weboauth.FieldRedirectUris)
+	if m.redirect_uri != nil {
+		fields = append(fields, weboauth.FieldRedirectURI)
 	}
 	if m.scopes != nil {
 		fields = append(fields, weboauth.FieldScopes)
@@ -3863,8 +3846,8 @@ func (m *WebOAuthMutation) Field(name string) (ent.Value, bool) {
 		return m.DekNonce()
 	case weboauth.FieldDekRotatedAt:
 		return m.DekRotatedAt()
-	case weboauth.FieldRedirectUris:
-		return m.RedirectUris()
+	case weboauth.FieldRedirectURI:
+		return m.RedirectURI()
 	case weboauth.FieldScopes:
 		return m.Scopes()
 	case weboauth.FieldCreatedAt:
@@ -3896,8 +3879,8 @@ func (m *WebOAuthMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldDekNonce(ctx)
 	case weboauth.FieldDekRotatedAt:
 		return m.OldDekRotatedAt(ctx)
-	case weboauth.FieldRedirectUris:
-		return m.OldRedirectUris(ctx)
+	case weboauth.FieldRedirectURI:
+		return m.OldRedirectURI(ctx)
 	case weboauth.FieldScopes:
 		return m.OldScopes(ctx)
 	case weboauth.FieldCreatedAt:
@@ -3969,12 +3952,12 @@ func (m *WebOAuthMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDekRotatedAt(v)
 		return nil
-	case weboauth.FieldRedirectUris:
-		v, ok := value.([]string)
+	case weboauth.FieldRedirectURI:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetRedirectUris(v)
+		m.SetRedirectURI(v)
 		return nil
 	case weboauth.FieldScopes:
 		v, ok := value.([]string)
@@ -4030,8 +4013,8 @@ func (m *WebOAuthMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *WebOAuthMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(weboauth.FieldRedirectUris) {
-		fields = append(fields, weboauth.FieldRedirectUris)
+	if m.FieldCleared(weboauth.FieldRedirectURI) {
+		fields = append(fields, weboauth.FieldRedirectURI)
 	}
 	if m.FieldCleared(weboauth.FieldScopes) {
 		fields = append(fields, weboauth.FieldScopes)
@@ -4050,8 +4033,8 @@ func (m *WebOAuthMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *WebOAuthMutation) ClearField(name string) error {
 	switch name {
-	case weboauth.FieldRedirectUris:
-		m.ClearRedirectUris()
+	case weboauth.FieldRedirectURI:
+		m.ClearRedirectURI()
 		return nil
 	case weboauth.FieldScopes:
 		m.ClearScopes()
@@ -4088,8 +4071,8 @@ func (m *WebOAuthMutation) ResetField(name string) error {
 	case weboauth.FieldDekRotatedAt:
 		m.ResetDekRotatedAt()
 		return nil
-	case weboauth.FieldRedirectUris:
-		m.ResetRedirectUris()
+	case weboauth.FieldRedirectURI:
+		m.ResetRedirectURI()
 		return nil
 	case weboauth.FieldScopes:
 		m.ResetScopes()

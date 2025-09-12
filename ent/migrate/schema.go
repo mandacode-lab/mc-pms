@@ -145,7 +145,7 @@ var (
 		{Name: "dek_wrapped", Type: field.TypeBytes},
 		{Name: "dek_nonce", Type: field.TypeBytes},
 		{Name: "dek_rotated_at", Type: field.TypeTime},
-		{Name: "redirect_uris", Type: field.TypeJSON, Nullable: true},
+		{Name: "redirect_uri", Type: field.TypeString, Nullable: true},
 		{Name: "scopes", Type: field.TypeJSON, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},

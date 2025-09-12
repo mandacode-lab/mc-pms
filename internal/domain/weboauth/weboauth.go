@@ -18,7 +18,7 @@ type WebOAuth struct {
 	dekWrapped       []byte
 	dekNonce         []byte
 	dekRotatedAt     time.Time
-	redirectURIs     []string
+	redirectURI      string
 	scopes           []string
 	createdAt        time.Time
 	updatedAt        time.Time
@@ -35,7 +35,7 @@ func NewWebOAuth(
 	dekWrapped []byte,
 	dekNonce []byte,
 	dekRotatedAt time.Time,
-	redirectURIs []string,
+	redirectURI string,
 	scopes []string,
 	createdAt time.Time,
 	updatedAt time.Time,
@@ -50,7 +50,7 @@ func NewWebOAuth(
 		dekWrapped:       dekWrapped,
 		dekNonce:         dekNonce,
 		dekRotatedAt:     dekRotatedAt,
-		redirectURIs:     redirectURIs,
+		redirectURI:      redirectURI,
 		scopes:           scopes,
 		createdAt:        createdAt,
 		updatedAt:        updatedAt,
@@ -66,7 +66,7 @@ func DraftWebOAuth(
 	oauthSecretNonce []byte,
 	dekWrapped []byte,
 	dekNonce []byte,
-	redirectURIs []string,
+	redirectURI string,
 	scopes []string,
 ) *WebOAuth {
 	now := time.Now().UTC()
@@ -82,7 +82,7 @@ func DraftWebOAuth(
 		dekWrapped,
 		dekNonce,
 		now,
-		redirectURIs,
+		redirectURI,
 		scopes,
 		now,
 		now,
@@ -130,8 +130,8 @@ func (wo *WebOAuth) DEKRotatedAt() time.Time {
 	return wo.dekRotatedAt
 }
 
-func (wo *WebOAuth) RedirectURIs() []string {
-	return wo.redirectURIs
+func (wo *WebOAuth) RedirectURI() string {
+	return wo.redirectURI
 }
 
 func (wo *WebOAuth) Scopes() []string {
@@ -171,8 +171,8 @@ func (wo *WebOAuth) UpdateDEK(dekWrapped, dekNonce []byte) {
 	wo.raise(NewWebOAuthUpdatedEvent(wo.id.String(), "dek_rotated"))
 }
 
-func (wo *WebOAuth) UpdateRedirectURIs(redirectURIs []string) {
-	wo.redirectURIs = redirectURIs
+func (wo *WebOAuth) UpdateRedirectURI(redirectURI string) {
+	wo.redirectURI = redirectURI
 	wo.updatedAt = time.Now().UTC()
 	wo.raise(NewWebOAuthUpdatedEvent(wo.id.String(), "redirect_uris_updated"))
 }
@@ -194,4 +194,3 @@ func (wo *WebOAuth) PullEvents() []shared.DomainEvent {
 	wo.events = nil
 	return events
 }
-

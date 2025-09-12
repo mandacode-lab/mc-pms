@@ -111,21 +111,23 @@ func (_u *WebOAuthUpdate) SetNillableDekRotatedAt(v *time.Time) *WebOAuthUpdate 
 	return _u
 }
 
-// SetRedirectUris sets the "redirect_uris" field.
-func (_u *WebOAuthUpdate) SetRedirectUris(v []string) *WebOAuthUpdate {
-	_u.mutation.SetRedirectUris(v)
+// SetRedirectURI sets the "redirect_uri" field.
+func (_u *WebOAuthUpdate) SetRedirectURI(v string) *WebOAuthUpdate {
+	_u.mutation.SetRedirectURI(v)
 	return _u
 }
 
-// AppendRedirectUris appends value to the "redirect_uris" field.
-func (_u *WebOAuthUpdate) AppendRedirectUris(v []string) *WebOAuthUpdate {
-	_u.mutation.AppendRedirectUris(v)
+// SetNillableRedirectURI sets the "redirect_uri" field if the given value is not nil.
+func (_u *WebOAuthUpdate) SetNillableRedirectURI(v *string) *WebOAuthUpdate {
+	if v != nil {
+		_u.SetRedirectURI(*v)
+	}
 	return _u
 }
 
-// ClearRedirectUris clears the value of the "redirect_uris" field.
-func (_u *WebOAuthUpdate) ClearRedirectUris() *WebOAuthUpdate {
-	_u.mutation.ClearRedirectUris()
+// ClearRedirectURI clears the value of the "redirect_uri" field.
+func (_u *WebOAuthUpdate) ClearRedirectURI() *WebOAuthUpdate {
+	_u.mutation.ClearRedirectURI()
 	return _u
 }
 
@@ -281,16 +283,11 @@ func (_u *WebOAuthUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.DekRotatedAt(); ok {
 		_spec.SetField(weboauth.FieldDekRotatedAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.RedirectUris(); ok {
-		_spec.SetField(weboauth.FieldRedirectUris, field.TypeJSON, value)
+	if value, ok := _u.mutation.RedirectURI(); ok {
+		_spec.SetField(weboauth.FieldRedirectURI, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.AppendedRedirectUris(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, weboauth.FieldRedirectUris, value)
-		})
-	}
-	if _u.mutation.RedirectUrisCleared() {
-		_spec.ClearField(weboauth.FieldRedirectUris, field.TypeJSON)
+	if _u.mutation.RedirectURICleared() {
+		_spec.ClearField(weboauth.FieldRedirectURI, field.TypeString)
 	}
 	if value, ok := _u.mutation.Scopes(); ok {
 		_spec.SetField(weboauth.FieldScopes, field.TypeJSON, value)
@@ -435,21 +432,23 @@ func (_u *WebOAuthUpdateOne) SetNillableDekRotatedAt(v *time.Time) *WebOAuthUpda
 	return _u
 }
 
-// SetRedirectUris sets the "redirect_uris" field.
-func (_u *WebOAuthUpdateOne) SetRedirectUris(v []string) *WebOAuthUpdateOne {
-	_u.mutation.SetRedirectUris(v)
+// SetRedirectURI sets the "redirect_uri" field.
+func (_u *WebOAuthUpdateOne) SetRedirectURI(v string) *WebOAuthUpdateOne {
+	_u.mutation.SetRedirectURI(v)
 	return _u
 }
 
-// AppendRedirectUris appends value to the "redirect_uris" field.
-func (_u *WebOAuthUpdateOne) AppendRedirectUris(v []string) *WebOAuthUpdateOne {
-	_u.mutation.AppendRedirectUris(v)
+// SetNillableRedirectURI sets the "redirect_uri" field if the given value is not nil.
+func (_u *WebOAuthUpdateOne) SetNillableRedirectURI(v *string) *WebOAuthUpdateOne {
+	if v != nil {
+		_u.SetRedirectURI(*v)
+	}
 	return _u
 }
 
-// ClearRedirectUris clears the value of the "redirect_uris" field.
-func (_u *WebOAuthUpdateOne) ClearRedirectUris() *WebOAuthUpdateOne {
-	_u.mutation.ClearRedirectUris()
+// ClearRedirectURI clears the value of the "redirect_uri" field.
+func (_u *WebOAuthUpdateOne) ClearRedirectURI() *WebOAuthUpdateOne {
+	_u.mutation.ClearRedirectURI()
 	return _u
 }
 
@@ -635,16 +634,11 @@ func (_u *WebOAuthUpdateOne) sqlSave(ctx context.Context) (_node *WebOAuth, err 
 	if value, ok := _u.mutation.DekRotatedAt(); ok {
 		_spec.SetField(weboauth.FieldDekRotatedAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.RedirectUris(); ok {
-		_spec.SetField(weboauth.FieldRedirectUris, field.TypeJSON, value)
+	if value, ok := _u.mutation.RedirectURI(); ok {
+		_spec.SetField(weboauth.FieldRedirectURI, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.AppendedRedirectUris(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, weboauth.FieldRedirectUris, value)
-		})
-	}
-	if _u.mutation.RedirectUrisCleared() {
-		_spec.ClearField(weboauth.FieldRedirectUris, field.TypeJSON)
+	if _u.mutation.RedirectURICleared() {
+		_spec.ClearField(weboauth.FieldRedirectURI, field.TypeString)
 	}
 	if value, ok := _u.mutation.Scopes(); ok {
 		_spec.SetField(weboauth.FieldScopes, field.TypeJSON, value)

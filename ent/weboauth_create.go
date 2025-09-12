@@ -78,9 +78,17 @@ func (_c *WebOAuthCreate) SetNillableDekRotatedAt(v *time.Time) *WebOAuthCreate 
 	return _c
 }
 
-// SetRedirectUris sets the "redirect_uris" field.
-func (_c *WebOAuthCreate) SetRedirectUris(v []string) *WebOAuthCreate {
-	_c.mutation.SetRedirectUris(v)
+// SetRedirectURI sets the "redirect_uri" field.
+func (_c *WebOAuthCreate) SetRedirectURI(v string) *WebOAuthCreate {
+	_c.mutation.SetRedirectURI(v)
+	return _c
+}
+
+// SetNillableRedirectURI sets the "redirect_uri" field if the given value is not nil.
+func (_c *WebOAuthCreate) SetNillableRedirectURI(v *string) *WebOAuthCreate {
+	if v != nil {
+		_c.SetRedirectURI(*v)
+	}
 	return _c
 }
 
@@ -308,9 +316,9 @@ func (_c *WebOAuthCreate) createSpec() (*WebOAuth, *sqlgraph.CreateSpec) {
 		_spec.SetField(weboauth.FieldDekRotatedAt, field.TypeTime, value)
 		_node.DekRotatedAt = value
 	}
-	if value, ok := _c.mutation.RedirectUris(); ok {
-		_spec.SetField(weboauth.FieldRedirectUris, field.TypeJSON, value)
-		_node.RedirectUris = value
+	if value, ok := _c.mutation.RedirectURI(); ok {
+		_spec.SetField(weboauth.FieldRedirectURI, field.TypeString, value)
+		_node.RedirectURI = value
 	}
 	if value, ok := _c.mutation.Scopes(); ok {
 		_spec.SetField(weboauth.FieldScopes, field.TypeJSON, value)
