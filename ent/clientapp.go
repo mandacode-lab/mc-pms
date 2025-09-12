@@ -19,6 +19,8 @@ type ClientApp struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
+	// ServiceID holds the value of the "service_id" field.
+	ServiceID int64 `json:"service_id,omitempty"`
 	// PublicID holds the value of the "public_id" field.
 	PublicID uuid.UUID `json:"public_id,omitempty"`
 	// SecretHash holds the value of the "secret_hash" field.
@@ -35,9 +37,8 @@ type ClientApp struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ClientAppQuery when eager-loading is set.
-	Edges               ClientAppEdges `json:"edges"`
-	service_client_apps *int64
-	selectValues        sql.SelectValues
+	Edges        ClientAppEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // ClientAppEdges holds the relations/edges for other nodes in the graph.
@@ -80,7 +81,7 @@ func (*ClientApp) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case clientapp.FieldIsActive:
 			values[i] = new(sql.NullBool)
-		case clientapp.FieldID:
+		case clientapp.FieldID, clientapp.FieldServiceID:
 			values[i] = new(sql.NullInt64)
 		case clientapp.FieldName, clientapp.FieldDescription:
 			values[i] = new(sql.NullString)
@@ -88,8 +89,6 @@ func (*ClientApp) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullTime)
 		case clientapp.FieldPublicID:
 			values[i] = new(uuid.UUID)
-		case clientapp.ForeignKeys[0]: // service_client_apps
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -111,6 +110,12 @@ func (_m *ClientApp) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
+		case clientapp.FieldServiceID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field service_id", values[i])
+			} else if value.Valid {
+				_m.ServiceID = value.Int64
+			}
 		case clientapp.FieldPublicID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field public_id", values[i])
@@ -152,13 +157,6 @@ func (_m *ClientApp) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
-			}
-		case clientapp.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field service_client_apps", value)
-			} else if value.Valid {
-				_m.service_client_apps = new(int64)
-				*_m.service_client_apps = int64(value.Int64)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -206,6 +204,9 @@ func (_m *ClientApp) String() string {
 	var builder strings.Builder
 	builder.WriteString("ClientApp(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("service_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.ServiceID))
+	builder.WriteString(", ")
 	builder.WriteString("public_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.PublicID))
 	builder.WriteString(", ")

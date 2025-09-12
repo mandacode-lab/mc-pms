@@ -457,7 +457,9 @@ func (_q *ServiceQuery) loadClientApps(ctx context.Context, query *ClientAppQuer
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(clientapp.FieldServiceID)
+	}
 	query.Where(predicate.ClientApp(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(service.ClientAppsColumn), fks...))
 	}))
@@ -466,13 +468,10 @@ func (_q *ServiceQuery) loadClientApps(ctx context.Context, query *ClientAppQuer
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.service_client_apps
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "service_client_apps" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.ServiceID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "service_client_apps" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "service_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -488,7 +487,9 @@ func (_q *ServiceQuery) loadUserIdentities(ctx context.Context, query *UserIdent
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(useridentity.FieldServiceID)
+	}
 	query.Where(predicate.UserIdentity(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(service.UserIdentitiesColumn), fks...))
 	}))
@@ -497,13 +498,10 @@ func (_q *ServiceQuery) loadUserIdentities(ctx context.Context, query *UserIdent
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.service_user_identities
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "service_user_identities" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.ServiceID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "service_user_identities" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "service_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

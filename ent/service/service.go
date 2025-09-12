@@ -39,14 +39,14 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "clientapp" package.
 	ClientAppsInverseTable = "client_apps"
 	// ClientAppsColumn is the table column denoting the client_apps relation/edge.
-	ClientAppsColumn = "service_client_apps"
+	ClientAppsColumn = "service_id"
 	// UserIdentitiesTable is the table that holds the user_identities relation/edge.
 	UserIdentitiesTable = "user_identities"
 	// UserIdentitiesInverseTable is the table name for the UserIdentity entity.
 	// It exists in this package in order to avoid circular dependency with the "useridentity" package.
 	UserIdentitiesInverseTable = "user_identities"
 	// UserIdentitiesColumn is the table column denoting the user_identities relation/edge.
-	UserIdentitiesColumn = "service_user_identities"
+	UserIdentitiesColumn = "service_id"
 )
 
 // Columns holds all SQL columns for service fields.

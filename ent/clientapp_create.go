@@ -23,6 +23,12 @@ type ClientAppCreate struct {
 	hooks    []Hook
 }
 
+// SetServiceID sets the "service_id" field.
+func (_c *ClientAppCreate) SetServiceID(v int64) *ClientAppCreate {
+	_c.mutation.SetServiceID(v)
+	return _c
+}
+
 // SetPublicID sets the "public_id" field.
 func (_c *ClientAppCreate) SetPublicID(v uuid.UUID) *ClientAppCreate {
 	_c.mutation.SetPublicID(v)
@@ -111,12 +117,6 @@ func (_c *ClientAppCreate) SetID(v int64) *ClientAppCreate {
 	return _c
 }
 
-// SetServiceID sets the "service" edge to the Service entity by ID.
-func (_c *ClientAppCreate) SetServiceID(id int64) *ClientAppCreate {
-	_c.mutation.SetServiceID(id)
-	return _c
-}
-
 // SetService sets the "service" edge to the Service entity.
 func (_c *ClientAppCreate) SetService(v *Service) *ClientAppCreate {
 	return _c.SetServiceID(v.ID)
@@ -192,6 +192,9 @@ func (_c *ClientAppCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *ClientAppCreate) check() error {
+	if _, ok := _c.mutation.ServiceID(); !ok {
+		return &ValidationError{Name: "service_id", err: errors.New(`ent: missing required field "ClientApp.service_id"`)}
+	}
 	if _, ok := _c.mutation.PublicID(); !ok {
 		return &ValidationError{Name: "public_id", err: errors.New(`ent: missing required field "ClientApp.public_id"`)}
 	}
@@ -297,7 +300,7 @@ func (_c *ClientAppCreate) createSpec() (*ClientApp, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.service_client_apps = &nodes[0]
+		_node.ServiceID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := _c.mutation.WebOauthsIDs(); len(nodes) > 0 {

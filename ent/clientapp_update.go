@@ -31,6 +31,20 @@ func (_u *ClientAppUpdate) Where(ps ...predicate.ClientApp) *ClientAppUpdate {
 	return _u
 }
 
+// SetServiceID sets the "service_id" field.
+func (_u *ClientAppUpdate) SetServiceID(v int64) *ClientAppUpdate {
+	_u.mutation.SetServiceID(v)
+	return _u
+}
+
+// SetNillableServiceID sets the "service_id" field if the given value is not nil.
+func (_u *ClientAppUpdate) SetNillableServiceID(v *int64) *ClientAppUpdate {
+	if v != nil {
+		_u.SetServiceID(*v)
+	}
+	return _u
+}
+
 // SetPublicID sets the "public_id" field.
 func (_u *ClientAppUpdate) SetPublicID(v uuid.UUID) *ClientAppUpdate {
 	_u.mutation.SetPublicID(v)
@@ -102,12 +116,6 @@ func (_u *ClientAppUpdate) SetNillableIsActive(v *bool) *ClientAppUpdate {
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *ClientAppUpdate) SetUpdatedAt(v time.Time) *ClientAppUpdate {
 	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
-// SetServiceID sets the "service" edge to the Service entity by ID.
-func (_u *ClientAppUpdate) SetServiceID(id int64) *ClientAppUpdate {
-	_u.mutation.SetServiceID(id)
 	return _u
 }
 
@@ -344,6 +352,20 @@ type ClientAppUpdateOne struct {
 	mutation *ClientAppMutation
 }
 
+// SetServiceID sets the "service_id" field.
+func (_u *ClientAppUpdateOne) SetServiceID(v int64) *ClientAppUpdateOne {
+	_u.mutation.SetServiceID(v)
+	return _u
+}
+
+// SetNillableServiceID sets the "service_id" field if the given value is not nil.
+func (_u *ClientAppUpdateOne) SetNillableServiceID(v *int64) *ClientAppUpdateOne {
+	if v != nil {
+		_u.SetServiceID(*v)
+	}
+	return _u
+}
+
 // SetPublicID sets the "public_id" field.
 func (_u *ClientAppUpdateOne) SetPublicID(v uuid.UUID) *ClientAppUpdateOne {
 	_u.mutation.SetPublicID(v)
@@ -415,12 +437,6 @@ func (_u *ClientAppUpdateOne) SetNillableIsActive(v *bool) *ClientAppUpdateOne {
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *ClientAppUpdateOne) SetUpdatedAt(v time.Time) *ClientAppUpdateOne {
 	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
-// SetServiceID sets the "service" edge to the Service entity by ID.
-func (_u *ClientAppUpdateOne) SetServiceID(id int64) *ClientAppUpdateOne {
-	_u.mutation.SetServiceID(id)
 	return _u
 }
 

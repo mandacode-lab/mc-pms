@@ -20,6 +20,8 @@ type WebOAuth struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
+	// ClientAppID holds the value of the "client_app_id" field.
+	ClientAppID int64 `json:"client_app_id,omitempty"`
 	// Provider holds the value of the "provider" field.
 	Provider shared.Provider `json:"provider,omitempty"`
 	// OauthClientID holds the value of the "oauth_client_id" field.
@@ -44,9 +46,8 @@ type WebOAuth struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the WebOAuthQuery when eager-loading is set.
-	Edges                 WebOAuthEdges `json:"edges"`
-	client_app_web_oauths *int64
-	selectValues          sql.SelectValues
+	Edges        WebOAuthEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // WebOAuthEdges holds the relations/edges for other nodes in the graph.
@@ -76,14 +77,12 @@ func (*WebOAuth) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case weboauth.FieldOauthSecretCt, weboauth.FieldOauthSecretNonce, weboauth.FieldDekWrapped, weboauth.FieldDekNonce, weboauth.FieldRedirectUris, weboauth.FieldScopes:
 			values[i] = new([]byte)
-		case weboauth.FieldID:
+		case weboauth.FieldID, weboauth.FieldClientAppID:
 			values[i] = new(sql.NullInt64)
 		case weboauth.FieldProvider, weboauth.FieldOauthClientID:
 			values[i] = new(sql.NullString)
 		case weboauth.FieldDekRotatedAt, weboauth.FieldCreatedAt, weboauth.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case weboauth.ForeignKeys[0]: // client_app_web_oauths
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -105,6 +104,12 @@ func (_m *WebOAuth) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
+		case weboauth.FieldClientAppID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field client_app_id", values[i])
+			} else if value.Valid {
+				_m.ClientAppID = value.Int64
+			}
 		case weboauth.FieldProvider:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field provider", values[i])
@@ -175,13 +180,6 @@ func (_m *WebOAuth) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
-		case weboauth.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field client_app_web_oauths", value)
-			} else if value.Valid {
-				_m.client_app_web_oauths = new(int64)
-				*_m.client_app_web_oauths = int64(value.Int64)
-			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -223,6 +221,9 @@ func (_m *WebOAuth) String() string {
 	var builder strings.Builder
 	builder.WriteString("WebOAuth(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("client_app_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.ClientAppID))
+	builder.WriteString(", ")
 	builder.WriteString("provider=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Provider))
 	builder.WriteString(", ")

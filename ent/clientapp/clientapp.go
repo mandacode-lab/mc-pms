@@ -15,6 +15,8 @@ const (
 	Label = "client_app"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldServiceID holds the string denoting the service_id field in the database.
+	FieldServiceID = "service_id"
 	// FieldPublicID holds the string denoting the public_id field in the database.
 	FieldPublicID = "public_id"
 	// FieldSecretHash holds the string denoting the secret_hash field in the database.
@@ -41,19 +43,20 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "service" package.
 	ServiceInverseTable = "services"
 	// ServiceColumn is the table column denoting the service relation/edge.
-	ServiceColumn = "service_client_apps"
+	ServiceColumn = "service_id"
 	// WebOauthsTable is the table that holds the web_oauths relation/edge.
 	WebOauthsTable = "web_oauths"
 	// WebOauthsInverseTable is the table name for the WebOAuth entity.
 	// It exists in this package in order to avoid circular dependency with the "weboauth" package.
 	WebOauthsInverseTable = "web_oauths"
 	// WebOauthsColumn is the table column denoting the web_oauths relation/edge.
-	WebOauthsColumn = "client_app_web_oauths"
+	WebOauthsColumn = "client_app_id"
 )
 
 // Columns holds all SQL columns for clientapp fields.
 var Columns = []string{
 	FieldID,
+	FieldServiceID,
 	FieldPublicID,
 	FieldSecretHash,
 	FieldName,
@@ -63,21 +66,10 @@ var Columns = []string{
 	FieldUpdatedAt,
 }
 
-// ForeignKeys holds the SQL foreign-keys that are owned by the "client_apps"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"service_client_apps",
-}
-
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -107,6 +99,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByServiceID orders the results by the service_id field.
+func ByServiceID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldServiceID, opts...).ToFunc()
 }
 
 // ByPublicID orders the results by the public_id field.

@@ -16,6 +16,8 @@ const (
 	Label = "web_oauth"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldClientAppID holds the string denoting the client_app_id field in the database.
+	FieldClientAppID = "client_app_id"
 	// FieldProvider holds the string denoting the provider field in the database.
 	FieldProvider = "provider"
 	// FieldOauthClientID holds the string denoting the oauth_client_id field in the database.
@@ -48,12 +50,13 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "clientapp" package.
 	ClientAppInverseTable = "client_apps"
 	// ClientAppColumn is the table column denoting the client_app relation/edge.
-	ClientAppColumn = "client_app_web_oauths"
+	ClientAppColumn = "client_app_id"
 )
 
 // Columns holds all SQL columns for weboauth fields.
 var Columns = []string{
 	FieldID,
+	FieldClientAppID,
 	FieldProvider,
 	FieldOauthClientID,
 	FieldOauthSecretCt,
@@ -67,12 +70,6 @@ var Columns = []string{
 	FieldUpdatedAt,
 }
 
-// ForeignKeys holds the SQL foreign-keys that are owned by the "web_oauths"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"client_app_web_oauths",
-}
-
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
@@ -80,15 +77,12 @@ func ValidColumn(column string) bool {
 			return true
 		}
 	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
-			return true
-		}
-	}
 	return false
 }
 
 var (
+	// ClientAppIDValidator is a validator for the "client_app_id" field. It is called by the builders before save.
+	ClientAppIDValidator func(int64) error
 	// OauthClientIDValidator is a validator for the "oauth_client_id" field. It is called by the builders before save.
 	OauthClientIDValidator func(string) error
 	// OauthSecretCtValidator is a validator for the "oauth_secret_ct" field. It is called by the builders before save.
@@ -125,6 +119,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByClientAppID orders the results by the client_app_id field.
+func ByClientAppID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldClientAppID, opts...).ToFunc()
 }
 
 // ByProvider orders the results by the provider field.

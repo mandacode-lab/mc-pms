@@ -165,6 +165,42 @@ func (m *ClientAppMutation) IDs(ctx context.Context) ([]int64, error) {
 	}
 }
 
+// SetServiceID sets the "service_id" field.
+func (m *ClientAppMutation) SetServiceID(i int64) {
+	m.service = &i
+}
+
+// ServiceID returns the value of the "service_id" field in the mutation.
+func (m *ClientAppMutation) ServiceID() (r int64, exists bool) {
+	v := m.service
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldServiceID returns the old "service_id" field's value of the ClientApp entity.
+// If the ClientApp object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ClientAppMutation) OldServiceID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldServiceID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldServiceID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldServiceID: %w", err)
+	}
+	return oldValue.ServiceID, nil
+}
+
+// ResetServiceID resets all changes to the "service_id" field.
+func (m *ClientAppMutation) ResetServiceID() {
+	m.service = nil
+}
+
 // SetPublicID sets the "public_id" field.
 func (m *ClientAppMutation) SetPublicID(u uuid.UUID) {
 	m.public_id = &u
@@ -430,27 +466,15 @@ func (m *ClientAppMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// SetServiceID sets the "service" edge to the Service entity by id.
-func (m *ClientAppMutation) SetServiceID(id int64) {
-	m.service = &id
-}
-
 // ClearService clears the "service" edge to the Service entity.
 func (m *ClientAppMutation) ClearService() {
 	m.clearedservice = true
+	m.clearedFields[clientapp.FieldServiceID] = struct{}{}
 }
 
 // ServiceCleared reports if the "service" edge to the Service entity was cleared.
 func (m *ClientAppMutation) ServiceCleared() bool {
 	return m.clearedservice
-}
-
-// ServiceID returns the "service" edge ID in the mutation.
-func (m *ClientAppMutation) ServiceID() (id int64, exists bool) {
-	if m.service != nil {
-		return *m.service, true
-	}
-	return
 }
 
 // ServiceIDs returns the "service" edge IDs in the mutation.
@@ -557,7 +581,10 @@ func (m *ClientAppMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ClientAppMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
+	if m.service != nil {
+		fields = append(fields, clientapp.FieldServiceID)
+	}
 	if m.public_id != nil {
 		fields = append(fields, clientapp.FieldPublicID)
 	}
@@ -587,6 +614,8 @@ func (m *ClientAppMutation) Fields() []string {
 // schema.
 func (m *ClientAppMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case clientapp.FieldServiceID:
+		return m.ServiceID()
 	case clientapp.FieldPublicID:
 		return m.PublicID()
 	case clientapp.FieldSecretHash:
@@ -610,6 +639,8 @@ func (m *ClientAppMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *ClientAppMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case clientapp.FieldServiceID:
+		return m.OldServiceID(ctx)
 	case clientapp.FieldPublicID:
 		return m.OldPublicID(ctx)
 	case clientapp.FieldSecretHash:
@@ -633,6 +664,13 @@ func (m *ClientAppMutation) OldField(ctx context.Context, name string) (ent.Valu
 // type.
 func (m *ClientAppMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case clientapp.FieldServiceID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetServiceID(v)
+		return nil
 	case clientapp.FieldPublicID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
@@ -689,13 +727,16 @@ func (m *ClientAppMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *ClientAppMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *ClientAppMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
 	return nil, false
 }
 
@@ -740,6 +781,9 @@ func (m *ClientAppMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *ClientAppMutation) ResetField(name string) error {
 	switch name {
+	case clientapp.FieldServiceID:
+		m.ResetServiceID()
+		return nil
 	case clientapp.FieldPublicID:
 		m.ResetPublicID()
 		return nil
@@ -1792,6 +1836,42 @@ func (m *UserIdentityMutation) IDs(ctx context.Context) ([]int64, error) {
 	}
 }
 
+// SetServiceID sets the "service_id" field.
+func (m *UserIdentityMutation) SetServiceID(i int64) {
+	m.service = &i
+}
+
+// ServiceID returns the value of the "service_id" field in the mutation.
+func (m *UserIdentityMutation) ServiceID() (r int64, exists bool) {
+	v := m.service
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldServiceID returns the old "service_id" field's value of the UserIdentity entity.
+// If the UserIdentity object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserIdentityMutation) OldServiceID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldServiceID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldServiceID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldServiceID: %w", err)
+	}
+	return oldValue.ServiceID, nil
+}
+
+// ResetServiceID resets all changes to the "service_id" field.
+func (m *UserIdentityMutation) ResetServiceID() {
+	m.service = nil
+}
+
 // SetPublicID sets the "public_id" field.
 func (m *UserIdentityMutation) SetPublicID(u uuid.UUID) {
 	m.public_id = &u
@@ -1972,27 +2052,15 @@ func (m *UserIdentityMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// SetServiceID sets the "service" edge to the Service entity by id.
-func (m *UserIdentityMutation) SetServiceID(id int64) {
-	m.service = &id
-}
-
 // ClearService clears the "service" edge to the Service entity.
 func (m *UserIdentityMutation) ClearService() {
 	m.clearedservice = true
+	m.clearedFields[useridentity.FieldServiceID] = struct{}{}
 }
 
 // ServiceCleared reports if the "service" edge to the Service entity was cleared.
 func (m *UserIdentityMutation) ServiceCleared() bool {
 	return m.clearedservice
-}
-
-// ServiceID returns the "service" edge ID in the mutation.
-func (m *UserIdentityMutation) ServiceID() (id int64, exists bool) {
-	if m.service != nil {
-		return *m.service, true
-	}
-	return
 }
 
 // ServiceIDs returns the "service" edge IDs in the mutation.
@@ -2084,7 +2152,10 @@ func (m *UserIdentityMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserIdentityMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
+	if m.service != nil {
+		fields = append(fields, useridentity.FieldServiceID)
+	}
 	if m.public_id != nil {
 		fields = append(fields, useridentity.FieldPublicID)
 	}
@@ -2108,6 +2179,8 @@ func (m *UserIdentityMutation) Fields() []string {
 // schema.
 func (m *UserIdentityMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case useridentity.FieldServiceID:
+		return m.ServiceID()
 	case useridentity.FieldPublicID:
 		return m.PublicID()
 	case useridentity.FieldProviderID:
@@ -2127,6 +2200,8 @@ func (m *UserIdentityMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *UserIdentityMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case useridentity.FieldServiceID:
+		return m.OldServiceID(ctx)
 	case useridentity.FieldPublicID:
 		return m.OldPublicID(ctx)
 	case useridentity.FieldProviderID:
@@ -2146,6 +2221,13 @@ func (m *UserIdentityMutation) OldField(ctx context.Context, name string) (ent.V
 // type.
 func (m *UserIdentityMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case useridentity.FieldServiceID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetServiceID(v)
+		return nil
 	case useridentity.FieldPublicID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
@@ -2188,13 +2270,16 @@ func (m *UserIdentityMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *UserIdentityMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *UserIdentityMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
 	return nil, false
 }
 
@@ -2230,6 +2315,9 @@ func (m *UserIdentityMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *UserIdentityMutation) ResetField(name string) error {
 	switch name {
+	case useridentity.FieldServiceID:
+		m.ResetServiceID()
+		return nil
 	case useridentity.FieldPublicID:
 		m.ResetPublicID()
 		return nil
@@ -3182,6 +3270,42 @@ func (m *WebOAuthMutation) IDs(ctx context.Context) ([]int64, error) {
 	}
 }
 
+// SetClientAppID sets the "client_app_id" field.
+func (m *WebOAuthMutation) SetClientAppID(i int64) {
+	m.client_app = &i
+}
+
+// ClientAppID returns the value of the "client_app_id" field in the mutation.
+func (m *WebOAuthMutation) ClientAppID() (r int64, exists bool) {
+	v := m.client_app
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldClientAppID returns the old "client_app_id" field's value of the WebOAuth entity.
+// If the WebOAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WebOAuthMutation) OldClientAppID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldClientAppID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldClientAppID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldClientAppID: %w", err)
+	}
+	return oldValue.ClientAppID, nil
+}
+
+// ResetClientAppID resets all changes to the "client_app_id" field.
+func (m *WebOAuthMutation) ResetClientAppID() {
+	m.client_app = nil
+}
+
 // SetProvider sets the "provider" field.
 func (m *WebOAuthMutation) SetProvider(s shared.Provider) {
 	m.provider = &s
@@ -3636,27 +3760,15 @@ func (m *WebOAuthMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// SetClientAppID sets the "client_app" edge to the ClientApp entity by id.
-func (m *WebOAuthMutation) SetClientAppID(id int64) {
-	m.client_app = &id
-}
-
 // ClearClientApp clears the "client_app" edge to the ClientApp entity.
 func (m *WebOAuthMutation) ClearClientApp() {
 	m.clearedclient_app = true
+	m.clearedFields[weboauth.FieldClientAppID] = struct{}{}
 }
 
 // ClientAppCleared reports if the "client_app" edge to the ClientApp entity was cleared.
 func (m *WebOAuthMutation) ClientAppCleared() bool {
 	return m.clearedclient_app
-}
-
-// ClientAppID returns the "client_app" edge ID in the mutation.
-func (m *WebOAuthMutation) ClientAppID() (id int64, exists bool) {
-	if m.client_app != nil {
-		return *m.client_app, true
-	}
-	return
 }
 
 // ClientAppIDs returns the "client_app" edge IDs in the mutation.
@@ -3709,7 +3821,10 @@ func (m *WebOAuthMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *WebOAuthMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
+	if m.client_app != nil {
+		fields = append(fields, weboauth.FieldClientAppID)
+	}
 	if m.provider != nil {
 		fields = append(fields, weboauth.FieldProvider)
 	}
@@ -3751,6 +3866,8 @@ func (m *WebOAuthMutation) Fields() []string {
 // schema.
 func (m *WebOAuthMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case weboauth.FieldClientAppID:
+		return m.ClientAppID()
 	case weboauth.FieldProvider:
 		return m.Provider()
 	case weboauth.FieldOauthClientID:
@@ -3782,6 +3899,8 @@ func (m *WebOAuthMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *WebOAuthMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case weboauth.FieldClientAppID:
+		return m.OldClientAppID(ctx)
 	case weboauth.FieldProvider:
 		return m.OldProvider(ctx)
 	case weboauth.FieldOauthClientID:
@@ -3813,6 +3932,13 @@ func (m *WebOAuthMutation) OldField(ctx context.Context, name string) (ent.Value
 // type.
 func (m *WebOAuthMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case weboauth.FieldClientAppID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetClientAppID(v)
+		return nil
 	case weboauth.FieldProvider:
 		v, ok := value.(shared.Provider)
 		if !ok {
@@ -3897,13 +4023,16 @@ func (m *WebOAuthMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *WebOAuthMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *WebOAuthMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
 	return nil, false
 }
 
@@ -3954,6 +4083,9 @@ func (m *WebOAuthMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *WebOAuthMutation) ResetField(name string) error {
 	switch name {
+	case weboauth.FieldClientAppID:
+		m.ResetClientAppID()
+		return nil
 	case weboauth.FieldProvider:
 		m.ResetProvider()
 		return nil

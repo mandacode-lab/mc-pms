@@ -31,6 +31,20 @@ func (_u *WebOAuthUpdate) Where(ps ...predicate.WebOAuth) *WebOAuthUpdate {
 	return _u
 }
 
+// SetClientAppID sets the "client_app_id" field.
+func (_u *WebOAuthUpdate) SetClientAppID(v int64) *WebOAuthUpdate {
+	_u.mutation.SetClientAppID(v)
+	return _u
+}
+
+// SetNillableClientAppID sets the "client_app_id" field if the given value is not nil.
+func (_u *WebOAuthUpdate) SetNillableClientAppID(v *int64) *WebOAuthUpdate {
+	if v != nil {
+		_u.SetClientAppID(*v)
+	}
+	return _u
+}
+
 // SetProvider sets the "provider" field.
 func (_u *WebOAuthUpdate) SetProvider(v shared.Provider) *WebOAuthUpdate {
 	_u.mutation.SetProvider(v)
@@ -139,12 +153,6 @@ func (_u *WebOAuthUpdate) SetUpdatedAt(v time.Time) *WebOAuthUpdate {
 	return _u
 }
 
-// SetClientAppID sets the "client_app" edge to the ClientApp entity by ID.
-func (_u *WebOAuthUpdate) SetClientAppID(id int64) *WebOAuthUpdate {
-	_u.mutation.SetClientAppID(id)
-	return _u
-}
-
 // SetClientApp sets the "client_app" edge to the ClientApp entity.
 func (_u *WebOAuthUpdate) SetClientApp(v *ClientApp) *WebOAuthUpdate {
 	return _u.SetClientAppID(v.ID)
@@ -199,6 +207,11 @@ func (_u *WebOAuthUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *WebOAuthUpdate) check() error {
+	if v, ok := _u.mutation.ClientAppID(); ok {
+		if err := weboauth.ClientAppIDValidator(v); err != nil {
+			return &ValidationError{Name: "client_app_id", err: fmt.Errorf(`ent: validator failed for field "WebOAuth.client_app_id": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.Provider(); ok {
 		if err := weboauth.ProviderValidator(v); err != nil {
 			return &ValidationError{Name: "provider", err: fmt.Errorf(`ent: validator failed for field "WebOAuth.provider": %w`, err)}
@@ -342,6 +355,20 @@ type WebOAuthUpdateOne struct {
 	mutation *WebOAuthMutation
 }
 
+// SetClientAppID sets the "client_app_id" field.
+func (_u *WebOAuthUpdateOne) SetClientAppID(v int64) *WebOAuthUpdateOne {
+	_u.mutation.SetClientAppID(v)
+	return _u
+}
+
+// SetNillableClientAppID sets the "client_app_id" field if the given value is not nil.
+func (_u *WebOAuthUpdateOne) SetNillableClientAppID(v *int64) *WebOAuthUpdateOne {
+	if v != nil {
+		_u.SetClientAppID(*v)
+	}
+	return _u
+}
+
 // SetProvider sets the "provider" field.
 func (_u *WebOAuthUpdateOne) SetProvider(v shared.Provider) *WebOAuthUpdateOne {
 	_u.mutation.SetProvider(v)
@@ -450,12 +477,6 @@ func (_u *WebOAuthUpdateOne) SetUpdatedAt(v time.Time) *WebOAuthUpdateOne {
 	return _u
 }
 
-// SetClientAppID sets the "client_app" edge to the ClientApp entity by ID.
-func (_u *WebOAuthUpdateOne) SetClientAppID(id int64) *WebOAuthUpdateOne {
-	_u.mutation.SetClientAppID(id)
-	return _u
-}
-
 // SetClientApp sets the "client_app" edge to the ClientApp entity.
 func (_u *WebOAuthUpdateOne) SetClientApp(v *ClientApp) *WebOAuthUpdateOne {
 	return _u.SetClientAppID(v.ID)
@@ -523,6 +544,11 @@ func (_u *WebOAuthUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *WebOAuthUpdateOne) check() error {
+	if v, ok := _u.mutation.ClientAppID(); ok {
+		if err := weboauth.ClientAppIDValidator(v); err != nil {
+			return &ValidationError{Name: "client_app_id", err: fmt.Errorf(`ent: validator failed for field "WebOAuth.client_app_id": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.Provider(); ok {
 		if err := weboauth.ProviderValidator(v); err != nil {
 			return &ValidationError{Name: "provider", err: fmt.Errorf(`ent: validator failed for field "WebOAuth.provider": %w`, err)}

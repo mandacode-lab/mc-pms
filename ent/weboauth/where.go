@@ -56,6 +56,11 @@ func IDLTE(id int64) predicate.WebOAuth {
 	return predicate.WebOAuth(sql.FieldLTE(FieldID, id))
 }
 
+// ClientAppID applies equality check predicate on the "client_app_id" field. It's identical to ClientAppIDEQ.
+func ClientAppID(v int64) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldEQ(FieldClientAppID, v))
+}
+
 // OauthClientID applies equality check predicate on the "oauth_client_id" field. It's identical to OauthClientIDEQ.
 func OauthClientID(v string) predicate.WebOAuth {
 	return predicate.WebOAuth(sql.FieldEQ(FieldOauthClientID, v))
@@ -94,6 +99,26 @@ func CreatedAt(v time.Time) predicate.WebOAuth {
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.WebOAuth {
 	return predicate.WebOAuth(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
+// ClientAppIDEQ applies the EQ predicate on the "client_app_id" field.
+func ClientAppIDEQ(v int64) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldEQ(FieldClientAppID, v))
+}
+
+// ClientAppIDNEQ applies the NEQ predicate on the "client_app_id" field.
+func ClientAppIDNEQ(v int64) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldNEQ(FieldClientAppID, v))
+}
+
+// ClientAppIDIn applies the In predicate on the "client_app_id" field.
+func ClientAppIDIn(vs ...int64) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldIn(FieldClientAppID, vs...))
+}
+
+// ClientAppIDNotIn applies the NotIn predicate on the "client_app_id" field.
+func ClientAppIDNotIn(vs ...int64) predicate.WebOAuth {
+	return predicate.WebOAuth(sql.FieldNotIn(FieldClientAppID, vs...))
 }
 
 // ProviderEQ applies the EQ predicate on the "provider" field.

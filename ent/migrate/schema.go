@@ -18,7 +18,7 @@ var (
 		{Name: "is_active", Type: field.TypeBool, Default: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "service_client_apps", Type: field.TypeInt64},
+		{Name: "service_id", Type: field.TypeInt64},
 	}
 	// ClientAppsTable holds the schema information for the "client_apps" table.
 	ClientAppsTable = &schema.Table{
@@ -38,6 +38,11 @@ var (
 				Name:    "clientapp_public_id",
 				Unique:  true,
 				Columns: []*schema.Column{ClientAppsColumns[1]},
+			},
+			{
+				Name:    "clientapp_service_id_name",
+				Unique:  true,
+				Columns: []*schema.Column{ClientAppsColumns[8], ClientAppsColumns[3]},
 			},
 		},
 	}
@@ -77,7 +82,7 @@ var (
 		{Name: "provider", Type: field.TypeEnum, Enums: []string{"google", "apple"}},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "service_user_identities", Type: field.TypeInt64},
+		{Name: "service_id", Type: field.TypeInt64},
 	}
 	// UserIdentitiesTable holds the schema information for the "user_identities" table.
 	UserIdentitiesTable = &schema.Table{
@@ -99,9 +104,9 @@ var (
 				Columns: []*schema.Column{UserIdentitiesColumns[1]},
 			},
 			{
-				Name:    "useridentity_provider_provider_id",
+				Name:    "useridentity_service_id_provider_provider_id",
 				Unique:  true,
-				Columns: []*schema.Column{UserIdentitiesColumns[3], UserIdentitiesColumns[2]},
+				Columns: []*schema.Column{UserIdentitiesColumns[6], UserIdentitiesColumns[3], UserIdentitiesColumns[2]},
 			},
 		},
 	}
@@ -144,7 +149,7 @@ var (
 		{Name: "scopes", Type: field.TypeJSON, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "client_app_web_oauths", Type: field.TypeInt64},
+		{Name: "client_app_id", Type: field.TypeInt64},
 	}
 	// WebOauthsTable holds the schema information for the "web_oauths" table.
 	WebOauthsTable = &schema.Table{
@@ -161,9 +166,9 @@ var (
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "weboauth_provider",
+				Name:    "weboauth_client_app_id_provider",
 				Unique:  true,
-				Columns: []*schema.Column{WebOauthsColumns[1]},
+				Columns: []*schema.Column{WebOauthsColumns[12], WebOauthsColumns[1]},
 			},
 		},
 	}

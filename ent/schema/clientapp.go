@@ -20,6 +20,7 @@ func (ClientApp) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").
 			Unique(),
+		field.Int64("service_id"),
 		field.UUID("public_id", uuid.UUID{}).
 			Default(uuid.New).
 			Unique(),
@@ -45,6 +46,7 @@ func (ClientApp) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("service", Service.Type).
 			Ref("client_apps").
+			Field("service_id").
 			Unique().
 			Required(),
 		edge.To("web_oauths", WebOAuth.Type),
@@ -54,6 +56,10 @@ func (ClientApp) Edges() []ent.Edge {
 // Indexes of the ClientApp.
 func (ClientApp) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("public_id").Unique(),
+		index.Fields("public_id").
+			Unique(),
+		index.Fields("service_id", "name").
+			Unique(),
 	}
 }
+

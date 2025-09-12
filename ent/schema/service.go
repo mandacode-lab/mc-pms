@@ -49,7 +49,10 @@ func (Service) Edges() []ent.Edge {
 // Indexes of the Service.
 func (Service) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("public_id").Unique(),
-		index.Fields("name").Unique(),
+		index.Fields("public_id").
+			Unique(),
+		index.Fields("name").
+			Unique(),
 	}
 }
+

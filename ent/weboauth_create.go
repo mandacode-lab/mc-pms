@@ -22,6 +22,12 @@ type WebOAuthCreate struct {
 	hooks    []Hook
 }
 
+// SetClientAppID sets the "client_app_id" field.
+func (_c *WebOAuthCreate) SetClientAppID(v int64) *WebOAuthCreate {
+	_c.mutation.SetClientAppID(v)
+	return _c
+}
+
 // SetProvider sets the "provider" field.
 func (_c *WebOAuthCreate) SetProvider(v shared.Provider) *WebOAuthCreate {
 	_c.mutation.SetProvider(v)
@@ -118,12 +124,6 @@ func (_c *WebOAuthCreate) SetID(v int64) *WebOAuthCreate {
 	return _c
 }
 
-// SetClientAppID sets the "client_app" edge to the ClientApp entity by ID.
-func (_c *WebOAuthCreate) SetClientAppID(id int64) *WebOAuthCreate {
-	_c.mutation.SetClientAppID(id)
-	return _c
-}
-
 // SetClientApp sets the "client_app" edge to the ClientApp entity.
 func (_c *WebOAuthCreate) SetClientApp(v *ClientApp) *WebOAuthCreate {
 	return _c.SetClientAppID(v.ID)
@@ -180,6 +180,14 @@ func (_c *WebOAuthCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *WebOAuthCreate) check() error {
+	if _, ok := _c.mutation.ClientAppID(); !ok {
+		return &ValidationError{Name: "client_app_id", err: errors.New(`ent: missing required field "WebOAuth.client_app_id"`)}
+	}
+	if v, ok := _c.mutation.ClientAppID(); ok {
+		if err := weboauth.ClientAppIDValidator(v); err != nil {
+			return &ValidationError{Name: "client_app_id", err: fmt.Errorf(`ent: validator failed for field "WebOAuth.client_app_id": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.Provider(); !ok {
 		return &ValidationError{Name: "provider", err: errors.New(`ent: missing required field "WebOAuth.provider"`)}
 	}
@@ -330,7 +338,7 @@ func (_c *WebOAuthCreate) createSpec() (*WebOAuth, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.client_app_web_oauths = &nodes[0]
+		_node.ClientAppID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

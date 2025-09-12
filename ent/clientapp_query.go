@@ -27,7 +27,6 @@ type ClientAppQuery struct {
 	predicates    []predicate.ClientApp
 	withService   *ServiceQuery
 	withWebOauths *WebOAuthQuery
-	withFKs       bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -336,12 +335,12 @@ func (_q *ClientAppQuery) WithWebOauths(opts ...func(*WebOAuthQuery)) *ClientApp
 // Example:
 //
 //	var v []struct {
-//		PublicID uuid.UUID `json:"public_id,omitempty"`
+//		ServiceID int64 `json:"service_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.ClientApp.Query().
-//		GroupBy(clientapp.FieldPublicID).
+//		GroupBy(clientapp.FieldServiceID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *ClientAppQuery) GroupBy(field string, fields ...string) *ClientAppGroupBy {
@@ -359,11 +358,11 @@ func (_q *ClientAppQuery) GroupBy(field string, fields ...string) *ClientAppGrou
 // Example:
 //
 //	var v []struct {
-//		PublicID uuid.UUID `json:"public_id,omitempty"`
+//		ServiceID int64 `json:"service_id,omitempty"`
 //	}
 //
 //	client.ClientApp.Query().
-//		Select(clientapp.FieldPublicID).
+//		Select(clientapp.FieldServiceID).
 //		Scan(ctx, &v)
 func (_q *ClientAppQuery) Select(fields ...string) *ClientAppSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
@@ -407,19 +406,12 @@ func (_q *ClientAppQuery) prepareQuery(ctx context.Context) error {
 func (_q *ClientAppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ClientApp, error) {
 	var (
 		nodes       = []*ClientApp{}
-		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
 			_q.withService != nil,
 			_q.withWebOauths != nil,
 		}
 	)
-	if _q.withService != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, clientapp.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*ClientApp).scanValues(nil, columns)
 	}
@@ -458,10 +450,7 @@ func (_q *ClientAppQuery) loadService(ctx context.Context, query *ServiceQuery, 
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*ClientApp)
 	for i := range nodes {
-		if nodes[i].service_client_apps == nil {
-			continue
-		}
-		fk := *nodes[i].service_client_apps
+		fk := nodes[i].ServiceID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -478,7 +467,7 @@ func (_q *ClientAppQuery) loadService(ctx context.Context, query *ServiceQuery, 
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "service_client_apps" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "service_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -496,7 +485,9 @@ func (_q *ClientAppQuery) loadWebOauths(ctx context.Context, query *WebOAuthQuer
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(weboauth.FieldClientAppID)
+	}
 	query.Where(predicate.WebOAuth(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(clientapp.WebOauthsColumn), fks...))
 	}))
@@ -505,13 +496,10 @@ func (_q *ClientAppQuery) loadWebOauths(ctx context.Context, query *WebOAuthQuer
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.client_app_web_oauths
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "client_app_web_oauths" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.ClientAppID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "client_app_web_oauths" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "client_app_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -542,6 +530,9 @@ func (_q *ClientAppQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != clientapp.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if _q.withService != nil {
+			_spec.Node.AddColumnOnce(clientapp.FieldServiceID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

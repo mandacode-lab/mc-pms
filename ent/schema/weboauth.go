@@ -20,6 +20,8 @@ func (WebOAuth) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").
 			Unique(),
+		field.Int64("client_app_id").
+			NonNegative(),
 		field.Enum("provider").
 			GoType(shared.Provider("")),
 		field.String("oauth_client_id").
@@ -52,6 +54,7 @@ func (WebOAuth) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("client_app", ClientApp.Type).
 			Ref("web_oauths").
+			Field("client_app_id").
 			Unique().
 			Required(),
 	}
@@ -60,6 +63,8 @@ func (WebOAuth) Edges() []ent.Edge {
 // Indexes of the WebOAuth.
 func (WebOAuth) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("provider").Unique(),
+		index.Fields("client_app_id", "provider").
+			Unique(),
 	}
 }
+

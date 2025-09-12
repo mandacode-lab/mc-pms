@@ -56,6 +56,11 @@ func IDLTE(id int64) predicate.ClientApp {
 	return predicate.ClientApp(sql.FieldLTE(FieldID, id))
 }
 
+// ServiceID applies equality check predicate on the "service_id" field. It's identical to ServiceIDEQ.
+func ServiceID(v int64) predicate.ClientApp {
+	return predicate.ClientApp(sql.FieldEQ(FieldServiceID, v))
+}
+
 // PublicID applies equality check predicate on the "public_id" field. It's identical to PublicIDEQ.
 func PublicID(v uuid.UUID) predicate.ClientApp {
 	return predicate.ClientApp(sql.FieldEQ(FieldPublicID, v))
@@ -89,6 +94,26 @@ func CreatedAt(v time.Time) predicate.ClientApp {
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.ClientApp {
 	return predicate.ClientApp(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
+// ServiceIDEQ applies the EQ predicate on the "service_id" field.
+func ServiceIDEQ(v int64) predicate.ClientApp {
+	return predicate.ClientApp(sql.FieldEQ(FieldServiceID, v))
+}
+
+// ServiceIDNEQ applies the NEQ predicate on the "service_id" field.
+func ServiceIDNEQ(v int64) predicate.ClientApp {
+	return predicate.ClientApp(sql.FieldNEQ(FieldServiceID, v))
+}
+
+// ServiceIDIn applies the In predicate on the "service_id" field.
+func ServiceIDIn(vs ...int64) predicate.ClientApp {
+	return predicate.ClientApp(sql.FieldIn(FieldServiceID, vs...))
+}
+
+// ServiceIDNotIn applies the NotIn predicate on the "service_id" field.
+func ServiceIDNotIn(vs ...int64) predicate.ClientApp {
+	return predicate.ClientApp(sql.FieldNotIn(FieldServiceID, vs...))
 }
 
 // PublicIDEQ applies the EQ predicate on the "public_id" field.

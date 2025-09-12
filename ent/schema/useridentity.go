@@ -21,6 +21,7 @@ func (UserIdentity) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").
 			Unique(),
+		field.Int64("service_id"),
 		field.UUID("public_id", uuid.UUID{}).
 			Default(uuid.New).
 			Unique(),
@@ -42,6 +43,7 @@ func (UserIdentity) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("service", Service.Type).
 			Ref("user_identities").
+			Field("service_id").
 			Unique().
 			Required(),
 		edge.To("user_info", UserInfo.Type).
@@ -52,7 +54,10 @@ func (UserIdentity) Edges() []ent.Edge {
 // Indexes of the UserIdentity.
 func (UserIdentity) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("public_id").Unique(),
-		index.Fields("provider", "provider_id").Unique(),
+		index.Fields("public_id").
+			Unique(),
+		index.Fields("service_id", "provider", "provider_id").
+			Unique(),
 	}
 }
+

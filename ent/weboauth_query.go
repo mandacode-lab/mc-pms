@@ -24,7 +24,6 @@ type WebOAuthQuery struct {
 	inters        []Interceptor
 	predicates    []predicate.WebOAuth
 	withClientApp *ClientAppQuery
-	withFKs       bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -299,12 +298,12 @@ func (_q *WebOAuthQuery) WithClientApp(opts ...func(*ClientAppQuery)) *WebOAuthQ
 // Example:
 //
 //	var v []struct {
-//		Provider shared.Provider `json:"provider,omitempty"`
+//		ClientAppID int64 `json:"client_app_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.WebOAuth.Query().
-//		GroupBy(weboauth.FieldProvider).
+//		GroupBy(weboauth.FieldClientAppID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *WebOAuthQuery) GroupBy(field string, fields ...string) *WebOAuthGroupBy {
@@ -322,11 +321,11 @@ func (_q *WebOAuthQuery) GroupBy(field string, fields ...string) *WebOAuthGroupB
 // Example:
 //
 //	var v []struct {
-//		Provider shared.Provider `json:"provider,omitempty"`
+//		ClientAppID int64 `json:"client_app_id,omitempty"`
 //	}
 //
 //	client.WebOAuth.Query().
-//		Select(weboauth.FieldProvider).
+//		Select(weboauth.FieldClientAppID).
 //		Scan(ctx, &v)
 func (_q *WebOAuthQuery) Select(fields ...string) *WebOAuthSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
@@ -370,18 +369,11 @@ func (_q *WebOAuthQuery) prepareQuery(ctx context.Context) error {
 func (_q *WebOAuthQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*WebOAuth, error) {
 	var (
 		nodes       = []*WebOAuth{}
-		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
 			_q.withClientApp != nil,
 		}
 	)
-	if _q.withClientApp != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, weboauth.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*WebOAuth).scanValues(nil, columns)
 	}
@@ -413,10 +405,7 @@ func (_q *WebOAuthQuery) loadClientApp(ctx context.Context, query *ClientAppQuer
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*WebOAuth)
 	for i := range nodes {
-		if nodes[i].client_app_web_oauths == nil {
-			continue
-		}
-		fk := *nodes[i].client_app_web_oauths
+		fk := nodes[i].ClientAppID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -433,7 +422,7 @@ func (_q *WebOAuthQuery) loadClientApp(ctx context.Context, query *ClientAppQuer
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "client_app_web_oauths" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "client_app_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -466,6 +455,9 @@ func (_q *WebOAuthQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != weboauth.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if _q.withClientApp != nil {
+			_spec.Node.AddColumnOnce(weboauth.FieldClientAppID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

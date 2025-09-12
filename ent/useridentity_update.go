@@ -32,6 +32,20 @@ func (_u *UserIdentityUpdate) Where(ps ...predicate.UserIdentity) *UserIdentityU
 	return _u
 }
 
+// SetServiceID sets the "service_id" field.
+func (_u *UserIdentityUpdate) SetServiceID(v int64) *UserIdentityUpdate {
+	_u.mutation.SetServiceID(v)
+	return _u
+}
+
+// SetNillableServiceID sets the "service_id" field if the given value is not nil.
+func (_u *UserIdentityUpdate) SetNillableServiceID(v *int64) *UserIdentityUpdate {
+	if v != nil {
+		_u.SetServiceID(*v)
+	}
+	return _u
+}
+
 // SetPublicID sets the "public_id" field.
 func (_u *UserIdentityUpdate) SetPublicID(v uuid.UUID) *UserIdentityUpdate {
 	_u.mutation.SetPublicID(v)
@@ -77,12 +91,6 @@ func (_u *UserIdentityUpdate) SetNillableProvider(v *shared.Provider) *UserIdent
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *UserIdentityUpdate) SetUpdatedAt(v time.Time) *UserIdentityUpdate {
 	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
-// SetServiceID sets the "service" edge to the Service entity by ID.
-func (_u *UserIdentityUpdate) SetServiceID(id int64) *UserIdentityUpdate {
-	_u.mutation.SetServiceID(id)
 	return _u
 }
 
@@ -283,6 +291,20 @@ type UserIdentityUpdateOne struct {
 	mutation *UserIdentityMutation
 }
 
+// SetServiceID sets the "service_id" field.
+func (_u *UserIdentityUpdateOne) SetServiceID(v int64) *UserIdentityUpdateOne {
+	_u.mutation.SetServiceID(v)
+	return _u
+}
+
+// SetNillableServiceID sets the "service_id" field if the given value is not nil.
+func (_u *UserIdentityUpdateOne) SetNillableServiceID(v *int64) *UserIdentityUpdateOne {
+	if v != nil {
+		_u.SetServiceID(*v)
+	}
+	return _u
+}
+
 // SetPublicID sets the "public_id" field.
 func (_u *UserIdentityUpdateOne) SetPublicID(v uuid.UUID) *UserIdentityUpdateOne {
 	_u.mutation.SetPublicID(v)
@@ -328,12 +350,6 @@ func (_u *UserIdentityUpdateOne) SetNillableProvider(v *shared.Provider) *UserId
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *UserIdentityUpdateOne) SetUpdatedAt(v time.Time) *UserIdentityUpdateOne {
 	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
-// SetServiceID sets the "service" edge to the Service entity by ID.
-func (_u *UserIdentityUpdateOne) SetServiceID(id int64) *UserIdentityUpdateOne {
-	_u.mutation.SetServiceID(id)
 	return _u
 }
 
