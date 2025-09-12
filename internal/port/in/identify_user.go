@@ -1,13 +1,15 @@
 package in
 
 import (
+	"context"
+	
 	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
 	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
 )
 
 type UserIdentityView struct {
 	UserInfo
-	RawData map[string]interface{}
+	RawData map[string]any
 }
 
 type IdentifyByCode struct {
@@ -25,6 +27,6 @@ type IdentifyByToken struct {
 }
 
 type IdentifyUserUsecase interface {
-	IdentifyByCode(cmd IdentifyByCode) (UserIdentityView, error)
-	IdentifyByToken(cmd IdentifyByToken) (UserIdentityView, error)
+	IdentifyByCode(ctx context.Context, cmd IdentifyByCode) (UserIdentityView, error)
+	IdentifyByToken(ctx context.Context, cmd IdentifyByToken) (UserIdentityView, error)
 }

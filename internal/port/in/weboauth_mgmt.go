@@ -1,6 +1,8 @@
 package in
 
 import (
+	"context"
+	
 	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
 	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
 )
@@ -51,9 +53,9 @@ type ReadWebOAuthSecretView struct {
 }
 
 type WebOAuthMgmtUsecase interface {
-	RegisterWebOAuth(cmd RegisterWebOAuthCommand) error
-	ReadWebOAuth(query ReadWebOAuthQuery) (ReadWebOAuthView, error)
-	ReadWebOAuthSecret(query ReadWebOAuthSecretQuery) (ReadWebOAuthSecretView, error)
-	UpdateWebOAuth(cmd UpdateWebOAuthCommand) error
-	DeleteWebOAuth(cmd DeleteWebOAuthCommand) error
+	RegisterWebOAuth(ctx context.Context, cmd RegisterWebOAuthCommand) error
+	ReadWebOAuth(ctx context.Context, query ReadWebOAuthQuery) (ReadWebOAuthView, error)
+	ReadWebOAuthSecret(ctx context.Context, query ReadWebOAuthSecretQuery) (ReadWebOAuthSecretView, error)
+	UpdateWebOAuth(ctx context.Context, cmd UpdateWebOAuthCommand) error
+	DeleteWebOAuth(ctx context.Context, cmd DeleteWebOAuthCommand) error
 }

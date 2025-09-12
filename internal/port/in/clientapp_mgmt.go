@@ -1,6 +1,8 @@
 package in
 
 import (
+	"context"
+	
 	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
 	serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
 )
@@ -49,9 +51,9 @@ type ListClientAppsView struct {
 }
 
 type ClientAppMgmtUsecase interface {
-	CreateClientApp(cmd CreateClientAppCommand) (CreateClientAppView, error)
-	DeleteClientApp(cmd DeleteClientAppCommand) error
-	RefreshSecret(cmd RefreshSecretCommand) (RefreshSecretView, error)
-	UpdateClientApp(cmd UpdateClientAppCommand) (UpdateClientAppView, error)
-	ListClientApps(cmd ListClientAppsCommand) (ListClientAppsView, error)
+	CreateClientApp(ctx context.Context, cmd CreateClientAppCommand) (CreateClientAppView, error)
+	DeleteClientApp(ctx context.Context, cmd DeleteClientAppCommand) error
+	RefreshSecret(ctx context.Context, cmd RefreshSecretCommand) (RefreshSecretView, error)
+	UpdateClientApp(ctx context.Context, cmd UpdateClientAppCommand) (UpdateClientAppView, error)
+	ListClientApps(ctx context.Context, cmd ListClientAppsCommand) (ListClientAppsView, error)
 }

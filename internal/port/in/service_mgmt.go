@@ -1,6 +1,10 @@
 package in
 
-import serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
+import (
+	"context"
+	
+	serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
+)
 
 type CreateServiceCommand struct {
 	Name        serviceval.Name
@@ -27,7 +31,7 @@ type UpdateServiceView struct {
 }
 
 type ServiceMgmtUsecase interface {
-	CreateService(cmd CreateServiceCommand) (CreateServiceView, error)
-	DeleteService(cmd DeleteServiceCommand) error
-	UpdateService(cmd UpdateServiceCommand) (UpdateServiceView, error)
+	CreateService(ctx context.Context, cmd CreateServiceCommand) (CreateServiceView, error)
+	DeleteService(ctx context.Context, cmd DeleteServiceCommand) error
+	UpdateService(ctx context.Context, cmd UpdateServiceCommand) (UpdateServiceView, error)
 }

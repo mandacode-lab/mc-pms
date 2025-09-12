@@ -1,6 +1,8 @@
 package in
 
 import (
+	"context"
+	
 	serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
 	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
 	useridentityval "github.com/mandacode-com/serengeti-integrated/internal/domain/useridentity/value"
@@ -23,6 +25,6 @@ type DeleteUserCommand struct {
 }
 
 type UserMgmtUsecase interface {
-	FindUserInfo(cmd FindUserInfoQuery) (FindUserInfoView, error)
-	DeleteUser(cmd DeleteUserCommand) error
+	FindUserInfo(ctx context.Context, cmd FindUserInfoQuery) (FindUserInfoView, error)
+	DeleteUser(ctx context.Context, cmd DeleteUserCommand) error
 }
