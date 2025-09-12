@@ -11,7 +11,9 @@ import (
 	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
 	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
 	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
+	"github.com/mandacode-com/serengeti-integrated/pkg/utils"
 )
+
 
 type EntWebOAuthRepository struct {
 	client *ent.Client
@@ -45,7 +47,7 @@ func (r *EntWebOAuthRepository) Create(ctx context.Context, tx out.Tx, oauthEnti
 		SetDekWrapped(oauthEntity.DEKWrapped()).
 		SetDekNonce(oauthEntity.DEKNonce()).
 		SetDekRotatedAt(oauthEntity.DEKRotatedAt()).
-		SetRedirectUris(oauthEntity.RedirectURIs()).
+		SetNillableRedirectURI(utils.StringNil(oauthEntity.RedirectURI())).
 		SetScopes(oauthEntity.Scopes()).
 		Save(ctx)
 	if err != nil {
@@ -76,7 +78,7 @@ func (r *EntWebOAuthRepository) Update(ctx context.Context, tx out.Tx, oauthEnti
 		SetDekWrapped(oauthEntity.DEKWrapped()).
 		SetDekNonce(oauthEntity.DEKNonce()).
 		SetDekRotatedAt(oauthEntity.DEKRotatedAt()).
-		SetRedirectUris(oauthEntity.RedirectURIs()).
+		SetNillableRedirectURI(utils.StringNil(oauthEntity.RedirectURI())).
 		SetScopes(oauthEntity.Scopes()).
 		Save(ctx)
 	
@@ -120,7 +122,7 @@ func (r *EntWebOAuthRepository) toDomain(entOAuth *ent.WebOAuth) *weboauth.WebOA
 		entOAuth.DekWrapped,
 		entOAuth.DekNonce,
 		entOAuth.DekRotatedAt,
-		entOAuth.RedirectUris,
+		entOAuth.RedirectURI,
 		entOAuth.Scopes,
 		entOAuth.CreatedAt,
 		entOAuth.UpdatedAt,
@@ -242,7 +244,7 @@ func (r *EntWebOAuthQueryRepository) toDomain(entOAuth *ent.WebOAuth) *weboauth.
 		entOAuth.DekWrapped,
 		entOAuth.DekNonce,
 		entOAuth.DekRotatedAt,
-		entOAuth.RedirectUris,
+		entOAuth.RedirectURI,
 		entOAuth.Scopes,
 		entOAuth.CreatedAt,
 		entOAuth.UpdatedAt,

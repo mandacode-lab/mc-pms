@@ -39,7 +39,7 @@ func (r *EntUserInfoRepository) Create(ctx context.Context, tx out.Tx, infoEntit
 		SetPublicID(infoEntity.PublicID().Value()).
 		SetUserIdentityID(infoEntity.UserIdentityID().Value()).
 		SetNickname(infoEntity.Nickname()).
-		SetNillableEmail(infoEntity.Email()).
+		SetEmail(infoEntity.Email()).
 		SetRawData(infoEntity.RawData()).
 		Save(ctx)
 	if err != nil {
@@ -64,7 +64,7 @@ func (r *EntUserInfoRepository) Update(ctx context.Context, tx out.Tx, infoEntit
 
 	_, err := builder.
 		SetNickname(infoEntity.Nickname()).
-		SetNillableEmail(infoEntity.Email()).
+		SetEmail(infoEntity.Email()).
 		SetRawData(infoEntity.RawData()).
 		Save(ctx)
 	
@@ -98,17 +98,12 @@ func (r *EntUserInfoRepository) toDomain(entInfo *ent.UserInfo) *userinfo.UserIn
 	publicID := userinfoval.NewPublicID(entInfo.PublicID)
 	userIdentityID := useridentityval.NewID(entInfo.Edges.UserIdentity.ID)
 
-	var email *string
-	if entInfo.Email != "" {
-		email = &entInfo.Email
-	}
-
 	return userinfo.NewUserInfo(
 		id,
 		publicID,
 		userIdentityID,
 		entInfo.Nickname,
-		email,
+		entInfo.Email,
 		entInfo.RawData,
 		entInfo.CreatedAt,
 		entInfo.UpdatedAt,
@@ -246,17 +241,12 @@ func (r *EntUserInfoQueryRepository) toDomain(entInfo *ent.UserInfo) *userinfo.U
 	publicID := userinfoval.NewPublicID(entInfo.PublicID)
 	userIdentityID := useridentityval.NewID(entInfo.Edges.UserIdentity.ID)
 
-	var email *string
-	if entInfo.Email != "" {
-		email = &entInfo.Email
-	}
-
 	return userinfo.NewUserInfo(
 		id,
 		publicID,
 		userIdentityID,
 		entInfo.Nickname,
-		email,
+		entInfo.Email,
 		entInfo.RawData,
 		entInfo.CreatedAt,
 		entInfo.UpdatedAt,
