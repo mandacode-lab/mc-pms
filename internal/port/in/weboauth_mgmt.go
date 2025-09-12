@@ -53,9 +53,9 @@ type ReadWebOAuthSecretView struct {
 }
 
 type WebOAuthMgmtUsecase interface {
-	RegisterWebOAuth(ctx context.Context, cmd RegisterWebOAuthCommand) error
-	ReadWebOAuth(ctx context.Context, query ReadWebOAuthQuery) (ReadWebOAuthView, error)
-	ReadWebOAuthSecret(ctx context.Context, query ReadWebOAuthSecretQuery) (ReadWebOAuthSecretView, error)
-	UpdateWebOAuth(ctx context.Context, cmd UpdateWebOAuthCommand) error
-	DeleteWebOAuth(ctx context.Context, cmd DeleteWebOAuthCommand) error
+	RegisterWebOAuth(ctx context.Context, cmd *RegisterWebOAuthCommand) error
+	ReadWebOAuth(ctx context.Context, query *ReadWebOAuthQuery) (*ReadWebOAuthView, error)
+	ReadWebOAuthSecret(ctx context.Context, query *ReadWebOAuthSecretQuery) (*ReadWebOAuthSecretView, error)
+	UpdateWebOAuth(ctx context.Context, cmd *UpdateWebOAuthCommand) error
+	DeleteWebOAuth(ctx context.Context, cmd *DeleteWebOAuthCommand) error
 }

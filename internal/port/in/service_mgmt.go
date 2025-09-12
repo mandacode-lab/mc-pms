@@ -31,7 +31,7 @@ type UpdateServiceView struct {
 }
 
 type ServiceMgmtUsecase interface {
-	CreateService(ctx context.Context, cmd CreateServiceCommand) (CreateServiceView, error)
-	DeleteService(ctx context.Context, cmd DeleteServiceCommand) error
-	UpdateService(ctx context.Context, cmd UpdateServiceCommand) (UpdateServiceView, error)
+	CreateService(ctx context.Context, cmd *CreateServiceCommand) (*CreateServiceView, error)
+	DeleteService(ctx context.Context, cmd *DeleteServiceCommand) error
+	UpdateService(ctx context.Context, cmd *UpdateServiceCommand) (*UpdateServiceView, error)
 }

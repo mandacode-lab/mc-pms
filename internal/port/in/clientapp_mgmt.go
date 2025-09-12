@@ -51,9 +51,9 @@ type ListClientAppsView struct {
 }
 
 type ClientAppMgmtUsecase interface {
-	CreateClientApp(ctx context.Context, cmd CreateClientAppCommand) (CreateClientAppView, error)
-	DeleteClientApp(ctx context.Context, cmd DeleteClientAppCommand) error
-	RefreshSecret(ctx context.Context, cmd RefreshSecretCommand) (RefreshSecretView, error)
-	UpdateClientApp(ctx context.Context, cmd UpdateClientAppCommand) (UpdateClientAppView, error)
-	ListClientApps(ctx context.Context, cmd ListClientAppsCommand) (ListClientAppsView, error)
+	CreateClientApp(ctx context.Context, cmd *CreateClientAppCommand) (*CreateClientAppView, error)
+	DeleteClientApp(ctx context.Context, cmd *DeleteClientAppCommand) error
+	RefreshSecret(ctx context.Context, cmd *RefreshSecretCommand) (*RefreshSecretView, error)
+	UpdateClientApp(ctx context.Context, cmd *UpdateClientAppCommand) (*UpdateClientAppView, error)
+	ListClientApps(ctx context.Context, cmd *ListClientAppsCommand) (*ListClientAppsView, error)
 }

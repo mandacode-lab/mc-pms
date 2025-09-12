@@ -27,6 +27,6 @@ type IdentifyByToken struct {
 }
 
 type IdentifyUserUsecase interface {
-	IdentifyByCode(ctx context.Context, cmd IdentifyByCode) (UserIdentityView, error)
-	IdentifyByToken(ctx context.Context, cmd IdentifyByToken) (UserIdentityView, error)
+	IdentifyByCode(ctx context.Context, cmd *IdentifyByCode) (*UserIdentityView, error)
+	IdentifyByToken(ctx context.Context, cmd *IdentifyByToken) (*UserIdentityView, error)
 }

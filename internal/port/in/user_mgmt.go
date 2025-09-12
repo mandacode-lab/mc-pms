@@ -25,6 +25,6 @@ type DeleteUserCommand struct {
 }
 
 type UserMgmtUsecase interface {
-	FindUserInfo(ctx context.Context, cmd FindUserInfoQuery) (FindUserInfoView, error)
-	DeleteUser(ctx context.Context, cmd DeleteUserCommand) error
+	FindUserInfo(ctx context.Context, query *FindUserInfoQuery) (*FindUserInfoView, error)
+	DeleteUser(ctx context.Context, cmd *DeleteUserCommand) error
 }
