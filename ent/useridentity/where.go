@@ -57,11 +57,6 @@ func IDLTE(id int64) predicate.UserIdentity {
 	return predicate.UserIdentity(sql.FieldLTE(FieldID, id))
 }
 
-// ServiceID applies equality check predicate on the "service_id" field. It's identical to ServiceIDEQ.
-func ServiceID(v int64) predicate.UserIdentity {
-	return predicate.UserIdentity(sql.FieldEQ(FieldServiceID, v))
-}
-
 // PublicID applies equality check predicate on the "public_id" field. It's identical to PublicIDEQ.
 func PublicID(v uuid.UUID) predicate.UserIdentity {
 	return predicate.UserIdentity(sql.FieldEQ(FieldPublicID, v))
@@ -80,26 +75,6 @@ func CreatedAt(v time.Time) predicate.UserIdentity {
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.UserIdentity {
 	return predicate.UserIdentity(sql.FieldEQ(FieldUpdatedAt, v))
-}
-
-// ServiceIDEQ applies the EQ predicate on the "service_id" field.
-func ServiceIDEQ(v int64) predicate.UserIdentity {
-	return predicate.UserIdentity(sql.FieldEQ(FieldServiceID, v))
-}
-
-// ServiceIDNEQ applies the NEQ predicate on the "service_id" field.
-func ServiceIDNEQ(v int64) predicate.UserIdentity {
-	return predicate.UserIdentity(sql.FieldNEQ(FieldServiceID, v))
-}
-
-// ServiceIDIn applies the In predicate on the "service_id" field.
-func ServiceIDIn(vs ...int64) predicate.UserIdentity {
-	return predicate.UserIdentity(sql.FieldIn(FieldServiceID, vs...))
-}
-
-// ServiceIDNotIn applies the NotIn predicate on the "service_id" field.
-func ServiceIDNotIn(vs ...int64) predicate.UserIdentity {
-	return predicate.UserIdentity(sql.FieldNotIn(FieldServiceID, vs...))
 }
 
 // PublicIDEQ applies the EQ predicate on the "public_id" field.

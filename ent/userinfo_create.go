@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/mandacode-com/serengeti-integrated/ent/useridentity"
 	"github.com/mandacode-com/serengeti-integrated/ent/userinfo"
 )
@@ -19,6 +20,20 @@ type UserInfoCreate struct {
 	config
 	mutation *UserInfoMutation
 	hooks    []Hook
+}
+
+// SetPublicID sets the "public_id" field.
+func (_c *UserInfoCreate) SetPublicID(v uuid.UUID) *UserInfoCreate {
+	_c.mutation.SetPublicID(v)
+	return _c
+}
+
+// SetNillablePublicID sets the "public_id" field if the given value is not nil.
+func (_c *UserInfoCreate) SetNillablePublicID(v *uuid.UUID) *UserInfoCreate {
+	if v != nil {
+		_c.SetPublicID(*v)
+	}
+	return _c
 }
 
 // SetNickname sets the "nickname" field.
@@ -127,6 +142,10 @@ func (_c *UserInfoCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (_c *UserInfoCreate) defaults() {
+	if _, ok := _c.mutation.PublicID(); !ok {
+		v := userinfo.DefaultPublicID()
+		_c.mutation.SetPublicID(v)
+	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := userinfo.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
@@ -139,6 +158,9 @@ func (_c *UserInfoCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *UserInfoCreate) check() error {
+	if _, ok := _c.mutation.PublicID(); !ok {
+		return &ValidationError{Name: "public_id", err: errors.New(`ent: missing required field "UserInfo.public_id"`)}
+	}
 	if _, ok := _c.mutation.Nickname(); !ok {
 		return &ValidationError{Name: "nickname", err: errors.New(`ent: missing required field "UserInfo.nickname"`)}
 	}
@@ -187,6 +209,10 @@ func (_c *UserInfoCreate) createSpec() (*UserInfo, *sqlgraph.CreateSpec) {
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := _c.mutation.PublicID(); ok {
+		_spec.SetField(userinfo.FieldPublicID, field.TypeUUID, value)
+		_node.PublicID = value
 	}
 	if value, ok := _c.mutation.Nickname(); ok {
 		_spec.SetField(userinfo.FieldNickname, field.TypeString, value)

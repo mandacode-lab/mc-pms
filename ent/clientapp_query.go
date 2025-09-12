@@ -12,60 +12,60 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/mandacode-com/serengeti-integrated/ent/clientapp"
 	"github.com/mandacode-com/serengeti-integrated/ent/predicate"
 	"github.com/mandacode-com/serengeti-integrated/ent/service"
-	"github.com/mandacode-com/serengeti-integrated/ent/serviceclient"
 	"github.com/mandacode-com/serengeti-integrated/ent/weboauth"
 )
 
-// ServiceClientQuery is the builder for querying ServiceClient entities.
-type ServiceClientQuery struct {
+// ClientAppQuery is the builder for querying ClientApp entities.
+type ClientAppQuery struct {
 	config
-	ctx          *QueryContext
-	order        []serviceclient.OrderOption
-	inters       []Interceptor
-	predicates   []predicate.ServiceClient
-	withService  *ServiceQuery
-	withWebOauth *WebOAuthQuery
-	withFKs      bool
+	ctx           *QueryContext
+	order         []clientapp.OrderOption
+	inters        []Interceptor
+	predicates    []predicate.ClientApp
+	withService   *ServiceQuery
+	withWebOauths *WebOAuthQuery
+	withFKs       bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the ServiceClientQuery builder.
-func (_q *ServiceClientQuery) Where(ps ...predicate.ServiceClient) *ServiceClientQuery {
+// Where adds a new predicate for the ClientAppQuery builder.
+func (_q *ClientAppQuery) Where(ps ...predicate.ClientApp) *ClientAppQuery {
 	_q.predicates = append(_q.predicates, ps...)
 	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (_q *ServiceClientQuery) Limit(limit int) *ServiceClientQuery {
+func (_q *ClientAppQuery) Limit(limit int) *ClientAppQuery {
 	_q.ctx.Limit = &limit
 	return _q
 }
 
 // Offset to start from.
-func (_q *ServiceClientQuery) Offset(offset int) *ServiceClientQuery {
+func (_q *ClientAppQuery) Offset(offset int) *ClientAppQuery {
 	_q.ctx.Offset = &offset
 	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (_q *ServiceClientQuery) Unique(unique bool) *ServiceClientQuery {
+func (_q *ClientAppQuery) Unique(unique bool) *ClientAppQuery {
 	_q.ctx.Unique = &unique
 	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (_q *ServiceClientQuery) Order(o ...serviceclient.OrderOption) *ServiceClientQuery {
+func (_q *ClientAppQuery) Order(o ...clientapp.OrderOption) *ClientAppQuery {
 	_q.order = append(_q.order, o...)
 	return _q
 }
 
 // QueryService chains the current query on the "service" edge.
-func (_q *ServiceClientQuery) QueryService() *ServiceQuery {
+func (_q *ClientAppQuery) QueryService() *ServiceQuery {
 	query := (&ServiceClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
@@ -76,9 +76,9 @@ func (_q *ServiceClientQuery) QueryService() *ServiceQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(serviceclient.Table, serviceclient.FieldID, selector),
+			sqlgraph.From(clientapp.Table, clientapp.FieldID, selector),
 			sqlgraph.To(service.Table, service.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, serviceclient.ServiceTable, serviceclient.ServiceColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, clientapp.ServiceTable, clientapp.ServiceColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -86,8 +86,8 @@ func (_q *ServiceClientQuery) QueryService() *ServiceQuery {
 	return query
 }
 
-// QueryWebOauth chains the current query on the "web_oauth" edge.
-func (_q *ServiceClientQuery) QueryWebOauth() *WebOAuthQuery {
+// QueryWebOauths chains the current query on the "web_oauths" edge.
+func (_q *ClientAppQuery) QueryWebOauths() *WebOAuthQuery {
 	query := (&WebOAuthClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
@@ -98,9 +98,9 @@ func (_q *ServiceClientQuery) QueryWebOauth() *WebOAuthQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(serviceclient.Table, serviceclient.FieldID, selector),
+			sqlgraph.From(clientapp.Table, clientapp.FieldID, selector),
 			sqlgraph.To(weboauth.Table, weboauth.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, serviceclient.WebOauthTable, serviceclient.WebOauthColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, clientapp.WebOauthsTable, clientapp.WebOauthsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -108,21 +108,21 @@ func (_q *ServiceClientQuery) QueryWebOauth() *WebOAuthQuery {
 	return query
 }
 
-// First returns the first ServiceClient entity from the query.
-// Returns a *NotFoundError when no ServiceClient was found.
-func (_q *ServiceClientQuery) First(ctx context.Context) (*ServiceClient, error) {
+// First returns the first ClientApp entity from the query.
+// Returns a *NotFoundError when no ClientApp was found.
+func (_q *ClientAppQuery) First(ctx context.Context) (*ClientApp, error) {
 	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{serviceclient.Label}
+		return nil, &NotFoundError{clientapp.Label}
 	}
 	return nodes[0], nil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (_q *ServiceClientQuery) FirstX(ctx context.Context) *ServiceClient {
+func (_q *ClientAppQuery) FirstX(ctx context.Context) *ClientApp {
 	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -130,22 +130,22 @@ func (_q *ServiceClientQuery) FirstX(ctx context.Context) *ServiceClient {
 	return node
 }
 
-// FirstID returns the first ServiceClient ID from the query.
-// Returns a *NotFoundError when no ServiceClient ID was found.
-func (_q *ServiceClientQuery) FirstID(ctx context.Context) (id int64, err error) {
+// FirstID returns the first ClientApp ID from the query.
+// Returns a *NotFoundError when no ClientApp ID was found.
+func (_q *ClientAppQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
 	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{serviceclient.Label}
+		err = &NotFoundError{clientapp.Label}
 		return
 	}
 	return ids[0], nil
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (_q *ServiceClientQuery) FirstIDX(ctx context.Context) int64 {
+func (_q *ClientAppQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -153,10 +153,10 @@ func (_q *ServiceClientQuery) FirstIDX(ctx context.Context) int64 {
 	return id
 }
 
-// Only returns a single ServiceClient entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when more than one ServiceClient entity is found.
-// Returns a *NotFoundError when no ServiceClient entities are found.
-func (_q *ServiceClientQuery) Only(ctx context.Context) (*ServiceClient, error) {
+// Only returns a single ClientApp entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when more than one ClientApp entity is found.
+// Returns a *NotFoundError when no ClientApp entities are found.
+func (_q *ClientAppQuery) Only(ctx context.Context) (*ClientApp, error) {
 	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
@@ -165,14 +165,14 @@ func (_q *ServiceClientQuery) Only(ctx context.Context) (*ServiceClient, error) 
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{serviceclient.Label}
+		return nil, &NotFoundError{clientapp.Label}
 	default:
-		return nil, &NotSingularError{serviceclient.Label}
+		return nil, &NotSingularError{clientapp.Label}
 	}
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (_q *ServiceClientQuery) OnlyX(ctx context.Context) *ServiceClient {
+func (_q *ClientAppQuery) OnlyX(ctx context.Context) *ClientApp {
 	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
@@ -180,10 +180,10 @@ func (_q *ServiceClientQuery) OnlyX(ctx context.Context) *ServiceClient {
 	return node
 }
 
-// OnlyID is like Only, but returns the only ServiceClient ID in the query.
-// Returns a *NotSingularError when more than one ServiceClient ID is found.
+// OnlyID is like Only, but returns the only ClientApp ID in the query.
+// Returns a *NotSingularError when more than one ClientApp ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (_q *ServiceClientQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *ClientAppQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
 	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
@@ -192,15 +192,15 @@ func (_q *ServiceClientQuery) OnlyID(ctx context.Context) (id int64, err error) 
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{serviceclient.Label}
+		err = &NotFoundError{clientapp.Label}
 	default:
-		err = &NotSingularError{serviceclient.Label}
+		err = &NotSingularError{clientapp.Label}
 	}
 	return
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (_q *ServiceClientQuery) OnlyIDX(ctx context.Context) int64 {
+func (_q *ClientAppQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -208,18 +208,18 @@ func (_q *ServiceClientQuery) OnlyIDX(ctx context.Context) int64 {
 	return id
 }
 
-// All executes the query and returns a list of ServiceClients.
-func (_q *ServiceClientQuery) All(ctx context.Context) ([]*ServiceClient, error) {
+// All executes the query and returns a list of ClientApps.
+func (_q *ClientAppQuery) All(ctx context.Context) ([]*ClientApp, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
 	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
-	qr := querierAll[[]*ServiceClient, *ServiceClientQuery]()
-	return withInterceptors[[]*ServiceClient](ctx, _q, qr, _q.inters)
+	qr := querierAll[[]*ClientApp, *ClientAppQuery]()
+	return withInterceptors[[]*ClientApp](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (_q *ServiceClientQuery) AllX(ctx context.Context) []*ServiceClient {
+func (_q *ClientAppQuery) AllX(ctx context.Context) []*ClientApp {
 	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
@@ -227,20 +227,20 @@ func (_q *ServiceClientQuery) AllX(ctx context.Context) []*ServiceClient {
 	return nodes
 }
 
-// IDs executes the query and returns a list of ServiceClient IDs.
-func (_q *ServiceClientQuery) IDs(ctx context.Context) (ids []int64, err error) {
+// IDs executes the query and returns a list of ClientApp IDs.
+func (_q *ClientAppQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if _q.ctx.Unique == nil && _q.path != nil {
 		_q.Unique(true)
 	}
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
-	if err = _q.Select(serviceclient.FieldID).Scan(ctx, &ids); err != nil {
+	if err = _q.Select(clientapp.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (_q *ServiceClientQuery) IDsX(ctx context.Context) []int64 {
+func (_q *ClientAppQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -249,16 +249,16 @@ func (_q *ServiceClientQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (_q *ServiceClientQuery) Count(ctx context.Context) (int, error) {
+func (_q *ClientAppQuery) Count(ctx context.Context) (int, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
 	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, _q, querierCount[*ServiceClientQuery](), _q.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*ClientAppQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (_q *ServiceClientQuery) CountX(ctx context.Context) int {
+func (_q *ClientAppQuery) CountX(ctx context.Context) int {
 	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
@@ -267,7 +267,7 @@ func (_q *ServiceClientQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (_q *ServiceClientQuery) Exist(ctx context.Context) (bool, error) {
+func (_q *ClientAppQuery) Exist(ctx context.Context) (bool, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
 	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
@@ -280,7 +280,7 @@ func (_q *ServiceClientQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (_q *ServiceClientQuery) ExistX(ctx context.Context) bool {
+func (_q *ClientAppQuery) ExistX(ctx context.Context) bool {
 	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
@@ -288,20 +288,20 @@ func (_q *ServiceClientQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the ServiceClientQuery builder, including all associated steps. It can be
+// Clone returns a duplicate of the ClientAppQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (_q *ServiceClientQuery) Clone() *ServiceClientQuery {
+func (_q *ClientAppQuery) Clone() *ClientAppQuery {
 	if _q == nil {
 		return nil
 	}
-	return &ServiceClientQuery{
-		config:       _q.config,
-		ctx:          _q.ctx.Clone(),
-		order:        append([]serviceclient.OrderOption{}, _q.order...),
-		inters:       append([]Interceptor{}, _q.inters...),
-		predicates:   append([]predicate.ServiceClient{}, _q.predicates...),
-		withService:  _q.withService.Clone(),
-		withWebOauth: _q.withWebOauth.Clone(),
+	return &ClientAppQuery{
+		config:        _q.config,
+		ctx:           _q.ctx.Clone(),
+		order:         append([]clientapp.OrderOption{}, _q.order...),
+		inters:        append([]Interceptor{}, _q.inters...),
+		predicates:    append([]predicate.ClientApp{}, _q.predicates...),
+		withService:   _q.withService.Clone(),
+		withWebOauths: _q.withWebOauths.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -310,7 +310,7 @@ func (_q *ServiceClientQuery) Clone() *ServiceClientQuery {
 
 // WithService tells the query-builder to eager-load the nodes that are connected to
 // the "service" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *ServiceClientQuery) WithService(opts ...func(*ServiceQuery)) *ServiceClientQuery {
+func (_q *ClientAppQuery) WithService(opts ...func(*ServiceQuery)) *ClientAppQuery {
 	query := (&ServiceClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
@@ -319,14 +319,14 @@ func (_q *ServiceClientQuery) WithService(opts ...func(*ServiceQuery)) *ServiceC
 	return _q
 }
 
-// WithWebOauth tells the query-builder to eager-load the nodes that are connected to
-// the "web_oauth" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *ServiceClientQuery) WithWebOauth(opts ...func(*WebOAuthQuery)) *ServiceClientQuery {
+// WithWebOauths tells the query-builder to eager-load the nodes that are connected to
+// the "web_oauths" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *ClientAppQuery) WithWebOauths(opts ...func(*WebOAuthQuery)) *ClientAppQuery {
 	query := (&WebOAuthClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	_q.withWebOauth = query
+	_q.withWebOauths = query
 	return _q
 }
 
@@ -340,15 +340,15 @@ func (_q *ServiceClientQuery) WithWebOauth(opts ...func(*WebOAuthQuery)) *Servic
 //		Count int `json:"count,omitempty"`
 //	}
 //
-//	client.ServiceClient.Query().
-//		GroupBy(serviceclient.FieldPublicID).
+//	client.ClientApp.Query().
+//		GroupBy(clientapp.FieldPublicID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (_q *ServiceClientQuery) GroupBy(field string, fields ...string) *ServiceClientGroupBy {
+func (_q *ClientAppQuery) GroupBy(field string, fields ...string) *ClientAppGroupBy {
 	_q.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &ServiceClientGroupBy{build: _q}
+	grbuild := &ClientAppGroupBy{build: _q}
 	grbuild.flds = &_q.ctx.Fields
-	grbuild.label = serviceclient.Label
+	grbuild.label = clientapp.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
 }
@@ -362,23 +362,23 @@ func (_q *ServiceClientQuery) GroupBy(field string, fields ...string) *ServiceCl
 //		PublicID uuid.UUID `json:"public_id,omitempty"`
 //	}
 //
-//	client.ServiceClient.Query().
-//		Select(serviceclient.FieldPublicID).
+//	client.ClientApp.Query().
+//		Select(clientapp.FieldPublicID).
 //		Scan(ctx, &v)
-func (_q *ServiceClientQuery) Select(fields ...string) *ServiceClientSelect {
+func (_q *ClientAppQuery) Select(fields ...string) *ClientAppSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
-	sbuild := &ServiceClientSelect{ServiceClientQuery: _q}
-	sbuild.label = serviceclient.Label
+	sbuild := &ClientAppSelect{ClientAppQuery: _q}
+	sbuild.label = clientapp.Label
 	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
-// Aggregate returns a ServiceClientSelect configured with the given aggregations.
-func (_q *ServiceClientQuery) Aggregate(fns ...AggregateFunc) *ServiceClientSelect {
+// Aggregate returns a ClientAppSelect configured with the given aggregations.
+func (_q *ClientAppQuery) Aggregate(fns ...AggregateFunc) *ClientAppSelect {
 	return _q.Select().Aggregate(fns...)
 }
 
-func (_q *ServiceClientQuery) prepareQuery(ctx context.Context) error {
+func (_q *ClientAppQuery) prepareQuery(ctx context.Context) error {
 	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
@@ -390,7 +390,7 @@ func (_q *ServiceClientQuery) prepareQuery(ctx context.Context) error {
 		}
 	}
 	for _, f := range _q.ctx.Fields {
-		if !serviceclient.ValidColumn(f) {
+		if !clientapp.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -404,27 +404,27 @@ func (_q *ServiceClientQuery) prepareQuery(ctx context.Context) error {
 	return nil
 }
 
-func (_q *ServiceClientQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ServiceClient, error) {
+func (_q *ClientAppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ClientApp, error) {
 	var (
-		nodes       = []*ServiceClient{}
+		nodes       = []*ClientApp{}
 		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
 			_q.withService != nil,
-			_q.withWebOauth != nil,
+			_q.withWebOauths != nil,
 		}
 	)
 	if _q.withService != nil {
 		withFKs = true
 	}
 	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, serviceclient.ForeignKeys...)
+		_spec.Node.Columns = append(_spec.Node.Columns, clientapp.ForeignKeys...)
 	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
-		return (*ServiceClient).scanValues(nil, columns)
+		return (*ClientApp).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &ServiceClient{config: _q.config}
+		node := &ClientApp{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -440,28 +440,28 @@ func (_q *ServiceClientQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 	}
 	if query := _q.withService; query != nil {
 		if err := _q.loadService(ctx, query, nodes, nil,
-			func(n *ServiceClient, e *Service) { n.Edges.Service = e }); err != nil {
+			func(n *ClientApp, e *Service) { n.Edges.Service = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := _q.withWebOauth; query != nil {
-		if err := _q.loadWebOauth(ctx, query, nodes,
-			func(n *ServiceClient) { n.Edges.WebOauth = []*WebOAuth{} },
-			func(n *ServiceClient, e *WebOAuth) { n.Edges.WebOauth = append(n.Edges.WebOauth, e) }); err != nil {
+	if query := _q.withWebOauths; query != nil {
+		if err := _q.loadWebOauths(ctx, query, nodes,
+			func(n *ClientApp) { n.Edges.WebOauths = []*WebOAuth{} },
+			func(n *ClientApp, e *WebOAuth) { n.Edges.WebOauths = append(n.Edges.WebOauths, e) }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (_q *ServiceClientQuery) loadService(ctx context.Context, query *ServiceQuery, nodes []*ServiceClient, init func(*ServiceClient), assign func(*ServiceClient, *Service)) error {
+func (_q *ClientAppQuery) loadService(ctx context.Context, query *ServiceQuery, nodes []*ClientApp, init func(*ClientApp), assign func(*ClientApp, *Service)) error {
 	ids := make([]int64, 0, len(nodes))
-	nodeids := make(map[int64][]*ServiceClient)
+	nodeids := make(map[int64][]*ClientApp)
 	for i := range nodes {
-		if nodes[i].service_clients == nil {
+		if nodes[i].service_client_apps == nil {
 			continue
 		}
-		fk := *nodes[i].service_clients
+		fk := *nodes[i].service_client_apps
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -478,7 +478,7 @@ func (_q *ServiceClientQuery) loadService(ctx context.Context, query *ServiceQue
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "service_clients" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "service_client_apps" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -486,9 +486,9 @@ func (_q *ServiceClientQuery) loadService(ctx context.Context, query *ServiceQue
 	}
 	return nil
 }
-func (_q *ServiceClientQuery) loadWebOauth(ctx context.Context, query *WebOAuthQuery, nodes []*ServiceClient, init func(*ServiceClient), assign func(*ServiceClient, *WebOAuth)) error {
+func (_q *ClientAppQuery) loadWebOauths(ctx context.Context, query *WebOAuthQuery, nodes []*ClientApp, init func(*ClientApp), assign func(*ClientApp, *WebOAuth)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int64]*ServiceClient)
+	nodeids := make(map[int64]*ClientApp)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -496,28 +496,29 @@ func (_q *ServiceClientQuery) loadWebOauth(ctx context.Context, query *WebOAuthQ
 			init(nodes[i])
 		}
 	}
-	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(weboauth.FieldServiceClientID)
-	}
+	query.withFKs = true
 	query.Where(predicate.WebOAuth(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(serviceclient.WebOauthColumn), fks...))
+		s.Where(sql.InValues(s.C(clientapp.WebOauthsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.ServiceClientID
-		node, ok := nodeids[fk]
+		fk := n.client_app_web_oauths
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "client_app_web_oauths" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "service_client_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "client_app_web_oauths" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
 	return nil
 }
 
-func (_q *ServiceClientQuery) sqlCount(ctx context.Context) (int, error) {
+func (_q *ClientAppQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
 	_spec.Node.Columns = _q.ctx.Fields
 	if len(_q.ctx.Fields) > 0 {
@@ -526,8 +527,8 @@ func (_q *ServiceClientQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (_q *ServiceClientQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(serviceclient.Table, serviceclient.Columns, sqlgraph.NewFieldSpec(serviceclient.FieldID, field.TypeInt64))
+func (_q *ClientAppQuery) querySpec() *sqlgraph.QuerySpec {
+	_spec := sqlgraph.NewQuerySpec(clientapp.Table, clientapp.Columns, sqlgraph.NewFieldSpec(clientapp.FieldID, field.TypeInt64))
 	_spec.From = _q.sql
 	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -536,9 +537,9 @@ func (_q *ServiceClientQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, serviceclient.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, clientapp.FieldID)
 		for i := range fields {
-			if fields[i] != serviceclient.FieldID {
+			if fields[i] != clientapp.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
@@ -566,12 +567,12 @@ func (_q *ServiceClientQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (_q *ServiceClientQuery) sqlQuery(ctx context.Context) *sql.Selector {
+func (_q *ClientAppQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(_q.driver.Dialect())
-	t1 := builder.Table(serviceclient.Table)
+	t1 := builder.Table(clientapp.Table)
 	columns := _q.ctx.Fields
 	if len(columns) == 0 {
-		columns = serviceclient.Columns
+		columns = clientapp.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if _q.sql != nil {
@@ -598,28 +599,28 @@ func (_q *ServiceClientQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
-// ServiceClientGroupBy is the group-by builder for ServiceClient entities.
-type ServiceClientGroupBy struct {
+// ClientAppGroupBy is the group-by builder for ClientApp entities.
+type ClientAppGroupBy struct {
 	selector
-	build *ServiceClientQuery
+	build *ClientAppQuery
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (_g *ServiceClientGroupBy) Aggregate(fns ...AggregateFunc) *ServiceClientGroupBy {
+func (_g *ClientAppGroupBy) Aggregate(fns ...AggregateFunc) *ClientAppGroupBy {
 	_g.fns = append(_g.fns, fns...)
 	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_g *ServiceClientGroupBy) Scan(ctx context.Context, v any) error {
+func (_g *ClientAppGroupBy) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
 	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*ServiceClientQuery, *ServiceClientGroupBy](ctx, _g.build, _g, _g.build.inters, v)
+	return scanWithInterceptors[*ClientAppQuery, *ClientAppGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (_g *ServiceClientGroupBy) sqlScan(ctx context.Context, root *ServiceClientQuery, v any) error {
+func (_g *ClientAppGroupBy) sqlScan(ctx context.Context, root *ClientAppQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
 	aggregation := make([]string, 0, len(_g.fns))
 	for _, fn := range _g.fns {
@@ -646,28 +647,28 @@ func (_g *ServiceClientGroupBy) sqlScan(ctx context.Context, root *ServiceClient
 	return sql.ScanSlice(rows, v)
 }
 
-// ServiceClientSelect is the builder for selecting fields of ServiceClient entities.
-type ServiceClientSelect struct {
-	*ServiceClientQuery
+// ClientAppSelect is the builder for selecting fields of ClientApp entities.
+type ClientAppSelect struct {
+	*ClientAppQuery
 	selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (_s *ServiceClientSelect) Aggregate(fns ...AggregateFunc) *ServiceClientSelect {
+func (_s *ClientAppSelect) Aggregate(fns ...AggregateFunc) *ClientAppSelect {
 	_s.fns = append(_s.fns, fns...)
 	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_s *ServiceClientSelect) Scan(ctx context.Context, v any) error {
+func (_s *ClientAppSelect) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
 	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*ServiceClientQuery, *ServiceClientSelect](ctx, _s.ServiceClientQuery, _s, _s.inters, v)
+	return scanWithInterceptors[*ClientAppQuery, *ClientAppSelect](ctx, _s.ClientAppQuery, _s, _s.inters, v)
 }
 
-func (_s *ServiceClientSelect) sqlScan(ctx context.Context, root *ServiceClientQuery, v any) error {
+func (_s *ClientAppSelect) sqlScan(ctx context.Context, root *ClientAppQuery, v any) error {
 	selector := root.sqlQuery(ctx)
 	aggregation := make([]string, 0, len(_s.fns))
 	for _, fn := range _s.fns {

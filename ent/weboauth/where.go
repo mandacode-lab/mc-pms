@@ -56,11 +56,6 @@ func IDLTE(id int64) predicate.WebOAuth {
 	return predicate.WebOAuth(sql.FieldLTE(FieldID, id))
 }
 
-// ServiceClientID applies equality check predicate on the "service_client_id" field. It's identical to ServiceClientIDEQ.
-func ServiceClientID(v int64) predicate.WebOAuth {
-	return predicate.WebOAuth(sql.FieldEQ(FieldServiceClientID, v))
-}
-
 // OauthClientID applies equality check predicate on the "oauth_client_id" field. It's identical to OauthClientIDEQ.
 func OauthClientID(v string) predicate.WebOAuth {
 	return predicate.WebOAuth(sql.FieldEQ(FieldOauthClientID, v))
@@ -99,26 +94,6 @@ func CreatedAt(v time.Time) predicate.WebOAuth {
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.WebOAuth {
 	return predicate.WebOAuth(sql.FieldEQ(FieldUpdatedAt, v))
-}
-
-// ServiceClientIDEQ applies the EQ predicate on the "service_client_id" field.
-func ServiceClientIDEQ(v int64) predicate.WebOAuth {
-	return predicate.WebOAuth(sql.FieldEQ(FieldServiceClientID, v))
-}
-
-// ServiceClientIDNEQ applies the NEQ predicate on the "service_client_id" field.
-func ServiceClientIDNEQ(v int64) predicate.WebOAuth {
-	return predicate.WebOAuth(sql.FieldNEQ(FieldServiceClientID, v))
-}
-
-// ServiceClientIDIn applies the In predicate on the "service_client_id" field.
-func ServiceClientIDIn(vs ...int64) predicate.WebOAuth {
-	return predicate.WebOAuth(sql.FieldIn(FieldServiceClientID, vs...))
-}
-
-// ServiceClientIDNotIn applies the NotIn predicate on the "service_client_id" field.
-func ServiceClientIDNotIn(vs ...int64) predicate.WebOAuth {
-	return predicate.WebOAuth(sql.FieldNotIn(FieldServiceClientID, vs...))
 }
 
 // ProviderEQ applies the EQ predicate on the "provider" field.
@@ -516,21 +491,21 @@ func UpdatedAtLTE(v time.Time) predicate.WebOAuth {
 	return predicate.WebOAuth(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
-// HasServiceClient applies the HasEdge predicate on the "service_client" edge.
-func HasServiceClient() predicate.WebOAuth {
+// HasClientApp applies the HasEdge predicate on the "client_app" edge.
+func HasClientApp() predicate.WebOAuth {
 	return predicate.WebOAuth(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ServiceClientTable, ServiceClientColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, ClientAppTable, ClientAppColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasServiceClientWith applies the HasEdge predicate on the "service_client" edge with a given conditions (other predicates).
-func HasServiceClientWith(preds ...predicate.ServiceClient) predicate.WebOAuth {
+// HasClientAppWith applies the HasEdge predicate on the "client_app" edge with a given conditions (other predicates).
+func HasClientAppWith(preds ...predicate.ClientApp) predicate.WebOAuth {
 	return predicate.WebOAuth(func(s *sql.Selector) {
-		step := newServiceClientStep()
+		step := newClientAppStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

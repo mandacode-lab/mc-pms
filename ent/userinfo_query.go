@@ -299,12 +299,12 @@ func (_q *UserInfoQuery) WithUserIdentity(opts ...func(*UserIdentityQuery)) *Use
 // Example:
 //
 //	var v []struct {
-//		Nickname string `json:"nickname,omitempty"`
+//		PublicID uuid.UUID `json:"public_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.UserInfo.Query().
-//		GroupBy(userinfo.FieldNickname).
+//		GroupBy(userinfo.FieldPublicID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *UserInfoQuery) GroupBy(field string, fields ...string) *UserInfoGroupBy {
@@ -322,11 +322,11 @@ func (_q *UserInfoQuery) GroupBy(field string, fields ...string) *UserInfoGroupB
 // Example:
 //
 //	var v []struct {
-//		Nickname string `json:"nickname,omitempty"`
+//		PublicID uuid.UUID `json:"public_id,omitempty"`
 //	}
 //
 //	client.UserInfo.Query().
-//		Select(userinfo.FieldNickname).
+//		Select(userinfo.FieldPublicID).
 //		Scan(ctx, &v)
 func (_q *UserInfoQuery) Select(fields ...string) *UserInfoSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
+	"github.com/mandacode-com/serengeti-integrated/ent/clientapp"
 	"github.com/mandacode-com/serengeti-integrated/ent/service"
-	"github.com/mandacode-com/serengeti-integrated/ent/serviceclient"
 	"github.com/mandacode-com/serengeti-integrated/ent/useridentity"
 )
 
@@ -105,19 +105,19 @@ func (_c *ServiceCreate) SetID(v int64) *ServiceCreate {
 	return _c
 }
 
-// AddClientIDs adds the "clients" edge to the ServiceClient entity by IDs.
-func (_c *ServiceCreate) AddClientIDs(ids ...int64) *ServiceCreate {
-	_c.mutation.AddClientIDs(ids...)
+// AddClientAppIDs adds the "client_apps" edge to the ClientApp entity by IDs.
+func (_c *ServiceCreate) AddClientAppIDs(ids ...int64) *ServiceCreate {
+	_c.mutation.AddClientAppIDs(ids...)
 	return _c
 }
 
-// AddClients adds the "clients" edges to the ServiceClient entity.
-func (_c *ServiceCreate) AddClients(v ...*ServiceClient) *ServiceCreate {
+// AddClientApps adds the "client_apps" edges to the ClientApp entity.
+func (_c *ServiceCreate) AddClientApps(v ...*ClientApp) *ServiceCreate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _c.AddClientIDs(ids...)
+	return _c.AddClientAppIDs(ids...)
 }
 
 // AddUserIdentityIDs adds the "user_identities" edge to the UserIdentity entity by IDs.
@@ -266,15 +266,15 @@ func (_c *ServiceCreate) createSpec() (*Service, *sqlgraph.CreateSpec) {
 		_spec.SetField(service.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if nodes := _c.mutation.ClientsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ClientAppsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   service.ClientsTable,
-			Columns: []string{service.ClientsColumn},
+			Table:   service.ClientAppsTable,
+			Columns: []string{service.ClientAppsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(serviceclient.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(clientapp.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

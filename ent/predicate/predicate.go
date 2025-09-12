@@ -6,11 +6,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// ClientApp is the predicate function for clientapp builders.
+type ClientApp func(*sql.Selector)
+
 // Service is the predicate function for service builders.
 type Service func(*sql.Selector)
-
-// ServiceClient is the predicate function for serviceclient builders.
-type ServiceClient func(*sql.Selector)
 
 // UserIdentity is the predicate function for useridentity builders.
 type UserIdentity func(*sql.Selector)

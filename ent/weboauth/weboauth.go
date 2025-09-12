@@ -16,8 +16,6 @@ const (
 	Label = "web_oauth"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldServiceClientID holds the string denoting the service_client_id field in the database.
-	FieldServiceClientID = "service_client_id"
 	// FieldProvider holds the string denoting the provider field in the database.
 	FieldProvider = "provider"
 	// FieldOauthClientID holds the string denoting the oauth_client_id field in the database.
@@ -40,23 +38,22 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
-	// EdgeServiceClient holds the string denoting the service_client edge name in mutations.
-	EdgeServiceClient = "service_client"
+	// EdgeClientApp holds the string denoting the client_app edge name in mutations.
+	EdgeClientApp = "client_app"
 	// Table holds the table name of the weboauth in the database.
 	Table = "web_oauths"
-	// ServiceClientTable is the table that holds the service_client relation/edge.
-	ServiceClientTable = "web_oauths"
-	// ServiceClientInverseTable is the table name for the ServiceClient entity.
-	// It exists in this package in order to avoid circular dependency with the "serviceclient" package.
-	ServiceClientInverseTable = "service_clients"
-	// ServiceClientColumn is the table column denoting the service_client relation/edge.
-	ServiceClientColumn = "service_client_id"
+	// ClientAppTable is the table that holds the client_app relation/edge.
+	ClientAppTable = "web_oauths"
+	// ClientAppInverseTable is the table name for the ClientApp entity.
+	// It exists in this package in order to avoid circular dependency with the "clientapp" package.
+	ClientAppInverseTable = "client_apps"
+	// ClientAppColumn is the table column denoting the client_app relation/edge.
+	ClientAppColumn = "client_app_web_oauths"
 )
 
 // Columns holds all SQL columns for weboauth fields.
 var Columns = []string{
 	FieldID,
-	FieldServiceClientID,
 	FieldProvider,
 	FieldOauthClientID,
 	FieldOauthSecretCt,
@@ -70,10 +67,21 @@ var Columns = []string{
 	FieldUpdatedAt,
 }
 
+// ForeignKeys holds the SQL foreign-keys that are owned by the "web_oauths"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"client_app_web_oauths",
+}
+
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -119,11 +127,6 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByServiceClientID orders the results by the service_client_id field.
-func ByServiceClientID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldServiceClientID, opts...).ToFunc()
-}
-
 // ByProvider orders the results by the provider field.
 func ByProvider(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProvider, opts...).ToFunc()
@@ -149,16 +152,16 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
-// ByServiceClientField orders the results by service_client field.
-func ByServiceClientField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByClientAppField orders the results by client_app field.
+func ByClientAppField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newServiceClientStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newClientAppStep(), sql.OrderByField(field, opts...))
 	}
 }
-func newServiceClientStep() *sqlgraph.Step {
+func newClientAppStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(ServiceClientInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, ServiceClientTable, ServiceClientColumn),
+		sqlgraph.To(ClientAppInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, ClientAppTable, ClientAppColumn),
 	)
 }

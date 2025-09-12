@@ -12,8 +12,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/mandacode-com/serengeti-integrated/ent/clientapp"
 	"github.com/mandacode-com/serengeti-integrated/ent/service"
-	"github.com/mandacode-com/serengeti-integrated/ent/serviceclient"
 	"github.com/mandacode-com/serengeti-integrated/ent/useridentity"
 	"github.com/mandacode-com/serengeti-integrated/ent/userinfo"
 	"github.com/mandacode-com/serengeti-integrated/ent/weboauth"
@@ -77,11 +77,11 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			service.Table:       service.ValidColumn,
-			serviceclient.Table: serviceclient.ValidColumn,
-			useridentity.Table:  useridentity.ValidColumn,
-			userinfo.Table:      userinfo.ValidColumn,
-			weboauth.Table:      weboauth.ValidColumn,
+			clientapp.Table:    clientapp.ValidColumn,
+			service.Table:      service.ValidColumn,
+			useridentity.Table: useridentity.ValidColumn,
+			userinfo.Table:     userinfo.ValidColumn,
+			weboauth.Table:     weboauth.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

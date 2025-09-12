@@ -7,9 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var (
-	ErrInvalidID = errors.New("invalid useridentity ID")
-)
+var ErrInvalidID = errors.New("invalid useridentity ID")
 
 type ID struct {
 	value int64

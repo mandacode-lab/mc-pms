@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/mandacode-com/serengeti-integrated/ent/serviceclient"
+	"github.com/mandacode-com/serengeti-integrated/ent/clientapp"
 	"github.com/mandacode-com/serengeti-integrated/ent/weboauth"
 	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
 )
@@ -20,12 +20,6 @@ type WebOAuthCreate struct {
 	config
 	mutation *WebOAuthMutation
 	hooks    []Hook
-}
-
-// SetServiceClientID sets the "service_client_id" field.
-func (_c *WebOAuthCreate) SetServiceClientID(v int64) *WebOAuthCreate {
-	_c.mutation.SetServiceClientID(v)
-	return _c
 }
 
 // SetProvider sets the "provider" field.
@@ -124,9 +118,15 @@ func (_c *WebOAuthCreate) SetID(v int64) *WebOAuthCreate {
 	return _c
 }
 
-// SetServiceClient sets the "service_client" edge to the ServiceClient entity.
-func (_c *WebOAuthCreate) SetServiceClient(v *ServiceClient) *WebOAuthCreate {
-	return _c.SetServiceClientID(v.ID)
+// SetClientAppID sets the "client_app" edge to the ClientApp entity by ID.
+func (_c *WebOAuthCreate) SetClientAppID(id int64) *WebOAuthCreate {
+	_c.mutation.SetClientAppID(id)
+	return _c
+}
+
+// SetClientApp sets the "client_app" edge to the ClientApp entity.
+func (_c *WebOAuthCreate) SetClientApp(v *ClientApp) *WebOAuthCreate {
+	return _c.SetClientAppID(v.ID)
 }
 
 // Mutation returns the WebOAuthMutation object of the builder.
@@ -180,9 +180,6 @@ func (_c *WebOAuthCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *WebOAuthCreate) check() error {
-	if _, ok := _c.mutation.ServiceClientID(); !ok {
-		return &ValidationError{Name: "service_client_id", err: errors.New(`ent: missing required field "WebOAuth.service_client_id"`)}
-	}
 	if _, ok := _c.mutation.Provider(); !ok {
 		return &ValidationError{Name: "provider", err: errors.New(`ent: missing required field "WebOAuth.provider"`)}
 	}
@@ -240,8 +237,8 @@ func (_c *WebOAuthCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "WebOAuth.updated_at"`)}
 	}
-	if len(_c.mutation.ServiceClientIDs()) == 0 {
-		return &ValidationError{Name: "service_client", err: errors.New(`ent: missing required edge "WebOAuth.service_client"`)}
+	if len(_c.mutation.ClientAppIDs()) == 0 {
+		return &ValidationError{Name: "client_app", err: errors.New(`ent: missing required edge "WebOAuth.client_app"`)}
 	}
 	return nil
 }
@@ -319,21 +316,21 @@ func (_c *WebOAuthCreate) createSpec() (*WebOAuth, *sqlgraph.CreateSpec) {
 		_spec.SetField(weboauth.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if nodes := _c.mutation.ServiceClientIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ClientAppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   weboauth.ServiceClientTable,
-			Columns: []string{weboauth.ServiceClientColumn},
+			Table:   weboauth.ClientAppTable,
+			Columns: []string{weboauth.ClientAppColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(serviceclient.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(clientapp.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.ServiceClientID = nodes[0]
+		_node.client_app_web_oauths = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

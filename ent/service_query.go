@@ -12,9 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/mandacode-com/serengeti-integrated/ent/clientapp"
 	"github.com/mandacode-com/serengeti-integrated/ent/predicate"
 	"github.com/mandacode-com/serengeti-integrated/ent/service"
-	"github.com/mandacode-com/serengeti-integrated/ent/serviceclient"
 	"github.com/mandacode-com/serengeti-integrated/ent/useridentity"
 )
 
@@ -25,7 +25,7 @@ type ServiceQuery struct {
 	order              []service.OrderOption
 	inters             []Interceptor
 	predicates         []predicate.Service
-	withClients        *ServiceClientQuery
+	withClientApps     *ClientAppQuery
 	withUserIdentities *UserIdentityQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -63,9 +63,9 @@ func (_q *ServiceQuery) Order(o ...service.OrderOption) *ServiceQuery {
 	return _q
 }
 
-// QueryClients chains the current query on the "clients" edge.
-func (_q *ServiceQuery) QueryClients() *ServiceClientQuery {
-	query := (&ServiceClientClient{config: _q.config}).Query()
+// QueryClientApps chains the current query on the "client_apps" edge.
+func (_q *ServiceQuery) QueryClientApps() *ClientAppQuery {
+	query := (&ClientAppClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -76,8 +76,8 @@ func (_q *ServiceQuery) QueryClients() *ServiceClientQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(service.Table, service.FieldID, selector),
-			sqlgraph.To(serviceclient.Table, serviceclient.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, service.ClientsTable, service.ClientsColumn),
+			sqlgraph.To(clientapp.Table, clientapp.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, service.ClientAppsTable, service.ClientAppsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -299,7 +299,7 @@ func (_q *ServiceQuery) Clone() *ServiceQuery {
 		order:              append([]service.OrderOption{}, _q.order...),
 		inters:             append([]Interceptor{}, _q.inters...),
 		predicates:         append([]predicate.Service{}, _q.predicates...),
-		withClients:        _q.withClients.Clone(),
+		withClientApps:     _q.withClientApps.Clone(),
 		withUserIdentities: _q.withUserIdentities.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
@@ -307,14 +307,14 @@ func (_q *ServiceQuery) Clone() *ServiceQuery {
 	}
 }
 
-// WithClients tells the query-builder to eager-load the nodes that are connected to
-// the "clients" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *ServiceQuery) WithClients(opts ...func(*ServiceClientQuery)) *ServiceQuery {
-	query := (&ServiceClientClient{config: _q.config}).Query()
+// WithClientApps tells the query-builder to eager-load the nodes that are connected to
+// the "client_apps" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *ServiceQuery) WithClientApps(opts ...func(*ClientAppQuery)) *ServiceQuery {
+	query := (&ClientAppClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	_q.withClients = query
+	_q.withClientApps = query
 	return _q
 }
 
@@ -408,7 +408,7 @@ func (_q *ServiceQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Serv
 		nodes       = []*Service{}
 		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			_q.withClients != nil,
+			_q.withClientApps != nil,
 			_q.withUserIdentities != nil,
 		}
 	)
@@ -430,10 +430,10 @@ func (_q *ServiceQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Serv
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := _q.withClients; query != nil {
-		if err := _q.loadClients(ctx, query, nodes,
-			func(n *Service) { n.Edges.Clients = []*ServiceClient{} },
-			func(n *Service, e *ServiceClient) { n.Edges.Clients = append(n.Edges.Clients, e) }); err != nil {
+	if query := _q.withClientApps; query != nil {
+		if err := _q.loadClientApps(ctx, query, nodes,
+			func(n *Service) { n.Edges.ClientApps = []*ClientApp{} },
+			func(n *Service, e *ClientApp) { n.Edges.ClientApps = append(n.Edges.ClientApps, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -447,7 +447,7 @@ func (_q *ServiceQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Serv
 	return nodes, nil
 }
 
-func (_q *ServiceQuery) loadClients(ctx context.Context, query *ServiceClientQuery, nodes []*Service, init func(*Service), assign func(*Service, *ServiceClient)) error {
+func (_q *ServiceQuery) loadClientApps(ctx context.Context, query *ClientAppQuery, nodes []*Service, init func(*Service), assign func(*Service, *ClientApp)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Service)
 	for i := range nodes {
@@ -458,21 +458,21 @@ func (_q *ServiceQuery) loadClients(ctx context.Context, query *ServiceClientQue
 		}
 	}
 	query.withFKs = true
-	query.Where(predicate.ServiceClient(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(service.ClientsColumn), fks...))
+	query.Where(predicate.ClientApp(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(service.ClientAppsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.service_clients
+		fk := n.service_client_apps
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "service_clients" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "service_client_apps" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "service_clients" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "service_client_apps" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -488,9 +488,7 @@ func (_q *ServiceQuery) loadUserIdentities(ctx context.Context, query *UserIdent
 			init(nodes[i])
 		}
 	}
-	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(useridentity.FieldServiceID)
-	}
+	query.withFKs = true
 	query.Where(predicate.UserIdentity(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(service.UserIdentitiesColumn), fks...))
 	}))
@@ -499,10 +497,13 @@ func (_q *ServiceQuery) loadUserIdentities(ctx context.Context, query *UserIdent
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.ServiceID
-		node, ok := nodeids[fk]
+		fk := n.service_user_identities
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "service_user_identities" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "service_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "service_user_identities" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

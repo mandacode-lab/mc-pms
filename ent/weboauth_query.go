@@ -11,19 +11,20 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/mandacode-com/serengeti-integrated/ent/clientapp"
 	"github.com/mandacode-com/serengeti-integrated/ent/predicate"
-	"github.com/mandacode-com/serengeti-integrated/ent/serviceclient"
 	"github.com/mandacode-com/serengeti-integrated/ent/weboauth"
 )
 
 // WebOAuthQuery is the builder for querying WebOAuth entities.
 type WebOAuthQuery struct {
 	config
-	ctx               *QueryContext
-	order             []weboauth.OrderOption
-	inters            []Interceptor
-	predicates        []predicate.WebOAuth
-	withServiceClient *ServiceClientQuery
+	ctx           *QueryContext
+	order         []weboauth.OrderOption
+	inters        []Interceptor
+	predicates    []predicate.WebOAuth
+	withClientApp *ClientAppQuery
+	withFKs       bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -60,9 +61,9 @@ func (_q *WebOAuthQuery) Order(o ...weboauth.OrderOption) *WebOAuthQuery {
 	return _q
 }
 
-// QueryServiceClient chains the current query on the "service_client" edge.
-func (_q *WebOAuthQuery) QueryServiceClient() *ServiceClientQuery {
-	query := (&ServiceClientClient{config: _q.config}).Query()
+// QueryClientApp chains the current query on the "client_app" edge.
+func (_q *WebOAuthQuery) QueryClientApp() *ClientAppQuery {
+	query := (&ClientAppClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -73,8 +74,8 @@ func (_q *WebOAuthQuery) QueryServiceClient() *ServiceClientQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(weboauth.Table, weboauth.FieldID, selector),
-			sqlgraph.To(serviceclient.Table, serviceclient.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, weboauth.ServiceClientTable, weboauth.ServiceClientColumn),
+			sqlgraph.To(clientapp.Table, clientapp.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, weboauth.ClientAppTable, weboauth.ClientAppColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -269,26 +270,26 @@ func (_q *WebOAuthQuery) Clone() *WebOAuthQuery {
 		return nil
 	}
 	return &WebOAuthQuery{
-		config:            _q.config,
-		ctx:               _q.ctx.Clone(),
-		order:             append([]weboauth.OrderOption{}, _q.order...),
-		inters:            append([]Interceptor{}, _q.inters...),
-		predicates:        append([]predicate.WebOAuth{}, _q.predicates...),
-		withServiceClient: _q.withServiceClient.Clone(),
+		config:        _q.config,
+		ctx:           _q.ctx.Clone(),
+		order:         append([]weboauth.OrderOption{}, _q.order...),
+		inters:        append([]Interceptor{}, _q.inters...),
+		predicates:    append([]predicate.WebOAuth{}, _q.predicates...),
+		withClientApp: _q.withClientApp.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
 }
 
-// WithServiceClient tells the query-builder to eager-load the nodes that are connected to
-// the "service_client" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *WebOAuthQuery) WithServiceClient(opts ...func(*ServiceClientQuery)) *WebOAuthQuery {
-	query := (&ServiceClientClient{config: _q.config}).Query()
+// WithClientApp tells the query-builder to eager-load the nodes that are connected to
+// the "client_app" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *WebOAuthQuery) WithClientApp(opts ...func(*ClientAppQuery)) *WebOAuthQuery {
+	query := (&ClientAppClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	_q.withServiceClient = query
+	_q.withClientApp = query
 	return _q
 }
 
@@ -298,12 +299,12 @@ func (_q *WebOAuthQuery) WithServiceClient(opts ...func(*ServiceClientQuery)) *W
 // Example:
 //
 //	var v []struct {
-//		ServiceClientID int64 `json:"service_client_id,omitempty"`
+//		Provider shared.Provider `json:"provider,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.WebOAuth.Query().
-//		GroupBy(weboauth.FieldServiceClientID).
+//		GroupBy(weboauth.FieldProvider).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *WebOAuthQuery) GroupBy(field string, fields ...string) *WebOAuthGroupBy {
@@ -321,11 +322,11 @@ func (_q *WebOAuthQuery) GroupBy(field string, fields ...string) *WebOAuthGroupB
 // Example:
 //
 //	var v []struct {
-//		ServiceClientID int64 `json:"service_client_id,omitempty"`
+//		Provider shared.Provider `json:"provider,omitempty"`
 //	}
 //
 //	client.WebOAuth.Query().
-//		Select(weboauth.FieldServiceClientID).
+//		Select(weboauth.FieldProvider).
 //		Scan(ctx, &v)
 func (_q *WebOAuthQuery) Select(fields ...string) *WebOAuthSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
@@ -369,11 +370,18 @@ func (_q *WebOAuthQuery) prepareQuery(ctx context.Context) error {
 func (_q *WebOAuthQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*WebOAuth, error) {
 	var (
 		nodes       = []*WebOAuth{}
+		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			_q.withServiceClient != nil,
+			_q.withClientApp != nil,
 		}
 	)
+	if _q.withClientApp != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, weboauth.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*WebOAuth).scanValues(nil, columns)
 	}
@@ -392,20 +400,23 @@ func (_q *WebOAuthQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Web
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := _q.withServiceClient; query != nil {
-		if err := _q.loadServiceClient(ctx, query, nodes, nil,
-			func(n *WebOAuth, e *ServiceClient) { n.Edges.ServiceClient = e }); err != nil {
+	if query := _q.withClientApp; query != nil {
+		if err := _q.loadClientApp(ctx, query, nodes, nil,
+			func(n *WebOAuth, e *ClientApp) { n.Edges.ClientApp = e }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (_q *WebOAuthQuery) loadServiceClient(ctx context.Context, query *ServiceClientQuery, nodes []*WebOAuth, init func(*WebOAuth), assign func(*WebOAuth, *ServiceClient)) error {
+func (_q *WebOAuthQuery) loadClientApp(ctx context.Context, query *ClientAppQuery, nodes []*WebOAuth, init func(*WebOAuth), assign func(*WebOAuth, *ClientApp)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*WebOAuth)
 	for i := range nodes {
-		fk := nodes[i].ServiceClientID
+		if nodes[i].client_app_web_oauths == nil {
+			continue
+		}
+		fk := *nodes[i].client_app_web_oauths
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -414,7 +425,7 @@ func (_q *WebOAuthQuery) loadServiceClient(ctx context.Context, query *ServiceCl
 	if len(ids) == 0 {
 		return nil
 	}
-	query.Where(serviceclient.IDIn(ids...))
+	query.Where(clientapp.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
@@ -422,7 +433,7 @@ func (_q *WebOAuthQuery) loadServiceClient(ctx context.Context, query *ServiceCl
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "service_client_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "client_app_web_oauths" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -455,9 +466,6 @@ func (_q *WebOAuthQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != weboauth.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
-		}
-		if _q.withServiceClient != nil {
-			_spec.Node.AddColumnOnce(weboauth.FieldServiceClientID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

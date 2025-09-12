@@ -1,4 +1,4 @@
-package serviceclientval
+package clientappval
 
 import (
 	"crypto/rand"
@@ -7,9 +7,7 @@ import (
 	"errors"
 )
 
-var (
-	ErrInvalidSecretHash = errors.New("invalid secret hash")
-)
+var ErrInvalidSecretHash = errors.New("invalid secret hash")
 
 type SecretHash struct {
 	value []byte

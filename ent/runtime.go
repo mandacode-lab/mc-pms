@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/mandacode-com/serengeti-integrated/ent/clientapp"
 	"github.com/mandacode-com/serengeti-integrated/ent/schema"
 	"github.com/mandacode-com/serengeti-integrated/ent/service"
-	"github.com/mandacode-com/serengeti-integrated/ent/serviceclient"
 	"github.com/mandacode-com/serengeti-integrated/ent/useridentity"
 	"github.com/mandacode-com/serengeti-integrated/ent/userinfo"
 	"github.com/mandacode-com/serengeti-integrated/ent/weboauth"
@@ -18,6 +18,34 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	clientappFields := schema.ClientApp{}.Fields()
+	_ = clientappFields
+	// clientappDescPublicID is the schema descriptor for public_id field.
+	clientappDescPublicID := clientappFields[1].Descriptor()
+	// clientapp.DefaultPublicID holds the default value on creation for the public_id field.
+	clientapp.DefaultPublicID = clientappDescPublicID.Default.(func() uuid.UUID)
+	// clientappDescSecretHash is the schema descriptor for secret_hash field.
+	clientappDescSecretHash := clientappFields[2].Descriptor()
+	// clientapp.SecretHashValidator is a validator for the "secret_hash" field. It is called by the builders before save.
+	clientapp.SecretHashValidator = clientappDescSecretHash.Validators[0].(func([]byte) error)
+	// clientappDescName is the schema descriptor for name field.
+	clientappDescName := clientappFields[3].Descriptor()
+	// clientapp.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	clientapp.NameValidator = clientappDescName.Validators[0].(func(string) error)
+	// clientappDescIsActive is the schema descriptor for is_active field.
+	clientappDescIsActive := clientappFields[5].Descriptor()
+	// clientapp.DefaultIsActive holds the default value on creation for the is_active field.
+	clientapp.DefaultIsActive = clientappDescIsActive.Default.(bool)
+	// clientappDescCreatedAt is the schema descriptor for created_at field.
+	clientappDescCreatedAt := clientappFields[6].Descriptor()
+	// clientapp.DefaultCreatedAt holds the default value on creation for the created_at field.
+	clientapp.DefaultCreatedAt = clientappDescCreatedAt.Default.(func() time.Time)
+	// clientappDescUpdatedAt is the schema descriptor for updated_at field.
+	clientappDescUpdatedAt := clientappFields[7].Descriptor()
+	// clientapp.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	clientapp.DefaultUpdatedAt = clientappDescUpdatedAt.Default.(func() time.Time)
+	// clientapp.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	clientapp.UpdateDefaultUpdatedAt = clientappDescUpdatedAt.UpdateDefault.(func() time.Time)
 	serviceFields := schema.Service{}.Fields()
 	_ = serviceFields
 	// serviceDescPublicID is the schema descriptor for public_id field.
@@ -42,66 +70,42 @@ func init() {
 	service.DefaultUpdatedAt = serviceDescUpdatedAt.Default.(func() time.Time)
 	// service.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	service.UpdateDefaultUpdatedAt = serviceDescUpdatedAt.UpdateDefault.(func() time.Time)
-	serviceclientFields := schema.ServiceClient{}.Fields()
-	_ = serviceclientFields
-	// serviceclientDescPublicID is the schema descriptor for public_id field.
-	serviceclientDescPublicID := serviceclientFields[1].Descriptor()
-	// serviceclient.DefaultPublicID holds the default value on creation for the public_id field.
-	serviceclient.DefaultPublicID = serviceclientDescPublicID.Default.(func() uuid.UUID)
-	// serviceclientDescSecretHash is the schema descriptor for secret_hash field.
-	serviceclientDescSecretHash := serviceclientFields[2].Descriptor()
-	// serviceclient.SecretHashValidator is a validator for the "secret_hash" field. It is called by the builders before save.
-	serviceclient.SecretHashValidator = serviceclientDescSecretHash.Validators[0].(func([]byte) error)
-	// serviceclientDescName is the schema descriptor for name field.
-	serviceclientDescName := serviceclientFields[3].Descriptor()
-	// serviceclient.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	serviceclient.NameValidator = serviceclientDescName.Validators[0].(func(string) error)
-	// serviceclientDescIsActive is the schema descriptor for is_active field.
-	serviceclientDescIsActive := serviceclientFields[5].Descriptor()
-	// serviceclient.DefaultIsActive holds the default value on creation for the is_active field.
-	serviceclient.DefaultIsActive = serviceclientDescIsActive.Default.(bool)
-	// serviceclientDescCreatedAt is the schema descriptor for created_at field.
-	serviceclientDescCreatedAt := serviceclientFields[6].Descriptor()
-	// serviceclient.DefaultCreatedAt holds the default value on creation for the created_at field.
-	serviceclient.DefaultCreatedAt = serviceclientDescCreatedAt.Default.(func() time.Time)
-	// serviceclientDescUpdatedAt is the schema descriptor for updated_at field.
-	serviceclientDescUpdatedAt := serviceclientFields[7].Descriptor()
-	// serviceclient.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	serviceclient.DefaultUpdatedAt = serviceclientDescUpdatedAt.Default.(func() time.Time)
-	// serviceclient.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	serviceclient.UpdateDefaultUpdatedAt = serviceclientDescUpdatedAt.UpdateDefault.(func() time.Time)
 	useridentityFields := schema.UserIdentity{}.Fields()
 	_ = useridentityFields
 	// useridentityDescPublicID is the schema descriptor for public_id field.
-	useridentityDescPublicID := useridentityFields[2].Descriptor()
+	useridentityDescPublicID := useridentityFields[1].Descriptor()
 	// useridentity.DefaultPublicID holds the default value on creation for the public_id field.
 	useridentity.DefaultPublicID = useridentityDescPublicID.Default.(func() uuid.UUID)
 	// useridentityDescProviderID is the schema descriptor for provider_id field.
-	useridentityDescProviderID := useridentityFields[3].Descriptor()
+	useridentityDescProviderID := useridentityFields[2].Descriptor()
 	// useridentity.ProviderIDValidator is a validator for the "provider_id" field. It is called by the builders before save.
 	useridentity.ProviderIDValidator = useridentityDescProviderID.Validators[0].(func(string) error)
 	// useridentityDescCreatedAt is the schema descriptor for created_at field.
-	useridentityDescCreatedAt := useridentityFields[5].Descriptor()
+	useridentityDescCreatedAt := useridentityFields[4].Descriptor()
 	// useridentity.DefaultCreatedAt holds the default value on creation for the created_at field.
 	useridentity.DefaultCreatedAt = useridentityDescCreatedAt.Default.(func() time.Time)
 	// useridentityDescUpdatedAt is the schema descriptor for updated_at field.
-	useridentityDescUpdatedAt := useridentityFields[6].Descriptor()
+	useridentityDescUpdatedAt := useridentityFields[5].Descriptor()
 	// useridentity.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	useridentity.DefaultUpdatedAt = useridentityDescUpdatedAt.Default.(func() time.Time)
 	// useridentity.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	useridentity.UpdateDefaultUpdatedAt = useridentityDescUpdatedAt.UpdateDefault.(func() time.Time)
 	userinfoFields := schema.UserInfo{}.Fields()
 	_ = userinfoFields
+	// userinfoDescPublicID is the schema descriptor for public_id field.
+	userinfoDescPublicID := userinfoFields[1].Descriptor()
+	// userinfo.DefaultPublicID holds the default value on creation for the public_id field.
+	userinfo.DefaultPublicID = userinfoDescPublicID.Default.(func() uuid.UUID)
 	// userinfoDescNickname is the schema descriptor for nickname field.
-	userinfoDescNickname := userinfoFields[1].Descriptor()
+	userinfoDescNickname := userinfoFields[2].Descriptor()
 	// userinfo.NicknameValidator is a validator for the "nickname" field. It is called by the builders before save.
 	userinfo.NicknameValidator = userinfoDescNickname.Validators[0].(func(string) error)
 	// userinfoDescCreatedAt is the schema descriptor for created_at field.
-	userinfoDescCreatedAt := userinfoFields[4].Descriptor()
+	userinfoDescCreatedAt := userinfoFields[5].Descriptor()
 	// userinfo.DefaultCreatedAt holds the default value on creation for the created_at field.
 	userinfo.DefaultCreatedAt = userinfoDescCreatedAt.Default.(func() time.Time)
 	// userinfoDescUpdatedAt is the schema descriptor for updated_at field.
-	userinfoDescUpdatedAt := userinfoFields[5].Descriptor()
+	userinfoDescUpdatedAt := userinfoFields[6].Descriptor()
 	// userinfo.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	userinfo.DefaultUpdatedAt = userinfoDescUpdatedAt.Default.(func() time.Time)
 	// userinfo.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
@@ -109,35 +113,35 @@ func init() {
 	weboauthFields := schema.WebOAuth{}.Fields()
 	_ = weboauthFields
 	// weboauthDescOauthClientID is the schema descriptor for oauth_client_id field.
-	weboauthDescOauthClientID := weboauthFields[3].Descriptor()
+	weboauthDescOauthClientID := weboauthFields[2].Descriptor()
 	// weboauth.OauthClientIDValidator is a validator for the "oauth_client_id" field. It is called by the builders before save.
 	weboauth.OauthClientIDValidator = weboauthDescOauthClientID.Validators[0].(func(string) error)
 	// weboauthDescOauthSecretCt is the schema descriptor for oauth_secret_ct field.
-	weboauthDescOauthSecretCt := weboauthFields[4].Descriptor()
+	weboauthDescOauthSecretCt := weboauthFields[3].Descriptor()
 	// weboauth.OauthSecretCtValidator is a validator for the "oauth_secret_ct" field. It is called by the builders before save.
 	weboauth.OauthSecretCtValidator = weboauthDescOauthSecretCt.Validators[0].(func([]byte) error)
 	// weboauthDescOauthSecretNonce is the schema descriptor for oauth_secret_nonce field.
-	weboauthDescOauthSecretNonce := weboauthFields[5].Descriptor()
+	weboauthDescOauthSecretNonce := weboauthFields[4].Descriptor()
 	// weboauth.OauthSecretNonceValidator is a validator for the "oauth_secret_nonce" field. It is called by the builders before save.
 	weboauth.OauthSecretNonceValidator = weboauthDescOauthSecretNonce.Validators[0].(func([]byte) error)
 	// weboauthDescDekWrapped is the schema descriptor for dek_wrapped field.
-	weboauthDescDekWrapped := weboauthFields[6].Descriptor()
+	weboauthDescDekWrapped := weboauthFields[5].Descriptor()
 	// weboauth.DekWrappedValidator is a validator for the "dek_wrapped" field. It is called by the builders before save.
 	weboauth.DekWrappedValidator = weboauthDescDekWrapped.Validators[0].(func([]byte) error)
 	// weboauthDescDekNonce is the schema descriptor for dek_nonce field.
-	weboauthDescDekNonce := weboauthFields[7].Descriptor()
+	weboauthDescDekNonce := weboauthFields[6].Descriptor()
 	// weboauth.DekNonceValidator is a validator for the "dek_nonce" field. It is called by the builders before save.
 	weboauth.DekNonceValidator = weboauthDescDekNonce.Validators[0].(func([]byte) error)
 	// weboauthDescDekRotatedAt is the schema descriptor for dek_rotated_at field.
-	weboauthDescDekRotatedAt := weboauthFields[8].Descriptor()
+	weboauthDescDekRotatedAt := weboauthFields[7].Descriptor()
 	// weboauth.DefaultDekRotatedAt holds the default value on creation for the dek_rotated_at field.
 	weboauth.DefaultDekRotatedAt = weboauthDescDekRotatedAt.Default.(func() time.Time)
 	// weboauthDescCreatedAt is the schema descriptor for created_at field.
-	weboauthDescCreatedAt := weboauthFields[11].Descriptor()
+	weboauthDescCreatedAt := weboauthFields[10].Descriptor()
 	// weboauth.DefaultCreatedAt holds the default value on creation for the created_at field.
 	weboauth.DefaultCreatedAt = weboauthDescCreatedAt.Default.(func() time.Time)
 	// weboauthDescUpdatedAt is the schema descriptor for updated_at field.
-	weboauthDescUpdatedAt := weboauthFields[12].Descriptor()
+	weboauthDescUpdatedAt := weboauthFields[11].Descriptor()
 	// weboauth.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	weboauth.DefaultUpdatedAt = weboauthDescUpdatedAt.Default.(func() time.Time)
 	// weboauth.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.

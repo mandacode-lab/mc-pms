@@ -12,33 +12,33 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
+	"github.com/mandacode-com/serengeti-integrated/ent/clientapp"
 	"github.com/mandacode-com/serengeti-integrated/ent/predicate"
 	"github.com/mandacode-com/serengeti-integrated/ent/service"
-	"github.com/mandacode-com/serengeti-integrated/ent/serviceclient"
 	"github.com/mandacode-com/serengeti-integrated/ent/weboauth"
 )
 
-// ServiceClientUpdate is the builder for updating ServiceClient entities.
-type ServiceClientUpdate struct {
+// ClientAppUpdate is the builder for updating ClientApp entities.
+type ClientAppUpdate struct {
 	config
 	hooks    []Hook
-	mutation *ServiceClientMutation
+	mutation *ClientAppMutation
 }
 
-// Where appends a list predicates to the ServiceClientUpdate builder.
-func (_u *ServiceClientUpdate) Where(ps ...predicate.ServiceClient) *ServiceClientUpdate {
+// Where appends a list predicates to the ClientAppUpdate builder.
+func (_u *ClientAppUpdate) Where(ps ...predicate.ClientApp) *ClientAppUpdate {
 	_u.mutation.Where(ps...)
 	return _u
 }
 
 // SetPublicID sets the "public_id" field.
-func (_u *ServiceClientUpdate) SetPublicID(v uuid.UUID) *ServiceClientUpdate {
+func (_u *ClientAppUpdate) SetPublicID(v uuid.UUID) *ClientAppUpdate {
 	_u.mutation.SetPublicID(v)
 	return _u
 }
 
 // SetNillablePublicID sets the "public_id" field if the given value is not nil.
-func (_u *ServiceClientUpdate) SetNillablePublicID(v *uuid.UUID) *ServiceClientUpdate {
+func (_u *ClientAppUpdate) SetNillablePublicID(v *uuid.UUID) *ClientAppUpdate {
 	if v != nil {
 		_u.SetPublicID(*v)
 	}
@@ -46,19 +46,19 @@ func (_u *ServiceClientUpdate) SetNillablePublicID(v *uuid.UUID) *ServiceClientU
 }
 
 // SetSecretHash sets the "secret_hash" field.
-func (_u *ServiceClientUpdate) SetSecretHash(v []byte) *ServiceClientUpdate {
+func (_u *ClientAppUpdate) SetSecretHash(v []byte) *ClientAppUpdate {
 	_u.mutation.SetSecretHash(v)
 	return _u
 }
 
 // SetName sets the "name" field.
-func (_u *ServiceClientUpdate) SetName(v string) *ServiceClientUpdate {
+func (_u *ClientAppUpdate) SetName(v string) *ClientAppUpdate {
 	_u.mutation.SetName(v)
 	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (_u *ServiceClientUpdate) SetNillableName(v *string) *ServiceClientUpdate {
+func (_u *ClientAppUpdate) SetNillableName(v *string) *ClientAppUpdate {
 	if v != nil {
 		_u.SetName(*v)
 	}
@@ -66,13 +66,13 @@ func (_u *ServiceClientUpdate) SetNillableName(v *string) *ServiceClientUpdate {
 }
 
 // SetDescription sets the "description" field.
-func (_u *ServiceClientUpdate) SetDescription(v string) *ServiceClientUpdate {
+func (_u *ClientAppUpdate) SetDescription(v string) *ClientAppUpdate {
 	_u.mutation.SetDescription(v)
 	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (_u *ServiceClientUpdate) SetNillableDescription(v *string) *ServiceClientUpdate {
+func (_u *ClientAppUpdate) SetNillableDescription(v *string) *ClientAppUpdate {
 	if v != nil {
 		_u.SetDescription(*v)
 	}
@@ -80,19 +80,19 @@ func (_u *ServiceClientUpdate) SetNillableDescription(v *string) *ServiceClientU
 }
 
 // ClearDescription clears the value of the "description" field.
-func (_u *ServiceClientUpdate) ClearDescription() *ServiceClientUpdate {
+func (_u *ClientAppUpdate) ClearDescription() *ClientAppUpdate {
 	_u.mutation.ClearDescription()
 	return _u
 }
 
 // SetIsActive sets the "is_active" field.
-func (_u *ServiceClientUpdate) SetIsActive(v bool) *ServiceClientUpdate {
+func (_u *ClientAppUpdate) SetIsActive(v bool) *ClientAppUpdate {
 	_u.mutation.SetIsActive(v)
 	return _u
 }
 
 // SetNillableIsActive sets the "is_active" field if the given value is not nil.
-func (_u *ServiceClientUpdate) SetNillableIsActive(v *bool) *ServiceClientUpdate {
+func (_u *ClientAppUpdate) SetNillableIsActive(v *bool) *ClientAppUpdate {
 	if v != nil {
 		_u.SetIsActive(*v)
 	}
@@ -100,30 +100,30 @@ func (_u *ServiceClientUpdate) SetNillableIsActive(v *bool) *ServiceClientUpdate
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (_u *ServiceClientUpdate) SetUpdatedAt(v time.Time) *ServiceClientUpdate {
+func (_u *ClientAppUpdate) SetUpdatedAt(v time.Time) *ClientAppUpdate {
 	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
 // SetServiceID sets the "service" edge to the Service entity by ID.
-func (_u *ServiceClientUpdate) SetServiceID(id int64) *ServiceClientUpdate {
+func (_u *ClientAppUpdate) SetServiceID(id int64) *ClientAppUpdate {
 	_u.mutation.SetServiceID(id)
 	return _u
 }
 
 // SetService sets the "service" edge to the Service entity.
-func (_u *ServiceClientUpdate) SetService(v *Service) *ServiceClientUpdate {
+func (_u *ClientAppUpdate) SetService(v *Service) *ClientAppUpdate {
 	return _u.SetServiceID(v.ID)
 }
 
-// AddWebOauthIDs adds the "web_oauth" edge to the WebOAuth entity by IDs.
-func (_u *ServiceClientUpdate) AddWebOauthIDs(ids ...int64) *ServiceClientUpdate {
+// AddWebOauthIDs adds the "web_oauths" edge to the WebOAuth entity by IDs.
+func (_u *ClientAppUpdate) AddWebOauthIDs(ids ...int64) *ClientAppUpdate {
 	_u.mutation.AddWebOauthIDs(ids...)
 	return _u
 }
 
-// AddWebOauth adds the "web_oauth" edges to the WebOAuth entity.
-func (_u *ServiceClientUpdate) AddWebOauth(v ...*WebOAuth) *ServiceClientUpdate {
+// AddWebOauths adds the "web_oauths" edges to the WebOAuth entity.
+func (_u *ClientAppUpdate) AddWebOauths(v ...*WebOAuth) *ClientAppUpdate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -131,31 +131,31 @@ func (_u *ServiceClientUpdate) AddWebOauth(v ...*WebOAuth) *ServiceClientUpdate 
 	return _u.AddWebOauthIDs(ids...)
 }
 
-// Mutation returns the ServiceClientMutation object of the builder.
-func (_u *ServiceClientUpdate) Mutation() *ServiceClientMutation {
+// Mutation returns the ClientAppMutation object of the builder.
+func (_u *ClientAppUpdate) Mutation() *ClientAppMutation {
 	return _u.mutation
 }
 
 // ClearService clears the "service" edge to the Service entity.
-func (_u *ServiceClientUpdate) ClearService() *ServiceClientUpdate {
+func (_u *ClientAppUpdate) ClearService() *ClientAppUpdate {
 	_u.mutation.ClearService()
 	return _u
 }
 
-// ClearWebOauth clears all "web_oauth" edges to the WebOAuth entity.
-func (_u *ServiceClientUpdate) ClearWebOauth() *ServiceClientUpdate {
-	_u.mutation.ClearWebOauth()
+// ClearWebOauths clears all "web_oauths" edges to the WebOAuth entity.
+func (_u *ClientAppUpdate) ClearWebOauths() *ClientAppUpdate {
+	_u.mutation.ClearWebOauths()
 	return _u
 }
 
-// RemoveWebOauthIDs removes the "web_oauth" edge to WebOAuth entities by IDs.
-func (_u *ServiceClientUpdate) RemoveWebOauthIDs(ids ...int64) *ServiceClientUpdate {
+// RemoveWebOauthIDs removes the "web_oauths" edge to WebOAuth entities by IDs.
+func (_u *ClientAppUpdate) RemoveWebOauthIDs(ids ...int64) *ClientAppUpdate {
 	_u.mutation.RemoveWebOauthIDs(ids...)
 	return _u
 }
 
-// RemoveWebOauth removes "web_oauth" edges to WebOAuth entities.
-func (_u *ServiceClientUpdate) RemoveWebOauth(v ...*WebOAuth) *ServiceClientUpdate {
+// RemoveWebOauths removes "web_oauths" edges to WebOAuth entities.
+func (_u *ClientAppUpdate) RemoveWebOauths(v ...*WebOAuth) *ClientAppUpdate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -164,13 +164,13 @@ func (_u *ServiceClientUpdate) RemoveWebOauth(v ...*WebOAuth) *ServiceClientUpda
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (_u *ServiceClientUpdate) Save(ctx context.Context) (int, error) {
+func (_u *ClientAppUpdate) Save(ctx context.Context) (int, error) {
 	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_u *ServiceClientUpdate) SaveX(ctx context.Context) int {
+func (_u *ClientAppUpdate) SaveX(ctx context.Context) int {
 	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -179,49 +179,49 @@ func (_u *ServiceClientUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (_u *ServiceClientUpdate) Exec(ctx context.Context) error {
+func (_u *ClientAppUpdate) Exec(ctx context.Context) error {
 	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_u *ServiceClientUpdate) ExecX(ctx context.Context) {
+func (_u *ClientAppUpdate) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *ServiceClientUpdate) defaults() {
+func (_u *ClientAppUpdate) defaults() {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
-		v := serviceclient.UpdateDefaultUpdatedAt()
+		v := clientapp.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_u *ServiceClientUpdate) check() error {
+func (_u *ClientAppUpdate) check() error {
 	if v, ok := _u.mutation.SecretHash(); ok {
-		if err := serviceclient.SecretHashValidator(v); err != nil {
-			return &ValidationError{Name: "secret_hash", err: fmt.Errorf(`ent: validator failed for field "ServiceClient.secret_hash": %w`, err)}
+		if err := clientapp.SecretHashValidator(v); err != nil {
+			return &ValidationError{Name: "secret_hash", err: fmt.Errorf(`ent: validator failed for field "ClientApp.secret_hash": %w`, err)}
 		}
 	}
 	if v, ok := _u.mutation.Name(); ok {
-		if err := serviceclient.NameValidator(v); err != nil {
-			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "ServiceClient.name": %w`, err)}
+		if err := clientapp.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "ClientApp.name": %w`, err)}
 		}
 	}
 	if _u.mutation.ServiceCleared() && len(_u.mutation.ServiceIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "ServiceClient.service"`)
+		return errors.New(`ent: clearing a required unique edge "ClientApp.service"`)
 	}
 	return nil
 }
 
-func (_u *ServiceClientUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+func (_u *ClientAppUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(serviceclient.Table, serviceclient.Columns, sqlgraph.NewFieldSpec(serviceclient.FieldID, field.TypeInt64))
+	_spec := sqlgraph.NewUpdateSpec(clientapp.Table, clientapp.Columns, sqlgraph.NewFieldSpec(clientapp.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -230,32 +230,32 @@ func (_u *ServiceClientUpdate) sqlSave(ctx context.Context) (_node int, err erro
 		}
 	}
 	if value, ok := _u.mutation.PublicID(); ok {
-		_spec.SetField(serviceclient.FieldPublicID, field.TypeUUID, value)
+		_spec.SetField(clientapp.FieldPublicID, field.TypeUUID, value)
 	}
 	if value, ok := _u.mutation.SecretHash(); ok {
-		_spec.SetField(serviceclient.FieldSecretHash, field.TypeBytes, value)
+		_spec.SetField(clientapp.FieldSecretHash, field.TypeBytes, value)
 	}
 	if value, ok := _u.mutation.Name(); ok {
-		_spec.SetField(serviceclient.FieldName, field.TypeString, value)
+		_spec.SetField(clientapp.FieldName, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.Description(); ok {
-		_spec.SetField(serviceclient.FieldDescription, field.TypeString, value)
+		_spec.SetField(clientapp.FieldDescription, field.TypeString, value)
 	}
 	if _u.mutation.DescriptionCleared() {
-		_spec.ClearField(serviceclient.FieldDescription, field.TypeString)
+		_spec.ClearField(clientapp.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.IsActive(); ok {
-		_spec.SetField(serviceclient.FieldIsActive, field.TypeBool, value)
+		_spec.SetField(clientapp.FieldIsActive, field.TypeBool, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(serviceclient.FieldUpdatedAt, field.TypeTime, value)
+		_spec.SetField(clientapp.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.ServiceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   serviceclient.ServiceTable,
-			Columns: []string{serviceclient.ServiceColumn},
+			Table:   clientapp.ServiceTable,
+			Columns: []string{clientapp.ServiceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(service.FieldID, field.TypeInt64),
@@ -267,8 +267,8 @@ func (_u *ServiceClientUpdate) sqlSave(ctx context.Context) (_node int, err erro
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   serviceclient.ServiceTable,
-			Columns: []string{serviceclient.ServiceColumn},
+			Table:   clientapp.ServiceTable,
+			Columns: []string{clientapp.ServiceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(service.FieldID, field.TypeInt64),
@@ -279,12 +279,12 @@ func (_u *ServiceClientUpdate) sqlSave(ctx context.Context) (_node int, err erro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.WebOauthCleared() {
+	if _u.mutation.WebOauthsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   serviceclient.WebOauthTable,
-			Columns: []string{serviceclient.WebOauthColumn},
+			Table:   clientapp.WebOauthsTable,
+			Columns: []string{clientapp.WebOauthsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(weboauth.FieldID, field.TypeInt64),
@@ -292,12 +292,12 @@ func (_u *ServiceClientUpdate) sqlSave(ctx context.Context) (_node int, err erro
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RemovedWebOauthIDs(); len(nodes) > 0 && !_u.mutation.WebOauthCleared() {
+	if nodes := _u.mutation.RemovedWebOauthsIDs(); len(nodes) > 0 && !_u.mutation.WebOauthsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   serviceclient.WebOauthTable,
-			Columns: []string{serviceclient.WebOauthColumn},
+			Table:   clientapp.WebOauthsTable,
+			Columns: []string{clientapp.WebOauthsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(weboauth.FieldID, field.TypeInt64),
@@ -308,12 +308,12 @@ func (_u *ServiceClientUpdate) sqlSave(ctx context.Context) (_node int, err erro
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.WebOauthIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.WebOauthsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   serviceclient.WebOauthTable,
-			Columns: []string{serviceclient.WebOauthColumn},
+			Table:   clientapp.WebOauthsTable,
+			Columns: []string{clientapp.WebOauthsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(weboauth.FieldID, field.TypeInt64),
@@ -326,7 +326,7 @@ func (_u *ServiceClientUpdate) sqlSave(ctx context.Context) (_node int, err erro
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{serviceclient.Label}
+			err = &NotFoundError{clientapp.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -336,22 +336,22 @@ func (_u *ServiceClientUpdate) sqlSave(ctx context.Context) (_node int, err erro
 	return _node, nil
 }
 
-// ServiceClientUpdateOne is the builder for updating a single ServiceClient entity.
-type ServiceClientUpdateOne struct {
+// ClientAppUpdateOne is the builder for updating a single ClientApp entity.
+type ClientAppUpdateOne struct {
 	config
 	fields   []string
 	hooks    []Hook
-	mutation *ServiceClientMutation
+	mutation *ClientAppMutation
 }
 
 // SetPublicID sets the "public_id" field.
-func (_u *ServiceClientUpdateOne) SetPublicID(v uuid.UUID) *ServiceClientUpdateOne {
+func (_u *ClientAppUpdateOne) SetPublicID(v uuid.UUID) *ClientAppUpdateOne {
 	_u.mutation.SetPublicID(v)
 	return _u
 }
 
 // SetNillablePublicID sets the "public_id" field if the given value is not nil.
-func (_u *ServiceClientUpdateOne) SetNillablePublicID(v *uuid.UUID) *ServiceClientUpdateOne {
+func (_u *ClientAppUpdateOne) SetNillablePublicID(v *uuid.UUID) *ClientAppUpdateOne {
 	if v != nil {
 		_u.SetPublicID(*v)
 	}
@@ -359,19 +359,19 @@ func (_u *ServiceClientUpdateOne) SetNillablePublicID(v *uuid.UUID) *ServiceClie
 }
 
 // SetSecretHash sets the "secret_hash" field.
-func (_u *ServiceClientUpdateOne) SetSecretHash(v []byte) *ServiceClientUpdateOne {
+func (_u *ClientAppUpdateOne) SetSecretHash(v []byte) *ClientAppUpdateOne {
 	_u.mutation.SetSecretHash(v)
 	return _u
 }
 
 // SetName sets the "name" field.
-func (_u *ServiceClientUpdateOne) SetName(v string) *ServiceClientUpdateOne {
+func (_u *ClientAppUpdateOne) SetName(v string) *ClientAppUpdateOne {
 	_u.mutation.SetName(v)
 	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (_u *ServiceClientUpdateOne) SetNillableName(v *string) *ServiceClientUpdateOne {
+func (_u *ClientAppUpdateOne) SetNillableName(v *string) *ClientAppUpdateOne {
 	if v != nil {
 		_u.SetName(*v)
 	}
@@ -379,13 +379,13 @@ func (_u *ServiceClientUpdateOne) SetNillableName(v *string) *ServiceClientUpdat
 }
 
 // SetDescription sets the "description" field.
-func (_u *ServiceClientUpdateOne) SetDescription(v string) *ServiceClientUpdateOne {
+func (_u *ClientAppUpdateOne) SetDescription(v string) *ClientAppUpdateOne {
 	_u.mutation.SetDescription(v)
 	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (_u *ServiceClientUpdateOne) SetNillableDescription(v *string) *ServiceClientUpdateOne {
+func (_u *ClientAppUpdateOne) SetNillableDescription(v *string) *ClientAppUpdateOne {
 	if v != nil {
 		_u.SetDescription(*v)
 	}
@@ -393,19 +393,19 @@ func (_u *ServiceClientUpdateOne) SetNillableDescription(v *string) *ServiceClie
 }
 
 // ClearDescription clears the value of the "description" field.
-func (_u *ServiceClientUpdateOne) ClearDescription() *ServiceClientUpdateOne {
+func (_u *ClientAppUpdateOne) ClearDescription() *ClientAppUpdateOne {
 	_u.mutation.ClearDescription()
 	return _u
 }
 
 // SetIsActive sets the "is_active" field.
-func (_u *ServiceClientUpdateOne) SetIsActive(v bool) *ServiceClientUpdateOne {
+func (_u *ClientAppUpdateOne) SetIsActive(v bool) *ClientAppUpdateOne {
 	_u.mutation.SetIsActive(v)
 	return _u
 }
 
 // SetNillableIsActive sets the "is_active" field if the given value is not nil.
-func (_u *ServiceClientUpdateOne) SetNillableIsActive(v *bool) *ServiceClientUpdateOne {
+func (_u *ClientAppUpdateOne) SetNillableIsActive(v *bool) *ClientAppUpdateOne {
 	if v != nil {
 		_u.SetIsActive(*v)
 	}
@@ -413,30 +413,30 @@ func (_u *ServiceClientUpdateOne) SetNillableIsActive(v *bool) *ServiceClientUpd
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (_u *ServiceClientUpdateOne) SetUpdatedAt(v time.Time) *ServiceClientUpdateOne {
+func (_u *ClientAppUpdateOne) SetUpdatedAt(v time.Time) *ClientAppUpdateOne {
 	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
 // SetServiceID sets the "service" edge to the Service entity by ID.
-func (_u *ServiceClientUpdateOne) SetServiceID(id int64) *ServiceClientUpdateOne {
+func (_u *ClientAppUpdateOne) SetServiceID(id int64) *ClientAppUpdateOne {
 	_u.mutation.SetServiceID(id)
 	return _u
 }
 
 // SetService sets the "service" edge to the Service entity.
-func (_u *ServiceClientUpdateOne) SetService(v *Service) *ServiceClientUpdateOne {
+func (_u *ClientAppUpdateOne) SetService(v *Service) *ClientAppUpdateOne {
 	return _u.SetServiceID(v.ID)
 }
 
-// AddWebOauthIDs adds the "web_oauth" edge to the WebOAuth entity by IDs.
-func (_u *ServiceClientUpdateOne) AddWebOauthIDs(ids ...int64) *ServiceClientUpdateOne {
+// AddWebOauthIDs adds the "web_oauths" edge to the WebOAuth entity by IDs.
+func (_u *ClientAppUpdateOne) AddWebOauthIDs(ids ...int64) *ClientAppUpdateOne {
 	_u.mutation.AddWebOauthIDs(ids...)
 	return _u
 }
 
-// AddWebOauth adds the "web_oauth" edges to the WebOAuth entity.
-func (_u *ServiceClientUpdateOne) AddWebOauth(v ...*WebOAuth) *ServiceClientUpdateOne {
+// AddWebOauths adds the "web_oauths" edges to the WebOAuth entity.
+func (_u *ClientAppUpdateOne) AddWebOauths(v ...*WebOAuth) *ClientAppUpdateOne {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -444,31 +444,31 @@ func (_u *ServiceClientUpdateOne) AddWebOauth(v ...*WebOAuth) *ServiceClientUpda
 	return _u.AddWebOauthIDs(ids...)
 }
 
-// Mutation returns the ServiceClientMutation object of the builder.
-func (_u *ServiceClientUpdateOne) Mutation() *ServiceClientMutation {
+// Mutation returns the ClientAppMutation object of the builder.
+func (_u *ClientAppUpdateOne) Mutation() *ClientAppMutation {
 	return _u.mutation
 }
 
 // ClearService clears the "service" edge to the Service entity.
-func (_u *ServiceClientUpdateOne) ClearService() *ServiceClientUpdateOne {
+func (_u *ClientAppUpdateOne) ClearService() *ClientAppUpdateOne {
 	_u.mutation.ClearService()
 	return _u
 }
 
-// ClearWebOauth clears all "web_oauth" edges to the WebOAuth entity.
-func (_u *ServiceClientUpdateOne) ClearWebOauth() *ServiceClientUpdateOne {
-	_u.mutation.ClearWebOauth()
+// ClearWebOauths clears all "web_oauths" edges to the WebOAuth entity.
+func (_u *ClientAppUpdateOne) ClearWebOauths() *ClientAppUpdateOne {
+	_u.mutation.ClearWebOauths()
 	return _u
 }
 
-// RemoveWebOauthIDs removes the "web_oauth" edge to WebOAuth entities by IDs.
-func (_u *ServiceClientUpdateOne) RemoveWebOauthIDs(ids ...int64) *ServiceClientUpdateOne {
+// RemoveWebOauthIDs removes the "web_oauths" edge to WebOAuth entities by IDs.
+func (_u *ClientAppUpdateOne) RemoveWebOauthIDs(ids ...int64) *ClientAppUpdateOne {
 	_u.mutation.RemoveWebOauthIDs(ids...)
 	return _u
 }
 
-// RemoveWebOauth removes "web_oauth" edges to WebOAuth entities.
-func (_u *ServiceClientUpdateOne) RemoveWebOauth(v ...*WebOAuth) *ServiceClientUpdateOne {
+// RemoveWebOauths removes "web_oauths" edges to WebOAuth entities.
+func (_u *ClientAppUpdateOne) RemoveWebOauths(v ...*WebOAuth) *ClientAppUpdateOne {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -476,27 +476,27 @@ func (_u *ServiceClientUpdateOne) RemoveWebOauth(v ...*WebOAuth) *ServiceClientU
 	return _u.RemoveWebOauthIDs(ids...)
 }
 
-// Where appends a list predicates to the ServiceClientUpdate builder.
-func (_u *ServiceClientUpdateOne) Where(ps ...predicate.ServiceClient) *ServiceClientUpdateOne {
+// Where appends a list predicates to the ClientAppUpdate builder.
+func (_u *ClientAppUpdateOne) Where(ps ...predicate.ClientApp) *ClientAppUpdateOne {
 	_u.mutation.Where(ps...)
 	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (_u *ServiceClientUpdateOne) Select(field string, fields ...string) *ServiceClientUpdateOne {
+func (_u *ClientAppUpdateOne) Select(field string, fields ...string) *ClientAppUpdateOne {
 	_u.fields = append([]string{field}, fields...)
 	return _u
 }
 
-// Save executes the query and returns the updated ServiceClient entity.
-func (_u *ServiceClientUpdateOne) Save(ctx context.Context) (*ServiceClient, error) {
+// Save executes the query and returns the updated ClientApp entity.
+func (_u *ClientAppUpdateOne) Save(ctx context.Context) (*ClientApp, error) {
 	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_u *ServiceClientUpdateOne) SaveX(ctx context.Context) *ServiceClient {
+func (_u *ClientAppUpdateOne) SaveX(ctx context.Context) *ClientApp {
 	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -505,62 +505,62 @@ func (_u *ServiceClientUpdateOne) SaveX(ctx context.Context) *ServiceClient {
 }
 
 // Exec executes the query on the entity.
-func (_u *ServiceClientUpdateOne) Exec(ctx context.Context) error {
+func (_u *ClientAppUpdateOne) Exec(ctx context.Context) error {
 	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_u *ServiceClientUpdateOne) ExecX(ctx context.Context) {
+func (_u *ClientAppUpdateOne) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *ServiceClientUpdateOne) defaults() {
+func (_u *ClientAppUpdateOne) defaults() {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
-		v := serviceclient.UpdateDefaultUpdatedAt()
+		v := clientapp.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_u *ServiceClientUpdateOne) check() error {
+func (_u *ClientAppUpdateOne) check() error {
 	if v, ok := _u.mutation.SecretHash(); ok {
-		if err := serviceclient.SecretHashValidator(v); err != nil {
-			return &ValidationError{Name: "secret_hash", err: fmt.Errorf(`ent: validator failed for field "ServiceClient.secret_hash": %w`, err)}
+		if err := clientapp.SecretHashValidator(v); err != nil {
+			return &ValidationError{Name: "secret_hash", err: fmt.Errorf(`ent: validator failed for field "ClientApp.secret_hash": %w`, err)}
 		}
 	}
 	if v, ok := _u.mutation.Name(); ok {
-		if err := serviceclient.NameValidator(v); err != nil {
-			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "ServiceClient.name": %w`, err)}
+		if err := clientapp.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "ClientApp.name": %w`, err)}
 		}
 	}
 	if _u.mutation.ServiceCleared() && len(_u.mutation.ServiceIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "ServiceClient.service"`)
+		return errors.New(`ent: clearing a required unique edge "ClientApp.service"`)
 	}
 	return nil
 }
 
-func (_u *ServiceClientUpdateOne) sqlSave(ctx context.Context) (_node *ServiceClient, err error) {
+func (_u *ClientAppUpdateOne) sqlSave(ctx context.Context) (_node *ClientApp, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(serviceclient.Table, serviceclient.Columns, sqlgraph.NewFieldSpec(serviceclient.FieldID, field.TypeInt64))
+	_spec := sqlgraph.NewUpdateSpec(clientapp.Table, clientapp.Columns, sqlgraph.NewFieldSpec(clientapp.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
-		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ServiceClient.id" for update`)}
+		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ClientApp.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
 	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, serviceclient.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, clientapp.FieldID)
 		for _, f := range fields {
-			if !serviceclient.ValidColumn(f) {
+			if !clientapp.ValidColumn(f) {
 				return nil, &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 			}
-			if f != serviceclient.FieldID {
+			if f != clientapp.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, f)
 			}
 		}
@@ -573,32 +573,32 @@ func (_u *ServiceClientUpdateOne) sqlSave(ctx context.Context) (_node *ServiceCl
 		}
 	}
 	if value, ok := _u.mutation.PublicID(); ok {
-		_spec.SetField(serviceclient.FieldPublicID, field.TypeUUID, value)
+		_spec.SetField(clientapp.FieldPublicID, field.TypeUUID, value)
 	}
 	if value, ok := _u.mutation.SecretHash(); ok {
-		_spec.SetField(serviceclient.FieldSecretHash, field.TypeBytes, value)
+		_spec.SetField(clientapp.FieldSecretHash, field.TypeBytes, value)
 	}
 	if value, ok := _u.mutation.Name(); ok {
-		_spec.SetField(serviceclient.FieldName, field.TypeString, value)
+		_spec.SetField(clientapp.FieldName, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.Description(); ok {
-		_spec.SetField(serviceclient.FieldDescription, field.TypeString, value)
+		_spec.SetField(clientapp.FieldDescription, field.TypeString, value)
 	}
 	if _u.mutation.DescriptionCleared() {
-		_spec.ClearField(serviceclient.FieldDescription, field.TypeString)
+		_spec.ClearField(clientapp.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.IsActive(); ok {
-		_spec.SetField(serviceclient.FieldIsActive, field.TypeBool, value)
+		_spec.SetField(clientapp.FieldIsActive, field.TypeBool, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(serviceclient.FieldUpdatedAt, field.TypeTime, value)
+		_spec.SetField(clientapp.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.ServiceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   serviceclient.ServiceTable,
-			Columns: []string{serviceclient.ServiceColumn},
+			Table:   clientapp.ServiceTable,
+			Columns: []string{clientapp.ServiceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(service.FieldID, field.TypeInt64),
@@ -610,8 +610,8 @@ func (_u *ServiceClientUpdateOne) sqlSave(ctx context.Context) (_node *ServiceCl
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   serviceclient.ServiceTable,
-			Columns: []string{serviceclient.ServiceColumn},
+			Table:   clientapp.ServiceTable,
+			Columns: []string{clientapp.ServiceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(service.FieldID, field.TypeInt64),
@@ -622,12 +622,12 @@ func (_u *ServiceClientUpdateOne) sqlSave(ctx context.Context) (_node *ServiceCl
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.WebOauthCleared() {
+	if _u.mutation.WebOauthsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   serviceclient.WebOauthTable,
-			Columns: []string{serviceclient.WebOauthColumn},
+			Table:   clientapp.WebOauthsTable,
+			Columns: []string{clientapp.WebOauthsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(weboauth.FieldID, field.TypeInt64),
@@ -635,12 +635,12 @@ func (_u *ServiceClientUpdateOne) sqlSave(ctx context.Context) (_node *ServiceCl
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RemovedWebOauthIDs(); len(nodes) > 0 && !_u.mutation.WebOauthCleared() {
+	if nodes := _u.mutation.RemovedWebOauthsIDs(); len(nodes) > 0 && !_u.mutation.WebOauthsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   serviceclient.WebOauthTable,
-			Columns: []string{serviceclient.WebOauthColumn},
+			Table:   clientapp.WebOauthsTable,
+			Columns: []string{clientapp.WebOauthsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(weboauth.FieldID, field.TypeInt64),
@@ -651,12 +651,12 @@ func (_u *ServiceClientUpdateOne) sqlSave(ctx context.Context) (_node *ServiceCl
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.WebOauthIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.WebOauthsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   serviceclient.WebOauthTable,
-			Columns: []string{serviceclient.WebOauthColumn},
+			Table:   clientapp.WebOauthsTable,
+			Columns: []string{clientapp.WebOauthsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(weboauth.FieldID, field.TypeInt64),
@@ -667,12 +667,12 @@ func (_u *ServiceClientUpdateOne) sqlSave(ctx context.Context) (_node *ServiceCl
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &ServiceClient{config: _u.config}
+	_node = &ClientApp{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
 	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{serviceclient.Label}
+			err = &NotFoundError{clientapp.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}

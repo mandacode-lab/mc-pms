@@ -24,12 +24,6 @@ type UserIdentityCreate struct {
 	hooks    []Hook
 }
 
-// SetServiceID sets the "service_id" field.
-func (_c *UserIdentityCreate) SetServiceID(v int64) *UserIdentityCreate {
-	_c.mutation.SetServiceID(v)
-	return _c
-}
-
 // SetPublicID sets the "public_id" field.
 func (_c *UserIdentityCreate) SetPublicID(v uuid.UUID) *UserIdentityCreate {
 	_c.mutation.SetPublicID(v)
@@ -87,6 +81,12 @@ func (_c *UserIdentityCreate) SetNillableUpdatedAt(v *time.Time) *UserIdentityCr
 // SetID sets the "id" field.
 func (_c *UserIdentityCreate) SetID(v int64) *UserIdentityCreate {
 	_c.mutation.SetID(v)
+	return _c
+}
+
+// SetServiceID sets the "service" edge to the Service entity by ID.
+func (_c *UserIdentityCreate) SetServiceID(id int64) *UserIdentityCreate {
+	_c.mutation.SetServiceID(id)
 	return _c
 }
 
@@ -165,9 +165,6 @@ func (_c *UserIdentityCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *UserIdentityCreate) check() error {
-	if _, ok := _c.mutation.ServiceID(); !ok {
-		return &ValidationError{Name: "service_id", err: errors.New(`ent: missing required field "UserIdentity.service_id"`)}
-	}
 	if _, ok := _c.mutation.PublicID(); !ok {
 		return &ValidationError{Name: "public_id", err: errors.New(`ent: missing required field "UserIdentity.public_id"`)}
 	}
@@ -262,7 +259,7 @@ func (_c *UserIdentityCreate) createSpec() (*UserIdentity, *sqlgraph.CreateSpec)
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.ServiceID = nodes[0]
+		_node.service_user_identities = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := _c.mutation.UserInfoIDs(); len(nodes) > 0 {

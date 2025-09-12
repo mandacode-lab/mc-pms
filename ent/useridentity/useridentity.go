@@ -17,8 +17,6 @@ const (
 	Label = "user_identity"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldServiceID holds the string denoting the service_id field in the database.
-	FieldServiceID = "service_id"
 	// FieldPublicID holds the string denoting the public_id field in the database.
 	FieldPublicID = "public_id"
 	// FieldProviderID holds the string denoting the provider_id field in the database.
@@ -41,7 +39,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "service" package.
 	ServiceInverseTable = "services"
 	// ServiceColumn is the table column denoting the service relation/edge.
-	ServiceColumn = "service_id"
+	ServiceColumn = "service_user_identities"
 	// UserInfoTable is the table that holds the user_info relation/edge.
 	UserInfoTable = "user_infos"
 	// UserInfoInverseTable is the table name for the UserInfo entity.
@@ -54,7 +52,6 @@ const (
 // Columns holds all SQL columns for useridentity fields.
 var Columns = []string{
 	FieldID,
-	FieldServiceID,
 	FieldPublicID,
 	FieldProviderID,
 	FieldProvider,
@@ -62,10 +59,21 @@ var Columns = []string{
 	FieldUpdatedAt,
 }
 
+// ForeignKeys holds the SQL foreign-keys that are owned by the "user_identities"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"service_user_identities",
+}
+
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -101,11 +109,6 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
-}
-
-// ByServiceID orders the results by the service_id field.
-func ByServiceID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldServiceID, opts...).ToFunc()
 }
 
 // ByPublicID orders the results by the public_id field.

@@ -21,8 +21,6 @@ type UserIdentity struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
-	// ServiceID holds the value of the "service_id" field.
-	ServiceID int64 `json:"service_id,omitempty"`
 	// PublicID holds the value of the "public_id" field.
 	PublicID uuid.UUID `json:"public_id,omitempty"`
 	// ProviderID holds the value of the "provider_id" field.
@@ -35,8 +33,9 @@ type UserIdentity struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserIdentityQuery when eager-loading is set.
-	Edges        UserIdentityEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                   UserIdentityEdges `json:"edges"`
+	service_user_identities *int64
+	selectValues            sql.SelectValues
 }
 
 // UserIdentityEdges holds the relations/edges for other nodes in the graph.
@@ -77,7 +76,7 @@ func (*UserIdentity) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case useridentity.FieldID, useridentity.FieldServiceID:
+		case useridentity.FieldID:
 			values[i] = new(sql.NullInt64)
 		case useridentity.FieldProviderID, useridentity.FieldProvider:
 			values[i] = new(sql.NullString)
@@ -85,6 +84,8 @@ func (*UserIdentity) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullTime)
 		case useridentity.FieldPublicID:
 			values[i] = new(uuid.UUID)
+		case useridentity.ForeignKeys[0]: // service_user_identities
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -106,12 +107,6 @@ func (_m *UserIdentity) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
-		case useridentity.FieldServiceID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field service_id", values[i])
-			} else if value.Valid {
-				_m.ServiceID = value.Int64
-			}
 		case useridentity.FieldPublicID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field public_id", values[i])
@@ -141,6 +136,13 @@ func (_m *UserIdentity) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
+			}
+		case useridentity.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field service_user_identities", value)
+			} else if value.Valid {
+				_m.service_user_identities = new(int64)
+				*_m.service_user_identities = int64(value.Int64)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -188,9 +190,6 @@ func (_m *UserIdentity) String() string {
 	var builder strings.Builder
 	builder.WriteString("UserIdentity(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
-	builder.WriteString("service_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.ServiceID))
-	builder.WriteString(", ")
 	builder.WriteString("public_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.PublicID))
 	builder.WriteString(", ")

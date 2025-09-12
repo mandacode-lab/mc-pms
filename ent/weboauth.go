@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/mandacode-com/serengeti-integrated/ent/serviceclient"
+	"github.com/mandacode-com/serengeti-integrated/ent/clientapp"
 	"github.com/mandacode-com/serengeti-integrated/ent/weboauth"
 	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
 )
@@ -20,8 +20,6 @@ type WebOAuth struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
-	// ServiceClientID holds the value of the "service_client_id" field.
-	ServiceClientID int64 `json:"service_client_id,omitempty"`
 	// Provider holds the value of the "provider" field.
 	Provider shared.Provider `json:"provider,omitempty"`
 	// OauthClientID holds the value of the "oauth_client_id" field.
@@ -46,28 +44,29 @@ type WebOAuth struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the WebOAuthQuery when eager-loading is set.
-	Edges        WebOAuthEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                 WebOAuthEdges `json:"edges"`
+	client_app_web_oauths *int64
+	selectValues          sql.SelectValues
 }
 
 // WebOAuthEdges holds the relations/edges for other nodes in the graph.
 type WebOAuthEdges struct {
-	// ServiceClient holds the value of the service_client edge.
-	ServiceClient *ServiceClient `json:"service_client,omitempty"`
+	// ClientApp holds the value of the client_app edge.
+	ClientApp *ClientApp `json:"client_app,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 }
 
-// ServiceClientOrErr returns the ServiceClient value or an error if the edge
+// ClientAppOrErr returns the ClientApp value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e WebOAuthEdges) ServiceClientOrErr() (*ServiceClient, error) {
-	if e.ServiceClient != nil {
-		return e.ServiceClient, nil
+func (e WebOAuthEdges) ClientAppOrErr() (*ClientApp, error) {
+	if e.ClientApp != nil {
+		return e.ClientApp, nil
 	} else if e.loadedTypes[0] {
-		return nil, &NotFoundError{label: serviceclient.Label}
+		return nil, &NotFoundError{label: clientapp.Label}
 	}
-	return nil, &NotLoadedError{edge: "service_client"}
+	return nil, &NotLoadedError{edge: "client_app"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -77,12 +76,14 @@ func (*WebOAuth) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case weboauth.FieldOauthSecretCt, weboauth.FieldOauthSecretNonce, weboauth.FieldDekWrapped, weboauth.FieldDekNonce, weboauth.FieldRedirectUris, weboauth.FieldScopes:
 			values[i] = new([]byte)
-		case weboauth.FieldID, weboauth.FieldServiceClientID:
+		case weboauth.FieldID:
 			values[i] = new(sql.NullInt64)
 		case weboauth.FieldProvider, weboauth.FieldOauthClientID:
 			values[i] = new(sql.NullString)
 		case weboauth.FieldDekRotatedAt, weboauth.FieldCreatedAt, weboauth.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
+		case weboauth.ForeignKeys[0]: // client_app_web_oauths
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -104,12 +105,6 @@ func (_m *WebOAuth) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
-		case weboauth.FieldServiceClientID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field service_client_id", values[i])
-			} else if value.Valid {
-				_m.ServiceClientID = value.Int64
-			}
 		case weboauth.FieldProvider:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field provider", values[i])
@@ -180,6 +175,13 @@ func (_m *WebOAuth) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
+		case weboauth.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field client_app_web_oauths", value)
+			} else if value.Valid {
+				_m.client_app_web_oauths = new(int64)
+				*_m.client_app_web_oauths = int64(value.Int64)
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -193,9 +195,9 @@ func (_m *WebOAuth) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// QueryServiceClient queries the "service_client" edge of the WebOAuth entity.
-func (_m *WebOAuth) QueryServiceClient() *ServiceClientQuery {
-	return NewWebOAuthClient(_m.config).QueryServiceClient(_m)
+// QueryClientApp queries the "client_app" edge of the WebOAuth entity.
+func (_m *WebOAuth) QueryClientApp() *ClientAppQuery {
+	return NewWebOAuthClient(_m.config).QueryClientApp(_m)
 }
 
 // Update returns a builder for updating this WebOAuth.
@@ -221,9 +223,6 @@ func (_m *WebOAuth) String() string {
 	var builder strings.Builder
 	builder.WriteString("WebOAuth(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
-	builder.WriteString("service_client_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.ServiceClientID))
-	builder.WriteString(", ")
 	builder.WriteString("provider=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Provider))
 	builder.WriteString(", ")

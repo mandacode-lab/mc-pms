@@ -7,6 +7,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/google/uuid"
 )
 
 const (
@@ -14,6 +15,8 @@ const (
 	Label = "user_info"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldPublicID holds the string denoting the public_id field in the database.
+	FieldPublicID = "public_id"
 	// FieldNickname holds the string denoting the nickname field in the database.
 	FieldNickname = "nickname"
 	// FieldEmail holds the string denoting the email field in the database.
@@ -40,6 +43,7 @@ const (
 // Columns holds all SQL columns for userinfo fields.
 var Columns = []string{
 	FieldID,
+	FieldPublicID,
 	FieldNickname,
 	FieldEmail,
 	FieldRawData,
@@ -69,6 +73,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultPublicID holds the default value on creation for the "public_id" field.
+	DefaultPublicID func() uuid.UUID
 	// NicknameValidator is a validator for the "nickname" field. It is called by the builders before save.
 	NicknameValidator func(string) error
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
@@ -85,6 +91,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByPublicID orders the results by the public_id field.
+func ByPublicID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPublicID, opts...).ToFunc()
 }
 
 // ByNickname orders the results by the nickname field.

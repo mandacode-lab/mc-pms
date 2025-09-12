@@ -3,14 +3,14 @@ package weboauth
 import (
 	"time"
 
+	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
 	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
-	serviceclientval "github.com/mandacode-com/serengeti-integrated/internal/domain/serviceclient/value"
 	weboauthval "github.com/mandacode-com/serengeti-integrated/internal/domain/weboauth/value"
 )
 
 type WebOAuth struct {
 	id               weboauthval.ID
-	serviceClientID  serviceclientval.ID
+	clientAppID      clientappval.ID
 	provider         shared.Provider
 	oauthClientID    string
 	oauthSecretCT    []byte
@@ -27,7 +27,7 @@ type WebOAuth struct {
 
 func NewWebOAuth(
 	id weboauthval.ID,
-	serviceClientID serviceclientval.ID,
+	clientAppID clientappval.ID,
 	provider shared.Provider,
 	oauthClientID string,
 	oauthSecretCT []byte,
@@ -42,7 +42,7 @@ func NewWebOAuth(
 ) *WebOAuth {
 	return &WebOAuth{
 		id:               id,
-		serviceClientID:  serviceClientID,
+		clientAppID:      clientAppID,
 		provider:         provider,
 		oauthClientID:    oauthClientID,
 		oauthSecretCT:    oauthSecretCT,
@@ -59,7 +59,7 @@ func NewWebOAuth(
 }
 
 func DraftWebOAuth(
-	serviceClientID serviceclientval.ID,
+	clientAppID clientappval.ID,
 	provider shared.Provider,
 	oauthClientID string,
 	oauthSecretCT []byte,
@@ -74,7 +74,7 @@ func DraftWebOAuth(
 
 	wo := NewWebOAuth(
 		id,
-		serviceClientID,
+		clientAppID,
 		provider,
 		oauthClientID,
 		oauthSecretCT,
@@ -98,8 +98,8 @@ func (wo *WebOAuth) ID() weboauthval.ID {
 	return wo.id
 }
 
-func (wo *WebOAuth) ServiceClientID() serviceclientval.ID {
-	return wo.serviceClientID
+func (wo *WebOAuth) ClientAppID() clientappval.ID {
+	return wo.clientAppID
 }
 
 func (wo *WebOAuth) Provider() shared.Provider {
@@ -194,3 +194,4 @@ func (wo *WebOAuth) PullEvents() []shared.DomainEvent {
 	wo.events = nil
 	return events
 }
+

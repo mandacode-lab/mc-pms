@@ -10,13 +10,13 @@ import (
 	"github.com/google/uuid"
 )
 
-// ServiceClient holds the schema definition for the ServiceClient entity.
-type ServiceClient struct {
+// ClientApp holds the schema definition for the ClientApp entity.
+type ClientApp struct {
 	ent.Schema
 }
 
-// Fields of the ServiceClient.
-func (ServiceClient) Fields() []ent.Field {
+// Fields of the ClientApp.
+func (ClientApp) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").
 			Unique(),
@@ -40,19 +40,19 @@ func (ServiceClient) Fields() []ent.Field {
 	}
 }
 
-// Edges of the ServiceClient.
-func (ServiceClient) Edges() []ent.Edge {
+// Edges of the ClientApp.
+func (ClientApp) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("service", Service.Type).
-			Ref("clients").
+			Ref("client_apps").
 			Unique().
 			Required(),
-		edge.To("web_oauth", WebOAuth.Type),
+		edge.To("web_oauths", WebOAuth.Type),
 	}
 }
 
-// Indexes of the ServiceClient.
-func (ServiceClient) Indexes() []ent.Index {
+// Indexes of the ClientApp.
+func (ClientApp) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("public_id").Unique(),
 	}

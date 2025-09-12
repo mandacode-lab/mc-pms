@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/mandacode-com/serengeti-integrated/ent/predicate"
 	"github.com/mandacode-com/serengeti-integrated/ent/useridentity"
 	"github.com/mandacode-com/serengeti-integrated/ent/userinfo"
@@ -26,6 +27,20 @@ type UserInfoUpdate struct {
 // Where appends a list predicates to the UserInfoUpdate builder.
 func (_u *UserInfoUpdate) Where(ps ...predicate.UserInfo) *UserInfoUpdate {
 	_u.mutation.Where(ps...)
+	return _u
+}
+
+// SetPublicID sets the "public_id" field.
+func (_u *UserInfoUpdate) SetPublicID(v uuid.UUID) *UserInfoUpdate {
+	_u.mutation.SetPublicID(v)
+	return _u
+}
+
+// SetNillablePublicID sets the "public_id" field if the given value is not nil.
+func (_u *UserInfoUpdate) SetNillablePublicID(v *uuid.UUID) *UserInfoUpdate {
+	if v != nil {
+		_u.SetPublicID(*v)
+	}
 	return _u
 }
 
@@ -164,6 +179,9 @@ func (_u *UserInfoUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			}
 		}
 	}
+	if value, ok := _u.mutation.PublicID(); ok {
+		_spec.SetField(userinfo.FieldPublicID, field.TypeUUID, value)
+	}
 	if value, ok := _u.mutation.Nickname(); ok {
 		_spec.SetField(userinfo.FieldNickname, field.TypeString, value)
 	}
@@ -229,6 +247,20 @@ type UserInfoUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *UserInfoMutation
+}
+
+// SetPublicID sets the "public_id" field.
+func (_u *UserInfoUpdateOne) SetPublicID(v uuid.UUID) *UserInfoUpdateOne {
+	_u.mutation.SetPublicID(v)
+	return _u
+}
+
+// SetNillablePublicID sets the "public_id" field if the given value is not nil.
+func (_u *UserInfoUpdateOne) SetNillablePublicID(v *uuid.UUID) *UserInfoUpdateOne {
+	if v != nil {
+		_u.SetPublicID(*v)
+	}
+	return _u
 }
 
 // SetNickname sets the "nickname" field.
@@ -395,6 +427,9 @@ func (_u *UserInfoUpdateOne) sqlSave(ctx context.Context) (_node *UserInfo, err 
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.PublicID(); ok {
+		_spec.SetField(userinfo.FieldPublicID, field.TypeUUID, value)
 	}
 	if value, ok := _u.mutation.Nickname(); ok {
 		_spec.SetField(userinfo.FieldNickname, field.TypeString, value)

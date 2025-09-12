@@ -7,6 +7,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/google/uuid"
 	"github.com/mandacode-com/serengeti-integrated/ent/predicate"
 )
 
@@ -55,6 +56,11 @@ func IDLTE(id int64) predicate.UserInfo {
 	return predicate.UserInfo(sql.FieldLTE(FieldID, id))
 }
 
+// PublicID applies equality check predicate on the "public_id" field. It's identical to PublicIDEQ.
+func PublicID(v uuid.UUID) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldEQ(FieldPublicID, v))
+}
+
 // Nickname applies equality check predicate on the "nickname" field. It's identical to NicknameEQ.
 func Nickname(v string) predicate.UserInfo {
 	return predicate.UserInfo(sql.FieldEQ(FieldNickname, v))
@@ -78,6 +84,46 @@ func CreatedAt(v time.Time) predicate.UserInfo {
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.UserInfo {
 	return predicate.UserInfo(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
+// PublicIDEQ applies the EQ predicate on the "public_id" field.
+func PublicIDEQ(v uuid.UUID) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldEQ(FieldPublicID, v))
+}
+
+// PublicIDNEQ applies the NEQ predicate on the "public_id" field.
+func PublicIDNEQ(v uuid.UUID) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldNEQ(FieldPublicID, v))
+}
+
+// PublicIDIn applies the In predicate on the "public_id" field.
+func PublicIDIn(vs ...uuid.UUID) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldIn(FieldPublicID, vs...))
+}
+
+// PublicIDNotIn applies the NotIn predicate on the "public_id" field.
+func PublicIDNotIn(vs ...uuid.UUID) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldNotIn(FieldPublicID, vs...))
+}
+
+// PublicIDGT applies the GT predicate on the "public_id" field.
+func PublicIDGT(v uuid.UUID) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldGT(FieldPublicID, v))
+}
+
+// PublicIDGTE applies the GTE predicate on the "public_id" field.
+func PublicIDGTE(v uuid.UUID) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldGTE(FieldPublicID, v))
+}
+
+// PublicIDLT applies the LT predicate on the "public_id" field.
+func PublicIDLT(v uuid.UUID) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldLT(FieldPublicID, v))
+}
+
+// PublicIDLTE applies the LTE predicate on the "public_id" field.
+func PublicIDLTE(v uuid.UUID) predicate.UserInfo {
+	return predicate.UserInfo(sql.FieldLTE(FieldPublicID, v))
 }
 
 // NicknameEQ applies the EQ predicate on the "nickname" field.

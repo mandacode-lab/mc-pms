@@ -131,4 +131,3 @@ func (s *Service) PullEvents() []shared.DomainEvent {
 	s.events = nil
 	return events
 }
-

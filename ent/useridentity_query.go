@@ -27,6 +27,7 @@ type UserIdentityQuery struct {
 	predicates   []predicate.UserIdentity
 	withService  *ServiceQuery
 	withUserInfo *UserInfoQuery
+	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -335,12 +336,12 @@ func (_q *UserIdentityQuery) WithUserInfo(opts ...func(*UserInfoQuery)) *UserIde
 // Example:
 //
 //	var v []struct {
-//		ServiceID int64 `json:"service_id,omitempty"`
+//		PublicID uuid.UUID `json:"public_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.UserIdentity.Query().
-//		GroupBy(useridentity.FieldServiceID).
+//		GroupBy(useridentity.FieldPublicID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *UserIdentityQuery) GroupBy(field string, fields ...string) *UserIdentityGroupBy {
@@ -358,11 +359,11 @@ func (_q *UserIdentityQuery) GroupBy(field string, fields ...string) *UserIdenti
 // Example:
 //
 //	var v []struct {
-//		ServiceID int64 `json:"service_id,omitempty"`
+//		PublicID uuid.UUID `json:"public_id,omitempty"`
 //	}
 //
 //	client.UserIdentity.Query().
-//		Select(useridentity.FieldServiceID).
+//		Select(useridentity.FieldPublicID).
 //		Scan(ctx, &v)
 func (_q *UserIdentityQuery) Select(fields ...string) *UserIdentitySelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
@@ -406,12 +407,19 @@ func (_q *UserIdentityQuery) prepareQuery(ctx context.Context) error {
 func (_q *UserIdentityQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*UserIdentity, error) {
 	var (
 		nodes       = []*UserIdentity{}
+		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
 			_q.withService != nil,
 			_q.withUserInfo != nil,
 		}
 	)
+	if _q.withService != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, useridentity.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*UserIdentity).scanValues(nil, columns)
 	}
@@ -449,7 +457,10 @@ func (_q *UserIdentityQuery) loadService(ctx context.Context, query *ServiceQuer
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*UserIdentity)
 	for i := range nodes {
-		fk := nodes[i].ServiceID
+		if nodes[i].service_user_identities == nil {
+			continue
+		}
+		fk := *nodes[i].service_user_identities
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -466,7 +477,7 @@ func (_q *UserIdentityQuery) loadService(ctx context.Context, query *ServiceQuer
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "service_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "service_user_identities" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -527,9 +538,6 @@ func (_q *UserIdentityQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != useridentity.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
-		}
-		if _q.withService != nil {
-			_spec.Node.AddColumnOnce(useridentity.FieldServiceID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

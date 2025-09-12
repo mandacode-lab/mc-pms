@@ -12,8 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
+	"github.com/mandacode-com/serengeti-integrated/ent/clientapp"
 	"github.com/mandacode-com/serengeti-integrated/ent/predicate"
-	"github.com/mandacode-com/serengeti-integrated/ent/serviceclient"
 	"github.com/mandacode-com/serengeti-integrated/ent/weboauth"
 	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
 )
@@ -28,20 +28,6 @@ type WebOAuthUpdate struct {
 // Where appends a list predicates to the WebOAuthUpdate builder.
 func (_u *WebOAuthUpdate) Where(ps ...predicate.WebOAuth) *WebOAuthUpdate {
 	_u.mutation.Where(ps...)
-	return _u
-}
-
-// SetServiceClientID sets the "service_client_id" field.
-func (_u *WebOAuthUpdate) SetServiceClientID(v int64) *WebOAuthUpdate {
-	_u.mutation.SetServiceClientID(v)
-	return _u
-}
-
-// SetNillableServiceClientID sets the "service_client_id" field if the given value is not nil.
-func (_u *WebOAuthUpdate) SetNillableServiceClientID(v *int64) *WebOAuthUpdate {
-	if v != nil {
-		_u.SetServiceClientID(*v)
-	}
 	return _u
 }
 
@@ -153,9 +139,15 @@ func (_u *WebOAuthUpdate) SetUpdatedAt(v time.Time) *WebOAuthUpdate {
 	return _u
 }
 
-// SetServiceClient sets the "service_client" edge to the ServiceClient entity.
-func (_u *WebOAuthUpdate) SetServiceClient(v *ServiceClient) *WebOAuthUpdate {
-	return _u.SetServiceClientID(v.ID)
+// SetClientAppID sets the "client_app" edge to the ClientApp entity by ID.
+func (_u *WebOAuthUpdate) SetClientAppID(id int64) *WebOAuthUpdate {
+	_u.mutation.SetClientAppID(id)
+	return _u
+}
+
+// SetClientApp sets the "client_app" edge to the ClientApp entity.
+func (_u *WebOAuthUpdate) SetClientApp(v *ClientApp) *WebOAuthUpdate {
+	return _u.SetClientAppID(v.ID)
 }
 
 // Mutation returns the WebOAuthMutation object of the builder.
@@ -163,9 +155,9 @@ func (_u *WebOAuthUpdate) Mutation() *WebOAuthMutation {
 	return _u.mutation
 }
 
-// ClearServiceClient clears the "service_client" edge to the ServiceClient entity.
-func (_u *WebOAuthUpdate) ClearServiceClient() *WebOAuthUpdate {
-	_u.mutation.ClearServiceClient()
+// ClearClientApp clears the "client_app" edge to the ClientApp entity.
+func (_u *WebOAuthUpdate) ClearClientApp() *WebOAuthUpdate {
+	_u.mutation.ClearClientApp()
 	return _u
 }
 
@@ -237,8 +229,8 @@ func (_u *WebOAuthUpdate) check() error {
 			return &ValidationError{Name: "dek_nonce", err: fmt.Errorf(`ent: validator failed for field "WebOAuth.dek_nonce": %w`, err)}
 		}
 	}
-	if _u.mutation.ServiceClientCleared() && len(_u.mutation.ServiceClientIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "WebOAuth.service_client"`)
+	if _u.mutation.ClientAppCleared() && len(_u.mutation.ClientAppIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "WebOAuth.client_app"`)
 	}
 	return nil
 }
@@ -301,28 +293,28 @@ func (_u *WebOAuthUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(weboauth.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if _u.mutation.ServiceClientCleared() {
+	if _u.mutation.ClientAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   weboauth.ServiceClientTable,
-			Columns: []string{weboauth.ServiceClientColumn},
+			Table:   weboauth.ClientAppTable,
+			Columns: []string{weboauth.ClientAppColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(serviceclient.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(clientapp.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.ServiceClientIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ClientAppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   weboauth.ServiceClientTable,
-			Columns: []string{weboauth.ServiceClientColumn},
+			Table:   weboauth.ClientAppTable,
+			Columns: []string{weboauth.ClientAppColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(serviceclient.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(clientapp.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -348,20 +340,6 @@ type WebOAuthUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *WebOAuthMutation
-}
-
-// SetServiceClientID sets the "service_client_id" field.
-func (_u *WebOAuthUpdateOne) SetServiceClientID(v int64) *WebOAuthUpdateOne {
-	_u.mutation.SetServiceClientID(v)
-	return _u
-}
-
-// SetNillableServiceClientID sets the "service_client_id" field if the given value is not nil.
-func (_u *WebOAuthUpdateOne) SetNillableServiceClientID(v *int64) *WebOAuthUpdateOne {
-	if v != nil {
-		_u.SetServiceClientID(*v)
-	}
-	return _u
 }
 
 // SetProvider sets the "provider" field.
@@ -472,9 +450,15 @@ func (_u *WebOAuthUpdateOne) SetUpdatedAt(v time.Time) *WebOAuthUpdateOne {
 	return _u
 }
 
-// SetServiceClient sets the "service_client" edge to the ServiceClient entity.
-func (_u *WebOAuthUpdateOne) SetServiceClient(v *ServiceClient) *WebOAuthUpdateOne {
-	return _u.SetServiceClientID(v.ID)
+// SetClientAppID sets the "client_app" edge to the ClientApp entity by ID.
+func (_u *WebOAuthUpdateOne) SetClientAppID(id int64) *WebOAuthUpdateOne {
+	_u.mutation.SetClientAppID(id)
+	return _u
+}
+
+// SetClientApp sets the "client_app" edge to the ClientApp entity.
+func (_u *WebOAuthUpdateOne) SetClientApp(v *ClientApp) *WebOAuthUpdateOne {
+	return _u.SetClientAppID(v.ID)
 }
 
 // Mutation returns the WebOAuthMutation object of the builder.
@@ -482,9 +466,9 @@ func (_u *WebOAuthUpdateOne) Mutation() *WebOAuthMutation {
 	return _u.mutation
 }
 
-// ClearServiceClient clears the "service_client" edge to the ServiceClient entity.
-func (_u *WebOAuthUpdateOne) ClearServiceClient() *WebOAuthUpdateOne {
-	_u.mutation.ClearServiceClient()
+// ClearClientApp clears the "client_app" edge to the ClientApp entity.
+func (_u *WebOAuthUpdateOne) ClearClientApp() *WebOAuthUpdateOne {
+	_u.mutation.ClearClientApp()
 	return _u
 }
 
@@ -569,8 +553,8 @@ func (_u *WebOAuthUpdateOne) check() error {
 			return &ValidationError{Name: "dek_nonce", err: fmt.Errorf(`ent: validator failed for field "WebOAuth.dek_nonce": %w`, err)}
 		}
 	}
-	if _u.mutation.ServiceClientCleared() && len(_u.mutation.ServiceClientIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "WebOAuth.service_client"`)
+	if _u.mutation.ClientAppCleared() && len(_u.mutation.ClientAppIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "WebOAuth.client_app"`)
 	}
 	return nil
 }
@@ -650,28 +634,28 @@ func (_u *WebOAuthUpdateOne) sqlSave(ctx context.Context) (_node *WebOAuth, err 
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(weboauth.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if _u.mutation.ServiceClientCleared() {
+	if _u.mutation.ClientAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   weboauth.ServiceClientTable,
-			Columns: []string{weboauth.ServiceClientColumn},
+			Table:   weboauth.ClientAppTable,
+			Columns: []string{weboauth.ClientAppColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(serviceclient.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(clientapp.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.ServiceClientIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ClientAppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   weboauth.ServiceClientTable,
-			Columns: []string{weboauth.ServiceClientColumn},
+			Table:   weboauth.ClientAppTable,
+			Columns: []string{weboauth.ClientAppColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(serviceclient.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(clientapp.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

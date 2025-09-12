@@ -38,8 +38,8 @@ type Service struct {
 
 // ServiceEdges holds the relations/edges for other nodes in the graph.
 type ServiceEdges struct {
-	// Clients holds the value of the clients edge.
-	Clients []*ServiceClient `json:"clients,omitempty"`
+	// ClientApps holds the value of the client_apps edge.
+	ClientApps []*ClientApp `json:"client_apps,omitempty"`
 	// UserIdentities holds the value of the user_identities edge.
 	UserIdentities []*UserIdentity `json:"user_identities,omitempty"`
 	// loadedTypes holds the information for reporting if a
@@ -47,13 +47,13 @@ type ServiceEdges struct {
 	loadedTypes [2]bool
 }
 
-// ClientsOrErr returns the Clients value or an error if the edge
+// ClientAppsOrErr returns the ClientApps value or an error if the edge
 // was not loaded in eager-loading.
-func (e ServiceEdges) ClientsOrErr() ([]*ServiceClient, error) {
+func (e ServiceEdges) ClientAppsOrErr() ([]*ClientApp, error) {
 	if e.loadedTypes[0] {
-		return e.Clients, nil
+		return e.ClientApps, nil
 	}
-	return nil, &NotLoadedError{edge: "clients"}
+	return nil, &NotLoadedError{edge: "client_apps"}
 }
 
 // UserIdentitiesOrErr returns the UserIdentities value or an error if the edge
@@ -150,9 +150,9 @@ func (_m *Service) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// QueryClients queries the "clients" edge of the Service entity.
-func (_m *Service) QueryClients() *ServiceClientQuery {
-	return NewServiceClient(_m.config).QueryClients(_m)
+// QueryClientApps queries the "client_apps" edge of the Service entity.
+func (_m *Service) QueryClientApps() *ClientAppQuery {
+	return NewServiceClient(_m.config).QueryClientApps(_m)
 }
 
 // QueryUserIdentities queries the "user_identities" edge of the Service entity.

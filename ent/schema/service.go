@@ -41,7 +41,7 @@ func (Service) Fields() []ent.Field {
 // Edges of the Service.
 func (Service) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("clients", ServiceClient.Type),
+		edge.To("client_apps", ClientApp.Type),
 		edge.To("user_identities", UserIdentity.Type),
 	}
 }
@@ -50,5 +50,6 @@ func (Service) Edges() []ent.Edge {
 func (Service) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("public_id").Unique(),
+		index.Fields("name").Unique(),
 	}
 }

@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 	"github.com/mandacode-com/serengeti-integrated/ent/useridentity"
 	"github.com/mandacode-com/serengeti-integrated/ent/userinfo"
 )
@@ -18,6 +19,8 @@ type UserInfo struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
+	// PublicID holds the value of the "public_id" field.
+	PublicID uuid.UUID `json:"public_id,omitempty"`
 	// Nickname holds the value of the "nickname" field.
 	Nickname string `json:"nickname,omitempty"`
 	// Email holds the value of the "email" field.
@@ -68,6 +71,8 @@ func (*UserInfo) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case userinfo.FieldCreatedAt, userinfo.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
+		case userinfo.FieldPublicID:
+			values[i] = new(uuid.UUID)
 		case userinfo.ForeignKeys[0]: // user_identity_user_info
 			values[i] = new(sql.NullInt64)
 		default:
@@ -91,6 +96,12 @@ func (_m *UserInfo) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
+		case userinfo.FieldPublicID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field public_id", values[i])
+			} else if value != nil {
+				_m.PublicID = *value
+			}
 		case userinfo.FieldNickname:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field nickname", values[i])
@@ -169,6 +180,9 @@ func (_m *UserInfo) String() string {
 	var builder strings.Builder
 	builder.WriteString("UserInfo(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("public_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.PublicID))
+	builder.WriteString(", ")
 	builder.WriteString("nickname=")
 	builder.WriteString(_m.Nickname)
 	builder.WriteString(", ")

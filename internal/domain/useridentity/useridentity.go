@@ -4,20 +4,20 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
 	serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
+	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
 	useridentityval "github.com/mandacode-com/serengeti-integrated/internal/domain/useridentity/value"
 )
 
 type UserIdentity struct {
-	id           useridentityval.ID
-	publicID     useridentityval.PublicID
-	serviceID    serviceval.ID
-	providerID   string
-	provider     shared.Provider
-	createdAt    time.Time
-	updatedAt    time.Time
-	events       []shared.DomainEvent
+	id         useridentityval.ID
+	publicID   useridentityval.PublicID
+	serviceID  serviceval.ID
+	providerID string
+	provider   shared.Provider
+	createdAt  time.Time
+	updatedAt  time.Time
+	events     []shared.DomainEvent
 }
 
 func NewUserIdentity(

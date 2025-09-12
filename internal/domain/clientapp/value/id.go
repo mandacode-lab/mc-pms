@@ -1,4 +1,4 @@
-package serviceclientval
+package clientappval
 
 import (
 	"errors"
@@ -7,9 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var (
-	ErrInvalidID = errors.New("invalid serviceclient ID")
-)
+var ErrInvalidID = errors.New("invalid clientapp ID")
 
 type ID struct {
 	value int64

@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // UserInfo holds the schema definition for the UserInfo entity.
@@ -17,6 +18,9 @@ type UserInfo struct {
 func (UserInfo) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").
+			Unique(),
+		field.UUID("public_id", uuid.UUID{}).
+			Default(uuid.New).
 			Unique(),
 		field.String("nickname").
 			NotEmpty(),

@@ -27,26 +27,26 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
-	// EdgeClients holds the string denoting the clients edge name in mutations.
-	EdgeClients = "clients"
+	// EdgeClientApps holds the string denoting the client_apps edge name in mutations.
+	EdgeClientApps = "client_apps"
 	// EdgeUserIdentities holds the string denoting the user_identities edge name in mutations.
 	EdgeUserIdentities = "user_identities"
 	// Table holds the table name of the service in the database.
 	Table = "services"
-	// ClientsTable is the table that holds the clients relation/edge.
-	ClientsTable = "service_clients"
-	// ClientsInverseTable is the table name for the ServiceClient entity.
-	// It exists in this package in order to avoid circular dependency with the "serviceclient" package.
-	ClientsInverseTable = "service_clients"
-	// ClientsColumn is the table column denoting the clients relation/edge.
-	ClientsColumn = "service_clients"
+	// ClientAppsTable is the table that holds the client_apps relation/edge.
+	ClientAppsTable = "client_apps"
+	// ClientAppsInverseTable is the table name for the ClientApp entity.
+	// It exists in this package in order to avoid circular dependency with the "clientapp" package.
+	ClientAppsInverseTable = "client_apps"
+	// ClientAppsColumn is the table column denoting the client_apps relation/edge.
+	ClientAppsColumn = "service_client_apps"
 	// UserIdentitiesTable is the table that holds the user_identities relation/edge.
 	UserIdentitiesTable = "user_identities"
 	// UserIdentitiesInverseTable is the table name for the UserIdentity entity.
 	// It exists in this package in order to avoid circular dependency with the "useridentity" package.
 	UserIdentitiesInverseTable = "user_identities"
 	// UserIdentitiesColumn is the table column denoting the user_identities relation/edge.
-	UserIdentitiesColumn = "service_id"
+	UserIdentitiesColumn = "service_user_identities"
 )
 
 // Columns holds all SQL columns for service fields.
@@ -123,17 +123,17 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
-// ByClientsCount orders the results by clients count.
-func ByClientsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByClientAppsCount orders the results by client_apps count.
+func ByClientAppsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newClientsStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newClientAppsStep(), opts...)
 	}
 }
 
-// ByClients orders the results by clients terms.
-func ByClients(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByClientApps orders the results by client_apps terms.
+func ByClientApps(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newClientsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newClientAppsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -150,11 +150,11 @@ func ByUserIdentities(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newUserIdentitiesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-func newClientsStep() *sqlgraph.Step {
+func newClientAppsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(ClientsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, ClientsTable, ClientsColumn),
+		sqlgraph.To(ClientAppsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, ClientAppsTable, ClientAppsColumn),
 	)
 }
 func newUserIdentitiesStep() *sqlgraph.Step {

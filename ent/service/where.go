@@ -356,21 +356,21 @@ func UpdatedAtLTE(v time.Time) predicate.Service {
 	return predicate.Service(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
-// HasClients applies the HasEdge predicate on the "clients" edge.
-func HasClients() predicate.Service {
+// HasClientApps applies the HasEdge predicate on the "client_apps" edge.
+func HasClientApps() predicate.Service {
 	return predicate.Service(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ClientsTable, ClientsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, ClientAppsTable, ClientAppsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasClientsWith applies the HasEdge predicate on the "clients" edge with a given conditions (other predicates).
-func HasClientsWith(preds ...predicate.ServiceClient) predicate.Service {
+// HasClientAppsWith applies the HasEdge predicate on the "client_apps" edge with a given conditions (other predicates).
+func HasClientAppsWith(preds ...predicate.ClientApp) predicate.Service {
 	return predicate.Service(func(s *sql.Selector) {
-		step := newClientsStep()
+		step := newClientAppsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

@@ -8,6 +8,39 @@ import (
 )
 
 var (
+	// ClientAppsColumns holds the columns for the "client_apps" table.
+	ClientAppsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "public_id", Type: field.TypeUUID, Unique: true},
+		{Name: "secret_hash", Type: field.TypeBytes},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "is_active", Type: field.TypeBool, Default: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "service_client_apps", Type: field.TypeInt64},
+	}
+	// ClientAppsTable holds the schema information for the "client_apps" table.
+	ClientAppsTable = &schema.Table{
+		Name:       "client_apps",
+		Columns:    ClientAppsColumns,
+		PrimaryKey: []*schema.Column{ClientAppsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "client_apps_services_client_apps",
+				Columns:    []*schema.Column{ClientAppsColumns[8]},
+				RefColumns: []*schema.Column{ServicesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "clientapp_public_id",
+				Unique:  true,
+				Columns: []*schema.Column{ClientAppsColumns[1]},
+			},
+		},
+	}
 	// ServicesColumns holds the columns for the "services" table.
 	ServicesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -29,38 +62,10 @@ var (
 				Unique:  true,
 				Columns: []*schema.Column{ServicesColumns[1]},
 			},
-		},
-	}
-	// ServiceClientsColumns holds the columns for the "service_clients" table.
-	ServiceClientsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "public_id", Type: field.TypeUUID, Unique: true},
-		{Name: "secret_hash", Type: field.TypeBytes},
-		{Name: "name", Type: field.TypeString},
-		{Name: "description", Type: field.TypeString, Nullable: true},
-		{Name: "is_active", Type: field.TypeBool, Default: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "service_clients", Type: field.TypeInt64},
-	}
-	// ServiceClientsTable holds the schema information for the "service_clients" table.
-	ServiceClientsTable = &schema.Table{
-		Name:       "service_clients",
-		Columns:    ServiceClientsColumns,
-		PrimaryKey: []*schema.Column{ServiceClientsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "service_clients_services_clients",
-				Columns:    []*schema.Column{ServiceClientsColumns[8]},
-				RefColumns: []*schema.Column{ServicesColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "serviceclient_public_id",
+				Name:    "service_name",
 				Unique:  true,
-				Columns: []*schema.Column{ServiceClientsColumns[1]},
+				Columns: []*schema.Column{ServicesColumns[2]},
 			},
 		},
 	}
@@ -72,7 +77,7 @@ var (
 		{Name: "provider", Type: field.TypeEnum, Enums: []string{"google", "apple"}},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "service_id", Type: field.TypeInt64},
+		{Name: "service_user_identities", Type: field.TypeInt64},
 	}
 	// UserIdentitiesTable holds the schema information for the "user_identities" table.
 	UserIdentitiesTable = &schema.Table{
@@ -89,15 +94,21 @@ var (
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "useridentity_service_id_provider_provider_id",
+				Name:    "useridentity_public_id",
 				Unique:  true,
-				Columns: []*schema.Column{UserIdentitiesColumns[6], UserIdentitiesColumns[3], UserIdentitiesColumns[2]},
+				Columns: []*schema.Column{UserIdentitiesColumns[1]},
+			},
+			{
+				Name:    "useridentity_provider_provider_id",
+				Unique:  true,
+				Columns: []*schema.Column{UserIdentitiesColumns[3], UserIdentitiesColumns[2]},
 			},
 		},
 	}
 	// UserInfosColumns holds the columns for the "user_infos" table.
 	UserInfosColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "public_id", Type: field.TypeUUID, Unique: true},
 		{Name: "nickname", Type: field.TypeString},
 		{Name: "email", Type: field.TypeString, Nullable: true},
 		{Name: "raw_data", Type: field.TypeBytes, Nullable: true},
@@ -113,7 +124,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "user_infos_user_identities_user_info",
-				Columns:    []*schema.Column{UserInfosColumns[6]},
+				Columns:    []*schema.Column{UserInfosColumns[7]},
 				RefColumns: []*schema.Column{UserIdentitiesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -133,7 +144,7 @@ var (
 		{Name: "scopes", Type: field.TypeJSON, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "service_client_id", Type: field.TypeInt64},
+		{Name: "client_app_web_oauths", Type: field.TypeInt64},
 	}
 	// WebOauthsTable holds the schema information for the "web_oauths" table.
 	WebOauthsTable = &schema.Table{
@@ -142,24 +153,24 @@ var (
 		PrimaryKey: []*schema.Column{WebOauthsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "web_oauths_service_clients_web_oauth",
+				Symbol:     "web_oauths_client_apps_web_oauths",
 				Columns:    []*schema.Column{WebOauthsColumns[12]},
-				RefColumns: []*schema.Column{ServiceClientsColumns[0]},
+				RefColumns: []*schema.Column{ClientAppsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "weboauth_service_client_id_provider",
+				Name:    "weboauth_provider",
 				Unique:  true,
-				Columns: []*schema.Column{WebOauthsColumns[12], WebOauthsColumns[1]},
+				Columns: []*schema.Column{WebOauthsColumns[1]},
 			},
 		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		ClientAppsTable,
 		ServicesTable,
-		ServiceClientsTable,
 		UserIdentitiesTable,
 		UserInfosTable,
 		WebOauthsTable,
@@ -167,8 +178,8 @@ var (
 )
 
 func init() {
-	ServiceClientsTable.ForeignKeys[0].RefTable = ServicesTable
+	ClientAppsTable.ForeignKeys[0].RefTable = ServicesTable
 	UserIdentitiesTable.ForeignKeys[0].RefTable = ServicesTable
 	UserInfosTable.ForeignKeys[0].RefTable = UserIdentitiesTable
-	WebOauthsTable.ForeignKeys[0].RefTable = ServiceClientsTable
+	WebOauthsTable.ForeignKeys[0].RefTable = ClientAppsTable
 }

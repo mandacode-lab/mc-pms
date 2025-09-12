@@ -8,30 +8,30 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/mandacode-com/serengeti-integrated/ent/clientapp"
 	"github.com/mandacode-com/serengeti-integrated/ent/predicate"
-	"github.com/mandacode-com/serengeti-integrated/ent/serviceclient"
 )
 
-// ServiceClientDelete is the builder for deleting a ServiceClient entity.
-type ServiceClientDelete struct {
+// ClientAppDelete is the builder for deleting a ClientApp entity.
+type ClientAppDelete struct {
 	config
 	hooks    []Hook
-	mutation *ServiceClientMutation
+	mutation *ClientAppMutation
 }
 
-// Where appends a list predicates to the ServiceClientDelete builder.
-func (_d *ServiceClientDelete) Where(ps ...predicate.ServiceClient) *ServiceClientDelete {
+// Where appends a list predicates to the ClientAppDelete builder.
+func (_d *ClientAppDelete) Where(ps ...predicate.ClientApp) *ClientAppDelete {
 	_d.mutation.Where(ps...)
 	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (_d *ServiceClientDelete) Exec(ctx context.Context) (int, error) {
+func (_d *ClientAppDelete) Exec(ctx context.Context) (int, error) {
 	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *ServiceClientDelete) ExecX(ctx context.Context) int {
+func (_d *ClientAppDelete) ExecX(ctx context.Context) int {
 	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
@@ -39,8 +39,8 @@ func (_d *ServiceClientDelete) ExecX(ctx context.Context) int {
 	return n
 }
 
-func (_d *ServiceClientDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(serviceclient.Table, sqlgraph.NewFieldSpec(serviceclient.FieldID, field.TypeInt64))
+func (_d *ClientAppDelete) sqlExec(ctx context.Context) (int, error) {
+	_spec := sqlgraph.NewDeleteSpec(clientapp.Table, sqlgraph.NewFieldSpec(clientapp.FieldID, field.TypeInt64))
 	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -56,32 +56,32 @@ func (_d *ServiceClientDelete) sqlExec(ctx context.Context) (int, error) {
 	return affected, err
 }
 
-// ServiceClientDeleteOne is the builder for deleting a single ServiceClient entity.
-type ServiceClientDeleteOne struct {
-	_d *ServiceClientDelete
+// ClientAppDeleteOne is the builder for deleting a single ClientApp entity.
+type ClientAppDeleteOne struct {
+	_d *ClientAppDelete
 }
 
-// Where appends a list predicates to the ServiceClientDelete builder.
-func (_d *ServiceClientDeleteOne) Where(ps ...predicate.ServiceClient) *ServiceClientDeleteOne {
+// Where appends a list predicates to the ClientAppDelete builder.
+func (_d *ClientAppDeleteOne) Where(ps ...predicate.ClientApp) *ClientAppDeleteOne {
 	_d._d.mutation.Where(ps...)
 	return _d
 }
 
 // Exec executes the deletion query.
-func (_d *ServiceClientDeleteOne) Exec(ctx context.Context) error {
+func (_d *ClientAppDeleteOne) Exec(ctx context.Context) error {
 	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{serviceclient.Label}
+		return &NotFoundError{clientapp.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *ServiceClientDeleteOne) ExecX(ctx context.Context) {
+func (_d *ClientAppDeleteOne) ExecX(ctx context.Context) {
 	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
