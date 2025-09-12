@@ -100,6 +100,10 @@ func init() {
 	userinfoDescNickname := userinfoFields[2].Descriptor()
 	// userinfo.NicknameValidator is a validator for the "nickname" field. It is called by the builders before save.
 	userinfo.NicknameValidator = userinfoDescNickname.Validators[0].(func(string) error)
+	// userinfoDescEmail is the schema descriptor for email field.
+	userinfoDescEmail := userinfoFields[3].Descriptor()
+	// userinfo.EmailValidator is a validator for the "email" field. It is called by the builders before save.
+	userinfo.EmailValidator = userinfoDescEmail.Validators[0].(func(string) error)
 	// userinfoDescCreatedAt is the schema descriptor for created_at field.
 	userinfoDescCreatedAt := userinfoFields[5].Descriptor()
 	// userinfo.DefaultCreatedAt holds the default value on creation for the created_at field.

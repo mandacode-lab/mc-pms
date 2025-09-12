@@ -25,7 +25,7 @@ func (UserInfo) Fields() []ent.Field {
 		field.String("nickname").
 			NotEmpty(),
 		field.String("email").
-			Optional(),
+			NotEmpty(),
 		field.Bytes("raw_data").
 			Optional(),
 		field.Time("created_at").
@@ -46,3 +46,4 @@ func (UserInfo) Edges() []ent.Edge {
 			Required(),
 	}
 }
+

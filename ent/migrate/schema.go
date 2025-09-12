@@ -115,7 +115,7 @@ var (
 		{Name: "id", Type: field.TypeInt64, Increment: true},
 		{Name: "public_id", Type: field.TypeUUID, Unique: true},
 		{Name: "nickname", Type: field.TypeString},
-		{Name: "email", Type: field.TypeString, Nullable: true},
+		{Name: "email", Type: field.TypeString},
 		{Name: "raw_data", Type: field.TypeBytes, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},

@@ -72,12 +72,6 @@ func (_u *UserInfoUpdate) SetNillableEmail(v *string) *UserInfoUpdate {
 	return _u
 }
 
-// ClearEmail clears the value of the "email" field.
-func (_u *UserInfoUpdate) ClearEmail() *UserInfoUpdate {
-	_u.mutation.ClearEmail()
-	return _u
-}
-
 // SetRawData sets the "raw_data" field.
 func (_u *UserInfoUpdate) SetRawData(v []byte) *UserInfoUpdate {
 	_u.mutation.SetRawData(v)
@@ -161,6 +155,11 @@ func (_u *UserInfoUpdate) check() error {
 			return &ValidationError{Name: "nickname", err: fmt.Errorf(`ent: validator failed for field "UserInfo.nickname": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.Email(); ok {
+		if err := userinfo.EmailValidator(v); err != nil {
+			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "UserInfo.email": %w`, err)}
+		}
+	}
 	if _u.mutation.UserIdentityCleared() && len(_u.mutation.UserIdentityIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "UserInfo.user_identity"`)
 	}
@@ -187,9 +186,6 @@ func (_u *UserInfoUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.Email(); ok {
 		_spec.SetField(userinfo.FieldEmail, field.TypeString, value)
-	}
-	if _u.mutation.EmailCleared() {
-		_spec.ClearField(userinfo.FieldEmail, field.TypeString)
 	}
 	if value, ok := _u.mutation.RawData(); ok {
 		_spec.SetField(userinfo.FieldRawData, field.TypeBytes, value)
@@ -291,12 +287,6 @@ func (_u *UserInfoUpdateOne) SetNillableEmail(v *string) *UserInfoUpdateOne {
 	return _u
 }
 
-// ClearEmail clears the value of the "email" field.
-func (_u *UserInfoUpdateOne) ClearEmail() *UserInfoUpdateOne {
-	_u.mutation.ClearEmail()
-	return _u
-}
-
 // SetRawData sets the "raw_data" field.
 func (_u *UserInfoUpdateOne) SetRawData(v []byte) *UserInfoUpdateOne {
 	_u.mutation.SetRawData(v)
@@ -393,6 +383,11 @@ func (_u *UserInfoUpdateOne) check() error {
 			return &ValidationError{Name: "nickname", err: fmt.Errorf(`ent: validator failed for field "UserInfo.nickname": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.Email(); ok {
+		if err := userinfo.EmailValidator(v); err != nil {
+			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "UserInfo.email": %w`, err)}
+		}
+	}
 	if _u.mutation.UserIdentityCleared() && len(_u.mutation.UserIdentityIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "UserInfo.user_identity"`)
 	}
@@ -436,9 +431,6 @@ func (_u *UserInfoUpdateOne) sqlSave(ctx context.Context) (_node *UserInfo, err 
 	}
 	if value, ok := _u.mutation.Email(); ok {
 		_spec.SetField(userinfo.FieldEmail, field.TypeString, value)
-	}
-	if _u.mutation.EmailCleared() {
-		_spec.ClearField(userinfo.FieldEmail, field.TypeString)
 	}
 	if value, ok := _u.mutation.RawData(); ok {
 		_spec.SetField(userinfo.FieldRawData, field.TypeBytes, value)

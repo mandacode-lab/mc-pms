@@ -14,7 +14,7 @@ type UserInfo struct {
 	publicID       userinfoval.PublicID
 	userIdentityID useridentityval.ID
 	nickname       string
-	email          *string
+	email          string
 	rawData        []byte
 	createdAt      time.Time
 	updatedAt      time.Time
@@ -26,7 +26,7 @@ func NewUserInfo(
 	publicID userinfoval.PublicID,
 	userIdentityID useridentityval.ID,
 	nickname string,
-	email *string,
+	email string,
 	rawData []byte,
 	createdAt time.Time,
 	updatedAt time.Time,
@@ -47,7 +47,7 @@ func NewUserInfo(
 func DraftUserInfo(
 	userIdentityID useridentityval.ID,
 	nickname string,
-	email *string,
+	email string,
 	rawData []byte,
 ) *UserInfo {
 	now := time.Now().UTC()
@@ -87,7 +87,7 @@ func (ui *UserInfo) Nickname() string {
 	return ui.nickname
 }
 
-func (ui *UserInfo) Email() *string {
+func (ui *UserInfo) Email() string {
 	return ui.email
 }
 
@@ -113,7 +113,7 @@ func (ui *UserInfo) UpdateNickname(nickname string) {
 	}
 }
 
-func (ui *UserInfo) UpdateEmail(email *string) {
+func (ui *UserInfo) UpdateEmail(email string) {
 	ui.email = email
 	ui.updatedAt = time.Now().UTC()
 	ui.raise(NewUserInfoUpdatedEvent(ui.publicID.String(), "email_changed"))

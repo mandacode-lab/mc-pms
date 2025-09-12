@@ -2656,22 +2656,9 @@ func (m *UserInfoMutation) OldEmail(ctx context.Context) (v string, err error) {
 	return oldValue.Email, nil
 }
 
-// ClearEmail clears the value of the "email" field.
-func (m *UserInfoMutation) ClearEmail() {
-	m.email = nil
-	m.clearedFields[userinfo.FieldEmail] = struct{}{}
-}
-
-// EmailCleared returns if the "email" field was cleared in this mutation.
-func (m *UserInfoMutation) EmailCleared() bool {
-	_, ok := m.clearedFields[userinfo.FieldEmail]
-	return ok
-}
-
 // ResetEmail resets all changes to the "email" field.
 func (m *UserInfoMutation) ResetEmail() {
 	m.email = nil
-	delete(m.clearedFields, userinfo.FieldEmail)
 }
 
 // SetRawData sets the "raw_data" field.
@@ -3009,9 +2996,6 @@ func (m *UserInfoMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *UserInfoMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(userinfo.FieldEmail) {
-		fields = append(fields, userinfo.FieldEmail)
-	}
 	if m.FieldCleared(userinfo.FieldRawData) {
 		fields = append(fields, userinfo.FieldRawData)
 	}
@@ -3029,9 +3013,6 @@ func (m *UserInfoMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *UserInfoMutation) ClearField(name string) error {
 	switch name {
-	case userinfo.FieldEmail:
-		m.ClearEmail()
-		return nil
 	case userinfo.FieldRawData:
 		m.ClearRawData()
 		return nil

@@ -48,14 +48,6 @@ func (_c *UserInfoCreate) SetEmail(v string) *UserInfoCreate {
 	return _c
 }
 
-// SetNillableEmail sets the "email" field if the given value is not nil.
-func (_c *UserInfoCreate) SetNillableEmail(v *string) *UserInfoCreate {
-	if v != nil {
-		_c.SetEmail(*v)
-	}
-	return _c
-}
-
 // SetRawData sets the "raw_data" field.
 func (_c *UserInfoCreate) SetRawData(v []byte) *UserInfoCreate {
 	_c.mutation.SetRawData(v)
@@ -167,6 +159,14 @@ func (_c *UserInfoCreate) check() error {
 	if v, ok := _c.mutation.Nickname(); ok {
 		if err := userinfo.NicknameValidator(v); err != nil {
 			return &ValidationError{Name: "nickname", err: fmt.Errorf(`ent: validator failed for field "UserInfo.nickname": %w`, err)}
+		}
+	}
+	if _, ok := _c.mutation.Email(); !ok {
+		return &ValidationError{Name: "email", err: errors.New(`ent: missing required field "UserInfo.email"`)}
+	}
+	if v, ok := _c.mutation.Email(); ok {
+		if err := userinfo.EmailValidator(v); err != nil {
+			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "UserInfo.email": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
