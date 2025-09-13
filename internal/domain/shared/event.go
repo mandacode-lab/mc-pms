@@ -33,6 +33,7 @@ func NewEventID() string {
 	return uuid.New().String()
 }
 
+
 func (e BaseEvent) EventID() string {
 	return e.eventID
 }

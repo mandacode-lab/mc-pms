@@ -1,9 +1,6 @@
 package clientappval
 
 import (
-	"crypto/rand"
-	"crypto/sha256"
-	"encoding/base64"
 	"errors"
 )
 
@@ -17,29 +14,28 @@ func NewSecretHash(hash []byte) SecretHash {
 	return SecretHash{value: hash}
 }
 
-func HashSecret(plainSecret string) SecretHash {
-	hash := sha256.Sum256([]byte(plainSecret))
-	return SecretHash{value: hash[:]}
+
+
+func HashSecretFromBytes(plainSecret []byte, hash []byte) SecretHash {
+	return SecretHash{value: hash}
 }
 
-func GenerateSecret() (string, SecretHash, error) {
-	secretBytes := make([]byte, 32)
-	_, err := rand.Read(secretBytes)
-	if err != nil {
-		return "", SecretHash{}, err
-	}
-
-	plainSecret := base64.URLEncoding.EncodeToString(secretBytes)
-	hash := HashSecret(plainSecret)
-
-	return plainSecret, hash, nil
+func HashSecret(plainSecret string, hash []byte) SecretHash {
+	return SecretHash{value: hash}
 }
+
+
 
 func (sh SecretHash) Value() []byte {
 	return sh.value
 }
 
-func (sh SecretHash) VerifySecret(plainSecret string) bool {
-	hash := HashSecret(plainSecret)
-	return string(sh.value) == string(hash.value)
+func (sh SecretHash) VerifySecretBytes(plainSecret []byte, hash []byte) bool {
+	expectedHash := HashSecretFromBytes(plainSecret, hash)
+	return string(sh.value) == string(expectedHash.value)
+}
+
+func (sh SecretHash) VerifySecret(plainSecret string, hash []byte) bool {
+	expectedHash := HashSecret(plainSecret, hash)
+	return string(sh.value) == string(expectedHash.value)
 }

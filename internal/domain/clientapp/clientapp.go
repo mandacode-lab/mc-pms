@@ -47,15 +47,10 @@ func NewClientApp(
 	}
 }
 
-func DraftClientApp(serviceID serviceval.ID, name string, description *string) (*ClientApp, string, error) {
+func DraftClientApp(serviceID serviceval.ID, name string, description *string, plainSecret []byte, secretHash clientappval.SecretHash) (*ClientApp, []byte) {
 	now := time.Now().UTC()
 	id := clientappval.NewID(0) // ID will be set by the database
 	publicID := clientappval.NewPublicID(uuid.New())
-
-	plainSecret, secretHash, err := clientappval.GenerateSecret()
-	if err != nil {
-		return nil, "", err
-	}
 
 	ca := NewClientApp(
 		id,
@@ -70,7 +65,7 @@ func DraftClientApp(serviceID serviceval.ID, name string, description *string) (
 	)
 
 	ca.raise(NewClientAppCreatedEvent(ca.publicID.String(), ca.name))
-	return ca, plainSecret, nil
+	return ca, plainSecret
 }
 
 // Getter methods
@@ -127,21 +122,20 @@ func (ca *ClientApp) UpdateDescription(description *string) {
 	ca.raise(NewClientAppUpdatedEvent(ca.publicID.String(), "description_changed"))
 }
 
-func (ca *ClientApp) RegenerateSecret() (string, error) {
-	plainSecret, secretHash, err := clientappval.GenerateSecret()
-	if err != nil {
-		return "", err
-	}
-
+func (ca *ClientApp) RegenerateSecret(plainSecret []byte, secretHash clientappval.SecretHash) []byte {
 	ca.secretHash = secretHash
 	ca.updatedAt = time.Now().UTC()
 	ca.raise(NewClientAppUpdatedEvent(ca.publicID.String(), "secret_regenerated"))
 
-	return plainSecret, nil
+	return plainSecret
 }
 
-func (ca *ClientApp) VerifySecret(plainSecret string) bool {
-	return ca.secretHash.VerifySecret(plainSecret)
+func (ca *ClientApp) VerifySecret(plainSecret string, hash []byte) bool {
+	return ca.secretHash.VerifySecret(plainSecret, hash)
+}
+
+func (ca *ClientApp) VerifySecretBytes(plainSecret []byte, hash []byte) bool {
+	return ca.secretHash.VerifySecretBytes(plainSecret, hash)
 }
 
 func (ca *ClientApp) Activate() {
