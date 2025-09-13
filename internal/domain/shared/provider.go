@@ -35,8 +35,17 @@ func NewProvider(provider string) (Provider, error) {
 	}
 }
 
+func (p Provider) IsValid() bool {
+	switch p {
+	case ProviderGoogle, ProviderApple, ProviderNaver, ProviderKakao, ProviderMandacode:
+		return true
+	default:
+		return false
+	}
+}
+
 func (Provider) Values() (providers []string) {
-	for _, v := range []Provider{ProviderGoogle, ProviderApple} {
+	for _, v := range []Provider{ProviderGoogle, ProviderApple, ProviderNaver, ProviderKakao, ProviderMandacode} {
 		providers = append(providers, string(v))
 	}
 	return
