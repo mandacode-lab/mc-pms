@@ -2,7 +2,7 @@ package in
 
 import (
 	"context"
-	
+
 	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
 	serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
 )
@@ -49,6 +49,7 @@ type ListClientAppsView struct {
 	ServiceID  serviceval.PublicID
 	ClientApps []ClientAppInfo
 }
+
 
 type ClientAppMgmtUsecase interface {
 	CreateClientApp(ctx context.Context, cmd *CreateClientAppCommand) (*CreateClientAppView, error)

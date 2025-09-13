@@ -31,8 +31,6 @@ type GetAuthURL struct {
 	Provider        shared.Provider
 	ClientAppID     clientappval.PublicID
 	ClientAppSecret []byte
-	RedirectURI     string
-	Scopes          []string
 }
 
 type GetAuthURLView struct {

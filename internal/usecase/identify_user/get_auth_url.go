@@ -37,21 +37,10 @@ func (u *Usecase) GetAuthURL(ctx context.Context, cmd *in.GetAuthURL) (*in.GetAu
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	redirectURI := cmd.RedirectURI
-	if redirectURI == "" {
-		redirectURI = weboauth.RedirectURI()
-	}
-
-	scopes := cmd.Scopes
-	if len(scopes) == 0 {
-		scopes = weboauth.Scopes()
-	}
-
-	authURL := oauthProvider.GetAuthURL(ctx, weboauth.OAuthClientID(), scopes, redirectURI, state)
+	authURL := oauthProvider.GetAuthURL(ctx, weboauth.OAuthClientID(), weboauth.Scopes(), weboauth.RedirectURI(), state)
 
 	return &in.GetAuthURLView{
 		AuthURL: authURL,
 		State:   state,
 	}, nil
 }
-
