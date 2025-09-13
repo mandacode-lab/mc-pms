@@ -8,4 +8,6 @@ const (
 	ErrClientAppNotFoundMsg   = "client app not found"
 	ErrInvalidClientSecretMsg = "invalid client secret"
 	ErrUserNotFoundMsg        = "user not found"
+	ErrMissingStateMsg        = "state parameter is required"
+	ErrInvalidStateMsg        = "invalid or expired state parameter"
 )

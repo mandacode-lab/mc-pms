@@ -29,7 +29,9 @@ func (u *Usecase) findOrCreateUser(ctx context.Context, serviceID serviceval.ID,
 			}
 
 			nickname := oauthUserInfo.ProviderID
-			if oauthUserInfo.Email != "" {
+			if oauthUserInfo.Nickname != "" {
+				nickname = oauthUserInfo.Nickname
+			} else if oauthUserInfo.Email != "" {
 				nickname = oauthUserInfo.Email
 			}
 

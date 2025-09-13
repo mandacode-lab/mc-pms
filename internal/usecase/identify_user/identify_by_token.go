@@ -13,7 +13,7 @@ func (u *Usecase) IdentifyByToken(ctx context.Context, cmd *in.IdentifyByToken) 
 		return nil, merr.New(merr.ErrNotFound, ErrClientAppNotFoundMsg, err)
 	}
 
-	hashedSecret, err := u.hasher.Hash(cmd.ClientAppSecret)
+	hashedSecret, err := u.hasher.Hash(ctx, cmd.ClientAppSecret)
 	if err != nil {
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
@@ -27,7 +27,7 @@ func (u *Usecase) IdentifyByToken(ctx context.Context, cmd *in.IdentifyByToken) 
 		return nil, merr.New(merr.ErrBadRequest, ErrInvalidProviderMsg, nil)
 	}
 
-	oauthUserInfo, err := oauthProvider.GetUserInfo(cmd.Token)
+	oauthUserInfo, err := oauthProvider.GetUserInfo(ctx, cmd.Token)
 	if err != nil {
 		return nil, merr.New(merr.ErrUnauthorized, ErrInvalidTokenMsg, err)
 	}

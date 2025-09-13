@@ -17,7 +17,7 @@ func (u *Usecase) RefreshSecret(ctx context.Context, cmd *in.RefreshSecretComman
 	}
 
 	// Generate secret bytes
-	secretBytes, err := u.secretGen.Generate()
+	secretBytes, err := u.secretGen.Generate(ctx)
 	if err != nil {
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
@@ -26,7 +26,7 @@ func (u *Usecase) RefreshSecret(ctx context.Context, cmd *in.RefreshSecretComman
 	plainSecret := u.encoder.Encode(secretBytes)
 
 	// Hash the plain secret
-	hash, err := u.hasher.Hash(plainSecret)
+	hash, err := u.hasher.Hash(ctx, plainSecret)
 	if err != nil {
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}

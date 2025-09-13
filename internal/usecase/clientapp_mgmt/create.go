@@ -24,7 +24,7 @@ func (u *Usecase) CreateClientApp(ctx context.Context, cmd *in.CreateClientAppCo
 	}
 
 	// Generate secret bytes
-	secretBytes, err := u.secretGen.Generate()
+	secretBytes, err := u.secretGen.Generate(ctx)
 	if err != nil {
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
@@ -33,7 +33,7 @@ func (u *Usecase) CreateClientApp(ctx context.Context, cmd *in.CreateClientAppCo
 	plainSecret := u.encoder.Encode(secretBytes)
 
 	// Hash the plain secret
-	hash, err := u.hasher.Hash(plainSecret)
+	hash, err := u.hasher.Hash(ctx, plainSecret)
 	if err != nil {
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}

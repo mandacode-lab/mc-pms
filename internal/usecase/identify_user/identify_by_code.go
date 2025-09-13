@@ -8,12 +8,21 @@ import (
 )
 
 func (u *Usecase) IdentifyByCode(ctx context.Context, cmd *in.IdentifyByCode) (*in.UserIdentityView, error) {
+	// Validate state parameter to prevent CSRF attacks
+	if cmd.State == "" {
+		return nil, merr.New(merr.ErrBadRequest, ErrMissingStateMsg, nil)
+	}
+
+	if !u.stateService.ValidateState(ctx, cmd.State) {
+		return nil, merr.New(merr.ErrUnauthorized, ErrInvalidStateMsg, nil)
+	}
+
 	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, cmd.ClientAppID)
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrClientAppNotFoundMsg, err)
 	}
 
-	hashedSecret, err := u.hasher.Hash(cmd.ClientAppSecret)
+	hashedSecret, err := u.hasher.Hash(ctx, cmd.ClientAppSecret)
 	if err != nil {
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
@@ -42,12 +51,12 @@ func (u *Usecase) IdentifyByCode(ctx context.Context, cmd *in.IdentifyByCode) (*
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	accessToken, err := oauthProvider.GetAccessToken(cmd.OAuthCode, weboauth.OAuthClientID(), oauthSecret)
+	accessToken, err := oauthProvider.GetAccessToken(ctx, cmd.OAuthCode, weboauth.OAuthClientID(), oauthSecret, weboauth.RedirectURI())
 	if err != nil {
 		return nil, merr.New(merr.ErrUnauthorized, ErrInvalidOAuthCodeMsg, err)
 	}
 
-	oauthUserInfo, err := oauthProvider.GetUserInfo(accessToken)
+	oauthUserInfo, err := oauthProvider.GetUserInfo(ctx, accessToken)
 	if err != nil {
 		return nil, merr.New(merr.ErrUnauthorized, ErrInvalidTokenMsg, err)
 	}

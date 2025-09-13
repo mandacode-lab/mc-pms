@@ -18,6 +18,7 @@ type Usecase struct {
 	txManager             out.TransactionManager
 	hasher                out.Hasher
 	kekProvider           out.KekProvider
+	stateService          out.StateService
 }
 
 func NewUsecase(
@@ -32,6 +33,7 @@ func NewUsecase(
 	txManager out.TransactionManager,
 	hasher out.Hasher,
 	kekProvider out.KekProvider,
+	stateService out.StateService,
 ) in.IdentifyUserUsecase {
 	return &Usecase{
 		oauthProviders:        oauthProviders,
@@ -45,5 +47,6 @@ func NewUsecase(
 		txManager:             txManager,
 		hasher:                hasher,
 		kekProvider:           kekProvider,
+		stateService:          stateService,
 	}
 }
