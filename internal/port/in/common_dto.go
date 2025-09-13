@@ -44,6 +44,6 @@ type WebOAuthInfo struct {
 	OAuthClientID string
 	RedirectURI   string
 	Scopes        []string
-	CreatedAt     string
-	UpdatedAt     string
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
