@@ -1,0 +1,51 @@
+package clientapp_mgmt
+
+import (
+	"context"
+
+	"github.com/mandacode-com/merr"
+	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
+	"github.com/mandacode-com/serengeti-integrated/internal/port/in"
+	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
+)
+
+func (u *Usecase) RefreshSecret(ctx context.Context, cmd *in.RefreshSecretCommand) (*in.RefreshSecretView, error) {
+	// Find the client app by public ID
+	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, cmd.ClientAppID)
+	if err != nil {
+		return nil, merr.New(merr.ErrNotFound, ErrClientAppNotFoundMsg, err)
+	}
+
+	// Generate secret bytes
+	secretBytes, err := u.secretGen.Generate()
+	if err != nil {
+		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
+	}
+
+	// Encode secret bytes to plain secret
+	plainSecret := u.encoder.Encode(secretBytes)
+
+	// Hash the plain secret
+	hash, err := u.hasher.Hash(plainSecret)
+	if err != nil {
+		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
+	}
+
+	// Create secret hash from the computed hash
+	secretHash := clientappval.NewSecretHash(hash)
+
+	// Regenerate secret using domain logic
+	returnedSecret := clientApp.RegenerateSecret(plainSecret, secretHash)
+
+	// Update in repository within transaction
+	err = u.txManager.WithTx(ctx, func(tx out.Tx) error {
+		return u.clientAppRepo.Update(ctx, tx, clientApp)
+	})
+	if err != nil {
+		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
+	}
+
+	return &in.RefreshSecretView{
+		Secret: returnedSecret,
+	}, nil
+}
