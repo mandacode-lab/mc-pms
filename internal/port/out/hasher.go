@@ -1,6 +1,8 @@
 package out
 
+import "context"
+
 type Hasher interface {
-	Hash(data []byte) ([]byte, error)
-	Compare(hash, data []byte) error
+	Hash(ctx context.Context, data []byte) ([]byte, error)
+	Compare(ctx context.Context, hash, data []byte) error
 }

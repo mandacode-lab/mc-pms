@@ -1,6 +1,8 @@
 package out
 
+import "context"
+
 type StateService interface {
-	GenerateState() (string, error)
-	ValidateState(state string) bool
+	GenerateState(ctx context.Context) (string, error)
+	ValidateState(ctx context.Context, state string) bool
 }
