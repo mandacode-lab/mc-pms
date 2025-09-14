@@ -72,19 +72,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Resource not found",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     }
                 }
@@ -152,13 +152,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     }
                 }
@@ -219,13 +219,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     }
                 }
@@ -260,13 +260,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     }
                 }
@@ -304,13 +304,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     }
                 }
@@ -357,13 +357,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     }
                 }
@@ -398,13 +398,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     }
                 }
@@ -444,19 +444,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Resource not found",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     }
                 }
@@ -503,19 +503,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Resource not found",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     }
                 }
@@ -578,13 +578,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     }
                 }
@@ -630,13 +630,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     }
                 }
@@ -676,13 +676,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
                         }
                     }
                 }
@@ -690,7 +690,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "common.ErrorResponse": {
+        "github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse": {
             "type": "object",
             "properties": {
                 "code": {

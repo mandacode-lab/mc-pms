@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
+	_ "github.com/mandacode-com/serengeti/internal/adapter/handler/common"
 	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
 	"github.com/mandacode-com/serengeti/internal/domain/shared"
 	useridentityval "github.com/mandacode-com/serengeti/internal/domain/useridentity/value"
@@ -13,13 +14,13 @@ import (
 )
 
 type UserResponse struct {
-	ServiceID string    `json:"service_id"`
-	UserID    string    `json:"user_id"`
-	Nickname  string    `json:"nickname"`
-	Email     string    `json:"email"`
-	Provider  string    `json:"provider"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ServiceID string    `json:"service_id" example:"srv_1234567890abcdef"`
+	UserID    string    `json:"user_id" example:"usr_abcdef1234567890"`
+	Nickname  string    `json:"nickname" example:"john_doe"`
+	Email     string    `json:"email" example:"john.doe@example.com"`
+	Provider  string    `json:"provider" example:"google"`
+	CreatedAt time.Time `json:"created_at" example:"2023-01-01T00:00:00Z"`
+	UpdatedAt time.Time `json:"updated_at" example:"2023-01-01T00:00:00Z"`
 }
 
 type FindUserInfoResponse struct {
@@ -59,8 +60,8 @@ func toFindUserInfoResponse(view *in.FindUserInfoView) *FindUserInfoResponse {
 // @Param email query string false "User email"
 // @Param nickname query string false "User nickname"
 // @Success 200 {object} FindUserInfoResponse "List of matching users"
-// @Failure 400 {object} common.ErrorResponse "Invalid request"
-// @Failure 500 {object} common.ErrorResponse "Internal server error"
+// @Failure 400 {object} merrmid.ErrorResponse "Invalid request"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
 // @Router /users [get]
 func (h *Handler) FindUserInfo(c *gin.Context) {
 	ctx := c.Request.Context()
@@ -122,4 +123,3 @@ func (h *Handler) FindUserInfo(c *gin.Context) {
 	response := toFindUserInfoResponse(view)
 	c.JSON(http.StatusOK, response)
 }
-

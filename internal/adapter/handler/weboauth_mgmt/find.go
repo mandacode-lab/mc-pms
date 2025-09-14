@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
+	_ "github.com/mandacode-com/serengeti/internal/adapter/handler/common"
 	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
 	"github.com/mandacode-com/serengeti/internal/domain/shared"
 	"github.com/mandacode-com/serengeti/internal/port/in"
@@ -55,8 +56,8 @@ func toReadWebOAuthResponse(view *in.ReadWebOAuthView) *ReadWebOAuthResponse {
 // @Param client_app_id query string true "Client App ID"
 // @Param provider query string false "OAuth Provider" Enums(google, kakao, naver)
 // @Success 200 {object} ReadWebOAuthResponse "OAuth configurations"
-// @Failure 400 {object} common.ErrorResponse "Invalid request"
-// @Failure 500 {object} common.ErrorResponse "Internal server error"
+// @Failure 400 {object} merrmid.ErrorResponse "Invalid request"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
 // @Router /weboauth [get]
 func (h *Handler) ReadWebOAuth(c *gin.Context) {
 	ctx := c.Request.Context()

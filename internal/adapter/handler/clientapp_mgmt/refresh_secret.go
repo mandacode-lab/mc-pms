@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
+	_ "github.com/mandacode-com/serengeti/internal/adapter/handler/common"
 	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
 	"github.com/mandacode-com/serengeti/internal/port/in"
 )
@@ -26,8 +27,8 @@ func toRefreshSecretResponse(view *in.RefreshSecretView) *RefreshSecretResponse 
 // @Produce json
 // @Param id path string true "Client App ID"
 // @Success 200 {object} RefreshSecretResponse "New secret"
-// @Failure 400 {object} common.ErrorResponse "Invalid request"
-// @Failure 500 {object} common.ErrorResponse "Internal server error"
+// @Failure 400 {object} merrmid.ErrorResponse "Invalid request"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
 // @Router /client-apps/{id}/refresh-secret [post]
 func (h *Handler) RefreshSecret(c *gin.Context) {
 	ctx := c.Request.Context()

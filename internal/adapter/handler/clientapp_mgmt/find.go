@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
+	_ "github.com/mandacode-com/serengeti/internal/adapter/handler/common"
 	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
 	"github.com/mandacode-com/serengeti/internal/port/in"
 )
@@ -55,8 +56,8 @@ func toListClientAppsResponse(view *in.ListClientAppsView) *ListClientAppsRespon
 // @Produce json
 // @Param service_id query string true "Service ID"
 // @Success 200 {object} ListClientAppsResponse "List of client apps"
-// @Failure 400 {object} common.ErrorResponse "Invalid request"
-// @Failure 500 {object} common.ErrorResponse "Internal server error"
+// @Failure 400 {object} merrmid.ErrorResponse "Invalid request"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
 // @Router /client-apps [get]
 func (h *Handler) ListClientApps(c *gin.Context) {
 	ctx := c.Request.Context()

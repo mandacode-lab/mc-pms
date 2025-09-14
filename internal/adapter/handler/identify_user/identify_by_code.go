@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
+	_ "github.com/mandacode-com/serengeti/internal/adapter/handler/common"
 	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
 	"github.com/mandacode-com/serengeti/internal/domain/shared"
 	"github.com/mandacode-com/serengeti/internal/port/in"
@@ -54,8 +55,8 @@ func toIdentifyByCodeResponse(view *in.UserIdentityView) *IdentifyByCodeResponse
 // @Param client_app_id query string true "Client Application ID"
 // @Param client_app_secret query string true "Client Application Secret"
 // @Success 200 {object} IdentifyByCodeResponse "User identity information"
-// @Failure 400 {object} common.ErrorResponse "Invalid request"
-// @Failure 500 {object} common.ErrorResponse "Internal server error"
+// @Failure 400 {object} merrmid.ErrorResponse "Invalid request"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
 // @Router /auth/identify-by-code [get]
 func (h *Handler) IdentifyByCode(c *gin.Context) {
 	ctx := c.Request.Context()

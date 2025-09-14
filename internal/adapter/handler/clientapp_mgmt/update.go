@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
+	_ "github.com/mandacode-com/serengeti/internal/adapter/handler/common"
 	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
 	"github.com/mandacode-com/serengeti/internal/port/in"
 )
@@ -46,8 +47,8 @@ func toUpdateClientAppResponse(view *in.UpdateClientAppView) *UpdateClientAppRes
 // @Param id path string true "Client App ID"
 // @Param request body UpdateClientAppRequest true "Client app update request"
 // @Success 200 {object} UpdateClientAppResponse "Updated client app"
-// @Failure 400 {object} common.ErrorResponse "Invalid request"
-// @Failure 500 {object} common.ErrorResponse "Internal server error"
+// @Failure 400 {object} merrmid.ErrorResponse "Invalid request"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
 // @Router /client-apps/{id} [put]
 func (h *Handler) UpdateClientApp(c *gin.Context) {
 	ctx := c.Request.Context()

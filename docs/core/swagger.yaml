@@ -1,6 +1,6 @@
 basePath: /v1
 definitions:
-  common.ErrorResponse:
+  github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse:
     properties:
       code:
         $ref: '#/definitions/merr.ErrCode'
@@ -374,15 +374,15 @@ paths:
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
         "404":
           description: Resource not found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
       summary: Get OAuth authorization URL
       tags:
       - auth
@@ -429,11 +429,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
       summary: Identify user by code
       tags:
       - auth
@@ -475,11 +475,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
       summary: Identify user by token
       tags:
       - auth
@@ -502,11 +502,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
       summary: List client apps
       tags:
       - client-apps
@@ -531,11 +531,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
       summary: Create a new client app
       tags:
       - client-apps
@@ -566,11 +566,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
       summary: Update a client app
       tags:
       - client-apps
@@ -593,11 +593,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
       summary: Refresh client app secret
       tags:
       - client-apps
@@ -623,15 +623,15 @@ paths:
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
         "404":
           description: Resource not found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
       summary: Create a new service
       tags:
       - services
@@ -662,15 +662,15 @@ paths:
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
         "404":
           description: Resource not found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
       summary: Update a service
       tags:
       - services
@@ -712,11 +712,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
       summary: Find users
       tags:
       - users
@@ -747,11 +747,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
       summary: Read OAuth configs
       tags:
       - weboauth
@@ -777,11 +777,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse'
       summary: Register OAuth config
       tags:
       - weboauth

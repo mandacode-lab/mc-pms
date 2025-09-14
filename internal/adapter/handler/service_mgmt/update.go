@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
+	_ "github.com/mandacode-com/serengeti/internal/adapter/handler/common"
 	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
 	"github.com/mandacode-com/serengeti/internal/port/in"
 )
@@ -44,9 +45,9 @@ func toUpdateServiceResponse(view *in.UpdateServiceView) *UpdateServiceResponse 
 // @Param id path string true "Service ID"
 // @Param request body UpdateServiceRequest true "Service update request"
 // @Success 200 {object} UpdateServiceResponse "Updated service"
-// @Failure 400 {object} common.ErrorResponse "Bad request"
-// @Failure 404 {object} common.ErrorResponse "Resource not found"
-// @Failure 500 {object} common.ErrorResponse "Internal server error"
+// @Failure 400 {object} merrmid.ErrorResponse "Bad request"
+// @Failure 404 {object} merrmid.ErrorResponse "Resource not found"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
 // @Router /services/{id} [put]
 func (h *Handler) UpdateService(c *gin.Context) {
 	ctx := c.Request.Context()
