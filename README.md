@@ -1,175 +1,190 @@
 # Serengeti Integrated
 
-A microservices architecture implementing authentication, client management, and service management using hexagonal architecture patterns.
-
-## Services
-
-### Auth Service (Port: 8080)
-OAuth-based authentication service supporting Google, Kakao, and Naver providers.
-
-**Endpoints:**
-- `POST /v1/auth/login/code` - Login with OAuth code
-- `POST /v1/auth/login/access` - Login with OAuth access token  
-- `POST /v1/auth/verify` - Verify login code
-- `GET /v1/auth/url/{provider}` - Get OAuth authorization URL
-
-### Client Service (Port: 9090 - gRPC)
-Client credential management service.
-
-**gRPC Services:**
-- `CreateClient` - Create new service client
-- `GetClient` - Retrieve client information
-- `VerifyClient` - Verify client credentials
-- `ListClients` - List clients for service
-- `UpdateClient` - Update client information
-- `ActivateClient` - Activate client
-- `DeactivateClient` - Deactivate client
-
-### Core Service (Port: 8081)
-Service management and administration.
-
-**Endpoints:**
-- `POST /v1/core/services` - Create new service
-- `GET /v1/core/services` - List services
-- `GET /v1/core/services/{id}` - Get service details
-- `PUT /v1/core/services/{id}` - Update service
-- `POST /v1/core/services/{id}/activate` - Activate service
-- `POST /v1/core/services/{id}/deactivate` - Deactivate service
+Multi-tenant OAuth authentication and service management platform built with hexagonal architecture.
 
 ## Architecture
 
-### Hexagonal Architecture
-- **Domain Layer**: Core business logic and entities
-- **Application Layer**: Use cases and business rules
-- **Adapter Layer**: External interfaces (HTTP, gRPC, Database, Cache)
-- **Port Layer**: Interfaces defining contracts between layers
+This project follows **Hexagonal Architecture (Ports and Adapters)** pattern with clean separation of concerns:
 
-### Project Structure
-```
-serengeti-integrated/
-├── cmd/                    # Application entry points
-│   ├── auth/              # Auth service
-│   ├── client/            # Client service  
-│   ├── core/              # Core service
-│   └── shared/            # Shared server utilities
-├── configs/               # Configuration management
-├── internal/
-│   ├── adapter/           # External adapters
-│   │   ├── cipher/        # Encryption adapters
-│   │   ├── code_store/    # Code storage adapters
-│   │   ├── hasher/        # Password hashing adapters
-│   │   ├── handler/       # HTTP/gRPC handlers
-│   │   ├── oauth/         # OAuth provider adapters
-│   │   ├── random/        # Random generation adapters
-│   │   └── repository/    # Database adapters
-│   ├── domain/            # Domain entities and business logic
-│   │   ├── auth/          # Authentication domain
-│   │   ├── client/        # Client management domain
-│   │   ├── core/          # Service management domain
-│   │   └── shared/        # Shared domain concepts
-│   ├── port/              # Port interfaces
-│   │   ├── in/            # Inbound ports (use cases)
-│   │   └── out/           # Outbound ports (adapters)
-│   └── usecase/           # Use case implementations
-├── pkg/                   # Shared utilities
-└── third_party/           # External proto dependencies
-```
+- **Domain Layer** (`internal/domain/`): Pure business logic and entities
+- **Usecase Layer** (`internal/usecase/`): Application business rules and orchestration
+- **Port Layer** (`internal/port/`): Interface contracts between layers
+- **Adapter Layer** (`internal/adapter/`): External system integrations
 
-## Technologies
+### Core Services
 
-- **Language**: Go 1.25
-- **Framework**: Gin (HTTP), gRPC
-- **Database**: PostgreSQL with Ent ORM
-- **Cache**: Redis
-- **Configuration**: Environment variables with validation
-- **Logging**: Zerolog
-- **Authentication**: OAuth 2.0 (Google, Kakao, Naver)
-- **Encryption**: AES-256-GCM
-- **Containerization**: Docker
-- **Orchestration**: Kubernetes with Helm
+- **Auth Service** (port 8080): OAuth authentication and user identity management
+- **Core Service** (port 8081): Service management, client apps, and WebOAuth configuration
 
-## Getting Started
+### Key Features
+
+- **Multi-tenant Architecture**: Service-based isolation with public ID system
+- **OAuth 2.0 Support**: Google, Kakao, Naver providers with extensible design
+- **Security**: KEK/DEK encryption pattern for sensitive data protection
+- **Caching**: Redis-based caching for OAuth configurations
+- **Database**: PostgreSQL with Ent ORM and Atlas migrations
+
+## Quick Start
 
 ### Prerequisites
-- Go 1.25+
-- PostgreSQL 15+
-- Redis 7+
-- Docker (optional)
 
-### Environment Variables
+- Go 1.21+
+- Docker & Docker Compose
+- PostgreSQL 15
+- Redis 7
 
-**Common:**
+### Development Setup
+
+1. **Clone and setup**
+   ```bash
+   git clone <repository-url>
+   cd serengeti-integrated
+   go mod download
+   ```
+
+2. **Start infrastructure**
+   ```bash
+   docker compose -f docker-compose.dev.yml up -d
+   ```
+
+3. **Configure environment**
+   ```bash
+   # Generate KEK (256-bit hex key)
+   openssl rand -hex 32
+
+   # Update .env.dev.core and .env.dev.auth with your KEK
+   ```
+
+4. **Run services**
+   ```bash
+   # Core Service (port 8081)
+   go run cmd/core/*.go
+
+   # Auth Service (port 8080)
+   go run cmd/auth/*.go
+   ```
+
+### Environment Configuration
+
+Set the following environment variables or use `.env.dev.*` files:
+
 ```bash
+# Required
 ENV=dev
+KEK=<64-character-hex-string>  # 256-bit encryption key
+
+# Database
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=serengeti
-REDIS_ADDR=localhost:6379
+POSTGRES_USER=serengeti
+POSTGRES_PASSWORD=serengeti123
+POSTGRES_DB=serengeti_dev
+POSTGRES_SSLMODE=disable
+
+# Cache
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_DB=0
+
+# Server
+SERVER_HOST=localhost
+SERVER_PORT=8080  # or 8081 for core
 ```
 
-**Auth Service:**
-```bash
-HTTP_PORT=8080
-KEK=your-32-byte-encryption-key-here
-CLIENT_SERVICE_ENDPOINT=localhost:9090
-```
+## API Endpoints
 
-**Client Service:**
-```bash
-GRPC_PORT=9090
-BCRYPT_COST=12
-```
+### Auth Service (port 8080)
+- `GET /health` - Health check
+- `GET /v1/auth/auth-url` - Get OAuth authorization URL
+- `GET /v1/auth/code` - OAuth code flow authentication
+- `GET /v1/auth/token` - OAuth token flow authentication
 
-**Core Service:**
-```bash
-HTTP_PORT=8081
-CLIENT_SERVICE_ENDPOINT=localhost:9090
-```
+### Core Service (port 8081)
+- `GET /health` - Health check
+- `POST /v1/services/` - Create service
+- `PUT /v1/services/:id` - Update service
+- `POST /v1/client-apps/` - Create client application
+- `PUT /v1/client-apps/:id` - Update client application
+- `POST /v1/client-apps/:id/refresh-secret` - Refresh client secret
+- `GET /v1/client-apps/` - List client applications
+- `POST /v1/weboauth/` - Register OAuth configuration
+- `GET /v1/weboauth/` - Get OAuth configuration
+- `GET /v1/users/` - Find user information
 
-### Running Services
+## Development
 
-1. **Install dependencies:**
-```bash
-go mod download
-```
-
-2. **Run database migrations:**
-```bash
-make apply-migrate MIGRATE_DEV_URL=postgres://user:pass@localhost/db
-```
-
-3. **Start services:**
+### Build Commands
 
 ```bash
-# Auth Service
-go run cmd/auth/*.go
+# Build all packages
+go build ./...
 
-# Client Service  
-go run cmd/client/*.go
+# Run tests
+go test ./...
 
-# Core Service
-go run cmd/core/*.go
-```
-
-### Development
-
-**Generate migrations:**
-```bash
+# Generate database migrations
 make generate-migrate MIGRATE_NAME=your_migration_name
-```
 
-**Install development tools:**
-```bash
-make install-tools
-```
+# Apply database migrations
+make apply-migrate MIGRATE_DEV_URL=postgres://user:pass@localhost/db
 
-**Generate protobuf files:**
-```bash
+# Generate protobuf files
 make proto-gen
+
+# Generate Swagger documentation
+make swagger-gen
 ```
+
+### Project Structure
+
+```
+internal/
+├── domain/          # Domain entities and business logic
+│   ├── clientapp/   # OAuth client applications
+│   ├── service/     # Multi-tenant services
+│   ├── useridentity/# OAuth user identities
+│   ├── userinfo/    # User profile information
+│   └── weboauth/    # OAuth provider configurations
+├── usecase/         # Application use cases
+│   ├── clientapp_mgmt/  # Client app CRUD operations
+│   ├── identify_user/   # OAuth authentication flows
+│   ├── service_mgmt/    # Service management
+│   ├── user_mgmt/       # User management
+│   └── weboauth_mgmt/   # OAuth configuration management
+├── port/            # Interface contracts
+│   ├── in/          # Inbound ports (use case interfaces)
+│   └── out/         # Outbound ports (adapter interfaces)
+└── adapter/         # External integrations
+    ├── handler/     # HTTP handlers
+    ├── repository/  # Database repositories
+    ├── oauth/       # OAuth provider clients
+    ├── kek/         # Encryption services
+    └── cache/       # Caching services
+```
+
+### Key Patterns
+
+- **Error Handling**: Structured errors with `merr` library
+- **Transactions**: Consistent transaction management across use cases
+- **Security**: KEK/DEK encryption for sensitive data
+- **Validation**: Input validation at adapter layer
+- **Caching**: Selective caching for OAuth configurations
+
+## Security
+
+- **Encryption**: AES-256-GCM with KEK/DEK pattern
+- **Authentication**: OAuth 2.0 with multiple providers
+- **Secrets**: Environment-based KEK injection
+- **Transport**: HTTPS recommended for production
+
+## Contributing
+
+1. Follow hexagonal architecture principles
+2. Maintain clean separation between layers
+3. Use existing patterns for consistency
+4. Add tests for new functionality
+5. Update documentation as needed
 
 ## License
 
-This project is licensed under the MIT License.
+[License information]

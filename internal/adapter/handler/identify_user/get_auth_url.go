@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mandacode-com/merr"
 	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
 	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
 	"github.com/mandacode-com/serengeti-integrated/internal/port/in"
@@ -15,6 +16,31 @@ type GetAuthURLRequest struct {
 	ClientAppSecret string `json:"client_app_secret" binding:"required"`
 }
 
+type GetAuthURLResponse struct {
+	AuthURL string `json:"auth_url"`
+	State   string `json:"state"`
+}
+
+func toGetAuthURLResponse(view *in.GetAuthURLView) *GetAuthURLResponse {
+	return &GetAuthURLResponse{
+		AuthURL: view.AuthURL,
+		State:   view.State,
+	}
+}
+
+// GetAuthURL generates OAuth authorization URL
+// @Summary Get OAuth authorization URL
+// @Description Generate OAuth authorization URL for specified provider and client app
+// @Tags auth
+// @Produce json
+// @Param provider query string true "OAuth Provider" Enums(google, kakao, naver)
+// @Param client_app_id query string true "Client Application ID"
+// @Param client_app_secret query string true "Client Application Secret"
+// @Success 200 {object} GetAuthURLResponse "Authorization URL and state"
+// @Failure 400 {object} common.ErrorResponse "Bad request"
+// @Failure 404 {object} common.ErrorResponse "Resource not found"
+// @Failure 500 {object} common.ErrorResponse "Internal server error"
+// @Router /auth/auth-url [get]
 func (h *Handler) GetAuthURL(c *gin.Context) {
 	ctx := c.Request.Context()
 
@@ -25,19 +51,22 @@ func (h *Handler) GetAuthURL(c *gin.Context) {
 
 	// Validate required parameters
 	if providerStr == "" || clientAppID == "" || clientAppSecret == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "missing required parameters: provider, client_app_id, client_app_secret"})
+		err := merr.New(merr.ErrBadRequest, "missing required parameters: provider, client_app_id, client_app_secret", nil)
+		c.Error(err)
 		return
 	}
 
 	provider := shared.Provider(providerStr)
 	if !provider.IsValid() {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid provider"})
+		err := merr.New(merr.ErrBadRequest, "invalid provider", nil)
+		c.Error(err)
 		return
 	}
 
 	clientAppPublicID, err := clientappval.ParsePublicID(clientAppID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid client_app_id format"})
+		err := merr.New(merr.ErrBadRequest, "invalid client_app_id format", err)
+		c.Error(err)
 		return
 	}
 
@@ -53,5 +82,6 @@ func (h *Handler) GetAuthURL(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, view)
+	response := toGetAuthURLResponse(view)
+	c.JSON(http.StatusOK, response)
 }

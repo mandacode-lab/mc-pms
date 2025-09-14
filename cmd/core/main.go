@@ -7,11 +7,33 @@ import (
 	"syscall"
 
 	"github.com/joho/godotenv"
-	"github.com/rs/zerolog/log"
+	"github.com/mandacode-com/merver"
 	"github.com/mandacode-com/serengeti-integrated/cmd/shared"
 	"github.com/mandacode-com/serengeti-integrated/configs"
-	"github.com/mandacode-com/merver"
+	_ "github.com/mandacode-com/serengeti-integrated/docs/core"
+	"github.com/rs/zerolog/log"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+// @title           Serengeti Core API
+// @version         1.0
+// @description     Multi-tenant service management and client application API
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   API Support
+// @contact.url    http://www.swagger.io/support
+// @contact.email  support@swagger.io
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @BasePath  /v1
+
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
 
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
@@ -66,6 +88,9 @@ func main() {
 	userGroup := v1.Group("/users")
 	userMgmtHandler := adapter.ProvideUserMgmtHandler()
 	userMgmtHandler.RegisterRoutes(userGroup)
+
+	// Swagger documentation
+	srv.GetEngine().GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Setup graceful shutdown
 	signalChan := make(chan os.Signal, 1)
