@@ -60,7 +60,7 @@ type Adapter struct {
 
 func NewAdapter(ctx context.Context, cfg *configs.AuthConfig) (*Adapter, error) {
 	// Database setup
-	db, err := sql.Open("postgres", cfg.Postgres.DSN())
+	db, err := sql.Open("postgres", cfg.Postgres.GetDSN())
 	if err != nil {
 		return nil, err
 	}
@@ -77,6 +77,9 @@ func NewAdapter(ctx context.Context, cfg *configs.AuthConfig) (*Adapter, error) 
 		SentinelMaster:   cfg.Redis.SentinelMaster,
 		SentinelPassword: cfg.Redis.SentinelPassword,
 	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create redis client: %w", err)
+	}
 
 	// Cache setup
 	cacheConfig := &out.CacheConfig{

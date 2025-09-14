@@ -11,7 +11,6 @@ type PostgresConfig struct {
 	SSLMode  string `env:"POSTGRES_SSL_MODE" envDefault:"disable" validate:"oneof=disable require verify-ca verify-full"`
 }
 
-func (c PostgresConfig) DSN() string {
+func (c PostgresConfig) GetDSN() string {
 	return "postgres://" + c.User + ":" + c.Password + "@" + c.Host + ":" + strconv.Itoa(c.Port) + "/" + c.Database + "?sslmode=" + c.SSLMode
 }
-
