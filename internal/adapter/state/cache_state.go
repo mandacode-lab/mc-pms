@@ -12,13 +12,13 @@ const (
 )
 
 type CacheStateService struct {
-	cache     out.CacheStore
+	cache      out.CacheStore
 	strRandGen out.StrRandGen
 }
 
 func NewCacheStateService(cache out.CacheStore, strRandGen out.StrRandGen) out.StateService {
 	return &CacheStateService{
-		cache:     cache,
+		cache:      cache,
 		strRandGen: strRandGen,
 	}
 }

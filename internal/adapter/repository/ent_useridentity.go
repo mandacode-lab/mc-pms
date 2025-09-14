@@ -4,11 +4,11 @@ import (
 	"context"
 
 	"github.com/mandacode-com/serengeti-integrated/ent"
-	entuseridentity "github.com/mandacode-com/serengeti-integrated/ent/useridentity"
 	entservice "github.com/mandacode-com/serengeti-integrated/ent/service"
+	entuseridentity "github.com/mandacode-com/serengeti-integrated/ent/useridentity"
+	serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
 	"github.com/mandacode-com/serengeti-integrated/internal/domain/useridentity"
 	useridentityval "github.com/mandacode-com/serengeti-integrated/internal/domain/useridentity/value"
-	serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
 	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
 )
 
@@ -24,7 +24,7 @@ func NewEntUserIdentityRepository(client *ent.Client) out.UserIdentityRepository
 
 func (r *EntUserIdentityRepository) Create(ctx context.Context, tx out.Tx, identityEntity *useridentity.UserIdentity) (*useridentity.UserIdentity, error) {
 	var builder *ent.UserIdentityCreate
-	
+
 	if tx != nil {
 		entTx, err := asEntTx(tx)
 		if err != nil {
@@ -50,7 +50,7 @@ func (r *EntUserIdentityRepository) Create(ctx context.Context, tx out.Tx, ident
 
 func (r *EntUserIdentityRepository) Update(ctx context.Context, tx out.Tx, identityEntity *useridentity.UserIdentity) error {
 	var builder *ent.UserIdentityUpdateOne
-	
+
 	if tx != nil {
 		entTx, err := asEntTx(tx)
 		if err != nil {
@@ -65,7 +65,7 @@ func (r *EntUserIdentityRepository) Update(ctx context.Context, tx out.Tx, ident
 		SetProviderID(identityEntity.ProviderID()).
 		SetProvider(identityEntity.Provider()).
 		Save(ctx)
-	
+
 	return err
 }
 
@@ -238,3 +238,4 @@ func (r *EntUserIdentityQueryRepository) toDomain(entIdentity *ent.UserIdentity)
 		entIdentity.UpdatedAt,
 	)
 }
+

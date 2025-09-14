@@ -4,11 +4,11 @@ import (
 	"context"
 
 	"github.com/mandacode-com/serengeti-integrated/ent"
-	entuserinfo "github.com/mandacode-com/serengeti-integrated/ent/userinfo"
 	entuseridentity "github.com/mandacode-com/serengeti-integrated/ent/useridentity"
+	entuserinfo "github.com/mandacode-com/serengeti-integrated/ent/userinfo"
+	useridentityval "github.com/mandacode-com/serengeti-integrated/internal/domain/useridentity/value"
 	"github.com/mandacode-com/serengeti-integrated/internal/domain/userinfo"
 	userinfoval "github.com/mandacode-com/serengeti-integrated/internal/domain/userinfo/value"
-	useridentityval "github.com/mandacode-com/serengeti-integrated/internal/domain/useridentity/value"
 	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
 )
 
@@ -24,7 +24,7 @@ func NewEntUserInfoRepository(client *ent.Client) out.UserInfoRepository {
 
 func (r *EntUserInfoRepository) Create(ctx context.Context, tx out.Tx, infoEntity *userinfo.UserInfo) (*userinfo.UserInfo, error) {
 	var builder *ent.UserInfoCreate
-	
+
 	if tx != nil {
 		entTx, err := asEntTx(tx)
 		if err != nil {
@@ -51,7 +51,7 @@ func (r *EntUserInfoRepository) Create(ctx context.Context, tx out.Tx, infoEntit
 
 func (r *EntUserInfoRepository) Update(ctx context.Context, tx out.Tx, infoEntity *userinfo.UserInfo) error {
 	var builder *ent.UserInfoUpdateOne
-	
+
 	if tx != nil {
 		entTx, err := asEntTx(tx)
 		if err != nil {
@@ -67,7 +67,7 @@ func (r *EntUserInfoRepository) Update(ctx context.Context, tx out.Tx, infoEntit
 		SetEmail(infoEntity.Email()).
 		SetRawData(infoEntity.RawData()).
 		Save(ctx)
-	
+
 	return err
 }
 
@@ -252,3 +252,4 @@ func (r *EntUserInfoQueryRepository) toDomain(entInfo *ent.UserInfo) *userinfo.U
 		entInfo.UpdatedAt,
 	)
 }
+

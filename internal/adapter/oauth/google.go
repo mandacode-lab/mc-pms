@@ -129,4 +129,3 @@ func (g *GoogleOAuth) GetAuthURL(ctx context.Context, clientID string, scopes []
 
 	return GoogleAuthURL + "?" + params.Encode()
 }
-

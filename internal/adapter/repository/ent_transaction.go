@@ -52,3 +52,4 @@ func (tm *EntTransactionManager) WithTx(ctx context.Context, fn func(tx out.Tx) 
 
 	return nil
 }
+

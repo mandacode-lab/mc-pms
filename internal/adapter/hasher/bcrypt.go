@@ -3,8 +3,8 @@ package hasher
 import (
 	"context"
 
-	"golang.org/x/crypto/bcrypt"
 	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const DefaultCost = 12

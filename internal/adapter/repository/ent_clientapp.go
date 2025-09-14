@@ -24,7 +24,7 @@ func NewEntClientAppRepository(client *ent.Client) out.ClientAppRepository {
 
 func (r *EntClientAppRepository) Create(ctx context.Context, tx out.Tx, clientEntity *clientapp.ClientApp) (*clientapp.ClientApp, error) {
 	var builder *ent.ClientAppCreate
-	
+
 	if tx != nil {
 		entTx, err := asEntTx(tx)
 		if err != nil {
@@ -52,7 +52,7 @@ func (r *EntClientAppRepository) Create(ctx context.Context, tx out.Tx, clientEn
 
 func (r *EntClientAppRepository) Update(ctx context.Context, tx out.Tx, clientEntity *clientapp.ClientApp) error {
 	var builder *ent.ClientAppUpdateOne
-	
+
 	if tx != nil {
 		entTx, err := asEntTx(tx)
 		if err != nil {
@@ -69,7 +69,7 @@ func (r *EntClientAppRepository) Update(ctx context.Context, tx out.Tx, clientEn
 		SetSecretHash(clientEntity.SecretHash().Value()).
 		SetIsActive(clientEntity.IsActive()).
 		Save(ctx)
-	
+
 	return err
 }
 
@@ -251,3 +251,4 @@ func (r *EntClientAppQueryRepository) toDomain(entClient *ent.ClientApp) *client
 		entClient.UpdatedAt,
 	)
 }
+

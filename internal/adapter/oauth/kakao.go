@@ -133,4 +133,3 @@ func (k *KakaoOAuth) GetAuthURL(ctx context.Context, clientID string, scopes []s
 
 	return KakaoAuthURL + "?" + params.Encode()
 }
-

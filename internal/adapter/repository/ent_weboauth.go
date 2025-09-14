@@ -6,14 +6,13 @@ import (
 	"github.com/mandacode-com/serengeti-integrated/ent"
 	entclientapp "github.com/mandacode-com/serengeti-integrated/ent/clientapp"
 	entweboauth "github.com/mandacode-com/serengeti-integrated/ent/weboauth"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/weboauth"
-	weboauthval "github.com/mandacode-com/serengeti-integrated/internal/domain/weboauth/value"
 	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
 	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
+	"github.com/mandacode-com/serengeti-integrated/internal/domain/weboauth"
+	weboauthval "github.com/mandacode-com/serengeti-integrated/internal/domain/weboauth/value"
 	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
 	"github.com/mandacode-com/serengeti-integrated/pkg/utils"
 )
-
 
 type EntWebOAuthRepository struct {
 	client *ent.Client
@@ -27,7 +26,7 @@ func NewEntWebOAuthRepository(client *ent.Client) out.WebOAuthRepository {
 
 func (r *EntWebOAuthRepository) Create(ctx context.Context, tx out.Tx, oauthEntity *weboauth.WebOAuth) (*weboauth.WebOAuth, error) {
 	var builder *ent.WebOAuthCreate
-	
+
 	if tx != nil {
 		entTx, err := asEntTx(tx)
 		if err != nil {
@@ -59,7 +58,7 @@ func (r *EntWebOAuthRepository) Create(ctx context.Context, tx out.Tx, oauthEnti
 
 func (r *EntWebOAuthRepository) Update(ctx context.Context, tx out.Tx, oauthEntity *weboauth.WebOAuth) error {
 	var builder *ent.WebOAuthUpdateOne
-	
+
 	if tx != nil {
 		entTx, err := asEntTx(tx)
 		if err != nil {
@@ -81,7 +80,7 @@ func (r *EntWebOAuthRepository) Update(ctx context.Context, tx out.Tx, oauthEnti
 		SetNillableRedirectURI(utils.StringNil(oauthEntity.RedirectURI())).
 		SetScopes(oauthEntity.Scopes()).
 		Save(ctx)
-	
+
 	return err
 }
 

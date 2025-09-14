@@ -30,3 +30,4 @@ func NewEntClient(dsn string) (*ent.Client, error) {
 
 	return client, nil
 }
+

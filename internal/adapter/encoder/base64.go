@@ -2,6 +2,7 @@ package encoder
 
 import (
 	"encoding/base64"
+
 	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
 )
 

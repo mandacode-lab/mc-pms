@@ -136,3 +136,4 @@ func (n *NaverOAuth) GetAuthURL(ctx context.Context, clientID string, scopes []s
 
 	return NaverAuthURL + "?" + params.Encode()
 }
+

@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	WebOAuthByProviderKeyPrefix    = "weboauth:provider:"
-	WebOAuthByClientAppKeyPrefix   = "weboauth:clientapp:"
+	WebOAuthByProviderKeyPrefix  = "weboauth:provider:"
+	WebOAuthByClientAppKeyPrefix = "weboauth:clientapp:"
 )
 
 type CachedWebOAuthQueryRepository struct {
@@ -130,3 +130,4 @@ func (c *CachedWebOAuthQueryRepository) fromCached(cached *cachedWebOAuth) *webo
 		cached.UpdatedAt,
 	)
 }
+

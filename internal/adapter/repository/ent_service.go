@@ -22,7 +22,7 @@ func NewEntServiceRepository(client *ent.Client) out.ServiceRepository {
 
 func (r *EntServiceRepository) Create(ctx context.Context, tx out.Tx, serviceEntity *service.Service) (*service.Service, error) {
 	var builder *ent.ServiceCreate
-	
+
 	if tx != nil {
 		entTx, err := asEntTx(tx)
 		if err != nil {
@@ -48,7 +48,7 @@ func (r *EntServiceRepository) Create(ctx context.Context, tx out.Tx, serviceEnt
 
 func (r *EntServiceRepository) Update(ctx context.Context, tx out.Tx, serviceEntity *service.Service) error {
 	var builder *ent.ServiceUpdateOne
-	
+
 	if tx != nil {
 		entTx, err := asEntTx(tx)
 		if err != nil {
@@ -64,7 +64,7 @@ func (r *EntServiceRepository) Update(ctx context.Context, tx out.Tx, serviceEnt
 		SetNillableDescription(serviceEntity.Description()).
 		SetIsActive(serviceEntity.IsActive()).
 		Save(ctx)
-	
+
 	return err
 }
 
@@ -220,3 +220,4 @@ func (r *EntServiceQueryRepository) toDomain(entService *ent.Service) *service.S
 		entService.UpdatedAt,
 	)
 }
+
