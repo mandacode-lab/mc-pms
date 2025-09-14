@@ -1,10 +1,10 @@
 # =============================================================================
-# Serengeti Integrated - Makefile
+# Serengeti - Makefile
 # =============================================================================
 
 -include .make.env
 
-.PHONY: proto-gen proto-clean proto-deps install-tools swagger-gen swagger-clean help \
+.PHONY: install-tools swagger-gen swagger-clean help \
         generate-migrate apply-migrate build-migrate push-migrate check-migrate-name check-migrate-tag
 
 # =============================================================================
@@ -12,32 +12,13 @@
 # =============================================================================
 
 # Docker settings
-DOCKER_CONTEXT ?= 
-MIGRATE_IMAGE ?= 
+DOCKER_CONTEXT ?=
+MIGRATE_IMAGE ?=
 MIGRATE_TAG ?=
 
 # Database migration settings
 MIGRATE_NAME ?=
 MIGRATE_DEV_URL ?=
-
-# Directories
-PROTO_DIR = pkg
-PROTO_OUT_DIR = pkg
-THIRD_PARTY_DIR = third_party
-
-# Proto dependency versions
-PROTOC_GEN_VALIDATE_VERSION = main
-PROTOBUF_VERSION = main
-
-# Proto dependency URLs
-VALIDATE_PROTO_URL = https://raw.githubusercontent.com/envoyproxy/protoc-gen-validate/$(PROTOC_GEN_VALIDATE_VERSION)/validate/validate.proto
-TIMESTAMP_PROTO_URL = https://raw.githubusercontent.com/protocolbuffers/protobuf/$(PROTOBUF_VERSION)/src/google/protobuf/timestamp.proto
-EMPTY_PROTO_URL = https://raw.githubusercontent.com/protocolbuffers/protobuf/$(PROTOBUF_VERSION)/src/google/protobuf/empty.proto
-
-# Go tool versions
-PROTOC_GEN_GO_VERSION = latest
-PROTOC_GEN_GO_GRPC_VERSION = latest
-PROTOC_GEN_VALIDATE_VERSION_GO = latest
 
 # =============================================================================
 # DATABASE MIGRATIONS
@@ -88,56 +69,12 @@ ifndef MIGRATE_TAG
 endif
 
 # =============================================================================
-# PROTOBUF GENERATION
-# =============================================================================
-proto-gen: proto-deps
-	@echo "Generating protobuf files..."
-	@find $(PROTO_DIR) -name "*.proto" | xargs protoc \
-		--proto_path=$(PROTO_DIR) \
-		--proto_path=$(THIRD_PARTY_DIR) \
-		--go_out=$(PROTO_OUT_DIR) \
-		--go_opt=paths=source_relative \
-		--go-grpc_out=$(PROTO_OUT_DIR) \
-		--go-grpc_opt=paths=source_relative \
-		--validate_out="lang=go:$(PROTO_OUT_DIR)" \
-		--validate_opt=paths=source_relative
-	@echo "Proto generation completed!"
-
-# Download proto dependencies
-proto-deps:
-	@echo "Downloading proto dependencies..."
-	@mkdir -p $(THIRD_PARTY_DIR)/validate
-	@mkdir -p $(THIRD_PARTY_DIR)/google/protobuf
-	@echo "  - validate.proto ($(PROTOC_GEN_VALIDATE_VERSION))"
-	@curl -sSL $(VALIDATE_PROTO_URL) -o $(THIRD_PARTY_DIR)/validate/validate.proto
-	@echo "  - timestamp.proto ($(PROTOBUF_VERSION))"
-	@curl -sSL $(TIMESTAMP_PROTO_URL) -o $(THIRD_PARTY_DIR)/google/protobuf/timestamp.proto
-	@echo "  - empty.proto ($(PROTOBUF_VERSION))"
-	@curl -sSL $(EMPTY_PROTO_URL) -o $(THIRD_PARTY_DIR)/google/protobuf/empty.proto
-	@echo "Proto dependencies downloaded!"
-
-# Clean generated files
-proto-clean:
-	@echo "Cleaning generated proto files..."
-	@find $(PROTO_DIR) -name "*.pb.go" -delete
-	@find $(PROTO_DIR) -name "*_grpc.pb.go" -delete
-	@find $(PROTO_DIR) -name "*.validate.go" -delete
-	@rm -rf $(THIRD_PARTY_DIR)
-	@echo "Cleanup completed!"
-
-# =============================================================================
 # TOOLS INSTALLATION
 # =============================================================================
 
 # Install required tools
 install-tools:
-	@echo "Installing protoc plugins..."
-	@echo "  - protoc-gen-go@$(PROTOC_GEN_GO_VERSION)"
-	@go install google.golang.org/protobuf/cmd/protoc-gen-go@$(PROTOC_GEN_GO_VERSION)
-	@echo "  - protoc-gen-go-grpc@$(PROTOC_GEN_GO_GRPC_VERSION)"
-	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@$(PROTOC_GEN_GO_GRPC_VERSION)
-	@echo "  - protoc-gen-validate@$(PROTOC_GEN_VALIDATE_VERSION_GO)"
-	@go install github.com/envoyproxy/protoc-gen-validate@$(PROTOC_GEN_VALIDATE_VERSION_GO)
+	@echo "Installing development tools..."
 	@echo "  - swag"
 	@go install github.com/swaggo/swag/cmd/swag@latest
 	@echo "Tools installed!"
@@ -168,7 +105,7 @@ swagger-clean:
 
 # Help
 help:
-	@echo "Serengeti Integrated - Available Commands"
+	@echo "Serengeti - Available Commands"
 	@echo "="`printf '%.0s' {1..50}`
 	@echo ""
 	@echo "Database Migration Commands:"
@@ -177,21 +114,11 @@ help:
 	@echo "  build-migrate MIGRATE_TAG=tag      - Build Docker migration image"
 	@echo "  push-migrate MIGRATE_TAG=tag       - Push Docker migration image"
 	@echo ""
-	@echo "Proto Commands:"
-	@echo "  proto-gen      - Generate Go code from proto files"
-	@echo "  proto-deps     - Download proto dependencies"
-	@echo "  proto-clean    - Clean generated proto files"
-	@echo ""
-	@echo "Swagger Commands:"
+	@echo "Documentation Commands:"
 	@echo "  swagger-gen    - Generate Swagger documentation"
 	@echo "  swagger-clean  - Clean generated Swagger files"
 	@echo ""
 	@echo "Setup Commands:"
-	@echo "  install-tools  - Install required protoc plugins and tools"
-	@echo ""
-	@echo "Configuration:"
-	@echo "  PROTO_DIR       = $(PROTO_DIR)"
-	@echo "  PROTO_OUT_DIR   = $(PROTO_OUT_DIR)"
-	@echo "  THIRD_PARTY_DIR = $(THIRD_PARTY_DIR)"
+	@echo "  install-tools  - Install required development tools"
 	@echo ""
 	@echo "For more details on each command, check the Makefile comments."

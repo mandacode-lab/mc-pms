@@ -6,23 +6,18 @@ Multi-tenant OAuth authentication and service management platform built with hex
 
 This project follows **Hexagonal Architecture (Ports and Adapters)** pattern with clean separation of concerns:
 
-- **Domain Layer** (`internal/domain/`): Pure business logic and entities
-- **Usecase Layer** (`internal/usecase/`): Application business rules and orchestration
-- **Port Layer** (`internal/port/`): Interface contracts between layers
-- **Adapter Layer** (`internal/adapter/`): External system integrations
-
-### Core Services
-
-- **Auth Service** (port 8080): OAuth authentication and user identity management
-- **Core Service** (port 8081): Service management, client apps, and WebOAuth configuration
+- **Domain Layer**: Pure business logic and entities
+- **Usecase Layer**: Application business rules and orchestration
+- **Port Layer**: Interface contracts between layers
+- **Adapter Layer**: External system integrations
 
 ### Key Features
 
 - **Multi-tenant Architecture**: Service-based isolation with public ID system
-- **OAuth 2.0 Support**: Google, Kakao, Naver providers with extensible design
+- **OAuth 2.0 Support**: Multiple OAuth providers with extensible design
 - **Security**: KEK/DEK encryption pattern for sensitive data protection
-- **Caching**: Redis-based caching for OAuth configurations
 - **Database**: PostgreSQL with Ent ORM and Atlas migrations
+- **Caching**: Redis-based caching layer
 
 ## Quick Start
 
@@ -30,8 +25,8 @@ This project follows **Hexagonal Architecture (Ports and Adapters)** pattern wit
 
 - Go 1.21+
 - Docker & Docker Compose
-- PostgreSQL 15
-- Redis 7
+- PostgreSQL
+- Redis
 
 ### Development Setup
 
@@ -51,65 +46,33 @@ This project follows **Hexagonal Architecture (Ports and Adapters)** pattern wit
    ```bash
    # Generate KEK (256-bit hex key)
    openssl rand -hex 32
-
-   # Update .env.dev.core and .env.dev.auth with your KEK
+   # Update .env.dev.* files with your configuration
    ```
 
 4. **Run services**
    ```bash
-   # Core Service (port 8081)
-   go run cmd/core/*.go
-
-   # Auth Service (port 8080)
+   # Auth Service
    go run cmd/auth/*.go
+
+   # Core Service
+   go run cmd/core/*.go
    ```
 
 ### Environment Configuration
 
-Set the following environment variables or use `.env.dev.*` files:
+Configure environment variables using `.env.dev.*` files:
+- KEK (256-bit encryption key)
+- Database connection settings
+- Redis connection settings
+- Server configuration
 
-```bash
-# Required
-ENV=dev
-KEK=<64-character-hex-string>  # 256-bit encryption key
+## API Overview
 
-# Database
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-POSTGRES_USER=serengeti
-POSTGRES_PASSWORD=serengeti123
-POSTGRES_DB=serengeti_dev
-POSTGRES_SSLMODE=disable
+The platform provides two main services:
+- **Auth Service**: OAuth authentication and user identity management
+- **Core Service**: Service management, client apps, and OAuth configuration
 
-# Cache
-REDIS_HOST=localhost
-REDIS_PORT=6379
-REDIS_DB=0
-
-# Server
-SERVER_HOST=localhost
-SERVER_PORT=8080  # or 8081 for core
-```
-
-## API Endpoints
-
-### Auth Service (port 8080)
-- `GET /health` - Health check
-- `GET /v1/auth/auth-url` - Get OAuth authorization URL
-- `GET /v1/auth/code` - OAuth code flow authentication
-- `GET /v1/auth/token` - OAuth token flow authentication
-
-### Core Service (port 8081)
-- `GET /health` - Health check
-- `POST /v1/services/` - Create service
-- `PUT /v1/services/:id` - Update service
-- `POST /v1/client-apps/` - Create client application
-- `PUT /v1/client-apps/:id` - Update client application
-- `POST /v1/client-apps/:id/refresh-secret` - Refresh client secret
-- `GET /v1/client-apps/` - List client applications
-- `POST /v1/weboauth/` - Register OAuth configuration
-- `GET /v1/weboauth/` - Get OAuth configuration
-- `GET /v1/users/` - Find user information
+See Swagger documentation at `/swagger/index.html` for detailed API specifications.
 
 ## Development
 
@@ -128,8 +91,8 @@ make generate-migrate MIGRATE_NAME=your_migration_name
 # Apply database migrations
 make apply-migrate MIGRATE_DEV_URL=postgres://user:pass@localhost/db
 
-# Generate protobuf files
-make proto-gen
+# Install development tools
+make install-tools
 
 # Generate Swagger documentation
 make swagger-gen
@@ -137,38 +100,27 @@ make swagger-gen
 
 ### Project Structure
 
+This project follows hexagonal architecture with clean separation of concerns:
+
 ```
 internal/
 ├── domain/          # Domain entities and business logic
-│   ├── clientapp/   # OAuth client applications
-│   ├── service/     # Multi-tenant services
-│   ├── useridentity/# OAuth user identities
-│   ├── userinfo/    # User profile information
-│   └── weboauth/    # OAuth provider configurations
-├── usecase/         # Application use cases
-│   ├── clientapp_mgmt/  # Client app CRUD operations
-│   ├── identify_user/   # OAuth authentication flows
-│   ├── service_mgmt/    # Service management
-│   ├── user_mgmt/       # User management
-│   └── weboauth_mgmt/   # OAuth configuration management
+├── usecase/         # Application use cases and orchestration
 ├── port/            # Interface contracts
 │   ├── in/          # Inbound ports (use case interfaces)
 │   └── out/         # Outbound ports (adapter interfaces)
 └── adapter/         # External integrations
     ├── handler/     # HTTP handlers
     ├── repository/  # Database repositories
-    ├── oauth/       # OAuth provider clients
-    ├── kek/         # Encryption services
-    └── cache/       # Caching services
+    └── ...          # Other external adapters
 ```
 
 ### Key Patterns
 
-- **Error Handling**: Structured errors with `merr` library
+- **Error Handling**: Structured error handling with consistent patterns
 - **Transactions**: Consistent transaction management across use cases
-- **Security**: KEK/DEK encryption for sensitive data
+- **Security**: KEK/DEK encryption for sensitive data protection
 - **Validation**: Input validation at adapter layer
-- **Caching**: Selective caching for OAuth configurations
 
 ## Security
 
