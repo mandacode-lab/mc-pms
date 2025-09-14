@@ -6,22 +6,23 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
+	_ "github.com/mandacode-com/merr/middleware"
 	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
 	"github.com/mandacode-com/serengeti/internal/port/in"
 )
 
 type CreateServiceRequest struct {
-	Name        string `json:"name" binding:"required"`
-	Description string `json:"description"`
+	Name        string `json:"name" binding:"required" example:"My Service"`
+	Description string `json:"description" example:"Service description"`
 }
 
 type CreateServiceResponse struct {
-	ServiceID   string    `json:"service_id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	IsActive    bool      `json:"is_active"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ServiceID   string    `json:"service_id" example:"srv_1234567890abcdef"`
+	Name        string    `json:"name" example:"My Service"`
+	Description string    `json:"description" example:"Service description"`
+	IsActive    bool      `json:"is_active" example:"true"`
+	CreatedAt   time.Time `json:"created_at" example:"2023-01-01T00:00:00Z"`
+	UpdatedAt   time.Time `json:"updated_at" example:"2023-01-01T00:00:00Z"`
 }
 
 func toCreateServiceResponse(view *in.CreateServiceView) *CreateServiceResponse {
@@ -43,9 +44,9 @@ func toCreateServiceResponse(view *in.CreateServiceView) *CreateServiceResponse 
 // @Produce json
 // @Param request body CreateServiceRequest true "Service creation request"
 // @Success 201 {object} CreateServiceResponse "Created service"
-// @Failure 400 {object} common.ErrorResponse "Bad request"
-// @Failure 404 {object} common.ErrorResponse "Resource not found"
-// @Failure 500 {object} common.ErrorResponse "Internal server error"
+// @Failure 400 {object} merrmid.ErrorResponse "Bad request"
+// @Failure 404 {object} merrmid.ErrorResponse "Resource not found"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
 // @Router /services [post]
 func (h *Handler) CreateService(c *gin.Context) {
 	ctx := c.Request.Context()

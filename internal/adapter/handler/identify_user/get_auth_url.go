@@ -5,20 +5,21 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
+	_ "github.com/mandacode-com/merr/middleware"
 	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
 	"github.com/mandacode-com/serengeti/internal/domain/shared"
 	"github.com/mandacode-com/serengeti/internal/port/in"
 )
 
 type GetAuthURLRequest struct {
-	Provider        string `json:"provider" binding:"required"`
-	ClientAppID     string `json:"client_app_id" binding:"required"`
-	ClientAppSecret string `json:"client_app_secret" binding:"required"`
+	Provider        string `json:"provider" binding:"required" example:"google"`
+	ClientAppID     string `json:"client_app_id" binding:"required" example:"app_abcdef1234567890"`
+	ClientAppSecret string `json:"client_app_secret" binding:"required" example:"secret_xyz789abc123def456"`
 }
 
 type GetAuthURLResponse struct {
-	AuthURL string `json:"auth_url"`
-	State   string `json:"state"`
+	AuthURL string `json:"auth_url" example:"https://accounts.google.com/o/oauth2/v2/auth?client_id=abc&redirect_uri=def&response_type=code&scope=openid+profile+email&state=xyz"`
+	State   string `json:"state" example:"random_state_string_123"`
 }
 
 func toGetAuthURLResponse(view *in.GetAuthURLView) *GetAuthURLResponse {
@@ -37,9 +38,9 @@ func toGetAuthURLResponse(view *in.GetAuthURLView) *GetAuthURLResponse {
 // @Param client_app_id query string true "Client Application ID"
 // @Param client_app_secret query string true "Client Application Secret"
 // @Success 200 {object} GetAuthURLResponse "Authorization URL and state"
-// @Failure 400 {object} common.ErrorResponse "Bad request"
-// @Failure 404 {object} common.ErrorResponse "Resource not found"
-// @Failure 500 {object} common.ErrorResponse "Internal server error"
+// @Failure 400 {object} merrmid.ErrorResponse "Bad request"
+// @Failure 404 {object} merrmid.ErrorResponse "Resource not found"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
 // @Router /auth/auth-url [get]
 func (h *Handler) GetAuthURL(c *gin.Context) {
 	ctx := c.Request.Context()

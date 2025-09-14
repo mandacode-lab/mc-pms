@@ -6,25 +6,26 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
+	_ "github.com/mandacode-com/merr/middleware"
 	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
 	"github.com/mandacode-com/serengeti/internal/port/in"
 )
 
 type CreateClientAppRequest struct {
-	ServiceID   string `json:"service_id" binding:"required"`
-	Name        string `json:"name" binding:"required"`
-	Description string `json:"description"`
+	ServiceID   string `json:"service_id" binding:"required" example:"srv_1234567890abcdef"`
+	Name        string `json:"name" binding:"required" example:"My App"`
+	Description string `json:"description" example:"Description of my application"`
 }
 
 type CreateClientAppResponse struct {
-	ServiceID   string    `json:"service_id"`
-	ClientAppID string    `json:"client_app_id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	IsActive    bool      `json:"is_active"`
-	Secret      string    `json:"secret"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ServiceID   string    `json:"service_id" example:"srv_1234567890abcdef"`
+	ClientAppID string    `json:"client_app_id" example:"app_abcdef1234567890"`
+	Name        string    `json:"name" example:"My App"`
+	Description string    `json:"description" example:"Description of my application"`
+	IsActive    bool      `json:"is_active" example:"true"`
+	Secret      string    `json:"secret" example:"secret_xyz789abc123def456"`
+	CreatedAt   time.Time `json:"created_at" example:"2023-01-01T00:00:00Z"`
+	UpdatedAt   time.Time `json:"updated_at" example:"2023-01-01T00:00:00Z"`
 }
 
 func toCreateClientAppResponse(view *in.CreateClientAppView) *CreateClientAppResponse {
@@ -48,8 +49,8 @@ func toCreateClientAppResponse(view *in.CreateClientAppView) *CreateClientAppRes
 // @Produce json
 // @Param request body CreateClientAppRequest true "Client app creation request"
 // @Success 201 {object} CreateClientAppResponse "Created client app with secret"
-// @Failure 400 {object} common.ErrorResponse "Invalid request"
-// @Failure 500 {object} common.ErrorResponse "Internal server error"
+// @Failure 400 {object} merrmid.ErrorResponse "Invalid request"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
 // @Router /client-apps [post]
 func (h *Handler) CreateClientApp(c *gin.Context) {
 	ctx := c.Request.Context()

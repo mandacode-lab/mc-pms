@@ -1,17 +1,12 @@
 basePath: /v1
 definitions:
-  common.ErrorResponse:
-    properties:
-      code:
-        $ref: '#/definitions/merr.ErrCode'
-      error:
-        type: string
-    type: object
   identify_user.GetAuthURLResponse:
     properties:
       auth_url:
+        example: https://accounts.google.com/o/oauth2/v2/auth?client_id=abc&redirect_uri=def&response_type=code&scope=openid+profile+email&state=xyz
         type: string
       state:
+        example: random_state_string_123
         type: string
     type: object
   identify_user.IdentifyByCodeResponse:
@@ -74,10 +69,13 @@ definitions:
   internal_adapter_handler_clientapp_mgmt.CreateClientAppRequest:
     properties:
       description:
+        example: Description of my application
         type: string
       name:
+        example: My App
         type: string
       service_id:
+        example: srv_1234567890abcdef
         type: string
     required:
     - name
@@ -86,20 +84,28 @@ definitions:
   internal_adapter_handler_clientapp_mgmt.CreateClientAppResponse:
     properties:
       client_app_id:
+        example: app_abcdef1234567890
         type: string
       created_at:
+        example: "2023-01-01T00:00:00Z"
         type: string
       description:
+        example: Description of my application
         type: string
       is_active:
+        example: true
         type: boolean
       name:
+        example: My App
         type: string
       secret:
+        example: secret_xyz789abc123def456
         type: string
       service_id:
+        example: srv_1234567890abcdef
         type: string
       updated_at:
+        example: "2023-01-01T00:00:00Z"
         type: string
     type: object
   internal_adapter_handler_clientapp_mgmt.ListClientAppsResponse:
@@ -145,8 +151,10 @@ definitions:
   internal_adapter_handler_service_mgmt.CreateServiceRequest:
     properties:
       description:
+        example: Service description
         type: string
       name:
+        example: My Service
         type: string
     required:
     - name
@@ -154,16 +162,22 @@ definitions:
   internal_adapter_handler_service_mgmt.CreateServiceResponse:
     properties:
       created_at:
+        example: "2023-01-01T00:00:00Z"
         type: string
       description:
+        example: Service description
         type: string
       is_active:
+        example: true
         type: boolean
       name:
+        example: My Service
         type: string
       service_id:
+        example: srv_1234567890abcdef
         type: string
       updated_at:
+        example: "2023-01-01T00:00:00Z"
         type: string
     type: object
   internal_adapter_handler_service_mgmt.UpdateServiceRequest:
@@ -200,18 +214,25 @@ definitions:
   internal_adapter_handler_user_mgmt.UserResponse:
     properties:
       created_at:
+        example: "2023-01-01T00:00:00Z"
         type: string
       email:
+        example: john.doe@example.com
         type: string
       nickname:
+        example: john_doe
         type: string
       provider:
+        example: google
         type: string
       service_id:
+        example: srv_1234567890abcdef
         type: string
       updated_at:
+        example: "2023-01-01T00:00:00Z"
         type: string
       user_id:
+        example: usr_abcdef1234567890
         type: string
     type: object
   internal_adapter_handler_weboauth_mgmt.ReadWebOAuthResponse:
@@ -327,6 +348,13 @@ definitions:
     - ErrNotAcceptable
     - ErrTooEarly
     - ErrRequestHeaderFieldsTooLarge
+  merrmid.ErrorResponse:
+    properties:
+      code:
+        $ref: '#/definitions/merr.ErrCode'
+      error:
+        type: string
+    type: object
 info:
   contact:
     email: support@swagger.io
@@ -374,15 +402,15 @@ paths:
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
         "404":
           description: Resource not found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
       summary: Get OAuth authorization URL
       tags:
       - auth
@@ -429,11 +457,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
       summary: Identify user by code
       tags:
       - auth
@@ -475,11 +503,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
       summary: Identify user by token
       tags:
       - auth
@@ -502,11 +530,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
       summary: List client apps
       tags:
       - client-apps
@@ -531,11 +559,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
       summary: Create a new client app
       tags:
       - client-apps
@@ -566,11 +594,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
       summary: Update a client app
       tags:
       - client-apps
@@ -593,11 +621,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
       summary: Refresh client app secret
       tags:
       - client-apps
@@ -623,15 +651,15 @@ paths:
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
         "404":
           description: Resource not found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
       summary: Create a new service
       tags:
       - services
@@ -662,15 +690,15 @@ paths:
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
         "404":
           description: Resource not found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
       summary: Update a service
       tags:
       - services
@@ -712,11 +740,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
       summary: Find users
       tags:
       - users
@@ -747,11 +775,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
       summary: Read OAuth configs
       tags:
       - weboauth
@@ -777,11 +805,11 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/merrmid.ErrorResponse'
       summary: Register OAuth config
       tags:
       - weboauth
