@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
-	_ "github.com/mandacode-com/serengeti/internal/adapter/handler/common"
+	_ "github.com/mandacode-com/merr/middleware"
 	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
 	"github.com/mandacode-com/serengeti/internal/domain/shared"
 	useridentityval "github.com/mandacode-com/serengeti/internal/domain/useridentity/value"
