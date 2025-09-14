@@ -1,0 +1,13 @@
+{{- if .Values.auth.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "defined.auth.configMapName" . }}
+  labels:
+    {{- include "defined.auth.labels" . | nindent 4 }}
+data:
+  ENV: {{ .Values.global.env | default "prod" | quote }}
+  PORT: {{ .Values.auth.service.targetPort | quote }}
+  READ_TIMEOUT: {{ .Values.auth.server.readTimeout | quote }}
+  WRITE_TIMEOUT: {{ .Values.auth.server.writeTimeout | quote }}
+{{- end }}

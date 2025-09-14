@@ -1,175 +1,142 @@
-# Serengeti Integrated
+# Serengeti
 
-A microservices architecture implementing authentication, client management, and service management using hexagonal architecture patterns.
-
-## Services
-
-### Auth Service (Port: 8080)
-OAuth-based authentication service supporting Google, Kakao, and Naver providers.
-
-**Endpoints:**
-- `POST /v1/auth/login/code` - Login with OAuth code
-- `POST /v1/auth/login/access` - Login with OAuth access token  
-- `POST /v1/auth/verify` - Verify login code
-- `GET /v1/auth/url/{provider}` - Get OAuth authorization URL
-
-### Client Service (Port: 9090 - gRPC)
-Client credential management service.
-
-**gRPC Services:**
-- `CreateClient` - Create new service client
-- `GetClient` - Retrieve client information
-- `VerifyClient` - Verify client credentials
-- `ListClients` - List clients for service
-- `UpdateClient` - Update client information
-- `ActivateClient` - Activate client
-- `DeactivateClient` - Deactivate client
-
-### Core Service (Port: 8081)
-Service management and administration.
-
-**Endpoints:**
-- `POST /v1/core/services` - Create new service
-- `GET /v1/core/services` - List services
-- `GET /v1/core/services/{id}` - Get service details
-- `PUT /v1/core/services/{id}` - Update service
-- `POST /v1/core/services/{id}/activate` - Activate service
-- `POST /v1/core/services/{id}/deactivate` - Deactivate service
+Multi-tenant OAuth authentication and service management platform built with hexagonal architecture.
 
 ## Architecture
 
-### Hexagonal Architecture
-- **Domain Layer**: Core business logic and entities
-- **Application Layer**: Use cases and business rules
-- **Adapter Layer**: External interfaces (HTTP, gRPC, Database, Cache)
-- **Port Layer**: Interfaces defining contracts between layers
+This project follows **Hexagonal Architecture (Ports and Adapters)** pattern with clean separation of concerns:
 
-### Project Structure
-```
-serengeti-integrated/
-├── cmd/                    # Application entry points
-│   ├── auth/              # Auth service
-│   ├── client/            # Client service  
-│   ├── core/              # Core service
-│   └── shared/            # Shared server utilities
-├── configs/               # Configuration management
-├── internal/
-│   ├── adapter/           # External adapters
-│   │   ├── cipher/        # Encryption adapters
-│   │   ├── code_store/    # Code storage adapters
-│   │   ├── hasher/        # Password hashing adapters
-│   │   ├── handler/       # HTTP/gRPC handlers
-│   │   ├── oauth/         # OAuth provider adapters
-│   │   ├── random/        # Random generation adapters
-│   │   └── repository/    # Database adapters
-│   ├── domain/            # Domain entities and business logic
-│   │   ├── auth/          # Authentication domain
-│   │   ├── client/        # Client management domain
-│   │   ├── core/          # Service management domain
-│   │   └── shared/        # Shared domain concepts
-│   ├── port/              # Port interfaces
-│   │   ├── in/            # Inbound ports (use cases)
-│   │   └── out/           # Outbound ports (adapters)
-│   └── usecase/           # Use case implementations
-├── pkg/                   # Shared utilities
-└── third_party/           # External proto dependencies
-```
+- **Domain Layer**: Pure business logic and entities
+- **Usecase Layer**: Application business rules and orchestration
+- **Port Layer**: Interface contracts between layers
+- **Adapter Layer**: External system integrations
 
-## Technologies
+### Key Features
 
-- **Language**: Go 1.25
-- **Framework**: Gin (HTTP), gRPC
-- **Database**: PostgreSQL with Ent ORM
-- **Cache**: Redis
-- **Configuration**: Environment variables with validation
-- **Logging**: Zerolog
-- **Authentication**: OAuth 2.0 (Google, Kakao, Naver)
-- **Encryption**: AES-256-GCM
-- **Containerization**: Docker
-- **Orchestration**: Kubernetes with Helm
+- **Multi-tenant Architecture**: Service-based isolation with public ID system
+- **OAuth 2.0 Support**: Multiple OAuth providers with extensible design
+- **Security**: KEK/DEK encryption pattern for sensitive data protection
+- **Database**: PostgreSQL with Ent ORM and Atlas migrations
+- **Caching**: Redis-based caching layer
 
-## Getting Started
+## Quick Start
 
 ### Prerequisites
-- Go 1.25+
-- PostgreSQL 15+
-- Redis 7+
-- Docker (optional)
 
-### Environment Variables
+- Go 1.21+
+- Docker & Docker Compose
+- PostgreSQL
+- Redis
 
-**Common:**
+### Development Setup
+
+1. **Clone and setup**
+   ```bash
+   git clone <repository-url>
+   cd serengeti
+   go mod download
+   ```
+
+2. **Start infrastructure**
+   ```bash
+   docker compose -f docker-compose.dev.yml up -d
+   ```
+
+3. **Configure environment**
+   ```bash
+   # Generate KEK (256-bit hex key)
+   openssl rand -hex 32
+   # Update .env.dev.* files with your configuration
+   ```
+
+4. **Run services**
+   ```bash
+   # Auth Service
+   go run cmd/auth/*.go
+
+   # Core Service
+   go run cmd/core/*.go
+   ```
+
+### Environment Configuration
+
+Configure environment variables using `.env.dev.*` files:
+- KEK (256-bit encryption key)
+- Database connection settings
+- Redis connection settings
+- Server configuration
+
+## API Overview
+
+The platform provides two main services:
+- **Auth Service**: OAuth authentication and user identity management
+- **Core Service**: Service management, client apps, and OAuth configuration
+
+See Swagger documentation at `/swagger/index.html` for detailed API specifications.
+
+## Development
+
+### Build Commands
+
 ```bash
-ENV=dev
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=serengeti
-REDIS_ADDR=localhost:6379
-```
+# Build all packages
+go build ./...
 
-**Auth Service:**
-```bash
-HTTP_PORT=8080
-KEK=your-32-byte-encryption-key-here
-CLIENT_SERVICE_ENDPOINT=localhost:9090
-```
+# Run tests
+go test ./...
 
-**Client Service:**
-```bash
-GRPC_PORT=9090
-BCRYPT_COST=12
-```
-
-**Core Service:**
-```bash
-HTTP_PORT=8081
-CLIENT_SERVICE_ENDPOINT=localhost:9090
-```
-
-### Running Services
-
-1. **Install dependencies:**
-```bash
-go mod download
-```
-
-2. **Run database migrations:**
-```bash
-make apply-migrate MIGRATE_DEV_URL=postgres://user:pass@localhost/db
-```
-
-3. **Start services:**
-
-```bash
-# Auth Service
-go run cmd/auth/*.go
-
-# Client Service  
-go run cmd/client/*.go
-
-# Core Service
-go run cmd/core/*.go
-```
-
-### Development
-
-**Generate migrations:**
-```bash
+# Generate database migrations
 make generate-migrate MIGRATE_NAME=your_migration_name
-```
 
-**Install development tools:**
-```bash
+# Apply database migrations
+make apply-migrate MIGRATE_DEV_URL=postgres://user:pass@localhost/db
+
+# Install development tools
 make install-tools
+
+# Generate Swagger documentation
+make swagger-gen
 ```
 
-**Generate protobuf files:**
-```bash
-make proto-gen
+### Project Structure
+
+This project follows hexagonal architecture with clean separation of concerns:
+
 ```
+internal/
+├── domain/          # Domain entities and business logic
+├── usecase/         # Application use cases and orchestration
+├── port/            # Interface contracts
+│   ├── in/          # Inbound ports (use case interfaces)
+│   └── out/         # Outbound ports (adapter interfaces)
+└── adapter/         # External integrations
+    ├── handler/     # HTTP handlers
+    ├── repository/  # Database repositories
+    └── ...          # Other external adapters
+```
+
+### Key Patterns
+
+- **Error Handling**: Structured error handling with consistent patterns
+- **Transactions**: Consistent transaction management across use cases
+- **Security**: KEK/DEK encryption for sensitive data protection
+- **Validation**: Input validation at adapter layer
+
+## Security
+
+- **Encryption**: AES-256-GCM with KEK/DEK pattern
+- **Authentication**: OAuth 2.0 with multiple providers
+- **Secrets**: Environment-based KEK injection
+- **Transport**: HTTPS recommended for production
+
+## Contributing
+
+1. Follow hexagonal architecture principles
+2. Maintain clean separation between layers
+3. Use existing patterns for consistency
+4. Add tests for new functionality
+5. Update documentation as needed
 
 ## License
 
-This project is licensed under the MIT License.
+[License information]

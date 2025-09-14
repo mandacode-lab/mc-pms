@@ -1,0 +1,1166 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Multi-tenant service management and client application API",
+        "title": "Serengeti Core API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "basePath": "/v1",
+    "paths": {
+        "/auth/auth-url": {
+            "get": {
+                "description": "Generate OAuth authorization URL for specified provider and client app",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Get OAuth authorization URL",
+                "parameters": [
+                    {
+                        "enum": [
+                            "google",
+                            "kakao",
+                            "naver"
+                        ],
+                        "type": "string",
+                        "description": "OAuth Provider",
+                        "name": "provider",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Client Application ID",
+                        "name": "client_app_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Client Application Secret",
+                        "name": "client_app_secret",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Authorization URL and state",
+                        "schema": {
+                            "$ref": "#/definitions/identify_user.GetAuthURLResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/identify-by-code": {
+            "get": {
+                "description": "Identify user using OAuth authorization code flow",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Identify user by code",
+                "parameters": [
+                    {
+                        "enum": [
+                            "google",
+                            "kakao",
+                            "naver"
+                        ],
+                        "type": "string",
+                        "description": "OAuth Provider",
+                        "name": "provider",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "OAuth authorization code",
+                        "name": "oauth_code",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "OAuth state parameter",
+                        "name": "state",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Client Application ID",
+                        "name": "client_app_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Client Application Secret",
+                        "name": "client_app_secret",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User identity information",
+                        "schema": {
+                            "$ref": "#/definitions/identify_user.IdentifyByCodeResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/identify-by-token": {
+            "get": {
+                "description": "Identify user using OAuth access token",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Identify user by token",
+                "parameters": [
+                    {
+                        "enum": [
+                            "google",
+                            "kakao",
+                            "naver"
+                        ],
+                        "type": "string",
+                        "description": "OAuth Provider",
+                        "name": "provider",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "OAuth access token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Client Application ID",
+                        "name": "client_app_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Client Application Secret",
+                        "name": "client_app_secret",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User identity information",
+                        "schema": {
+                            "$ref": "#/definitions/identify_user.IdentifyByTokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/client-apps": {
+            "get": {
+                "description": "List all OAuth client applications for a specific service",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "client-apps"
+                ],
+                "summary": "List client apps",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service ID",
+                        "name": "service_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of client apps",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_handler_clientapp_mgmt.ListClientAppsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new OAuth client application",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "client-apps"
+                ],
+                "summary": "Create a new client app",
+                "parameters": [
+                    {
+                        "description": "Client app creation request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_handler_clientapp_mgmt.CreateClientAppRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created client app with secret",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_handler_clientapp_mgmt.CreateClientAppResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/client-apps/{id}": {
+            "put": {
+                "description": "Update an existing OAuth client application",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "client-apps"
+                ],
+                "summary": "Update a client app",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client App ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Client app update request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_handler_clientapp_mgmt.UpdateClientAppRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated client app",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_handler_clientapp_mgmt.UpdateClientAppResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/client-apps/{id}/refresh-secret": {
+            "post": {
+                "description": "Generate a new secret for an OAuth client application",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "client-apps"
+                ],
+                "summary": "Refresh client app secret",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client App ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "New secret",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_handler_clientapp_mgmt.RefreshSecretResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/services": {
+            "post": {
+                "description": "Create a new multi-tenant service",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "Create a new service",
+                "parameters": [
+                    {
+                        "description": "Service creation request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_handler_service_mgmt.CreateServiceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created service",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_handler_service_mgmt.CreateServiceResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/services/{id}": {
+            "put": {
+                "description": "Update an existing multi-tenant service",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "Update a service",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Service update request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_handler_service_mgmt.UpdateServiceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated service",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_handler_service_mgmt.UpdateServiceResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "Find user information based on various filter criteria",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Find users",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service ID",
+                        "name": "service_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "google",
+                            "kakao",
+                            "naver"
+                        ],
+                        "type": "string",
+                        "description": "OAuth Provider",
+                        "name": "provider",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "User email",
+                        "name": "email",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "User nickname",
+                        "name": "nickname",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of matching users",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_handler_user_mgmt.FindUserInfoResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/weboauth": {
+            "get": {
+                "description": "Read OAuth configurations for a client application",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "weboauth"
+                ],
+                "summary": "Read OAuth configs",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client App ID",
+                        "name": "client_app_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "google",
+                            "kakao",
+                            "naver"
+                        ],
+                        "type": "string",
+                        "description": "OAuth Provider",
+                        "name": "provider",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OAuth configurations",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_handler_weboauth_mgmt.ReadWebOAuthResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/weboauth/register": {
+            "post": {
+                "description": "Register OAuth configuration for a client application",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "weboauth"
+                ],
+                "summary": "Register OAuth config",
+                "parameters": [
+                    {
+                        "description": "OAuth registration request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_handler_weboauth_mgmt.RegisterWebOAuthRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OAuth registered successfully",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_handler_weboauth_mgmt.RegisterWebOAuthResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "common.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/merr.ErrCode"
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "identify_user.GetAuthURLResponse": {
+            "type": "object",
+            "properties": {
+                "auth_url": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                }
+            }
+        },
+        "identify_user.IdentifyByCodeResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "raw_data": {
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "service_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "identify_user.IdentifyByTokenResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "raw_data": {
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "service_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapter_handler_clientapp_mgmt.ClientAppResponse": {
+            "type": "object",
+            "properties": {
+                "client_app_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "service_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapter_handler_clientapp_mgmt.CreateClientAppRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "service_id"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "service_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapter_handler_clientapp_mgmt.CreateClientAppResponse": {
+            "type": "object",
+            "properties": {
+                "client_app_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "secret": {
+                    "type": "string"
+                },
+                "service_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapter_handler_clientapp_mgmt.ListClientAppsResponse": {
+            "type": "object",
+            "properties": {
+                "client_apps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_adapter_handler_clientapp_mgmt.ClientAppResponse"
+                    }
+                },
+                "service_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapter_handler_clientapp_mgmt.RefreshSecretResponse": {
+            "type": "object",
+            "properties": {
+                "secret": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapter_handler_clientapp_mgmt.UpdateClientAppRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapter_handler_clientapp_mgmt.UpdateClientAppResponse": {
+            "type": "object",
+            "properties": {
+                "client_app_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "service_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapter_handler_service_mgmt.CreateServiceRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapter_handler_service_mgmt.CreateServiceResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "service_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapter_handler_service_mgmt.UpdateServiceRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapter_handler_service_mgmt.UpdateServiceResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "service_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapter_handler_user_mgmt.FindUserInfoResponse": {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_adapter_handler_user_mgmt.UserResponse"
+                    }
+                }
+            }
+        },
+        "internal_adapter_handler_user_mgmt.UserResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "service_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapter_handler_weboauth_mgmt.ReadWebOAuthResponse": {
+            "type": "object",
+            "properties": {
+                "web_oauths": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_adapter_handler_weboauth_mgmt.WebOAuthResponse"
+                    }
+                }
+            }
+        },
+        "internal_adapter_handler_weboauth_mgmt.RegisterWebOAuthRequest": {
+            "type": "object",
+            "required": [
+                "client_app_id",
+                "oauth_client_id",
+                "oauth_secret",
+                "provider",
+                "redirect_uri",
+                "scopes"
+            ],
+            "properties": {
+                "client_app_id": {
+                    "type": "string"
+                },
+                "oauth_client_id": {
+                    "type": "string"
+                },
+                "oauth_secret": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "redirect_uri": {
+                    "type": "string"
+                },
+                "scopes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "internal_adapter_handler_weboauth_mgmt.RegisterWebOAuthResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapter_handler_weboauth_mgmt.WebOAuthResponse": {
+            "type": "object",
+            "properties": {
+                "client_app_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "oauth_client_id": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "redirect_uri": {
+                    "type": "string"
+                },
+                "scopes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "merr.ErrCode": {
+            "type": "string",
+            "enum": [
+                "unknown",
+                "not_found",
+                "invalid_input",
+                "permission_denied",
+                "internal_server_error",
+                "timeout",
+                "conflict",
+                "unauthorized",
+                "bad_request",
+                "service_unavailable",
+                "too_many_requests",
+                "gateway_timeout",
+                "unprocessable_entity",
+                "not_implemented",
+                "method_not_allowed",
+                "forbidden",
+                "precondition_failed",
+                "expectation_failed",
+                "bad_gateway",
+                "length_required",
+                "unsupported_media_type",
+                "range_not_satisfiable",
+                "insufficient_storage",
+                "loop_detected",
+                "not_acceptable",
+                "too_early",
+                "request_header_fields_too_large"
+            ],
+            "x-enum-varnames": [
+                "ErrUnknown",
+                "ErrNotFound",
+                "ErrInvalidInput",
+                "ErrPermissionDenied",
+                "ErrInternalServerError",
+                "ErrTimeout",
+                "ErrConflict",
+                "ErrUnauthorized",
+                "ErrBadRequest",
+                "ErrServiceUnavailable",
+                "ErrTooManyRequests",
+                "ErrGatewayTimeout",
+                "ErrUnprocessableEntity",
+                "ErrNotImplemented",
+                "ErrMethodNotAllowed",
+                "ErrForbidden",
+                "ErrPreconditionFailed",
+                "ErrExpectationFailed",
+                "ErrBadGateway",
+                "ErrLengthRequired",
+                "ErrUnsupportedMediaType",
+                "ErrRangeNotSatisfiable",
+                "ErrInsufficientStorage",
+                "ErrLoopDetected",
+                "ErrNotAcceptable",
+                "ErrTooEarly",
+                "ErrRequestHeaderFieldsTooLarge"
+            ]
+        }
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

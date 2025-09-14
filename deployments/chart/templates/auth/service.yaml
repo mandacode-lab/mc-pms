@@ -1,0 +1,17 @@
+{{- if .Values.auth.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "defined.fullname" . }}-auth
+  labels:
+    {{- include "defined.auth.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.auth.service.type }}
+  ports:
+    - port: {{ .Values.auth.service.port }}
+      targetPort: {{ .Values.auth.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "defined.auth.selectorLabels" . | nindent 4 }}
+{{- end }}

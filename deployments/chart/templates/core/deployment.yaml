@@ -1,0 +1,77 @@
+{{- if .Values.core.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "defined.fullname" . }}-core
+  labels:
+    {{- include "defined.core.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.core.autoscaling.enabled }}
+  replicas: {{ .Values.core.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "defined.core.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/core/configmap.yaml") . | sha256sum }}
+        checksum/db-secret: {{ include (print $.Template.BasePath "/shared/db-secret.yaml") . | sha256sum }}
+        checksum/redis-secret: {{ include (print $.Template.BasePath "/shared/redis-secret.yaml") . | sha256sum }}
+        checksum/kek-secret: {{ include (print $.Template.BasePath "/shared/kek-secret.yaml") . | sha256sum }}
+      labels:
+        {{- include "defined.core.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "defined.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: core
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.registry }}/{{ .Values.core.imageName }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.core.service.targetPort }}
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ include "defined.core.configMapName" . }}
+            - secretRef:
+                name: {{ include "defined.databaseSecretName" . }}
+            - secretRef:
+                name: {{ include "defined.redisSecretName" . }}
+            - secretRef:
+                name: {{ include "defined.kekSecretName" . }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.core.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

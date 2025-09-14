@@ -1,0 +1,138 @@
+# Global configuration
+global:
+  env: "prod"
+
+# Image configuration
+image:
+  registry: ""
+  tag: "latest"
+  pullPolicy: IfNotPresent
+  pullSecrets:
+    - name: "regcred"
+
+# Service configuration
+auth:
+  imageName: "serengeti-auth"
+  enabled: true
+  replicaCount: 2
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+  server:
+    readTimeout: "30s"
+    writeTimeout: "30s"
+
+core:
+  imageName: "serengeti-core"
+  enabled: true
+  replicaCount: 2
+  service:
+    type: ClusterIP
+    port: 8081
+    targetPort: 8081
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+  server:
+    readTimeout: "30s"
+    writeTimeout: "30s"
+
+# Database configuration
+database:
+  existingSecret: ""
+  host: "postgres"
+  port: 5432
+  dbName: "serengeti"
+  sslMode: "require"
+  auth:
+    username: "postgres"
+    password: "postgres"
+  migration:
+    username: "postgres"
+    password: "postgres"
+
+# Redis configuration
+redis:
+  existingSecret: ""
+  addr: ""
+  password: ""
+  db: 0
+  mode: "standalone"
+  sentinelMasterName: ""
+  sentinelPassword: ""
+
+# KEK (Key Encryption Key) configuration
+kek:
+  existingSecret: ""
+  key: ""
+
+# Database migration configuration
+migration:
+  enabled: true
+  imageName: "atlas"
+  version: "latest-alpine"
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# Security context
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+  runAsGroup: 1001
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+
+# Service account
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+# Node selector and tolerations
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Pod disruption budget
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Monitoring
+monitoring:
+  enabled: false
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+    path: /metrics
