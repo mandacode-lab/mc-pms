@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/serengeti-integrated/ent/clientapp"
-	"github.com/mandacode-com/serengeti-integrated/ent/service"
-	"github.com/mandacode-com/serengeti-integrated/ent/useridentity"
+	"github.com/mandacode-com/serengeti/ent/clientapp"
+	"github.com/mandacode-com/serengeti/ent/service"
+	"github.com/mandacode-com/serengeti/ent/useridentity"
 )
 
 // ServiceCreate is the builder for creating a Service entity.

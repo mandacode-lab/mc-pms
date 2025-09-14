@@ -4,9 +4,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
-	useridentityval "github.com/mandacode-com/serengeti-integrated/internal/domain/useridentity/value"
+	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
+	"github.com/mandacode-com/serengeti/internal/domain/shared"
+	useridentityval "github.com/mandacode-com/serengeti/internal/domain/useridentity/value"
 )
 
 type UserIdentity struct {

@@ -10,8 +10,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/serengeti-integrated/ent/clientapp"
-	"github.com/mandacode-com/serengeti-integrated/ent/service"
+	"github.com/mandacode-com/serengeti/ent/clientapp"
+	"github.com/mandacode-com/serengeti/ent/service"
 )
 
 // ClientApp is the model entity for the ClientApp schema.

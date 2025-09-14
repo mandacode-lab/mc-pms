@@ -3,7 +3,7 @@ package hasher
 import (
 	"context"
 
-	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
+	"github.com/mandacode-com/serengeti/internal/port/out"
 	"golang.org/x/crypto/bcrypt"
 )
 

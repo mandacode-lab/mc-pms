@@ -1,10 +1,10 @@
 package identify_user
 
 import (
-	serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/useridentity"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/userinfo"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/in"
+	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
+	"github.com/mandacode-com/serengeti/internal/domain/useridentity"
+	"github.com/mandacode-com/serengeti/internal/domain/userinfo"
+	"github.com/mandacode-com/serengeti/internal/port/in"
 )
 
 func toUserIdentityView(userIdentity *useridentity.UserIdentity, userInfo *userinfo.UserInfo, servicePublicID serviceval.PublicID, rawData map[string]any) *in.UserIdentityView {

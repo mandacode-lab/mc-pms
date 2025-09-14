@@ -10,7 +10,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/serengeti-integrated/ent/service"
+	"github.com/mandacode-com/serengeti/ent/service"
 )
 
 // Service is the model entity for the Service schema.

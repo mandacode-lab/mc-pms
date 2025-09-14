@@ -4,11 +4,11 @@ import (
 	"context"
 
 	"github.com/mandacode-com/merr"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp"
-	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/in"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
-	"github.com/mandacode-com/serengeti-integrated/pkg/utils"
+	"github.com/mandacode-com/serengeti/internal/domain/clientapp"
+	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
+	"github.com/mandacode-com/serengeti/internal/port/in"
+	"github.com/mandacode-com/serengeti/internal/port/out"
+	"github.com/mandacode-com/serengeti/pkg/utils"
 )
 
 func (u *Usecase) CreateClientApp(ctx context.Context, cmd *in.CreateClientAppCommand) (*in.CreateClientAppView, error) {

@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"github.com/mandacode-com/merr"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/service"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/in"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
-	"github.com/mandacode-com/serengeti-integrated/pkg/utils"
+	"github.com/mandacode-com/serengeti/internal/domain/service"
+	"github.com/mandacode-com/serengeti/internal/port/in"
+	"github.com/mandacode-com/serengeti/internal/port/out"
+	"github.com/mandacode-com/serengeti/pkg/utils"
 )
 
 func (u *Usecase) CreateService(ctx context.Context, cmd *in.CreateServiceCommand) (*in.CreateServiceView, error) {

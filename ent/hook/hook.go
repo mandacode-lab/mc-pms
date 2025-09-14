@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mandacode-com/serengeti-integrated/ent"
+	"github.com/mandacode-com/serengeti/ent"
 )
 
 // The ClientAppFunc type is an adapter to allow the use of ordinary

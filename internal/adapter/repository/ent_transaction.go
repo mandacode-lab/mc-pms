@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mandacode-com/serengeti-integrated/ent"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
+	"github.com/mandacode-com/serengeti/ent"
+	"github.com/mandacode-com/serengeti/internal/port/out"
 )
 
 func asEntTx(tx out.Tx) (*ent.Tx, error) {

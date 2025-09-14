@@ -3,7 +3,7 @@ package in
 import (
 	"context"
 	
-	serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
+	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
 )
 
 type CreateServiceCommand struct {

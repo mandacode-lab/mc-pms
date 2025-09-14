@@ -1,9 +1,9 @@
 package identify_user
 
 import (
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/in"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
+	"github.com/mandacode-com/serengeti/internal/domain/shared"
+	"github.com/mandacode-com/serengeti/internal/port/in"
+	"github.com/mandacode-com/serengeti/internal/port/out"
 )
 
 type Usecase struct {

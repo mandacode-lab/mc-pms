@@ -5,8 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
-	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/in"
+	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
+	"github.com/mandacode-com/serengeti/internal/port/in"
 )
 
 type RefreshSecretResponse struct {

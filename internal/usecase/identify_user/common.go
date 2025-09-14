@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 
 	"github.com/mandacode-com/merr"
-	serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/useridentity"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/userinfo"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/in"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
+	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
+	"github.com/mandacode-com/serengeti/internal/domain/shared"
+	"github.com/mandacode-com/serengeti/internal/domain/useridentity"
+	"github.com/mandacode-com/serengeti/internal/domain/userinfo"
+	"github.com/mandacode-com/serengeti/internal/port/in"
+	"github.com/mandacode-com/serengeti/internal/port/out"
 )
 
 func (u *Usecase) findOrCreateUser(ctx context.Context, serviceID serviceval.ID, provider shared.Provider, oauthUserInfo *out.OAuthUserInfo) (*useridentity.UserIdentity, error) {

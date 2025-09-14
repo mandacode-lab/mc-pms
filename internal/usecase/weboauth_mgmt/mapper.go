@@ -1,9 +1,9 @@
 package weboauth_mgmt
 
 import (
-	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/weboauth"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/in"
+	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
+	"github.com/mandacode-com/serengeti/internal/domain/weboauth"
+	"github.com/mandacode-com/serengeti/internal/port/in"
 )
 
 func toWebOAuthInfo(wo *weboauth.WebOAuth, clientAppPublicID clientappval.PublicID) in.WebOAuthInfo {

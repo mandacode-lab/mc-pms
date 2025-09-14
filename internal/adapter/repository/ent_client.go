@@ -6,7 +6,7 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	_ "github.com/lib/pq"
-	"github.com/mandacode-com/serengeti-integrated/ent"
+	"github.com/mandacode-com/serengeti/ent"
 )
 
 func NewEntClient(dsn string) (*ent.Client, error) {

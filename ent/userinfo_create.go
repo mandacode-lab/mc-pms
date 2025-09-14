@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/serengeti-integrated/ent/useridentity"
-	"github.com/mandacode-com/serengeti-integrated/ent/userinfo"
+	"github.com/mandacode-com/serengeti/ent/useridentity"
+	"github.com/mandacode-com/serengeti/ent/userinfo"
 )
 
 // UserInfoCreate is the builder for creating a UserInfo entity.

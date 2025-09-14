@@ -1,4 +1,4 @@
-module github.com/mandacode-com/serengeti-integrated
+module github.com/mandacode-com/serengeti
 
 go 1.25.0
 

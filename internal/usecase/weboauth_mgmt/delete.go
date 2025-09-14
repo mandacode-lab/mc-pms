@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/mandacode-com/merr"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/in"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
+	"github.com/mandacode-com/serengeti/internal/port/in"
+	"github.com/mandacode-com/serengeti/internal/port/out"
 )
 
 func (u *Usecase) DeleteWebOAuth(ctx context.Context, cmd *in.DeleteWebOAuthCommand) error {

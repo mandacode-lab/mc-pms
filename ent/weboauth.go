@@ -10,9 +10,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/mandacode-com/serengeti-integrated/ent/clientapp"
-	"github.com/mandacode-com/serengeti-integrated/ent/weboauth"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
+	"github.com/mandacode-com/serengeti/ent/clientapp"
+	"github.com/mandacode-com/serengeti/ent/weboauth"
+	"github.com/mandacode-com/serengeti/internal/domain/shared"
 )
 
 // WebOAuth is the model entity for the WebOAuth schema.

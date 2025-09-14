@@ -3,11 +3,11 @@ package repository
 import (
 	"context"
 
-	"github.com/mandacode-com/serengeti-integrated/ent"
-	entservice "github.com/mandacode-com/serengeti-integrated/ent/service"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/service"
-	serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
+	"github.com/mandacode-com/serengeti/ent"
+	entservice "github.com/mandacode-com/serengeti/ent/service"
+	"github.com/mandacode-com/serengeti/internal/domain/service"
+	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
+	"github.com/mandacode-com/serengeti/internal/port/out"
 )
 
 type EntServiceRepository struct {

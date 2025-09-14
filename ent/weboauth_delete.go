@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/mandacode-com/serengeti-integrated/ent/predicate"
-	"github.com/mandacode-com/serengeti-integrated/ent/weboauth"
+	"github.com/mandacode-com/serengeti/ent/predicate"
+	"github.com/mandacode-com/serengeti/ent/weboauth"
 )
 
 // WebOAuthDelete is the builder for deleting a WebOAuth entity.

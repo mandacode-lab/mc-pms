@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/mandacode-com/merr"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/weboauth"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/in"
+	"github.com/mandacode-com/serengeti/internal/domain/weboauth"
+	"github.com/mandacode-com/serengeti/internal/port/in"
 )
 
 func (u *Usecase) ReadWebOAuth(ctx context.Context, query *in.ReadWebOAuthQuery) (*in.ReadWebOAuthView, error) {

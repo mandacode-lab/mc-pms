@@ -1,9 +1,9 @@
 package service_mgmt
 
 import (
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/service"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/in"
-	"github.com/mandacode-com/serengeti-integrated/pkg/utils"
+	"github.com/mandacode-com/serengeti/internal/domain/service"
+	"github.com/mandacode-com/serengeti/internal/port/in"
+	"github.com/mandacode-com/serengeti/pkg/utils"
 )
 
 func toServiceInfo(s *service.Service) in.ServiceInfo {

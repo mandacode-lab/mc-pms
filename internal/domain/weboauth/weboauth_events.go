@@ -1,7 +1,7 @@
 package weboauth
 
 import (
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
+	"github.com/mandacode-com/serengeti/internal/domain/shared"
 )
 
 const (

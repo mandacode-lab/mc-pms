@@ -6,10 +6,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
-	serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
-	useridentityval "github.com/mandacode-com/serengeti-integrated/internal/domain/useridentity/value"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/in"
+	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
+	"github.com/mandacode-com/serengeti/internal/domain/shared"
+	useridentityval "github.com/mandacode-com/serengeti/internal/domain/useridentity/value"
+	"github.com/mandacode-com/serengeti/internal/port/in"
 )
 
 type UserResponse struct {

@@ -3,8 +3,8 @@ package in
 import (
 	"context"
 
-	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
-	serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
+	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
+	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
 )
 
 type CreateClientAppCommand struct {

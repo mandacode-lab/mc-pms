@@ -3,10 +3,10 @@ package out
 import (
 	"context"
 
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/weboauth"
-	weboauthval "github.com/mandacode-com/serengeti-integrated/internal/domain/weboauth/value"
-	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
+	"github.com/mandacode-com/serengeti/internal/domain/weboauth"
+	weboauthval "github.com/mandacode-com/serengeti/internal/domain/weboauth/value"
+	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
+	"github.com/mandacode-com/serengeti/internal/domain/shared"
 )
 
 type WebOAuthListFilter struct {

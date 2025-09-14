@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
+	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
+	"github.com/mandacode-com/serengeti/internal/domain/shared"
+	"github.com/mandacode-com/serengeti/internal/port/out"
 )
 
 // CacheInvalidator handles cache invalidation for WebOAuth configurations

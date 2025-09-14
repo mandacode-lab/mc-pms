@@ -2,7 +2,7 @@ package clientapp_mgmt
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/in"
+	"github.com/mandacode-com/serengeti/internal/port/in"
 )
 
 type Handler struct {

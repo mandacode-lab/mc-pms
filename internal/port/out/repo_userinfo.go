@@ -3,9 +3,9 @@ package out
 import (
 	"context"
 
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/userinfo"
-	userinfoval "github.com/mandacode-com/serengeti-integrated/internal/domain/userinfo/value"
-	useridentityval "github.com/mandacode-com/serengeti-integrated/internal/domain/useridentity/value"
+	"github.com/mandacode-com/serengeti/internal/domain/userinfo"
+	userinfoval "github.com/mandacode-com/serengeti/internal/domain/userinfo/value"
+	useridentityval "github.com/mandacode-com/serengeti/internal/domain/useridentity/value"
 )
 
 type UserInfoListFilter struct {

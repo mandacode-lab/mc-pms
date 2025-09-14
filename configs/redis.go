@@ -6,7 +6,7 @@ type RedisConfig struct {
 	Addr             string `env:"REDIS_ADDR" envDefault:"localhost:6379" validate:"required,hostname_port"`
 	Password         string `env:"REDIS_PASSWORD" envDefault:""`
 	DB               int    `env:"REDIS_DB" envDefault:"0" validate:"min=0"`
-	Mode             string `env:"REDIS_MODE" envDefault:"standard" validate:"oneof=standard sentinel cluster"`
+	Mode             string `env:"REDIS_MODE" envDefault:"standalone" validate:"oneof=standalone sentinel cluster"`
 	SentinelMaster   string `env:"REDIS_SENTINEL_MASTER" envDefault:"" validate:"required_if=Mode sentinel"`
 	SentinelPassword string `env:"REDIS_SENTINEL_PASSWORD" envDefault:""`
 }

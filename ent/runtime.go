@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/mandacode-com/serengeti-integrated/ent/clientapp"
-	"github.com/mandacode-com/serengeti-integrated/ent/schema"
-	"github.com/mandacode-com/serengeti-integrated/ent/service"
-	"github.com/mandacode-com/serengeti-integrated/ent/useridentity"
-	"github.com/mandacode-com/serengeti-integrated/ent/userinfo"
-	"github.com/mandacode-com/serengeti-integrated/ent/weboauth"
+	"github.com/mandacode-com/serengeti/ent/clientapp"
+	"github.com/mandacode-com/serengeti/ent/schema"
+	"github.com/mandacode-com/serengeti/ent/service"
+	"github.com/mandacode-com/serengeti/ent/useridentity"
+	"github.com/mandacode-com/serengeti/ent/userinfo"
+	"github.com/mandacode-com/serengeti/ent/weboauth"
 )
 
 // The init function reads all schema descriptors with runtime code

@@ -12,10 +12,10 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/serengeti-integrated/ent/clientapp"
-	"github.com/mandacode-com/serengeti-integrated/ent/predicate"
-	"github.com/mandacode-com/serengeti-integrated/ent/service"
-	"github.com/mandacode-com/serengeti-integrated/ent/weboauth"
+	"github.com/mandacode-com/serengeti/ent/clientapp"
+	"github.com/mandacode-com/serengeti/ent/predicate"
+	"github.com/mandacode-com/serengeti/ent/service"
+	"github.com/mandacode-com/serengeti/ent/weboauth"
 )
 
 // ClientAppUpdate is the builder for updating ClientApp entities.

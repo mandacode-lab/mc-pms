@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/mandacode-com/serengeti-integrated/ent/predicate"
-	"github.com/mandacode-com/serengeti-integrated/ent/useridentity"
-	"github.com/mandacode-com/serengeti-integrated/ent/userinfo"
+	"github.com/mandacode-com/serengeti/ent/predicate"
+	"github.com/mandacode-com/serengeti/ent/useridentity"
+	"github.com/mandacode-com/serengeti/ent/userinfo"
 )
 
 // UserInfoQuery is the builder for querying UserInfo entities.

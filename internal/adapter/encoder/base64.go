@@ -3,7 +3,7 @@ package encoder
 import (
 	"encoding/base64"
 
-	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
+	"github.com/mandacode-com/serengeti/internal/port/out"
 )
 
 type Base64Encoder struct{}

@@ -3,13 +3,13 @@ package repository
 import (
 	"context"
 
-	"github.com/mandacode-com/serengeti-integrated/ent"
-	entclientapp "github.com/mandacode-com/serengeti-integrated/ent/clientapp"
-	entservice "github.com/mandacode-com/serengeti-integrated/ent/service"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp"
-	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
-	serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
-	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
+	"github.com/mandacode-com/serengeti/ent"
+	entclientapp "github.com/mandacode-com/serengeti/ent/clientapp"
+	entservice "github.com/mandacode-com/serengeti/ent/service"
+	"github.com/mandacode-com/serengeti/internal/domain/clientapp"
+	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
+	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
+	"github.com/mandacode-com/serengeti/internal/port/out"
 )
 
 type EntClientAppRepository struct {

@@ -12,11 +12,11 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/serengeti-integrated/ent/predicate"
-	"github.com/mandacode-com/serengeti-integrated/ent/service"
-	"github.com/mandacode-com/serengeti-integrated/ent/useridentity"
-	"github.com/mandacode-com/serengeti-integrated/ent/userinfo"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
+	"github.com/mandacode-com/serengeti/ent/predicate"
+	"github.com/mandacode-com/serengeti/ent/service"
+	"github.com/mandacode-com/serengeti/ent/useridentity"
+	"github.com/mandacode-com/serengeti/ent/userinfo"
+	"github.com/mandacode-com/serengeti/internal/domain/shared"
 )
 
 // UserIdentityUpdate is the builder for updating UserIdentity entities.

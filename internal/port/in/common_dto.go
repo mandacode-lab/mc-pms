@@ -3,10 +3,10 @@ package in
 import (
 	"time"
 
-	clientappval "github.com/mandacode-com/serengeti-integrated/internal/domain/clientapp/value"
-	serviceval "github.com/mandacode-com/serengeti-integrated/internal/domain/service/value"
-	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
-	useridentityval "github.com/mandacode-com/serengeti-integrated/internal/domain/useridentity/value"
+	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
+	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
+	"github.com/mandacode-com/serengeti/internal/domain/shared"
+	useridentityval "github.com/mandacode-com/serengeti/internal/domain/useridentity/value"
 )
 
 type ServiceInfo struct {

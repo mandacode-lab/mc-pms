@@ -8,9 +8,9 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/mandacode-com/merver"
-	"github.com/mandacode-com/serengeti-integrated/cmd/shared"
-	"github.com/mandacode-com/serengeti-integrated/configs"
-	_ "github.com/mandacode-com/serengeti-integrated/docs/auth"
+	"github.com/mandacode-com/serengeti/cmd/shared"
+	"github.com/mandacode-com/serengeti/configs"
+	_ "github.com/mandacode-com/serengeti/docs/auth"
 	"github.com/rs/zerolog/log"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
