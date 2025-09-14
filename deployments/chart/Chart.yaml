@@ -1,0 +1,16 @@
+apiVersion: v2
+name: serengeti-integrated
+description: A Helm chart for Serengeti Integrated services (auth and core)
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+
+keywords:
+  - oauth
+  - authentication
+  - microservices
+  - multi-tenant
+
+maintainers:
+  - name: Mandacode
+    email: sauce@mandacode.com
