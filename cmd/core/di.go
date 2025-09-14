@@ -8,7 +8,7 @@ import (
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
-	"github.com/go-redis/redis/v8"
+
 	_ "github.com/lib/pq"
 	"github.com/mandacode-com/serengeti-integrated/configs"
 	"github.com/mandacode-com/serengeti-integrated/ent"
@@ -22,12 +22,14 @@ import (
 	"github.com/mandacode-com/serengeti-integrated/internal/adapter/kek"
 	"github.com/mandacode-com/serengeti-integrated/internal/adapter/random"
 	"github.com/mandacode-com/serengeti-integrated/internal/adapter/repository"
+	redisinfra "github.com/mandacode-com/serengeti-integrated/internal/infra/redis"
 	"github.com/mandacode-com/serengeti-integrated/internal/port/in"
 	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
 	clientapp_mgmt_usecase "github.com/mandacode-com/serengeti-integrated/internal/usecase/clientapp_mgmt"
 	service_mgmt_usecase "github.com/mandacode-com/serengeti-integrated/internal/usecase/service_mgmt"
 	user_mgmt_usecase "github.com/mandacode-com/serengeti-integrated/internal/usecase/user_mgmt"
 	weboauth_mgmt_usecase "github.com/mandacode-com/serengeti-integrated/internal/usecase/weboauth_mgmt"
+	"github.com/redis/go-redis/v9"
 )
 
 type Adapter struct {
@@ -36,8 +38,8 @@ type Adapter struct {
 	client *ent.Client
 
 	// Cache
-	rdb        *redis.Client
-	cacheStore out.CacheStore
+	cacheClient redis.UniversalClient
+	cacheStore  out.CacheStore
 
 	// Repositories
 	serviceRepo           out.ServiceRepository
@@ -70,17 +72,23 @@ func NewAdapter(ctx context.Context, cfg *configs.CoreConfig) (*Adapter, error) 
 	client := ent.NewClient(ent.Driver(drv))
 
 	// Redis setup
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     cfg.Redis.Addr(),
-		Password: cfg.Redis.Password,
-		DB:       cfg.Redis.DB,
+	cacheClient, err := redisinfra.NewClient(ctx, redisinfra.Config{
+		Addr:             cfg.Redis.Addr,
+		Password:         cfg.Redis.Password,
+		DB:               cfg.Redis.DB,
+		Mode:             cfg.Redis.Mode,
+		SentinelMaster:   cfg.Redis.SentinelMaster,
+		SentinelPassword: cfg.Redis.SentinelPassword,
 	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create redis client: %w", err)
+	}
 
 	// Cache setup
 	cacheConfig := &out.CacheConfig{
 		DefaultExpiration: 30 * time.Minute,
 	}
-	cacheStore := cache.NewRedisCacheStore(rdb, cacheConfig)
+	cacheStore := cache.NewRedisCacheStore(cacheClient, cacheConfig)
 
 	// Repositories
 	serviceRepo := repository.NewEntServiceRepository(client)
@@ -113,7 +121,7 @@ func NewAdapter(ctx context.Context, cfg *configs.CoreConfig) (*Adapter, error) 
 	return &Adapter{
 		db:                    db,
 		client:                client,
-		rdb:                   rdb,
+		cacheClient:           cacheClient,
 		cacheStore:            cacheStore,
 		serviceRepo:           serviceRepo,
 		serviceQueryRepo:      serviceQueryRepo,
@@ -133,7 +141,6 @@ func NewAdapter(ctx context.Context, cfg *configs.CoreConfig) (*Adapter, error) 
 	}, nil
 }
 
-// Service Management
 func (a *Adapter) ProvideServiceMgmtUsecase() in.ServiceMgmtUsecase {
 	return service_mgmt_usecase.NewUsecase(
 		a.serviceRepo,
@@ -146,7 +153,6 @@ func (a *Adapter) ProvideServiceMgmtHandler() *service_mgmt.Handler {
 	return service_mgmt.NewHandler(a.ProvideServiceMgmtUsecase())
 }
 
-// Client App Management
 func (a *Adapter) ProvideClientAppMgmtUsecase() in.ClientAppMgmtUsecase {
 	return clientapp_mgmt_usecase.NewUsecase(
 		a.clientAppRepo,
@@ -163,7 +169,6 @@ func (a *Adapter) ProvideClientAppMgmtHandler() *clientapp_mgmt.Handler {
 	return clientapp_mgmt.NewHandler(a.ProvideClientAppMgmtUsecase())
 }
 
-// WebOAuth Management
 func (a *Adapter) ProvideWebOAuthMgmtUsecase() in.WebOAuthMgmtUsecase {
 	return weboauth_mgmt_usecase.NewUsecase(
 		a.webOAuthRepo,
@@ -178,7 +183,6 @@ func (a *Adapter) ProvideWebOAuthMgmtHandler() *weboauth_mgmt.Handler {
 	return weboauth_mgmt.NewHandler(a.ProvideWebOAuthMgmtUsecase())
 }
 
-// User Management
 func (a *Adapter) ProvideUserMgmtUsecase() in.UserMgmtUsecase {
 	return user_mgmt_usecase.NewUsecase(
 		a.userInfoQueryRepo,
@@ -201,8 +205,8 @@ func (a *Adapter) Close() error {
 	if a.db != nil {
 		a.db.Close()
 	}
-	if a.rdb != nil {
-		a.rdb.Close()
+	if a.cacheClient != nil {
+		a.cacheClient.Close()
 	}
 	return nil
 }

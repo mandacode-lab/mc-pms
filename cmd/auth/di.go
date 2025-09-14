@@ -8,7 +8,6 @@ import (
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
-	"github.com/go-redis/redis/v8"
 	_ "github.com/lib/pq"
 	"github.com/mandacode-com/serengeti-integrated/configs"
 	"github.com/mandacode-com/serengeti-integrated/ent"
@@ -22,9 +21,11 @@ import (
 	"github.com/mandacode-com/serengeti-integrated/internal/adapter/repository"
 	"github.com/mandacode-com/serengeti-integrated/internal/adapter/state"
 	"github.com/mandacode-com/serengeti-integrated/internal/domain/shared"
+	redisinfra "github.com/mandacode-com/serengeti-integrated/internal/infra/redis"
 	"github.com/mandacode-com/serengeti-integrated/internal/port/in"
 	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
 	identify_user_usecase "github.com/mandacode-com/serengeti-integrated/internal/usecase/identify_user"
+	"github.com/redis/go-redis/v9"
 )
 
 type Adapter struct {
@@ -33,21 +34,21 @@ type Adapter struct {
 	client *ent.Client
 
 	// Cache
-	rdb        *redis.Client
-	cacheStore out.CacheStore
+	cacheClient redis.UniversalClient
+	cacheStore  out.CacheStore
 
 	// Repositories
-	clientAppQueryRepo   out.ClientAppQueryRepository
-	serviceQueryRepo     out.ServiceQueryRepository
-	userIdentityRepo     out.UserIdentityRepository
+	clientAppQueryRepo    out.ClientAppQueryRepository
+	serviceQueryRepo      out.ServiceQueryRepository
+	userIdentityRepo      out.UserIdentityRepository
 	userIdentityQueryRepo out.UserIdentityQueryRepository
-	userInfoRepo         out.UserInfoRepository
-	userInfoQueryRepo    out.UserInfoQueryRepository
-	webOAuthQueryRepo    out.WebOAuthQueryRepository
+	userInfoRepo          out.UserInfoRepository
+	userInfoQueryRepo     out.UserInfoQueryRepository
+	webOAuthQueryRepo     out.WebOAuthQueryRepository
 
 	// Services
-	hasher      out.Hasher
-	kekProvider out.KekProvider
+	hasher       out.Hasher
+	kekProvider  out.KekProvider
 	stateService out.StateService
 	strRandGen   out.StrRandGen
 	encoder      out.Encoder
@@ -68,17 +69,20 @@ func NewAdapter(ctx context.Context, cfg *configs.AuthConfig) (*Adapter, error) 
 	client := ent.NewClient(ent.Driver(drv))
 
 	// Redis setup
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     cfg.Redis.Addr(),
-		Password: cfg.Redis.Password,
-		DB:       cfg.Redis.DB,
+	cacheClient, err := redisinfra.NewClient(ctx, redisinfra.Config{
+		Addr:             cfg.Redis.Addr,
+		Password:         cfg.Redis.Password,
+		DB:               cfg.Redis.DB,
+		Mode:             cfg.Redis.Mode,
+		SentinelMaster:   cfg.Redis.SentinelMaster,
+		SentinelPassword: cfg.Redis.SentinelPassword,
 	})
 
 	// Cache setup
 	cacheConfig := &out.CacheConfig{
 		DefaultExpiration: 30 * time.Minute,
 	}
-	cacheStore := cache.NewRedisCacheStore(rdb, cacheConfig)
+	cacheStore := cache.NewRedisCacheStore(cacheClient, cacheConfig)
 
 	// Repositories
 	clientAppQueryRepo := repository.NewEntClientAppQueryRepository(client)
@@ -116,7 +120,7 @@ func NewAdapter(ctx context.Context, cfg *configs.AuthConfig) (*Adapter, error) 
 	return &Adapter{
 		db:                    db,
 		client:                client,
-		rdb:                   rdb,
+		cacheClient:           cacheClient,
 		cacheStore:            cacheStore,
 		clientAppQueryRepo:    clientAppQueryRepo,
 		serviceQueryRepo:      serviceQueryRepo,
@@ -157,14 +161,14 @@ func (a *Adapter) ProvideIdentifyUserHandler() *identify_user.Handler {
 }
 
 func (a *Adapter) Close() error {
-	if a.client != nil {
-		a.client.Close()
+	if err := a.client.Close(); err != nil {
+		return err
 	}
-	if a.db != nil {
-		a.db.Close()
+	if err := a.db.Close(); err != nil {
+		return err
 	}
-	if a.rdb != nil {
-		a.rdb.Close()
+	if err := a.cacheClient.Close(); err != nil {
+		return err
 	}
 	return nil
 }

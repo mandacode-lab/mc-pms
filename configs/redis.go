@@ -1,15 +1,23 @@
 package configs
 
-import "strconv"
+import "bytes"
 
 type RedisConfig struct {
-	Host     string `env:"REDIS_HOST" envDefault:"localhost"`
-	Port     int    `env:"REDIS_PORT" envDefault:"6379"`
-	Password string `env:"REDIS_PASSWORD" envDefault:""`
-	DB       int    `env:"REDIS_DB" envDefault:"0"`
+	Addr             string `env:"REDIS_ADDR" envDefault:"localhost:6379" validate:"required,hostname_port"`
+	Password         string `env:"REDIS_PASSWORD" envDefault:""`
+	DB               int    `env:"REDIS_DB" envDefault:"0" validate:"min=0"`
+	Mode             string `env:"REDIS_MODE" envDefault:"standard" validate:"oneof=standard sentinel cluster"`
+	SentinelMaster   string `env:"REDIS_SENTINEL_MASTER" envDefault:"" validate:"required_if=Mode sentinel"`
+	SentinelPassword string `env:"REDIS_SENTINEL_PASSWORD" envDefault:""`
 }
 
-func (c RedisConfig) Addr() string {
-	return c.Host + ":" + strconv.Itoa(c.Port)
+func (cfg *RedisConfig) GetAddrList() []string {
+	if cfg.Addr == "" {
+		return nil
+	}
+	addrs := make([]string, 0)
+	for addr := range bytes.SplitSeq([]byte(cfg.Addr), []byte(",")) {
+		addrs = append(addrs, string(bytes.TrimSpace(addr)))
+	}
+	return addrs
 }
-

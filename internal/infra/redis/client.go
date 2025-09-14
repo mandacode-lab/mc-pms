@@ -16,7 +16,7 @@ type Config struct {
 	SentinelPassword string
 }
 
-func NewClient(ctx context.Context, cfg Config) (*redis.UniversalClient, error) {
+func NewClient(ctx context.Context, cfg Config) (redis.UniversalClient, error) {
 	var client redis.UniversalClient
 
 	switch cfg.Mode {
@@ -48,5 +48,5 @@ func NewClient(ctx context.Context, cfg Config) (*redis.UniversalClient, error) 
 		return nil, fmt.Errorf("failed to connect to redis: %w", err)
 	}
 
-	return &client, nil
+	return client, nil
 }

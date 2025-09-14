@@ -4,16 +4,16 @@ import (
 	"context"
 	"errors"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
+	"github.com/redis/go-redis/v9"
 )
 
 type RedisCacheStore struct {
-	client *redis.Client
+	client redis.UniversalClient
 	config *out.CacheConfig
 }
 
-func NewRedisCacheStore(client *redis.Client, config *out.CacheConfig) out.CacheStore {
+func NewRedisCacheStore(client redis.UniversalClient, config *out.CacheConfig) out.CacheStore {
 	return &RedisCacheStore{
 		client: client,
 		config: config,
