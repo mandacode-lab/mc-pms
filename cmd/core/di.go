@@ -63,7 +63,7 @@ type Adapter struct {
 
 func NewAdapter(ctx context.Context, cfg *configs.CoreConfig) (*Adapter, error) {
 	// Database setup
-	db, err := sql.Open("postgres", cfg.Postgres.DSN())
+	db, err := sql.Open("postgres", cfg.Postgres.GetDSN())
 	if err != nil {
 		return nil, err
 	}
