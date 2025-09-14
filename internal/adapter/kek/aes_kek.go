@@ -5,6 +5,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 
 	"github.com/mandacode-com/serengeti-integrated/internal/port/out"
@@ -23,6 +24,21 @@ func NewAESKekProvider(kek []byte) out.KekProvider {
 	return &AESKekProvider{
 		kek: kek,
 	}
+}
+
+func NewAESKekProviderFromHex(kekHex string) (out.KekProvider, error) {
+	kek, err := hex.DecodeString(kekHex)
+	if err != nil {
+		return nil, fmt.Errorf("decoding KEK hex: %w", err)
+	}
+
+	if len(kek) != 32 {
+		return nil, fmt.Errorf("KEK must be 32 bytes (256 bits), got %d bytes", len(kek))
+	}
+
+	return &AESKekProvider{
+		kek: kek,
+	}, nil
 }
 
 func (p *AESKekProvider) Encrypt(ctx context.Context, plaintext []byte) (ciphertext, nonce []byte, err error) {
@@ -127,3 +143,4 @@ func (p *AESKekProvider) DecryptWithDEK(ctx context.Context, dek, ciphertext, no
 
 	return plaintext, nil
 }
+
