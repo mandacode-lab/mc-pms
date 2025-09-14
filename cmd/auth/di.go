@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 
 	"entgo.io/ent/dialect"
@@ -95,12 +96,11 @@ func NewAdapter(ctx context.Context, cfg *configs.AuthConfig) (*Adapter, error) 
 	// Services
 	hasherSvc := hasher.NewBcryptHasher()
 
-	// TODO: KEK should come from environment variable or secret management
-	masterKey := make([]byte, 32) // 256-bit key
-	for i := range masterKey {
-		masterKey[i] = byte(i) // Temporary key - CHANGE IN PRODUCTION
+	// KEK Provider from config
+	kekProvider, err := kek.NewAESKekProviderFromHex(cfg.KEK)
+	if err != nil {
+		return nil, fmt.Errorf("creating KEK provider: %w", err)
 	}
-	kekProvider := kek.NewAESKekProvider(masterKey)
 	strRandGen := random.NewCryptoStrRandGen()
 	stateService := state.NewCacheStateService(cacheStore, strRandGen)
 	encoderSvc := encoder.NewBase64Encoder()

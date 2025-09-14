@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/joho/godotenv"
 	"github.com/mandacode-com/merver"
 	"github.com/mandacode-com/serengeti-integrated/cmd/shared"
 	"github.com/mandacode-com/serengeti-integrated/configs"
@@ -15,6 +16,13 @@ import (
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	// Load .env file if not production
+	if os.Getenv("ENV") != "prod" {
+		if err := godotenv.Load(".env.dev.auth"); err != nil {
+			log.Warn().Err(err).Msg("Could not load .env.dev.auth file, using system environment variables")
+		}
+	}
 
 	// Load configuration
 	cfg, err := configs.LoadAuthConfig()
