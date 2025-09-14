@@ -72,19 +72,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Resource not found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     }
                 }
@@ -152,13 +152,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     }
                 }
@@ -219,13 +219,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     }
                 }
@@ -260,13 +260,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     }
                 }
@@ -304,13 +304,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     }
                 }
@@ -357,13 +357,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     }
                 }
@@ -398,13 +398,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     }
                 }
@@ -444,19 +444,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Resource not found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     }
                 }
@@ -503,19 +503,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Resource not found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     }
                 }
@@ -578,13 +578,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     }
                 }
@@ -630,13 +630,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     }
                 }
@@ -676,13 +676,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse"
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     }
                 }
@@ -724,13 +724,16 @@ const docTemplate = `{
             ],
             "properties": {
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Description of my application"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "My App"
                 },
                 "service_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "srv_1234567890abcdef"
                 }
             }
         },
@@ -738,28 +741,36 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "client_app_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "app_abcdef1234567890"
                 },
                 "created_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2023-01-01T00:00:00Z"
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Description of my application"
                 },
                 "is_active": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "My App"
                 },
                 "secret": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "secret_xyz789abc123def456"
                 },
                 "service_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "srv_1234567890abcdef"
                 },
                 "updated_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2023-01-01T00:00:00Z"
                 }
             }
         },
@@ -825,25 +836,16 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_mandacode-com_serengeti_internal_adapter_handler_common.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "$ref": "#/definitions/merr.ErrCode"
-                },
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
         "internal_adapter_handler_identify_user.GetAuthURLResponse": {
             "type": "object",
             "properties": {
                 "auth_url": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "https://accounts.google.com/o/oauth2/v2/auth?client_id=abc\u0026redirect_uri=def\u0026response_type=code\u0026scope=openid+profile+email\u0026state=xyz"
                 },
                 "state": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "random_state_string_123"
                 }
             }
         },
@@ -968,6 +970,17 @@ const docTemplate = `{
                 "ErrRequestHeaderFieldsTooLarge"
             ]
         },
+        "merrmid.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/merr.ErrCode"
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
         "service_mgmt.CreateServiceRequest": {
             "type": "object",
             "required": [
@@ -975,10 +988,12 @@ const docTemplate = `{
             ],
             "properties": {
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Service description"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "My Service"
                 }
             }
         },
@@ -986,22 +1001,28 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "created_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2023-01-01T00:00:00Z"
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Service description"
                 },
                 "is_active": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "My Service"
                 },
                 "service_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "srv_1234567890abcdef"
                 },
                 "updated_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2023-01-01T00:00:00Z"
                 }
             }
         },
@@ -1057,25 +1078,32 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "created_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2023-01-01T00:00:00Z"
                 },
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "john.doe@example.com"
                 },
                 "nickname": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "john_doe"
                 },
                 "provider": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "google"
                 },
                 "service_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "srv_1234567890abcdef"
                 },
                 "updated_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2023-01-01T00:00:00Z"
                 },
                 "user_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "usr_abcdef1234567890"
                 }
             }
         },
