@@ -79,16 +79,6 @@ func main() {
 	clientAppMgmtHandler := adapter.ProvideClientAppMgmtHandler()
 	clientAppMgmtHandler.RegisterRoutes(clientAppGroup)
 
-	// WebOAuth management routes
-	webOAuthGroup := v1.Group("/weboauth")
-	webOAuthMgmtHandler := adapter.ProvideWebOAuthMgmtHandler()
-	webOAuthMgmtHandler.RegisterRoutes(webOAuthGroup)
-
-	// User management routes
-	userGroup := v1.Group("/users")
-	userMgmtHandler := adapter.ProvideUserMgmtHandler()
-	userMgmtHandler.RegisterRoutes(userGroup)
-
 	// Swagger documentation
 	srv.GetEngine().GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

@@ -33,8 +33,6 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// EdgeService holds the string denoting the service edge name in mutations.
 	EdgeService = "service"
-	// EdgeWebOauths holds the string denoting the web_oauths edge name in mutations.
-	EdgeWebOauths = "web_oauths"
 	// Table holds the table name of the clientapp in the database.
 	Table = "client_apps"
 	// ServiceTable is the table that holds the service relation/edge.
@@ -44,13 +42,6 @@ const (
 	ServiceInverseTable = "services"
 	// ServiceColumn is the table column denoting the service relation/edge.
 	ServiceColumn = "service_id"
-	// WebOauthsTable is the table that holds the web_oauths relation/edge.
-	WebOauthsTable = "web_oauths"
-	// WebOauthsInverseTable is the table name for the WebOAuth entity.
-	// It exists in this package in order to avoid circular dependency with the "weboauth" package.
-	WebOauthsInverseTable = "web_oauths"
-	// WebOauthsColumn is the table column denoting the web_oauths relation/edge.
-	WebOauthsColumn = "client_app_id"
 )
 
 // Columns holds all SQL columns for clientapp fields.
@@ -142,31 +133,10 @@ func ByServiceField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newServiceStep(), sql.OrderByField(field, opts...))
 	}
 }
-
-// ByWebOauthsCount orders the results by web_oauths count.
-func ByWebOauthsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newWebOauthsStep(), opts...)
-	}
-}
-
-// ByWebOauths orders the results by web_oauths terms.
-func ByWebOauths(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newWebOauthsStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
 func newServiceStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ServiceInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, ServiceTable, ServiceColumn),
-	)
-}
-func newWebOauthsStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(WebOauthsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, WebOauthsTable, WebOauthsColumn),
 	)
 }

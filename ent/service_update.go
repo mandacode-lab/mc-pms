@@ -15,7 +15,6 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
 	"github.com/mandacode-com/mandacode-ssam/ent/predicate"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/ent/useridentity"
 )
 
 // ServiceUpdate is the builder for updating Service entities.
@@ -114,21 +113,6 @@ func (_u *ServiceUpdate) AddClientApps(v ...*ClientApp) *ServiceUpdate {
 	return _u.AddClientAppIDs(ids...)
 }
 
-// AddUserIdentityIDs adds the "user_identities" edge to the UserIdentity entity by IDs.
-func (_u *ServiceUpdate) AddUserIdentityIDs(ids ...int64) *ServiceUpdate {
-	_u.mutation.AddUserIdentityIDs(ids...)
-	return _u
-}
-
-// AddUserIdentities adds the "user_identities" edges to the UserIdentity entity.
-func (_u *ServiceUpdate) AddUserIdentities(v ...*UserIdentity) *ServiceUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddUserIdentityIDs(ids...)
-}
-
 // Mutation returns the ServiceMutation object of the builder.
 func (_u *ServiceUpdate) Mutation() *ServiceMutation {
 	return _u.mutation
@@ -153,27 +137,6 @@ func (_u *ServiceUpdate) RemoveClientApps(v ...*ClientApp) *ServiceUpdate {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveClientAppIDs(ids...)
-}
-
-// ClearUserIdentities clears all "user_identities" edges to the UserIdentity entity.
-func (_u *ServiceUpdate) ClearUserIdentities() *ServiceUpdate {
-	_u.mutation.ClearUserIdentities()
-	return _u
-}
-
-// RemoveUserIdentityIDs removes the "user_identities" edge to UserIdentity entities by IDs.
-func (_u *ServiceUpdate) RemoveUserIdentityIDs(ids ...int64) *ServiceUpdate {
-	_u.mutation.RemoveUserIdentityIDs(ids...)
-	return _u
-}
-
-// RemoveUserIdentities removes "user_identities" edges to UserIdentity entities.
-func (_u *ServiceUpdate) RemoveUserIdentities(v ...*UserIdentity) *ServiceUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveUserIdentityIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -297,51 +260,6 @@ func (_u *ServiceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.UserIdentitiesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   service.UserIdentitiesTable,
-			Columns: []string{service.UserIdentitiesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(useridentity.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedUserIdentitiesIDs(); len(nodes) > 0 && !_u.mutation.UserIdentitiesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   service.UserIdentitiesTable,
-			Columns: []string{service.UserIdentitiesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(useridentity.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.UserIdentitiesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   service.UserIdentitiesTable,
-			Columns: []string{service.UserIdentitiesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(useridentity.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{service.Label}
@@ -445,21 +363,6 @@ func (_u *ServiceUpdateOne) AddClientApps(v ...*ClientApp) *ServiceUpdateOne {
 	return _u.AddClientAppIDs(ids...)
 }
 
-// AddUserIdentityIDs adds the "user_identities" edge to the UserIdentity entity by IDs.
-func (_u *ServiceUpdateOne) AddUserIdentityIDs(ids ...int64) *ServiceUpdateOne {
-	_u.mutation.AddUserIdentityIDs(ids...)
-	return _u
-}
-
-// AddUserIdentities adds the "user_identities" edges to the UserIdentity entity.
-func (_u *ServiceUpdateOne) AddUserIdentities(v ...*UserIdentity) *ServiceUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddUserIdentityIDs(ids...)
-}
-
 // Mutation returns the ServiceMutation object of the builder.
 func (_u *ServiceUpdateOne) Mutation() *ServiceMutation {
 	return _u.mutation
@@ -484,27 +387,6 @@ func (_u *ServiceUpdateOne) RemoveClientApps(v ...*ClientApp) *ServiceUpdateOne 
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveClientAppIDs(ids...)
-}
-
-// ClearUserIdentities clears all "user_identities" edges to the UserIdentity entity.
-func (_u *ServiceUpdateOne) ClearUserIdentities() *ServiceUpdateOne {
-	_u.mutation.ClearUserIdentities()
-	return _u
-}
-
-// RemoveUserIdentityIDs removes the "user_identities" edge to UserIdentity entities by IDs.
-func (_u *ServiceUpdateOne) RemoveUserIdentityIDs(ids ...int64) *ServiceUpdateOne {
-	_u.mutation.RemoveUserIdentityIDs(ids...)
-	return _u
-}
-
-// RemoveUserIdentities removes "user_identities" edges to UserIdentity entities.
-func (_u *ServiceUpdateOne) RemoveUserIdentities(v ...*UserIdentity) *ServiceUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveUserIdentityIDs(ids...)
 }
 
 // Where appends a list predicates to the ServiceUpdate builder.
@@ -651,51 +533,6 @@ func (_u *ServiceUpdateOne) sqlSave(ctx context.Context) (_node *Service, err er
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(clientapp.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if _u.mutation.UserIdentitiesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   service.UserIdentitiesTable,
-			Columns: []string{service.UserIdentitiesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(useridentity.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedUserIdentitiesIDs(); len(nodes) > 0 && !_u.mutation.UserIdentitiesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   service.UserIdentitiesTable,
-			Columns: []string{service.UserIdentitiesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(useridentity.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.UserIdentitiesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   service.UserIdentitiesTable,
-			Columns: []string{service.UserIdentitiesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(useridentity.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

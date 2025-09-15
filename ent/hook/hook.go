@@ -33,42 +33,6 @@ func (f ServiceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ServiceMutation", m)
 }
 
-// The UserIdentityFunc type is an adapter to allow the use of ordinary
-// function as UserIdentity mutator.
-type UserIdentityFunc func(context.Context, *ent.UserIdentityMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f UserIdentityFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.UserIdentityMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserIdentityMutation", m)
-}
-
-// The UserInfoFunc type is an adapter to allow the use of ordinary
-// function as UserInfo mutator.
-type UserInfoFunc func(context.Context, *ent.UserInfoMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f UserInfoFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.UserInfoMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserInfoMutation", m)
-}
-
-// The WebOAuthFunc type is an adapter to allow the use of ordinary
-// function as WebOAuth mutator.
-type WebOAuthFunc func(context.Context, *ent.WebOAuthMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f WebOAuthFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.WebOAuthMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.WebOAuthMutation", m)
-}
-
 // Condition is a hook condition function.
 type Condition func(context.Context, ent.Mutation) bool
 

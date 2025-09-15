@@ -13,7 +13,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/ent/useridentity"
 )
 
 // ServiceCreate is the builder for creating a Service entity.
@@ -118,21 +117,6 @@ func (_c *ServiceCreate) AddClientApps(v ...*ClientApp) *ServiceCreate {
 		ids[i] = v[i].ID
 	}
 	return _c.AddClientAppIDs(ids...)
-}
-
-// AddUserIdentityIDs adds the "user_identities" edge to the UserIdentity entity by IDs.
-func (_c *ServiceCreate) AddUserIdentityIDs(ids ...int64) *ServiceCreate {
-	_c.mutation.AddUserIdentityIDs(ids...)
-	return _c
-}
-
-// AddUserIdentities adds the "user_identities" edges to the UserIdentity entity.
-func (_c *ServiceCreate) AddUserIdentities(v ...*UserIdentity) *ServiceCreate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _c.AddUserIdentityIDs(ids...)
 }
 
 // Mutation returns the ServiceMutation object of the builder.
@@ -275,22 +259,6 @@ func (_c *ServiceCreate) createSpec() (*Service, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(clientapp.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := _c.mutation.UserIdentitiesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   service.UserIdentitiesTable,
-			Columns: []string{service.UserIdentitiesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(useridentity.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

@@ -17,9 +17,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/ent/useridentity"
-	"github.com/mandacode-com/mandacode-ssam/ent/userinfo"
-	"github.com/mandacode-com/mandacode-ssam/ent/weboauth"
 )
 
 // Client is the client that holds all ent builders.
@@ -31,12 +28,6 @@ type Client struct {
 	ClientApp *ClientAppClient
 	// Service is the client for interacting with the Service builders.
 	Service *ServiceClient
-	// UserIdentity is the client for interacting with the UserIdentity builders.
-	UserIdentity *UserIdentityClient
-	// UserInfo is the client for interacting with the UserInfo builders.
-	UserInfo *UserInfoClient
-	// WebOAuth is the client for interacting with the WebOAuth builders.
-	WebOAuth *WebOAuthClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -50,9 +41,6 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.ClientApp = NewClientAppClient(c.config)
 	c.Service = NewServiceClient(c.config)
-	c.UserIdentity = NewUserIdentityClient(c.config)
-	c.UserInfo = NewUserInfoClient(c.config)
-	c.WebOAuth = NewWebOAuthClient(c.config)
 }
 
 type (
@@ -143,13 +131,10 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:          ctx,
-		config:       cfg,
-		ClientApp:    NewClientAppClient(cfg),
-		Service:      NewServiceClient(cfg),
-		UserIdentity: NewUserIdentityClient(cfg),
-		UserInfo:     NewUserInfoClient(cfg),
-		WebOAuth:     NewWebOAuthClient(cfg),
+		ctx:       ctx,
+		config:    cfg,
+		ClientApp: NewClientAppClient(cfg),
+		Service:   NewServiceClient(cfg),
 	}, nil
 }
 
@@ -167,13 +152,10 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:          ctx,
-		config:       cfg,
-		ClientApp:    NewClientAppClient(cfg),
-		Service:      NewServiceClient(cfg),
-		UserIdentity: NewUserIdentityClient(cfg),
-		UserInfo:     NewUserInfoClient(cfg),
-		WebOAuth:     NewWebOAuthClient(cfg),
+		ctx:       ctx,
+		config:    cfg,
+		ClientApp: NewClientAppClient(cfg),
+		Service:   NewServiceClient(cfg),
 	}, nil
 }
 
@@ -204,9 +186,6 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	c.ClientApp.Use(hooks...)
 	c.Service.Use(hooks...)
-	c.UserIdentity.Use(hooks...)
-	c.UserInfo.Use(hooks...)
-	c.WebOAuth.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
@@ -214,9 +193,6 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.ClientApp.Intercept(interceptors...)
 	c.Service.Intercept(interceptors...)
-	c.UserIdentity.Intercept(interceptors...)
-	c.UserInfo.Intercept(interceptors...)
-	c.WebOAuth.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
@@ -226,12 +202,6 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.ClientApp.mutate(ctx, m)
 	case *ServiceMutation:
 		return c.Service.mutate(ctx, m)
-	case *UserIdentityMutation:
-		return c.UserIdentity.mutate(ctx, m)
-	case *UserInfoMutation:
-		return c.UserInfo.mutate(ctx, m)
-	case *WebOAuthMutation:
-		return c.WebOAuth.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -354,22 +324,6 @@ func (c *ClientAppClient) QueryService(_m *ClientApp) *ServiceQuery {
 			sqlgraph.From(clientapp.Table, clientapp.FieldID, id),
 			sqlgraph.To(service.Table, service.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, clientapp.ServiceTable, clientapp.ServiceColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryWebOauths queries the web_oauths edge of a ClientApp.
-func (c *ClientAppClient) QueryWebOauths(_m *ClientApp) *WebOAuthQuery {
-	query := (&WebOAuthClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(clientapp.Table, clientapp.FieldID, id),
-			sqlgraph.To(weboauth.Table, weboauth.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, clientapp.WebOauthsTable, clientapp.WebOauthsColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -526,22 +480,6 @@ func (c *ServiceClient) QueryClientApps(_m *Service) *ClientAppQuery {
 	return query
 }
 
-// QueryUserIdentities queries the user_identities edge of a Service.
-func (c *ServiceClient) QueryUserIdentities(_m *Service) *UserIdentityQuery {
-	query := (&UserIdentityClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(service.Table, service.FieldID, id),
-			sqlgraph.To(useridentity.Table, useridentity.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, service.UserIdentitiesTable, service.UserIdentitiesColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // Hooks returns the client hooks.
 func (c *ServiceClient) Hooks() []Hook {
 	return c.hooks.Service
@@ -567,475 +505,12 @@ func (c *ServiceClient) mutate(ctx context.Context, m *ServiceMutation) (Value, 
 	}
 }
 
-// UserIdentityClient is a client for the UserIdentity schema.
-type UserIdentityClient struct {
-	config
-}
-
-// NewUserIdentityClient returns a client for the UserIdentity from the given config.
-func NewUserIdentityClient(c config) *UserIdentityClient {
-	return &UserIdentityClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `useridentity.Hooks(f(g(h())))`.
-func (c *UserIdentityClient) Use(hooks ...Hook) {
-	c.hooks.UserIdentity = append(c.hooks.UserIdentity, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `useridentity.Intercept(f(g(h())))`.
-func (c *UserIdentityClient) Intercept(interceptors ...Interceptor) {
-	c.inters.UserIdentity = append(c.inters.UserIdentity, interceptors...)
-}
-
-// Create returns a builder for creating a UserIdentity entity.
-func (c *UserIdentityClient) Create() *UserIdentityCreate {
-	mutation := newUserIdentityMutation(c.config, OpCreate)
-	return &UserIdentityCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of UserIdentity entities.
-func (c *UserIdentityClient) CreateBulk(builders ...*UserIdentityCreate) *UserIdentityCreateBulk {
-	return &UserIdentityCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *UserIdentityClient) MapCreateBulk(slice any, setFunc func(*UserIdentityCreate, int)) *UserIdentityCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &UserIdentityCreateBulk{err: fmt.Errorf("calling to UserIdentityClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*UserIdentityCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &UserIdentityCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for UserIdentity.
-func (c *UserIdentityClient) Update() *UserIdentityUpdate {
-	mutation := newUserIdentityMutation(c.config, OpUpdate)
-	return &UserIdentityUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *UserIdentityClient) UpdateOne(_m *UserIdentity) *UserIdentityUpdateOne {
-	mutation := newUserIdentityMutation(c.config, OpUpdateOne, withUserIdentity(_m))
-	return &UserIdentityUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *UserIdentityClient) UpdateOneID(id int64) *UserIdentityUpdateOne {
-	mutation := newUserIdentityMutation(c.config, OpUpdateOne, withUserIdentityID(id))
-	return &UserIdentityUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for UserIdentity.
-func (c *UserIdentityClient) Delete() *UserIdentityDelete {
-	mutation := newUserIdentityMutation(c.config, OpDelete)
-	return &UserIdentityDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *UserIdentityClient) DeleteOne(_m *UserIdentity) *UserIdentityDeleteOne {
-	return c.DeleteOneID(_m.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *UserIdentityClient) DeleteOneID(id int64) *UserIdentityDeleteOne {
-	builder := c.Delete().Where(useridentity.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &UserIdentityDeleteOne{builder}
-}
-
-// Query returns a query builder for UserIdentity.
-func (c *UserIdentityClient) Query() *UserIdentityQuery {
-	return &UserIdentityQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeUserIdentity},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a UserIdentity entity by its id.
-func (c *UserIdentityClient) Get(ctx context.Context, id int64) (*UserIdentity, error) {
-	return c.Query().Where(useridentity.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *UserIdentityClient) GetX(ctx context.Context, id int64) *UserIdentity {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryService queries the service edge of a UserIdentity.
-func (c *UserIdentityClient) QueryService(_m *UserIdentity) *ServiceQuery {
-	query := (&ServiceClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(useridentity.Table, useridentity.FieldID, id),
-			sqlgraph.To(service.Table, service.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, useridentity.ServiceTable, useridentity.ServiceColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryUserInfo queries the user_info edge of a UserIdentity.
-func (c *UserIdentityClient) QueryUserInfo(_m *UserIdentity) *UserInfoQuery {
-	query := (&UserInfoClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(useridentity.Table, useridentity.FieldID, id),
-			sqlgraph.To(userinfo.Table, userinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, useridentity.UserInfoTable, useridentity.UserInfoColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *UserIdentityClient) Hooks() []Hook {
-	return c.hooks.UserIdentity
-}
-
-// Interceptors returns the client interceptors.
-func (c *UserIdentityClient) Interceptors() []Interceptor {
-	return c.inters.UserIdentity
-}
-
-func (c *UserIdentityClient) mutate(ctx context.Context, m *UserIdentityMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&UserIdentityCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&UserIdentityUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&UserIdentityUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&UserIdentityDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown UserIdentity mutation op: %q", m.Op())
-	}
-}
-
-// UserInfoClient is a client for the UserInfo schema.
-type UserInfoClient struct {
-	config
-}
-
-// NewUserInfoClient returns a client for the UserInfo from the given config.
-func NewUserInfoClient(c config) *UserInfoClient {
-	return &UserInfoClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `userinfo.Hooks(f(g(h())))`.
-func (c *UserInfoClient) Use(hooks ...Hook) {
-	c.hooks.UserInfo = append(c.hooks.UserInfo, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `userinfo.Intercept(f(g(h())))`.
-func (c *UserInfoClient) Intercept(interceptors ...Interceptor) {
-	c.inters.UserInfo = append(c.inters.UserInfo, interceptors...)
-}
-
-// Create returns a builder for creating a UserInfo entity.
-func (c *UserInfoClient) Create() *UserInfoCreate {
-	mutation := newUserInfoMutation(c.config, OpCreate)
-	return &UserInfoCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of UserInfo entities.
-func (c *UserInfoClient) CreateBulk(builders ...*UserInfoCreate) *UserInfoCreateBulk {
-	return &UserInfoCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *UserInfoClient) MapCreateBulk(slice any, setFunc func(*UserInfoCreate, int)) *UserInfoCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &UserInfoCreateBulk{err: fmt.Errorf("calling to UserInfoClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*UserInfoCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &UserInfoCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for UserInfo.
-func (c *UserInfoClient) Update() *UserInfoUpdate {
-	mutation := newUserInfoMutation(c.config, OpUpdate)
-	return &UserInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *UserInfoClient) UpdateOne(_m *UserInfo) *UserInfoUpdateOne {
-	mutation := newUserInfoMutation(c.config, OpUpdateOne, withUserInfo(_m))
-	return &UserInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *UserInfoClient) UpdateOneID(id int64) *UserInfoUpdateOne {
-	mutation := newUserInfoMutation(c.config, OpUpdateOne, withUserInfoID(id))
-	return &UserInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for UserInfo.
-func (c *UserInfoClient) Delete() *UserInfoDelete {
-	mutation := newUserInfoMutation(c.config, OpDelete)
-	return &UserInfoDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *UserInfoClient) DeleteOne(_m *UserInfo) *UserInfoDeleteOne {
-	return c.DeleteOneID(_m.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *UserInfoClient) DeleteOneID(id int64) *UserInfoDeleteOne {
-	builder := c.Delete().Where(userinfo.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &UserInfoDeleteOne{builder}
-}
-
-// Query returns a query builder for UserInfo.
-func (c *UserInfoClient) Query() *UserInfoQuery {
-	return &UserInfoQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeUserInfo},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a UserInfo entity by its id.
-func (c *UserInfoClient) Get(ctx context.Context, id int64) (*UserInfo, error) {
-	return c.Query().Where(userinfo.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *UserInfoClient) GetX(ctx context.Context, id int64) *UserInfo {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryUserIdentity queries the user_identity edge of a UserInfo.
-func (c *UserInfoClient) QueryUserIdentity(_m *UserInfo) *UserIdentityQuery {
-	query := (&UserIdentityClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(userinfo.Table, userinfo.FieldID, id),
-			sqlgraph.To(useridentity.Table, useridentity.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, userinfo.UserIdentityTable, userinfo.UserIdentityColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *UserInfoClient) Hooks() []Hook {
-	return c.hooks.UserInfo
-}
-
-// Interceptors returns the client interceptors.
-func (c *UserInfoClient) Interceptors() []Interceptor {
-	return c.inters.UserInfo
-}
-
-func (c *UserInfoClient) mutate(ctx context.Context, m *UserInfoMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&UserInfoCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&UserInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&UserInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&UserInfoDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown UserInfo mutation op: %q", m.Op())
-	}
-}
-
-// WebOAuthClient is a client for the WebOAuth schema.
-type WebOAuthClient struct {
-	config
-}
-
-// NewWebOAuthClient returns a client for the WebOAuth from the given config.
-func NewWebOAuthClient(c config) *WebOAuthClient {
-	return &WebOAuthClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `weboauth.Hooks(f(g(h())))`.
-func (c *WebOAuthClient) Use(hooks ...Hook) {
-	c.hooks.WebOAuth = append(c.hooks.WebOAuth, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `weboauth.Intercept(f(g(h())))`.
-func (c *WebOAuthClient) Intercept(interceptors ...Interceptor) {
-	c.inters.WebOAuth = append(c.inters.WebOAuth, interceptors...)
-}
-
-// Create returns a builder for creating a WebOAuth entity.
-func (c *WebOAuthClient) Create() *WebOAuthCreate {
-	mutation := newWebOAuthMutation(c.config, OpCreate)
-	return &WebOAuthCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of WebOAuth entities.
-func (c *WebOAuthClient) CreateBulk(builders ...*WebOAuthCreate) *WebOAuthCreateBulk {
-	return &WebOAuthCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *WebOAuthClient) MapCreateBulk(slice any, setFunc func(*WebOAuthCreate, int)) *WebOAuthCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &WebOAuthCreateBulk{err: fmt.Errorf("calling to WebOAuthClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*WebOAuthCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &WebOAuthCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for WebOAuth.
-func (c *WebOAuthClient) Update() *WebOAuthUpdate {
-	mutation := newWebOAuthMutation(c.config, OpUpdate)
-	return &WebOAuthUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *WebOAuthClient) UpdateOne(_m *WebOAuth) *WebOAuthUpdateOne {
-	mutation := newWebOAuthMutation(c.config, OpUpdateOne, withWebOAuth(_m))
-	return &WebOAuthUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *WebOAuthClient) UpdateOneID(id int64) *WebOAuthUpdateOne {
-	mutation := newWebOAuthMutation(c.config, OpUpdateOne, withWebOAuthID(id))
-	return &WebOAuthUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for WebOAuth.
-func (c *WebOAuthClient) Delete() *WebOAuthDelete {
-	mutation := newWebOAuthMutation(c.config, OpDelete)
-	return &WebOAuthDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *WebOAuthClient) DeleteOne(_m *WebOAuth) *WebOAuthDeleteOne {
-	return c.DeleteOneID(_m.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *WebOAuthClient) DeleteOneID(id int64) *WebOAuthDeleteOne {
-	builder := c.Delete().Where(weboauth.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &WebOAuthDeleteOne{builder}
-}
-
-// Query returns a query builder for WebOAuth.
-func (c *WebOAuthClient) Query() *WebOAuthQuery {
-	return &WebOAuthQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeWebOAuth},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a WebOAuth entity by its id.
-func (c *WebOAuthClient) Get(ctx context.Context, id int64) (*WebOAuth, error) {
-	return c.Query().Where(weboauth.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *WebOAuthClient) GetX(ctx context.Context, id int64) *WebOAuth {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryClientApp queries the client_app edge of a WebOAuth.
-func (c *WebOAuthClient) QueryClientApp(_m *WebOAuth) *ClientAppQuery {
-	query := (&ClientAppClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(weboauth.Table, weboauth.FieldID, id),
-			sqlgraph.To(clientapp.Table, clientapp.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, weboauth.ClientAppTable, weboauth.ClientAppColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *WebOAuthClient) Hooks() []Hook {
-	return c.hooks.WebOAuth
-}
-
-// Interceptors returns the client interceptors.
-func (c *WebOAuthClient) Interceptors() []Interceptor {
-	return c.inters.WebOAuth
-}
-
-func (c *WebOAuthClient) mutate(ctx context.Context, m *WebOAuthMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&WebOAuthCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&WebOAuthUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&WebOAuthUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&WebOAuthDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown WebOAuth mutation op: %q", m.Op())
-	}
-}
-
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		ClientApp, Service, UserIdentity, UserInfo, WebOAuth []ent.Hook
+		ClientApp, Service []ent.Hook
 	}
 	inters struct {
-		ClientApp, Service, UserIdentity, UserInfo, WebOAuth []ent.Interceptor
+		ClientApp, Service []ent.Interceptor
 	}
 )

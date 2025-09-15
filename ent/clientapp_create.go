@@ -13,7 +13,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/ent/weboauth"
 )
 
 // ClientAppCreate is the builder for creating a ClientApp entity.
@@ -120,21 +119,6 @@ func (_c *ClientAppCreate) SetID(v int64) *ClientAppCreate {
 // SetService sets the "service" edge to the Service entity.
 func (_c *ClientAppCreate) SetService(v *Service) *ClientAppCreate {
 	return _c.SetServiceID(v.ID)
-}
-
-// AddWebOauthIDs adds the "web_oauths" edge to the WebOAuth entity by IDs.
-func (_c *ClientAppCreate) AddWebOauthIDs(ids ...int64) *ClientAppCreate {
-	_c.mutation.AddWebOauthIDs(ids...)
-	return _c
-}
-
-// AddWebOauths adds the "web_oauths" edges to the WebOAuth entity.
-func (_c *ClientAppCreate) AddWebOauths(v ...*WebOAuth) *ClientAppCreate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _c.AddWebOauthIDs(ids...)
 }
 
 // Mutation returns the ClientAppMutation object of the builder.
@@ -301,22 +285,6 @@ func (_c *ClientAppCreate) createSpec() (*ClientApp, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.ServiceID = nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := _c.mutation.WebOauthsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   clientapp.WebOauthsTable,
-			Columns: []string{clientapp.WebOauthsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(weboauth.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

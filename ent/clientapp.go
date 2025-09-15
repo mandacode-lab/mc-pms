@@ -45,11 +45,9 @@ type ClientApp struct {
 type ClientAppEdges struct {
 	// Service holds the value of the service edge.
 	Service *Service `json:"service,omitempty"`
-	// WebOauths holds the value of the web_oauths edge.
-	WebOauths []*WebOAuth `json:"web_oauths,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [1]bool
 }
 
 // ServiceOrErr returns the Service value or an error if the edge
@@ -61,15 +59,6 @@ func (e ClientAppEdges) ServiceOrErr() (*Service, error) {
 		return nil, &NotFoundError{label: service.Label}
 	}
 	return nil, &NotLoadedError{edge: "service"}
-}
-
-// WebOauthsOrErr returns the WebOauths value or an error if the edge
-// was not loaded in eager-loading.
-func (e ClientAppEdges) WebOauthsOrErr() ([]*WebOAuth, error) {
-	if e.loadedTypes[1] {
-		return e.WebOauths, nil
-	}
-	return nil, &NotLoadedError{edge: "web_oauths"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -174,11 +163,6 @@ func (_m *ClientApp) Value(name string) (ent.Value, error) {
 // QueryService queries the "service" edge of the ClientApp entity.
 func (_m *ClientApp) QueryService() *ServiceQuery {
 	return NewClientAppClient(_m.config).QueryService(_m)
-}
-
-// QueryWebOauths queries the "web_oauths" edge of the ClientApp entity.
-func (_m *ClientApp) QueryWebOauths() *WebOAuthQuery {
-	return NewClientAppClient(_m.config).QueryWebOauths(_m)
 }
 
 // Update returns a builder for updating this ClientApp.

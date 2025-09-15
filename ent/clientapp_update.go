@@ -15,7 +15,6 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
 	"github.com/mandacode-com/mandacode-ssam/ent/predicate"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/ent/weboauth"
 )
 
 // ClientAppUpdate is the builder for updating ClientApp entities.
@@ -124,21 +123,6 @@ func (_u *ClientAppUpdate) SetService(v *Service) *ClientAppUpdate {
 	return _u.SetServiceID(v.ID)
 }
 
-// AddWebOauthIDs adds the "web_oauths" edge to the WebOAuth entity by IDs.
-func (_u *ClientAppUpdate) AddWebOauthIDs(ids ...int64) *ClientAppUpdate {
-	_u.mutation.AddWebOauthIDs(ids...)
-	return _u
-}
-
-// AddWebOauths adds the "web_oauths" edges to the WebOAuth entity.
-func (_u *ClientAppUpdate) AddWebOauths(v ...*WebOAuth) *ClientAppUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddWebOauthIDs(ids...)
-}
-
 // Mutation returns the ClientAppMutation object of the builder.
 func (_u *ClientAppUpdate) Mutation() *ClientAppMutation {
 	return _u.mutation
@@ -148,27 +132,6 @@ func (_u *ClientAppUpdate) Mutation() *ClientAppMutation {
 func (_u *ClientAppUpdate) ClearService() *ClientAppUpdate {
 	_u.mutation.ClearService()
 	return _u
-}
-
-// ClearWebOauths clears all "web_oauths" edges to the WebOAuth entity.
-func (_u *ClientAppUpdate) ClearWebOauths() *ClientAppUpdate {
-	_u.mutation.ClearWebOauths()
-	return _u
-}
-
-// RemoveWebOauthIDs removes the "web_oauths" edge to WebOAuth entities by IDs.
-func (_u *ClientAppUpdate) RemoveWebOauthIDs(ids ...int64) *ClientAppUpdate {
-	_u.mutation.RemoveWebOauthIDs(ids...)
-	return _u
-}
-
-// RemoveWebOauths removes "web_oauths" edges to WebOAuth entities.
-func (_u *ClientAppUpdate) RemoveWebOauths(v ...*WebOAuth) *ClientAppUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveWebOauthIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -280,51 +243,6 @@ func (_u *ClientAppUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(service.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if _u.mutation.WebOauthsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   clientapp.WebOauthsTable,
-			Columns: []string{clientapp.WebOauthsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(weboauth.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedWebOauthsIDs(); len(nodes) > 0 && !_u.mutation.WebOauthsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   clientapp.WebOauthsTable,
-			Columns: []string{clientapp.WebOauthsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(weboauth.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.WebOauthsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   clientapp.WebOauthsTable,
-			Columns: []string{clientapp.WebOauthsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(weboauth.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -445,21 +363,6 @@ func (_u *ClientAppUpdateOne) SetService(v *Service) *ClientAppUpdateOne {
 	return _u.SetServiceID(v.ID)
 }
 
-// AddWebOauthIDs adds the "web_oauths" edge to the WebOAuth entity by IDs.
-func (_u *ClientAppUpdateOne) AddWebOauthIDs(ids ...int64) *ClientAppUpdateOne {
-	_u.mutation.AddWebOauthIDs(ids...)
-	return _u
-}
-
-// AddWebOauths adds the "web_oauths" edges to the WebOAuth entity.
-func (_u *ClientAppUpdateOne) AddWebOauths(v ...*WebOAuth) *ClientAppUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddWebOauthIDs(ids...)
-}
-
 // Mutation returns the ClientAppMutation object of the builder.
 func (_u *ClientAppUpdateOne) Mutation() *ClientAppMutation {
 	return _u.mutation
@@ -469,27 +372,6 @@ func (_u *ClientAppUpdateOne) Mutation() *ClientAppMutation {
 func (_u *ClientAppUpdateOne) ClearService() *ClientAppUpdateOne {
 	_u.mutation.ClearService()
 	return _u
-}
-
-// ClearWebOauths clears all "web_oauths" edges to the WebOAuth entity.
-func (_u *ClientAppUpdateOne) ClearWebOauths() *ClientAppUpdateOne {
-	_u.mutation.ClearWebOauths()
-	return _u
-}
-
-// RemoveWebOauthIDs removes the "web_oauths" edge to WebOAuth entities by IDs.
-func (_u *ClientAppUpdateOne) RemoveWebOauthIDs(ids ...int64) *ClientAppUpdateOne {
-	_u.mutation.RemoveWebOauthIDs(ids...)
-	return _u
-}
-
-// RemoveWebOauths removes "web_oauths" edges to WebOAuth entities.
-func (_u *ClientAppUpdateOne) RemoveWebOauths(v ...*WebOAuth) *ClientAppUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveWebOauthIDs(ids...)
 }
 
 // Where appends a list predicates to the ClientAppUpdate builder.
@@ -631,51 +513,6 @@ func (_u *ClientAppUpdateOne) sqlSave(ctx context.Context) (_node *ClientApp, er
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(service.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if _u.mutation.WebOauthsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   clientapp.WebOauthsTable,
-			Columns: []string{clientapp.WebOauthsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(weboauth.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedWebOauthsIDs(); len(nodes) > 0 && !_u.mutation.WebOauthsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   clientapp.WebOauthsTable,
-			Columns: []string{clientapp.WebOauthsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(weboauth.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.WebOauthsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   clientapp.WebOauthsTable,
-			Columns: []string{clientapp.WebOauthsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(weboauth.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

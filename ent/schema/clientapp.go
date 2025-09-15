@@ -49,7 +49,6 @@ func (ClientApp) Edges() []ent.Edge {
 			Field("service_id").
 			Unique().
 			Required(),
-		edge.To("web_oauths", WebOAuth.Type),
 	}
 }
 

@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -15,18 +14,16 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
 	"github.com/mandacode-com/mandacode-ssam/ent/predicate"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/ent/weboauth"
 )
 
 // ClientAppQuery is the builder for querying ClientApp entities.
 type ClientAppQuery struct {
 	config
-	ctx           *QueryContext
-	order         []clientapp.OrderOption
-	inters        []Interceptor
-	predicates    []predicate.ClientApp
-	withService   *ServiceQuery
-	withWebOauths *WebOAuthQuery
+	ctx         *QueryContext
+	order       []clientapp.OrderOption
+	inters      []Interceptor
+	predicates  []predicate.ClientApp
+	withService *ServiceQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -78,28 +75,6 @@ func (_q *ClientAppQuery) QueryService() *ServiceQuery {
 			sqlgraph.From(clientapp.Table, clientapp.FieldID, selector),
 			sqlgraph.To(service.Table, service.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, clientapp.ServiceTable, clientapp.ServiceColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryWebOauths chains the current query on the "web_oauths" edge.
-func (_q *ClientAppQuery) QueryWebOauths() *WebOAuthQuery {
-	query := (&WebOAuthClient{config: _q.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := _q.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := _q.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(clientapp.Table, clientapp.FieldID, selector),
-			sqlgraph.To(weboauth.Table, weboauth.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, clientapp.WebOauthsTable, clientapp.WebOauthsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -294,13 +269,12 @@ func (_q *ClientAppQuery) Clone() *ClientAppQuery {
 		return nil
 	}
 	return &ClientAppQuery{
-		config:        _q.config,
-		ctx:           _q.ctx.Clone(),
-		order:         append([]clientapp.OrderOption{}, _q.order...),
-		inters:        append([]Interceptor{}, _q.inters...),
-		predicates:    append([]predicate.ClientApp{}, _q.predicates...),
-		withService:   _q.withService.Clone(),
-		withWebOauths: _q.withWebOauths.Clone(),
+		config:      _q.config,
+		ctx:         _q.ctx.Clone(),
+		order:       append([]clientapp.OrderOption{}, _q.order...),
+		inters:      append([]Interceptor{}, _q.inters...),
+		predicates:  append([]predicate.ClientApp{}, _q.predicates...),
+		withService: _q.withService.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -315,17 +289,6 @@ func (_q *ClientAppQuery) WithService(opts ...func(*ServiceQuery)) *ClientAppQue
 		opt(query)
 	}
 	_q.withService = query
-	return _q
-}
-
-// WithWebOauths tells the query-builder to eager-load the nodes that are connected to
-// the "web_oauths" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *ClientAppQuery) WithWebOauths(opts ...func(*WebOAuthQuery)) *ClientAppQuery {
-	query := (&WebOAuthClient{config: _q.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	_q.withWebOauths = query
 	return _q
 }
 
@@ -407,9 +370,8 @@ func (_q *ClientAppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Cl
 	var (
 		nodes       = []*ClientApp{}
 		_spec       = _q.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [1]bool{
 			_q.withService != nil,
-			_q.withWebOauths != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -433,13 +395,6 @@ func (_q *ClientAppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Cl
 	if query := _q.withService; query != nil {
 		if err := _q.loadService(ctx, query, nodes, nil,
 			func(n *ClientApp, e *Service) { n.Edges.Service = e }); err != nil {
-			return nil, err
-		}
-	}
-	if query := _q.withWebOauths; query != nil {
-		if err := _q.loadWebOauths(ctx, query, nodes,
-			func(n *ClientApp) { n.Edges.WebOauths = []*WebOAuth{} },
-			func(n *ClientApp, e *WebOAuth) { n.Edges.WebOauths = append(n.Edges.WebOauths, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -472,36 +427,6 @@ func (_q *ClientAppQuery) loadService(ctx context.Context, query *ServiceQuery, 
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
-	}
-	return nil
-}
-func (_q *ClientAppQuery) loadWebOauths(ctx context.Context, query *WebOAuthQuery, nodes []*ClientApp, init func(*ClientApp), assign func(*ClientApp, *WebOAuth)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int64]*ClientApp)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(weboauth.FieldClientAppID)
-	}
-	query.Where(predicate.WebOAuth(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(clientapp.WebOauthsColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.ClientAppID
-		node, ok := nodeids[fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "client_app_id" returned %v for node %v`, fk, n.ID)
-		}
-		assign(node, n)
 	}
 	return nil
 }

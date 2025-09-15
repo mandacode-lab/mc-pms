@@ -42,7 +42,6 @@ func (Service) Fields() []ent.Field {
 func (Service) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("client_apps", ClientApp.Type),
-		edge.To("user_identities", UserIdentity.Type),
 	}
 }
 
