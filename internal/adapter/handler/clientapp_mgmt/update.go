@@ -5,10 +5,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
-	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
 type UpdateClientAppRequest struct {
@@ -26,10 +25,10 @@ type UpdateClientAppResponse struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
-func toUpdateClientAppResponse(result *in.UpdateClientAppResult) *UpdateClientAppResponse {
+func toUpdateClientAppResponse(result *in.UpdateClientAppResponse) *UpdateClientAppResponse {
 	return &UpdateClientAppResponse{
-		ServiceID:   result.ServiceID.String(),
-		ClientAppID: result.ClientAppID.String(),
+		ServiceID:   result.ServiceID,
+		ClientAppID: result.ClientAppID,
 		Name:        result.Name,
 		Description: result.Desc,
 		IsActive:    result.IsActive,
@@ -54,12 +53,6 @@ func (h *Handler) UpdateClientApp(c *gin.Context) {
 	ctx := c.Request.Context()
 
 	clientAppID := c.Param("id")
-	clientAppPublicID, err := clientappval.ParsePublicID(clientAppID)
-	if err != nil {
-		err := merr.New(merr.ErrBadRequest, "invalid client_app_id format", err)
-		c.Error(err)
-		return
-	}
 
 	var req UpdateClientAppRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -68,13 +61,13 @@ func (h *Handler) UpdateClientApp(c *gin.Context) {
 		return
 	}
 
-	cmd := &in.UpdateClientAppCommand{
-		ClientAppID: clientAppPublicID,
+	usecaseReq := &in.UpdateClientAppRequest{
+		ClientAppID: clientAppID,
 		NewName:     &req.Name,
 		NewDesc:     &req.Description,
 	}
 
-	result, err := h.clientAppMgmt.UpdateClientApp(ctx, cmd)
+	result, err := h.clientAppMgmt.UpdateClientApp(ctx, usecaseReq)
 	if err != nil {
 		c.Error(err)
 		return

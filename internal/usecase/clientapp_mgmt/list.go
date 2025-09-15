@@ -3,13 +3,20 @@ package clientapp_mgmt
 import (
 	"context"
 
-	"github.com/mandacode-com/merr"
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
+	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) ListClientApps(ctx context.Context, cmd *in.ListClientAppsCommand) (*in.ListClientAppsResult, error) {
+func (u *Usecase) ListClientApps(ctx context.Context, req *in.ListClientAppsRequest) (*in.ListClientAppsResponse, error) {
+	// Parse service ID
+	serviceID, err := serviceval.ParsePublicID(req.ServiceID)
+	if err != nil {
+		return nil, merr.New(merr.ErrBadRequest, ErrInvalidServiceIDMsg, err)
+	}
+
 	// Validate service exists
-	service, err := u.serviceQueryRepo.FindByPublicID(ctx, cmd.ServiceID)
+	service, err := u.serviceQueryRepo.FindByPublicID(ctx, serviceID)
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrServiceNotFoundMsg, err)
 	}
@@ -21,10 +28,10 @@ func (u *Usecase) ListClientApps(ctx context.Context, cmd *in.ListClientAppsComm
 	}
 
 	// Convert to result models
-	clientAppInfos := toClientAppInfos(clientApps, cmd.ServiceID)
+	clientAppInfos := toClientAppInfos(clientApps, service.PublicID())
 
-	return &in.ListClientAppsResult{
-		ServiceID:  cmd.ServiceID,
+	return &in.ListClientAppsResponse{
+		ServiceID:  service.PublicID().String(),
 		ClientApps: clientAppInfos,
 	}, nil
 }

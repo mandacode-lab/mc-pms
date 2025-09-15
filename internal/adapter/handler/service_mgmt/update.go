@@ -5,10 +5,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
-	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
 type UpdateServiceRequest struct {
@@ -25,9 +24,9 @@ type UpdateServiceResponse struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
-func toUpdateServiceResponse(result *in.UpdateServiceResult) *UpdateServiceResponse {
+func toUpdateServiceResponse(result *in.UpdateServiceResponse) *UpdateServiceResponse {
 	return &UpdateServiceResponse{
-		ServiceID:   result.ServiceID.String(),
+		ServiceID:   result.ServiceID,
 		Name:        result.Name,
 		Description: result.Desc,
 		IsActive:    result.IsActive,
@@ -53,12 +52,6 @@ func (h *Handler) UpdateService(c *gin.Context) {
 	ctx := c.Request.Context()
 
 	serviceID := c.Param("id")
-	servicePublicID, err := serviceval.ParsePublicID(serviceID)
-	if err != nil {
-		err := merr.New(merr.ErrBadRequest, "invalid service_id format", nil)
-		c.Error(err)
-		return
-	}
 
 	var req UpdateServiceRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -67,20 +60,13 @@ func (h *Handler) UpdateService(c *gin.Context) {
 		return
 	}
 
-	serviceName, err := serviceval.NewName(req.Name)
-	if err != nil {
-		err := merr.New(merr.ErrBadRequest, "invalid service name", err)
-		c.Error(err)
-		return
-	}
-
-	cmd := &in.UpdateServiceCommand{
-		ServiceID: servicePublicID,
-		NewName:   &serviceName,
+	usecaseReq := &in.UpdateServiceRequest{
+		ServiceID: serviceID,
+		NewName:   &req.Name,
 		NewDesc:   &req.Description,
 	}
 
-	result, err := h.serviceMgmt.UpdateService(ctx, cmd)
+	result, err := h.serviceMgmt.UpdateService(ctx, usecaseReq)
 	if err != nil {
 		c.Error(err)
 		return

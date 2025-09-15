@@ -5,10 +5,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
-	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
 type ClientAppResponse struct {
@@ -28,8 +27,8 @@ type ListClientAppsResponse struct {
 
 func toClientAppResponse(info in.ClientAppInfo) ClientAppResponse {
 	return ClientAppResponse{
-		ServiceID:   info.ServiceID.String(),
-		ClientAppID: info.ClientAppID.String(),
+		ServiceID:   info.ServiceID,
+		ClientAppID: info.ClientAppID,
 		Name:        info.Name,
 		Description: info.Desc,
 		IsActive:    info.IsActive,
@@ -38,13 +37,13 @@ func toClientAppResponse(info in.ClientAppInfo) ClientAppResponse {
 	}
 }
 
-func toListClientAppsResponse(result *in.ListClientAppsResult) *ListClientAppsResponse {
+func toListClientAppsResponse(result *in.ListClientAppsResponse) *ListClientAppsResponse {
 	clientApps := make([]ClientAppResponse, len(result.ClientApps))
 	for i, info := range result.ClientApps {
 		clientApps[i] = toClientAppResponse(info)
 	}
 	return &ListClientAppsResponse{
-		ServiceID:  result.ServiceID.String(),
+		ServiceID:  result.ServiceID,
 		ClientApps: clientApps,
 	}
 }
@@ -69,18 +68,11 @@ func (h *Handler) ListClientApps(c *gin.Context) {
 		return
 	}
 
-	servicePublicID, err := serviceval.ParsePublicID(serviceID)
-	if err != nil {
-		err := merr.New(merr.ErrBadRequest, "invalid service_id format", err)
-		c.Error(err)
-		return
+	usecaseReq := &in.ListClientAppsRequest{
+		ServiceID: serviceID,
 	}
 
-	cmd := &in.ListClientAppsCommand{
-		ServiceID: servicePublicID,
-	}
-
-	result, err := h.clientAppMgmt.ListClientApps(ctx, cmd)
+	result, err := h.clientAppMgmt.ListClientApps(ctx, usecaseReq)
 	if err != nil {
 		c.Error(err)
 		return

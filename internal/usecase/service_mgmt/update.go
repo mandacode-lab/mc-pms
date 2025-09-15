@@ -3,29 +3,40 @@ package service_mgmt
 import (
 	"context"
 
-	"github.com/mandacode-com/merr"
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
+	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) UpdateService(ctx context.Context, cmd *in.UpdateServiceCommand) (*in.UpdateServiceResult, error) {
+func (u *Usecase) UpdateService(ctx context.Context, req *in.UpdateServiceRequest) (*in.UpdateServiceResponse, error) {
+	// Parse service ID
+	serviceID, err := serviceval.ParsePublicID(req.ServiceID)
+	if err != nil {
+		return nil, merr.New(merr.ErrBadRequest, ErrInvalidServiceIDMsg, err)
+	}
+
 	// Find the service by public ID
-	service, err := u.serviceQueryRepo.FindByPublicID(ctx, cmd.ServiceID)
+	service, err := u.serviceQueryRepo.FindByPublicID(ctx, serviceID)
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrServiceNotFoundMsg, err)
 	}
 
 	// Apply updates using domain logic
-	if cmd.NewName != nil {
-		service.UpdateName(*cmd.NewName)
+	if req.NewName != nil {
+		serviceName, err := serviceval.NewName(*req.NewName)
+		if err != nil {
+			return nil, merr.New(merr.ErrBadRequest, ErrInvalidServiceNameMsg, err)
+		}
+		service.UpdateName(serviceName)
 	}
 
-	if cmd.NewDesc != nil {
-		service.UpdateDescription(cmd.NewDesc)
+	if req.NewDesc != nil {
+		service.UpdateDescription(req.NewDesc)
 	}
 
-	if cmd.NewIsActive != nil {
-		if *cmd.NewIsActive {
+	if req.NewIsActive != nil {
+		if *req.NewIsActive {
 			service.Activate()
 		} else {
 			service.Deactivate()
@@ -41,7 +52,7 @@ func (u *Usecase) UpdateService(ctx context.Context, cmd *in.UpdateServiceComman
 	}
 
 	// Convert to result
-	return &in.UpdateServiceResult{
+	return &in.UpdateServiceResponse{
 		ServiceInfo: toServiceInfo(service),
 	}, nil
 }

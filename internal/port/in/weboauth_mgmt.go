@@ -2,60 +2,57 @@ package in
 
 import (
 	"context"
-	
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
 )
 
-type RegisterWebOAuthCommand struct {
-	ClientAppID   clientappval.PublicID
+type RegisterWebOAuthRequest struct {
+	ClientAppID   string
 	RedirectURI   string
-	Provider      shared.Provider
+	Provider      string
 	Scopes        []string
 	OAuthClientID string
 	OAuthSecret   []byte
 }
 
-type ReadWebOAuthQuery struct {
-	ClientAppID clientappval.PublicID
-	Provider    *shared.Provider
+type ReadWebOAuthRequest struct {
+	ClientAppID string
+	Provider    *string
 }
 
-type ReadWebOAuthResult struct {
+type ReadWebOAuthResponse struct {
 	WebOAuths []WebOAuthInfo
 }
 
-type UpdateWebOAuthCommand struct {
-	ClientAppID   clientappval.PublicID
-	Provider      shared.Provider
+type UpdateWebOAuthRequest struct {
+	ClientAppID   string
+	Provider      string
 	RedirectURI   *string
 	Scopes        *[]string
 	OAuthClientID *string
 	OAuthSecret   *[]byte
 }
 
-type UpdateWebOAuthResult struct {
+type UpdateWebOAuthResponse struct {
 	WebOAuthInfo
 }
 
-type DeleteWebOAuthCommand struct {
-	ClientAppID clientappval.PublicID
-	Provider    shared.Provider
+type DeleteWebOAuthRequest struct {
+	ClientAppID string
+	Provider    string
 }
 
-type ReadWebOAuthSecretQuery struct {
-	ClientAppID clientappval.PublicID
-	Provider    shared.Provider
+type ReadWebOAuthSecretRequest struct {
+	ClientAppID string
+	Provider    string
 }
 
-type ReadWebOAuthSecretResult struct {
+type ReadWebOAuthSecretResponse struct {
 	OAuthSecret []byte
 }
 
 type WebOAuthMgmtUsecase interface {
-	RegisterWebOAuth(ctx context.Context, cmd *RegisterWebOAuthCommand) error
-	ReadWebOAuth(ctx context.Context, query *ReadWebOAuthQuery) (*ReadWebOAuthResult, error)
-	ReadWebOAuthSecret(ctx context.Context, query *ReadWebOAuthSecretQuery) (*ReadWebOAuthSecretResult, error)
-	UpdateWebOAuth(ctx context.Context, cmd *UpdateWebOAuthCommand) error
-	DeleteWebOAuth(ctx context.Context, cmd *DeleteWebOAuthCommand) error
+	RegisterWebOAuth(ctx context.Context, req *RegisterWebOAuthRequest) error
+	ReadWebOAuth(ctx context.Context, req *ReadWebOAuthRequest) (*ReadWebOAuthResponse, error)
+	ReadWebOAuthSecret(ctx context.Context, req *ReadWebOAuthSecretRequest) (*ReadWebOAuthSecretResponse, error)
+	UpdateWebOAuth(ctx context.Context, req *UpdateWebOAuthRequest) (*UpdateWebOAuthResponse, error)
+	DeleteWebOAuth(ctx context.Context, req *DeleteWebOAuthRequest) error
 }

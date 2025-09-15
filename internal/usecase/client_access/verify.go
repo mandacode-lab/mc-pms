@@ -3,34 +3,40 @@ package client_access
 import (
 	"context"
 
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) VerifyClient(ctx context.Context, cmd *in.VerifyClientCommand) (*in.VerifyClientResult, error) {
+func (u *Usecase) VerifyClient(ctx context.Context, req *in.VerifyClientRequest) (*in.VerifyClientResponse, error) {
+	// Parse client ID
+	clientID, err := clientappval.ParsePublicID(req.ClientID)
+	if err != nil {
+		return nil, merr.New(merr.ErrBadRequest, ErrInvalidClientIDMsg, err)
+	}
+
 	// Find client app by public ID
-	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, cmd.ClientID)
+	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, clientID)
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrClientAppNotFoundMsg, err)
 	}
 
 	// Check if client app is active
 	if !clientApp.IsActive() {
-		return &in.VerifyClientResult{
+		return &in.VerifyClientResponse{
 			IsValid:       false,
-			ServiceID:     serviceval.PublicID{},
+			ServiceID:     "",
 			ServiceInfo:   in.ServiceInfo{},
 			ClientAppInfo: in.ClientAppInfo{},
 		}, nil
 	}
 
 	// Verify secret
-	err = u.hasher.Compare(ctx, clientApp.SecretHash().Value(), cmd.Secret)
+	err = u.hasher.Compare(ctx, clientApp.SecretHash().Value(), req.Secret)
 	if err != nil {
-		return &in.VerifyClientResult{
+		return &in.VerifyClientResponse{
 			IsValid:       false,
-			ServiceID:     serviceval.PublicID{},
+			ServiceID:     "",
 			ServiceInfo:   in.ServiceInfo{},
 			ClientAppInfo: in.ClientAppInfo{},
 		}, nil
@@ -44,18 +50,18 @@ func (u *Usecase) VerifyClient(ctx context.Context, cmd *in.VerifyClientCommand)
 
 	// Check if service is active
 	if !service.IsActive() {
-		return &in.VerifyClientResult{
+		return &in.VerifyClientResponse{
 			IsValid:       false,
-			ServiceID:     service.PublicID(),
+			ServiceID:     service.PublicID().String(),
 			ServiceInfo:   in.ServiceInfo{},
 			ClientAppInfo: in.ClientAppInfo{},
 		}, nil
 	}
 
 	// Return valid result with service and client app info
-	return &in.VerifyClientResult{
+	return &in.VerifyClientResponse{
 		IsValid:       true,
-		ServiceID:     service.PublicID(),
+		ServiceID:     service.PublicID().String(),
 		ServiceInfo:   toServiceInfo(service),
 		ClientAppInfo: toClientAppInfo(clientApp, service.PublicID()),
 	}, nil

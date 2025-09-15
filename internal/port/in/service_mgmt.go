@@ -2,36 +2,34 @@ package in
 
 import (
 	"context"
-	
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
 )
 
-type CreateServiceCommand struct {
-	Name        serviceval.Name
+type CreateServiceRequest struct {
+	Name        string
 	Description string
 }
 
-type CreateServiceResult struct {
+type CreateServiceResponse struct {
 	ServiceInfo
 }
 
-type DeleteServiceCommand struct {
-	ServiceID serviceval.PublicID
+type DeleteServiceRequest struct {
+	ServiceID string
 }
 
-type UpdateServiceCommand struct {
-	ServiceID   serviceval.PublicID
-	NewName     *serviceval.Name
+type UpdateServiceRequest struct {
+	ServiceID   string
+	NewName     *string
 	NewDesc     *string
 	NewIsActive *bool
 }
 
-type UpdateServiceResult struct {
+type UpdateServiceResponse struct {
 	ServiceInfo
 }
 
 type ServiceMgmtUsecase interface {
-	CreateService(ctx context.Context, cmd *CreateServiceCommand) (*CreateServiceResult, error)
-	DeleteService(ctx context.Context, cmd *DeleteServiceCommand) error
-	UpdateService(ctx context.Context, cmd *UpdateServiceCommand) (*UpdateServiceResult, error)
+	CreateService(ctx context.Context, req *CreateServiceRequest) (*CreateServiceResponse, error)
+	DeleteService(ctx context.Context, req *DeleteServiceRequest) error
+	UpdateService(ctx context.Context, req *UpdateServiceRequest) (*UpdateServiceResponse, error)
 }

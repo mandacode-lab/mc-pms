@@ -4,11 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
-	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
 type RegisterWebOAuthRequest struct {
@@ -51,30 +49,16 @@ func (h *Handler) RegisterWebOAuth(c *gin.Context) {
 		return
 	}
 
-	clientAppPublicID, err := clientappval.ParsePublicID(req.ClientAppID)
-	if err != nil {
-		err := merr.New(merr.ErrBadRequest, "invalid client_app_id format", err)
-		c.Error(err)
-		return
-	}
-
-	provider := shared.Provider(req.Provider)
-	if !provider.IsValid() {
-		err := merr.New(merr.ErrBadRequest, "invalid provider", nil)
-		c.Error(err)
-		return
-	}
-
-	cmd := &in.RegisterWebOAuthCommand{
-		ClientAppID:   clientAppPublicID,
-		Provider:      provider,
+	usecaseReq := &in.RegisterWebOAuthRequest{
+		ClientAppID:   req.ClientAppID,
+		RedirectURI:   req.RedirectURI,
+		Provider:      req.Provider,
+		Scopes:        req.Scopes,
 		OAuthClientID: req.OAuthClientID,
 		OAuthSecret:   []byte(req.OAuthSecret),
-		RedirectURI:   req.RedirectURI,
-		Scopes:        req.Scopes,
 	}
 
-	err = h.webOAuthMgmt.RegisterWebOAuth(ctx, cmd)
+	err := h.webOAuthMgmt.RegisterWebOAuth(ctx, usecaseReq)
 	if err != nil {
 		c.Error(err)
 		return

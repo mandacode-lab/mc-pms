@@ -2,44 +2,41 @@ package in
 
 import (
 	"context"
-	
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
 )
 
-type UserIdentityResult struct {
+type UserIdentityResponse struct {
 	UserInfo
 	RawData map[string]any
 }
 
-type IdentifyByCode struct {
-	Provider        shared.Provider
+type IdentifyByCodeRequest struct {
+	Provider        string
 	OAuthCode       string
 	State           string
-	ClientAppID     clientappval.PublicID
+	ClientAppID     string
 	ClientAppSecret []byte
 }
 
-type IdentifyByToken struct {
-	Provider        shared.Provider
+type IdentifyByTokenRequest struct {
+	Provider        string
 	Token           string
-	ClientApp       clientappval.PublicID
+	ClientAppID     string
 	ClientAppSecret []byte
 }
 
-type GetAuthURL struct {
-	Provider        shared.Provider
-	ClientAppID     clientappval.PublicID
+type GetAuthURLRequest struct {
+	Provider        string
+	ClientAppID     string
 	ClientAppSecret []byte
 }
 
-type GetAuthURLResult struct {
+type GetAuthURLResponse struct {
 	AuthURL string
 	State   string
 }
 
 type IdentifyUserUsecase interface {
-	IdentifyByCode(ctx context.Context, cmd *IdentifyByCode) (*UserIdentityResult, error)
-	IdentifyByToken(ctx context.Context, cmd *IdentifyByToken) (*UserIdentityResult, error)
-	GetAuthURL(ctx context.Context, cmd *GetAuthURL) (*GetAuthURLResult, error)
+	IdentifyByCode(ctx context.Context, req *IdentifyByCodeRequest) (*UserIdentityResponse, error)
+	IdentifyByToken(ctx context.Context, req *IdentifyByTokenRequest) (*UserIdentityResponse, error)
+	GetAuthURL(ctx context.Context, req *GetAuthURLRequest) (*GetAuthURLResponse, error)
 }

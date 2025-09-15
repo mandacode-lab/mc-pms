@@ -3,15 +3,21 @@ package clientapp_mgmt
 import (
 	"context"
 
-	"github.com/mandacode-com/merr"
 	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
+	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) RefreshSecret(ctx context.Context, cmd *in.RefreshSecretCommand) (*in.RefreshSecretResult, error) {
+func (u *Usecase) RefreshSecret(ctx context.Context, req *in.RefreshSecretRequest) (*in.RefreshSecretResponse, error) {
+	// Parse client app ID
+	clientAppID, err := clientappval.ParsePublicID(req.ClientAppID)
+	if err != nil {
+		return nil, merr.New(merr.ErrBadRequest, ErrInvalidClientAppIDMsg, err)
+	}
+
 	// Find the client app by public ID
-	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, cmd.ClientAppID)
+	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, clientAppID)
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrClientAppNotFoundMsg, err)
 	}
@@ -45,7 +51,7 @@ func (u *Usecase) RefreshSecret(ctx context.Context, cmd *in.RefreshSecretComman
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	return &in.RefreshSecretResult{
+	return &in.RefreshSecretResponse{
 		Secret: returnedSecret,
 	}, nil
 }

@@ -2,23 +2,20 @@ package in
 
 import (
 	"context"
-
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
 )
 
-type VerifyClientCommand struct {
-	ClientID clientappval.PublicID
+type VerifyClientRequest struct {
+	ClientID string
 	Secret   []byte
 }
 
-type VerifyClientResult struct {
+type VerifyClientResponse struct {
 	IsValid   bool
-	ServiceID serviceval.PublicID
+	ServiceID string
 	ServiceInfo
 	ClientAppInfo
 }
 
 type ClientAccessUsecase interface {
-	VerifyClient(ctx context.Context, cmd *VerifyClientCommand) (*VerifyClientResult, error)
+	VerifyClient(ctx context.Context, req *VerifyClientRequest) (*VerifyClientResponse, error)
 }

@@ -3,14 +3,21 @@ package clientapp_mgmt
 import (
 	"context"
 
-	"github.com/mandacode-com/merr"
+	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
+	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) UpdateClientApp(ctx context.Context, cmd *in.UpdateClientAppCommand) (*in.UpdateClientAppResult, error) {
+func (u *Usecase) UpdateClientApp(ctx context.Context, req *in.UpdateClientAppRequest) (*in.UpdateClientAppResponse, error) {
+	// Parse client app ID
+	clientAppID, err := clientappval.ParsePublicID(req.ClientAppID)
+	if err != nil {
+		return nil, merr.New(merr.ErrBadRequest, ErrInvalidClientAppIDMsg, err)
+	}
+
 	// Find the client app by public ID
-	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, cmd.ClientAppID)
+	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, clientAppID)
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrClientAppNotFoundMsg, err)
 	}
@@ -22,16 +29,16 @@ func (u *Usecase) UpdateClientApp(ctx context.Context, cmd *in.UpdateClientAppCo
 	}
 
 	// Apply updates using domain logic
-	if cmd.NewName != nil {
-		clientApp.UpdateName(*cmd.NewName)
+	if req.NewName != nil {
+		clientApp.UpdateName(*req.NewName)
 	}
 
-	if cmd.NewDesc != nil {
-		clientApp.UpdateDescription(cmd.NewDesc)
+	if req.NewDesc != nil {
+		clientApp.UpdateDescription(req.NewDesc)
 	}
 
-	if cmd.NewIsActive != nil {
-		if *cmd.NewIsActive {
+	if req.NewIsActive != nil {
+		if *req.NewIsActive {
 			clientApp.Activate()
 		} else {
 			clientApp.Deactivate()
@@ -47,7 +54,7 @@ func (u *Usecase) UpdateClientApp(ctx context.Context, cmd *in.UpdateClientAppCo
 	}
 
 	// Convert to result
-	return &in.UpdateClientAppResult{
+	return &in.UpdateClientAppResponse{
 		ClientAppInfo: toClientAppInfo(clientApp, service.PublicID()),
 	}, nil
 }

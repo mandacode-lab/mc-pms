@@ -5,11 +5,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
-	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
 type WebOAuthResponse struct {
@@ -28,8 +26,8 @@ type ReadWebOAuthResponse struct {
 
 func toWebOAuthResponse(info in.WebOAuthInfo) WebOAuthResponse {
 	return WebOAuthResponse{
-		ClientAppID:   info.ClientAppID.String(),
-		Provider:      string(info.Provider),
+		ClientAppID:   info.ClientAppID,
+		Provider:      info.Provider,
 		OAuthClientID: info.OAuthClientID,
 		RedirectURI:   info.RedirectURI,
 		Scopes:        info.Scopes,
@@ -38,7 +36,7 @@ func toWebOAuthResponse(info in.WebOAuthInfo) WebOAuthResponse {
 	}
 }
 
-func toReadWebOAuthResponse(result *in.ReadWebOAuthResult) *ReadWebOAuthResponse {
+func toReadWebOAuthResponse(result *in.ReadWebOAuthResponse) *ReadWebOAuthResponse {
 	webOAuths := make([]WebOAuthResponse, len(result.WebOAuths))
 	for i, info := range result.WebOAuths {
 		webOAuths[i] = toWebOAuthResponse(info)
@@ -69,27 +67,17 @@ func (h *Handler) ReadWebOAuth(c *gin.Context) {
 		return
 	}
 
-	clientAppPublicID, err := clientappval.ParsePublicID(clientAppID)
-	if err != nil {
-		err := merr.New(merr.ErrBadRequest, "invalid client_app_id format", err)
-		c.Error(err)
-		return
-	}
-
-	var provider *shared.Provider
+	var provider *string
 	if providerStr := c.Query("provider"); providerStr != "" {
-		p := shared.Provider(providerStr)
-		if p.IsValid() {
-			provider = &p
-		}
+		provider = &providerStr
 	}
 
-	query := &in.ReadWebOAuthQuery{
-		ClientAppID: clientAppPublicID,
+	usecaseReq := &in.ReadWebOAuthRequest{
+		ClientAppID: clientAppID,
 		Provider:    provider,
 	}
 
-	result, err := h.webOAuthMgmt.ReadWebOAuth(ctx, query)
+	result, err := h.webOAuthMgmt.ReadWebOAuth(ctx, usecaseReq)
 	if err != nil {
 		c.Error(err)
 		return

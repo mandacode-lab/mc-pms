@@ -2,59 +2,55 @@ package in
 
 import (
 	"context"
-
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
 )
 
-type CreateClientAppCommand struct {
-	ServiceID serviceval.PublicID
+type CreateClientAppRequest struct {
+	ServiceID string
 	Name      string
 	Desc      string
 }
 
-type CreateClientAppResult struct {
+type CreateClientAppResponse struct {
 	ClientAppInfo
 	Secret []byte
 }
 
-type DeleteClientAppCommand struct {
-	ClientAppID clientappval.PublicID
+type DeleteClientAppRequest struct {
+	ClientAppID string
 }
 
-type RefreshSecretCommand struct {
-	ClientAppID clientappval.PublicID
+type RefreshSecretRequest struct {
+	ClientAppID string
 }
 
-type RefreshSecretResult struct {
+type RefreshSecretResponse struct {
 	Secret []byte
 }
 
-type UpdateClientAppCommand struct {
-	ClientAppID clientappval.PublicID
+type UpdateClientAppRequest struct {
+	ClientAppID string
 	NewName     *string
 	NewDesc     *string
 	NewIsActive *bool
 }
 
-type UpdateClientAppResult struct {
+type UpdateClientAppResponse struct {
 	ClientAppInfo
 }
 
-type ListClientAppsCommand struct {
-	ServiceID serviceval.PublicID
+type ListClientAppsRequest struct {
+	ServiceID string
 }
 
-type ListClientAppsResult struct {
-	ServiceID  serviceval.PublicID
+type ListClientAppsResponse struct {
+	ServiceID  string
 	ClientApps []ClientAppInfo
 }
 
-
 type ClientAppMgmtUsecase interface {
-	CreateClientApp(ctx context.Context, cmd *CreateClientAppCommand) (*CreateClientAppResult, error)
-	DeleteClientApp(ctx context.Context, cmd *DeleteClientAppCommand) error
-	RefreshSecret(ctx context.Context, cmd *RefreshSecretCommand) (*RefreshSecretResult, error)
-	UpdateClientApp(ctx context.Context, cmd *UpdateClientAppCommand) (*UpdateClientAppResult, error)
-	ListClientApps(ctx context.Context, cmd *ListClientAppsCommand) (*ListClientAppsResult, error)
+	CreateClientApp(ctx context.Context, req *CreateClientAppRequest) (*CreateClientAppResponse, error)
+	DeleteClientApp(ctx context.Context, req *DeleteClientAppRequest) error
+	RefreshSecret(ctx context.Context, req *RefreshSecretRequest) (*RefreshSecretResponse, error)
+	UpdateClientApp(ctx context.Context, req *UpdateClientAppRequest) (*UpdateClientAppResponse, error)
+	ListClientApps(ctx context.Context, req *ListClientAppsRequest) (*ListClientAppsResponse, error)
 }
