@@ -1,8 +1,8 @@
 package user_mgmt
 
 import (
-	"github.com/mandacode-com/serengeti/internal/port/in"
-	"github.com/mandacode-com/serengeti/internal/port/out"
+	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
+	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
 )
 
 type Usecase struct {

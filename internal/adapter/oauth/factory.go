@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/mandacode-com/serengeti/internal/domain/shared"
-	"github.com/mandacode-com/serengeti/internal/port/out"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
 )
 
 type ProviderFactory struct {

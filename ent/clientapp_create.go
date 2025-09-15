@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/serengeti/ent/clientapp"
-	"github.com/mandacode-com/serengeti/ent/service"
-	"github.com/mandacode-com/serengeti/ent/weboauth"
+	"github.com/mandacode-com/mandacode-service-hub/ent/clientapp"
+	"github.com/mandacode-com/mandacode-service-hub/ent/service"
+	"github.com/mandacode-com/mandacode-service-hub/ent/weboauth"
 )
 
 // ClientAppCreate is the builder for creating a ClientApp entity.

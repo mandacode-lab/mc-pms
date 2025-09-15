@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "description": "OAuth authentication and user identity management API",
-        "title": "Serengeti Auth API",
+        "title": "MandaCode Service Hub Auth API",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "API Support",

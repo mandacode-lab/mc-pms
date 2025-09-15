@@ -7,7 +7,7 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
-	"github.com/mandacode-com/serengeti/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
 )
 
 // WebOAuth holds the schema definition for the WebOAuth entity.

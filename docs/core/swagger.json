@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "description": "Multi-tenant service management and client application API",
-        "title": "Serengeti Core API",
+        "title": "MandaCode Service Hub Core API",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "API Support",

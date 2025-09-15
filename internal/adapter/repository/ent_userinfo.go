@@ -3,13 +3,13 @@ package repository
 import (
 	"context"
 
-	"github.com/mandacode-com/serengeti/ent"
-	entuseridentity "github.com/mandacode-com/serengeti/ent/useridentity"
-	entuserinfo "github.com/mandacode-com/serengeti/ent/userinfo"
-	useridentityval "github.com/mandacode-com/serengeti/internal/domain/useridentity/value"
-	"github.com/mandacode-com/serengeti/internal/domain/userinfo"
-	userinfoval "github.com/mandacode-com/serengeti/internal/domain/userinfo/value"
-	"github.com/mandacode-com/serengeti/internal/port/out"
+	"github.com/mandacode-com/mandacode-service-hub/ent"
+	entuseridentity "github.com/mandacode-com/mandacode-service-hub/ent/useridentity"
+	entuserinfo "github.com/mandacode-com/mandacode-service-hub/ent/userinfo"
+	useridentityval "github.com/mandacode-com/mandacode-service-hub/internal/domain/useridentity/value"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/userinfo"
+	userinfoval "github.com/mandacode-com/mandacode-service-hub/internal/domain/userinfo/value"
+	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
 )
 
 type EntUserInfoRepository struct {

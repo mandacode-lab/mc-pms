@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
-	"github.com/mandacode-com/serengeti/internal/domain/shared"
+	serviceval "github.com/mandacode-com/mandacode-service-hub/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
 )
 
 type Service struct {

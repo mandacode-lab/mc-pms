@@ -1,6 +1,6 @@
 apiVersion: v2
-name: serengeti
-description: A Helm chart for Serengeti Integrated services (auth and core)
+name: mandacode-service-hub
+description: A Helm chart for MandaCode Service Hub - Integrated services (auth and core)
 type: application
 version: 0.1.0
 appVersion: "0.1.0"

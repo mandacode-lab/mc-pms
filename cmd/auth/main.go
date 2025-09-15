@@ -8,15 +8,15 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/mandacode-com/merver"
-	"github.com/mandacode-com/serengeti/cmd/shared"
-	"github.com/mandacode-com/serengeti/configs"
-	_ "github.com/mandacode-com/serengeti/docs/auth"
+	"github.com/mandacode-com/mandacode-service-hub/cmd/shared"
+	"github.com/mandacode-com/mandacode-service-hub/configs"
+	_ "github.com/mandacode-com/mandacode-service-hub/docs/auth"
 	"github.com/rs/zerolog/log"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title           Serengeti Auth API
+// @title           MandaCode Service Hub Auth API
 // @version         1.0
 // @description     OAuth authentication and user identity management API
 // @termsOfService  http://swagger.io/terms/

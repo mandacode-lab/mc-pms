@@ -1,5 +1,5 @@
 # =============================================================================
-# Serengeti - Makefile
+# MandaCode Service Hub - Makefile
 # =============================================================================
 
 -include .make.env
@@ -105,7 +105,7 @@ swagger-clean:
 
 # Help
 help:
-	@echo "Serengeti - Available Commands"
+	@echo "MandaCode Service Hub - Available Commands"
 	@echo "="`printf '%.0s' {1..50}`
 	@echo ""
 	@echo "Database Migration Commands:"

@@ -3,10 +3,10 @@ package out
 import (
 	"context"
 
-	"github.com/mandacode-com/serengeti/internal/domain/useridentity"
-	useridentityval "github.com/mandacode-com/serengeti/internal/domain/useridentity/value"
-	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
-	"github.com/mandacode-com/serengeti/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/useridentity"
+	useridentityval "github.com/mandacode-com/mandacode-service-hub/internal/domain/useridentity/value"
+	serviceval "github.com/mandacode-com/mandacode-service-hub/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
 )
 
 type UserIdentityListFilter struct {

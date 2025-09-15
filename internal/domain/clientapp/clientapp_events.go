@@ -1,7 +1,7 @@
 package clientapp
 
 import (
-	"github.com/mandacode-com/serengeti/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
 )
 
 const (

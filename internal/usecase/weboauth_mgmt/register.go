@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/mandacode-com/merr"
-	"github.com/mandacode-com/serengeti/internal/domain/weboauth"
-	"github.com/mandacode-com/serengeti/internal/port/in"
-	"github.com/mandacode-com/serengeti/internal/port/out"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/weboauth"
+	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
+	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
 )
 
 func (u *Usecase) RegisterWebOAuth(ctx context.Context, cmd *in.RegisterWebOAuthCommand) error {

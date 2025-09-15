@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/mandacode-com/merr"
-	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
-	"github.com/mandacode-com/serengeti/internal/port/in"
-	"github.com/mandacode-com/serengeti/internal/port/out"
+	clientappval "github.com/mandacode-com/mandacode-service-hub/internal/domain/clientapp/value"
+	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
+	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
 )
 
 func (u *Usecase) RefreshSecret(ctx context.Context, cmd *in.RefreshSecretCommand) (*in.RefreshSecretView, error) {

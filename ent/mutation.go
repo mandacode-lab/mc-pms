@@ -12,13 +12,13 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/serengeti/ent/clientapp"
-	"github.com/mandacode-com/serengeti/ent/predicate"
-	"github.com/mandacode-com/serengeti/ent/service"
-	"github.com/mandacode-com/serengeti/ent/useridentity"
-	"github.com/mandacode-com/serengeti/ent/userinfo"
-	"github.com/mandacode-com/serengeti/ent/weboauth"
-	"github.com/mandacode-com/serengeti/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-service-hub/ent/clientapp"
+	"github.com/mandacode-com/mandacode-service-hub/ent/predicate"
+	"github.com/mandacode-com/mandacode-service-hub/ent/service"
+	"github.com/mandacode-com/mandacode-service-hub/ent/useridentity"
+	"github.com/mandacode-com/mandacode-service-hub/ent/userinfo"
+	"github.com/mandacode-com/mandacode-service-hub/ent/weboauth"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
 )
 
 const (

@@ -2,7 +2,7 @@ package service_mgmt
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/mandacode-com/serengeti/internal/port/in"
+	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
 )
 
 type Handler struct {

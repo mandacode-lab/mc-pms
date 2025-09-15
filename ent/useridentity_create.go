@@ -11,10 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/serengeti/ent/service"
-	"github.com/mandacode-com/serengeti/ent/useridentity"
-	"github.com/mandacode-com/serengeti/ent/userinfo"
-	"github.com/mandacode-com/serengeti/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-service-hub/ent/service"
+	"github.com/mandacode-com/mandacode-service-hub/ent/useridentity"
+	"github.com/mandacode-com/mandacode-service-hub/ent/userinfo"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
 )
 
 // UserIdentityCreate is the builder for creating a UserIdentity entity.

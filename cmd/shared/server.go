@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	merrmid "github.com/mandacode-com/merr/middleware"
 	mervermid "github.com/mandacode-com/merver/middleware"
-	"github.com/mandacode-com/serengeti/configs"
+	"github.com/mandacode-com/mandacode-service-hub/configs"
 	"github.com/rs/zerolog"
 )
 
