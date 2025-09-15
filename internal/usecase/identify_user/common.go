@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 
 	"github.com/mandacode-com/merr"
-	serviceval "github.com/mandacode-com/mandacode-service-hub/internal/domain/service/value"
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/useridentity"
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/userinfo"
-	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
-	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/useridentity"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/userinfo"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 )
 
 func (u *Usecase) findOrCreateUser(ctx context.Context, serviceID serviceval.ID, provider shared.Provider, oauthUserInfo *out.OAuthUserInfo) (*useridentity.UserIdentity, error) {

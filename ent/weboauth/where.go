@@ -7,8 +7,8 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/mandacode-com/mandacode-service-hub/ent/predicate"
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-ssam/ent/predicate"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
 )
 
 // ID filters vertices based on their ID field.

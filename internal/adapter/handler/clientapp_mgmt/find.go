@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
-	serviceval "github.com/mandacode-com/mandacode-service-hub/internal/domain/service/value"
-	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
 type ClientAppResponse struct {

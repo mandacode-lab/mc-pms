@@ -3,13 +3,13 @@ package repository
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-service-hub/ent"
-	entclientapp "github.com/mandacode-com/mandacode-service-hub/ent/clientapp"
-	entservice "github.com/mandacode-com/mandacode-service-hub/ent/service"
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/clientapp"
-	clientappval "github.com/mandacode-com/mandacode-service-hub/internal/domain/clientapp/value"
-	serviceval "github.com/mandacode-com/mandacode-service-hub/internal/domain/service/value"
-	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
+	"github.com/mandacode-com/mandacode-ssam/ent"
+	entclientapp "github.com/mandacode-com/mandacode-ssam/ent/clientapp"
+	entservice "github.com/mandacode-com/mandacode-ssam/ent/service"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp"
+	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 )
 
 type EntClientAppRepository struct {

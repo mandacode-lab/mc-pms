@@ -3,7 +3,7 @@ package encoder
 import (
 	"encoding/base64"
 
-	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 )
 
 type Base64Encoder struct{}

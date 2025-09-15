@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	clientappval "github.com/mandacode-com/mandacode-service-hub/internal/domain/clientapp/value"
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
-	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
+	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 )
 
 // CacheInvalidator handles cache invalidation for WebOAuth configurations

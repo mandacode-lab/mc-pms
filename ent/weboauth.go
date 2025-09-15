@@ -10,9 +10,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/mandacode-com/mandacode-service-hub/ent/clientapp"
-	"github.com/mandacode-com/mandacode-service-hub/ent/weboauth"
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
+	"github.com/mandacode-com/mandacode-ssam/ent/weboauth"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
 )
 
 // WebOAuth is the model entity for the WebOAuth schema.

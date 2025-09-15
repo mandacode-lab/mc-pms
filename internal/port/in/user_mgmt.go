@@ -3,9 +3,9 @@ package in
 import (
 	"context"
 	
-	serviceval "github.com/mandacode-com/mandacode-service-hub/internal/domain/service/value"
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
-	useridentityval "github.com/mandacode-com/mandacode-service-hub/internal/domain/useridentity/value"
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
+	useridentityval "github.com/mandacode-com/mandacode-ssam/internal/domain/useridentity/value"
 )
 
 type FindUserInfoQuery struct {

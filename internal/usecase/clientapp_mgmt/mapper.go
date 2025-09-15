@@ -1,10 +1,10 @@
 package clientapp_mgmt
 
 import (
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/clientapp"
-	serviceval "github.com/mandacode-com/mandacode-service-hub/internal/domain/service/value"
-	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
-	"github.com/mandacode-com/mandacode-service-hub/pkg/utils"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp"
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
+	"github.com/mandacode-com/mandacode-ssam/pkg/utils"
 )
 
 func toClientAppInfo(ca *clientapp.ClientApp, serviceID serviceval.PublicID) in.ClientAppInfo {

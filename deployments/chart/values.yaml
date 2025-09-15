@@ -12,7 +12,7 @@ image:
 
 # Service configuration
 auth:
-  imageName: "mandacode-service-hub-auth"
+  imageName: "mandacode-ssam-auth"
   enabled: true
   replicaCount: 2
   service:
@@ -37,7 +37,7 @@ auth:
     writeTimeout: "30s"
 
 core:
-  imageName: "mandacode-service-hub-core"
+  imageName: "mandacode-ssam-core"
   enabled: true
   replicaCount: 2
   service:
@@ -66,7 +66,7 @@ database:
   existingSecret: ""
   host: "postgres"
   port: 5432
-  dbName: "mandacode-service-hub"
+  dbName: "mandacode-ssam"
   sslMode: "require"
   auth:
     username: "postgres"

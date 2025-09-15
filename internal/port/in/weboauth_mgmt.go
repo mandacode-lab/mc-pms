@@ -3,8 +3,8 @@ package in
 import (
 	"context"
 	
-	clientappval "github.com/mandacode-com/mandacode-service-hub/internal/domain/clientapp/value"
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
+	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
 )
 
 type RegisterWebOAuthCommand struct {

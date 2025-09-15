@@ -3,10 +3,10 @@ package out
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/useridentity"
-	useridentityval "github.com/mandacode-com/mandacode-service-hub/internal/domain/useridentity/value"
-	serviceval "github.com/mandacode-com/mandacode-service-hub/internal/domain/service/value"
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/useridentity"
+	useridentityval "github.com/mandacode-com/mandacode-ssam/internal/domain/useridentity/value"
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
 )
 
 type UserIdentityListFilter struct {

@@ -7,9 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
-	clientappval "github.com/mandacode-com/mandacode-service-hub/internal/domain/clientapp/value"
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
-	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
+	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
 type IdentifyByCodeRequest struct {

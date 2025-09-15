@@ -3,9 +3,9 @@ package out
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/userinfo"
-	userinfoval "github.com/mandacode-com/mandacode-service-hub/internal/domain/userinfo/value"
-	useridentityval "github.com/mandacode-com/mandacode-service-hub/internal/domain/useridentity/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/userinfo"
+	userinfoval "github.com/mandacode-com/mandacode-ssam/internal/domain/userinfo/value"
+	useridentityval "github.com/mandacode-com/mandacode-ssam/internal/domain/useridentity/value"
 )
 
 type UserInfoListFilter struct {

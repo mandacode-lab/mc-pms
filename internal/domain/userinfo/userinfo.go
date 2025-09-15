@@ -4,9 +4,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
-	useridentityval "github.com/mandacode-com/mandacode-service-hub/internal/domain/useridentity/value"
-	userinfoval "github.com/mandacode-com/mandacode-service-hub/internal/domain/userinfo/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
+	useridentityval "github.com/mandacode-com/mandacode-ssam/internal/domain/useridentity/value"
+	userinfoval "github.com/mandacode-com/mandacode-ssam/internal/domain/userinfo/value"
 )
 
 type UserInfo struct {

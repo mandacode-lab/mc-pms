@@ -3,9 +3,9 @@ package out
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/clientapp"
-	clientappval "github.com/mandacode-com/mandacode-service-hub/internal/domain/clientapp/value"
-	serviceval "github.com/mandacode-com/mandacode-service-hub/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp"
+	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
 )
 
 type ClientAppListFilter struct {

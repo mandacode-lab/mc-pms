@@ -12,9 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/mandacode-service-hub/ent/predicate"
-	"github.com/mandacode-com/mandacode-service-hub/ent/useridentity"
-	"github.com/mandacode-com/mandacode-service-hub/ent/userinfo"
+	"github.com/mandacode-com/mandacode-ssam/ent/predicate"
+	"github.com/mandacode-com/mandacode-ssam/ent/useridentity"
+	"github.com/mandacode-com/mandacode-ssam/ent/userinfo"
 )
 
 // UserInfoUpdate is the builder for updating UserInfo entities.

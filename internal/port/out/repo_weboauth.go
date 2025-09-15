@@ -3,10 +3,10 @@ package out
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/weboauth"
-	weboauthval "github.com/mandacode-com/mandacode-service-hub/internal/domain/weboauth/value"
-	clientappval "github.com/mandacode-com/mandacode-service-hub/internal/domain/clientapp/value"
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/weboauth"
+	weboauthval "github.com/mandacode-com/mandacode-ssam/internal/domain/weboauth/value"
+	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
 )
 
 type WebOAuthListFilter struct {

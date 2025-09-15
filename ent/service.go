@@ -10,7 +10,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/mandacode-service-hub/ent/service"
+	"github.com/mandacode-com/mandacode-ssam/ent/service"
 )
 
 // Service is the model entity for the Service schema.

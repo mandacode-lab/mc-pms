@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 )
 
 const (

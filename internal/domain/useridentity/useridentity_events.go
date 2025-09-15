@@ -1,7 +1,7 @@
 package useridentity
 
 import (
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
 )
 
 const (

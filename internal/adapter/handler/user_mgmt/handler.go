@@ -2,7 +2,7 @@ package user_mgmt
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
 type Handler struct {

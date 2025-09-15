@@ -12,10 +12,10 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/mandacode-service-hub/ent/clientapp"
-	"github.com/mandacode-com/mandacode-service-hub/ent/predicate"
-	"github.com/mandacode-com/mandacode-service-hub/ent/service"
-	"github.com/mandacode-com/mandacode-service-hub/ent/weboauth"
+	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
+	"github.com/mandacode-com/mandacode-ssam/ent/predicate"
+	"github.com/mandacode-com/mandacode-ssam/ent/service"
+	"github.com/mandacode-com/mandacode-ssam/ent/weboauth"
 )
 
 // ClientAppUpdate is the builder for updating ClientApp entities.

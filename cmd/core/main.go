@@ -8,9 +8,9 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/mandacode-com/merver"
-	"github.com/mandacode-com/mandacode-service-hub/cmd/shared"
-	"github.com/mandacode-com/mandacode-service-hub/configs"
-	_ "github.com/mandacode-com/mandacode-service-hub/docs/core"
+	"github.com/mandacode-com/mandacode-ssam/cmd/shared"
+	"github.com/mandacode-com/mandacode-ssam/configs"
+	_ "github.com/mandacode-com/mandacode-ssam/docs/core"
 	"github.com/rs/zerolog/log"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"

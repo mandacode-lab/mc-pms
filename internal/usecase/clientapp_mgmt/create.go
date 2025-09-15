@@ -4,11 +4,11 @@ import (
 	"context"
 
 	"github.com/mandacode-com/merr"
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/clientapp"
-	clientappval "github.com/mandacode-com/mandacode-service-hub/internal/domain/clientapp/value"
-	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
-	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
-	"github.com/mandacode-com/mandacode-service-hub/pkg/utils"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp"
+	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
+	"github.com/mandacode-com/mandacode-ssam/pkg/utils"
 )
 
 func (u *Usecase) CreateClientApp(ctx context.Context, cmd *in.CreateClientAppCommand) (*in.CreateClientAppResult, error) {

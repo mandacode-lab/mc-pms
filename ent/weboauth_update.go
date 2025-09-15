@@ -12,10 +12,10 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
-	"github.com/mandacode-com/mandacode-service-hub/ent/clientapp"
-	"github.com/mandacode-com/mandacode-service-hub/ent/predicate"
-	"github.com/mandacode-com/mandacode-service-hub/ent/weboauth"
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
+	"github.com/mandacode-com/mandacode-ssam/ent/predicate"
+	"github.com/mandacode-com/mandacode-ssam/ent/weboauth"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
 )
 
 // WebOAuthUpdate is the builder for updating WebOAuth entities.

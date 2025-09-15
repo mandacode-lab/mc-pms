@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/mandacode-com/merr"
-	"github.com/mandacode-com/mandacode-service-hub/internal/domain/weboauth"
-	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/weboauth"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
 func (u *Usecase) ReadWebOAuth(ctx context.Context, query *in.ReadWebOAuthQuery) (*in.ReadWebOAuthResult, error) {

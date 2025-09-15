@@ -1,5 +1,5 @@
 apiVersion: v2
-name: mandacode-service-hub
+name: mandacode-ssam
 description: A Helm chart for MandaCode Service Hub - Integrated services (auth and core)
 type: application
 version: 0.1.0

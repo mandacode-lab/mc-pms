@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/mandacode-com/mandacode-service-hub/ent/clientapp"
-	"github.com/mandacode-com/mandacode-service-hub/ent/predicate"
+	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
+	"github.com/mandacode-com/mandacode-ssam/ent/predicate"
 )
 
 // ClientAppDelete is the builder for deleting a ClientApp entity.

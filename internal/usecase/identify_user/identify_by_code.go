@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/mandacode-com/merr"
-	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
 func (u *Usecase) IdentifyByCode(ctx context.Context, cmd *in.IdentifyByCode) (*in.UserIdentityResult, error) {

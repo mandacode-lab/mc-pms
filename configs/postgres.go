@@ -7,7 +7,7 @@ type PostgresConfig struct {
 	Port     int    `env:"POSTGRES_PORT" envDefault:"5432"`
 	User     string `env:"POSTGRES_USER" envDefault:"postgres"`
 	Password string `env:"POSTGRES_PASSWORD" envDefault:""`
-	Database string `env:"POSTGRES_DB" envDefault:"mandacode-service-hub"`
+	Database string `env:"POSTGRES_DB" envDefault:"mandacode-ssam"`
 	SSLMode  string `env:"POSTGRES_SSL_MODE" envDefault:"disable" validate:"oneof=disable require verify-ca verify-full"`
 }
 

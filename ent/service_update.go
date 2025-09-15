@@ -12,10 +12,10 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/mandacode-service-hub/ent/clientapp"
-	"github.com/mandacode-com/mandacode-service-hub/ent/predicate"
-	"github.com/mandacode-com/mandacode-service-hub/ent/service"
-	"github.com/mandacode-com/mandacode-service-hub/ent/useridentity"
+	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
+	"github.com/mandacode-com/mandacode-ssam/ent/predicate"
+	"github.com/mandacode-com/mandacode-ssam/ent/service"
+	"github.com/mandacode-com/mandacode-ssam/ent/useridentity"
 )
 
 // ServiceUpdate is the builder for updating Service entities.

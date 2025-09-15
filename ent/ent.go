@@ -12,11 +12,11 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/mandacode-com/mandacode-service-hub/ent/clientapp"
-	"github.com/mandacode-com/mandacode-service-hub/ent/service"
-	"github.com/mandacode-com/mandacode-service-hub/ent/useridentity"
-	"github.com/mandacode-com/mandacode-service-hub/ent/userinfo"
-	"github.com/mandacode-com/mandacode-service-hub/ent/weboauth"
+	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
+	"github.com/mandacode-com/mandacode-ssam/ent/service"
+	"github.com/mandacode-com/mandacode-ssam/ent/useridentity"
+	"github.com/mandacode-com/mandacode-ssam/ent/userinfo"
+	"github.com/mandacode-com/mandacode-ssam/ent/weboauth"
 )
 
 // ent aliases to avoid import conflicts in user's code.

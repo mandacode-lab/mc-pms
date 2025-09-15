@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/mandacode-com/mandacode-service-hub/ent/clientapp"
-	"github.com/mandacode-com/mandacode-service-hub/ent/schema"
-	"github.com/mandacode-com/mandacode-service-hub/ent/service"
-	"github.com/mandacode-com/mandacode-service-hub/ent/useridentity"
-	"github.com/mandacode-com/mandacode-service-hub/ent/userinfo"
-	"github.com/mandacode-com/mandacode-service-hub/ent/weboauth"
+	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
+	"github.com/mandacode-com/mandacode-ssam/ent/schema"
+	"github.com/mandacode-com/mandacode-ssam/ent/service"
+	"github.com/mandacode-com/mandacode-ssam/ent/useridentity"
+	"github.com/mandacode-com/mandacode-ssam/ent/userinfo"
+	"github.com/mandacode-com/mandacode-ssam/ent/weboauth"
 )
 
 // The init function reads all schema descriptors with runtime code

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/mandacode-com/merr"
-	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
 func (u *Usecase) GetAuthURL(ctx context.Context, cmd *in.GetAuthURL) (*in.GetAuthURLResult, error) {

@@ -3,7 +3,7 @@ package in
 import (
 	"context"
 	
-	serviceval "github.com/mandacode-com/mandacode-service-hub/internal/domain/service/value"
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
 )
 
 type CreateServiceCommand struct {

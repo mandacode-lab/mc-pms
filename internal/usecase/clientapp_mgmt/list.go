@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/mandacode-com/merr"
-	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
 func (u *Usecase) ListClientApps(ctx context.Context, cmd *in.ListClientAppsCommand) (*in.ListClientAppsResult, error) {

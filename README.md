@@ -1,4 +1,4 @@
-# MandaCode Service Hub
+# MandaCode Service & Service Access Management
 
 Multi-tenant OAuth authentication and service management platform built with hexagonal architecture.
 
@@ -33,7 +33,7 @@ This project follows **Hexagonal Architecture (Ports and Adapters)** pattern wit
 1. **Clone and setup**
    ```bash
    git clone <repository-url>
-   cd mandacode-service-hub
+   cd mandacode-ssam
    go mod download
    ```
 
