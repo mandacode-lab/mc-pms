@@ -8,15 +8,15 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/mandacode-com/merver"
-	"github.com/mandacode-com/serengeti/cmd/shared"
-	"github.com/mandacode-com/serengeti/configs"
-	_ "github.com/mandacode-com/serengeti/docs/core"
+	"github.com/mandacode-com/mandacode-service-hub/cmd/shared"
+	"github.com/mandacode-com/mandacode-service-hub/configs"
+	_ "github.com/mandacode-com/mandacode-service-hub/docs/core"
 	"github.com/rs/zerolog/log"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title           Serengeti Core API
+// @title           MandaCode Service Hub Core API
 // @version         1.0
 // @description     Multi-tenant service management and client application API
 // @termsOfService  http://swagger.io/terms/

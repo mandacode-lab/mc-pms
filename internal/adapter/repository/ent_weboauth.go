@@ -3,15 +3,15 @@ package repository
 import (
 	"context"
 
-	"github.com/mandacode-com/serengeti/ent"
-	entclientapp "github.com/mandacode-com/serengeti/ent/clientapp"
-	entweboauth "github.com/mandacode-com/serengeti/ent/weboauth"
-	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
-	"github.com/mandacode-com/serengeti/internal/domain/shared"
-	"github.com/mandacode-com/serengeti/internal/domain/weboauth"
-	weboauthval "github.com/mandacode-com/serengeti/internal/domain/weboauth/value"
-	"github.com/mandacode-com/serengeti/internal/port/out"
-	"github.com/mandacode-com/serengeti/pkg/utils"
+	"github.com/mandacode-com/mandacode-service-hub/ent"
+	entclientapp "github.com/mandacode-com/mandacode-service-hub/ent/clientapp"
+	entweboauth "github.com/mandacode-com/mandacode-service-hub/ent/weboauth"
+	clientappval "github.com/mandacode-com/mandacode-service-hub/internal/domain/clientapp/value"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/weboauth"
+	weboauthval "github.com/mandacode-com/mandacode-service-hub/internal/domain/weboauth/value"
+	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
+	"github.com/mandacode-com/mandacode-service-hub/pkg/utils"
 )
 
 type EntWebOAuthRepository struct {

@@ -3,8 +3,8 @@ package out
 import (
 	"context"
 
-	"github.com/mandacode-com/serengeti/internal/domain/service"
-	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/service"
+	serviceval "github.com/mandacode-com/mandacode-service-hub/internal/domain/service/value"
 )
 
 type ServiceListFilter struct {

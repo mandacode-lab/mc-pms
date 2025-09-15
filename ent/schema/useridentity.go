@@ -8,7 +8,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/serengeti/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
 )
 
 // UserIdentity holds the schema definition for the UserIdentity entity.

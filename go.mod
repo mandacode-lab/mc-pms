@@ -1,4 +1,4 @@
-module github.com/mandacode-com/serengeti
+module github.com/mandacode-com/mandacode-service-hub
 
 go 1.25.0
 

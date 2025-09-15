@@ -3,11 +3,11 @@ package user_mgmt
 import (
 	"context"
 
-	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
-	"github.com/mandacode-com/serengeti/internal/domain/useridentity"
-	"github.com/mandacode-com/serengeti/internal/domain/userinfo"
-	"github.com/mandacode-com/serengeti/internal/port/in"
-	"github.com/mandacode-com/serengeti/internal/port/out"
+	serviceval "github.com/mandacode-com/mandacode-service-hub/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/useridentity"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/userinfo"
+	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
+	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
 )
 
 func toUserInfo(ui *userinfo.UserInfo, serviceID serviceval.PublicID, userIdentity *useridentity.UserIdentity) in.UserInfo {

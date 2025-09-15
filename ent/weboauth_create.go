@@ -10,9 +10,9 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/mandacode-com/serengeti/ent/clientapp"
-	"github.com/mandacode-com/serengeti/ent/weboauth"
-	"github.com/mandacode-com/serengeti/internal/domain/shared"
+	"github.com/mandacode-com/mandacode-service-hub/ent/clientapp"
+	"github.com/mandacode-com/mandacode-service-hub/ent/weboauth"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
 )
 
 // WebOAuthCreate is the builder for creating a WebOAuth entity.

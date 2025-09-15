@@ -6,7 +6,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/mandacode-com/serengeti/internal/port/out"
+	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
 )
 
 const (

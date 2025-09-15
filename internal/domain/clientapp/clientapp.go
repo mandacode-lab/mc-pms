@@ -4,9 +4,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
-	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
-	"github.com/mandacode-com/serengeti/internal/domain/shared"
+	clientappval "github.com/mandacode-com/mandacode-service-hub/internal/domain/clientapp/value"
+	serviceval "github.com/mandacode-com/mandacode-service-hub/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
 )
 
 type ClientApp struct {

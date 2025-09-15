@@ -1,10 +1,10 @@
 package clientapp_mgmt
 
 import (
-	"github.com/mandacode-com/serengeti/internal/domain/clientapp"
-	serviceval "github.com/mandacode-com/serengeti/internal/domain/service/value"
-	"github.com/mandacode-com/serengeti/internal/port/in"
-	"github.com/mandacode-com/serengeti/pkg/utils"
+	"github.com/mandacode-com/mandacode-service-hub/internal/domain/clientapp"
+	serviceval "github.com/mandacode-com/mandacode-service-hub/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
+	"github.com/mandacode-com/mandacode-service-hub/pkg/utils"
 )
 
 func toClientAppInfo(ca *clientapp.ClientApp, serviceID serviceval.PublicID) in.ClientAppInfo {

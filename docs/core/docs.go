@@ -1206,7 +1206,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "/v1",
 	Schemes:          []string{},
-	Title:            "Serengeti Core API",
+	Title:            "MandaCode Service Hub Core API",
 	Description:      "Multi-tenant service management and client application API",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

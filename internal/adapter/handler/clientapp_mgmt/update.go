@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
-	clientappval "github.com/mandacode-com/serengeti/internal/domain/clientapp/value"
-	"github.com/mandacode-com/serengeti/internal/port/in"
+	clientappval "github.com/mandacode-com/mandacode-service-hub/internal/domain/clientapp/value"
+	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
 )
 
 type UpdateClientAppRequest struct {

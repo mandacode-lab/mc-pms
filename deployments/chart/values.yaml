@@ -12,7 +12,7 @@ image:
 
 # Service configuration
 auth:
-  imageName: "serengeti-auth"
+  imageName: "mandacode-service-hub-auth"
   enabled: true
   replicaCount: 2
   service:
@@ -37,7 +37,7 @@ auth:
     writeTimeout: "30s"
 
 core:
-  imageName: "serengeti-core"
+  imageName: "mandacode-service-hub-core"
   enabled: true
   replicaCount: 2
   service:
@@ -66,7 +66,7 @@ database:
   existingSecret: ""
   host: "postgres"
   port: 5432
-  dbName: "serengeti"
+  dbName: "mandacode-service-hub"
   sslMode: "require"
   auth:
     username: "postgres"

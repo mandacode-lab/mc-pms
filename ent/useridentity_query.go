@@ -12,10 +12,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/mandacode-com/serengeti/ent/predicate"
-	"github.com/mandacode-com/serengeti/ent/service"
-	"github.com/mandacode-com/serengeti/ent/useridentity"
-	"github.com/mandacode-com/serengeti/ent/userinfo"
+	"github.com/mandacode-com/mandacode-service-hub/ent/predicate"
+	"github.com/mandacode-com/mandacode-service-hub/ent/service"
+	"github.com/mandacode-com/mandacode-service-hub/ent/useridentity"
+	"github.com/mandacode-com/mandacode-service-hub/ent/userinfo"
 )
 
 // UserIdentityQuery is the builder for querying UserIdentity entities.

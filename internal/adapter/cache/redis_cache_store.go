@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/mandacode-com/serengeti/internal/port/out"
+	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
 	"github.com/redis/go-redis/v9"
 )
 
