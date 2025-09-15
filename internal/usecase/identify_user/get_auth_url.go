@@ -7,7 +7,7 @@ import (
 	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
 )
 
-func (u *Usecase) GetAuthURL(ctx context.Context, cmd *in.GetAuthURL) (*in.GetAuthURLView, error) {
+func (u *Usecase) GetAuthURL(ctx context.Context, cmd *in.GetAuthURL) (*in.GetAuthURLResult, error) {
 	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, cmd.ClientAppID)
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrClientAppNotFoundMsg, err)
@@ -39,7 +39,7 @@ func (u *Usecase) GetAuthURL(ctx context.Context, cmd *in.GetAuthURL) (*in.GetAu
 
 	authURL := oauthProvider.GetAuthURL(ctx, weboauth.OAuthClientID(), weboauth.Scopes(), weboauth.RedirectURI(), state)
 
-	return &in.GetAuthURLView{
+	return &in.GetAuthURLResult{
 		AuthURL: authURL,
 		State:   state,
 	}, nil

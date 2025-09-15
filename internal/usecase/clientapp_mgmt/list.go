@@ -7,7 +7,7 @@ import (
 	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
 )
 
-func (u *Usecase) ListClientApps(ctx context.Context, cmd *in.ListClientAppsCommand) (*in.ListClientAppsView, error) {
+func (u *Usecase) ListClientApps(ctx context.Context, cmd *in.ListClientAppsCommand) (*in.ListClientAppsResult, error) {
 	// Validate service exists
 	service, err := u.serviceQueryRepo.FindByPublicID(ctx, cmd.ServiceID)
 	if err != nil {
@@ -20,10 +20,10 @@ func (u *Usecase) ListClientApps(ctx context.Context, cmd *in.ListClientAppsComm
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	// Convert to view models
+	// Convert to result models
 	clientAppInfos := toClientAppInfos(clientApps, cmd.ServiceID)
 
-	return &in.ListClientAppsView{
+	return &in.ListClientAppsResult{
 		ServiceID:  cmd.ServiceID,
 		ClientApps: clientAppInfos,
 	}, nil

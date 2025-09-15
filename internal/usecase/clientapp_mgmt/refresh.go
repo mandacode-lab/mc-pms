@@ -9,7 +9,7 @@ import (
 	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
 )
 
-func (u *Usecase) RefreshSecret(ctx context.Context, cmd *in.RefreshSecretCommand) (*in.RefreshSecretView, error) {
+func (u *Usecase) RefreshSecret(ctx context.Context, cmd *in.RefreshSecretCommand) (*in.RefreshSecretResult, error) {
 	// Find the client app by public ID
 	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, cmd.ClientAppID)
 	if err != nil {
@@ -45,7 +45,7 @@ func (u *Usecase) RefreshSecret(ctx context.Context, cmd *in.RefreshSecretComman
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	return &in.RefreshSecretView{
+	return &in.RefreshSecretResult{
 		Secret: returnedSecret,
 	}, nil
 }

@@ -38,9 +38,9 @@ func toWebOAuthResponse(info in.WebOAuthInfo) WebOAuthResponse {
 	}
 }
 
-func toReadWebOAuthResponse(view *in.ReadWebOAuthView) *ReadWebOAuthResponse {
-	webOAuths := make([]WebOAuthResponse, len(view.WebOAuths))
-	for i, info := range view.WebOAuths {
+func toReadWebOAuthResponse(result *in.ReadWebOAuthResult) *ReadWebOAuthResponse {
+	webOAuths := make([]WebOAuthResponse, len(result.WebOAuths))
+	for i, info := range result.WebOAuths {
 		webOAuths[i] = toWebOAuthResponse(info)
 	}
 	return &ReadWebOAuthResponse{
@@ -89,12 +89,12 @@ func (h *Handler) ReadWebOAuth(c *gin.Context) {
 		Provider:    provider,
 	}
 
-	view, err := h.webOAuthMgmt.ReadWebOAuth(ctx, query)
+	result, err := h.webOAuthMgmt.ReadWebOAuth(ctx, query)
 	if err != nil {
 		c.Error(err)
 		return
 	}
 
-	response := toReadWebOAuthResponse(view)
+	response := toReadWebOAuthResponse(result)
 	c.JSON(http.StatusOK, response)
 }

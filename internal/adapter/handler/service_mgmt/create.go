@@ -25,14 +25,14 @@ type CreateServiceResponse struct {
 	UpdatedAt   time.Time `json:"updated_at" example:"2023-01-01T00:00:00Z"`
 }
 
-func toCreateServiceResponse(view *in.CreateServiceView) *CreateServiceResponse {
+func toCreateServiceResponse(result *in.CreateServiceResult) *CreateServiceResponse {
 	return &CreateServiceResponse{
-		ServiceID:   view.ServiceID.String(),
-		Name:        view.Name,
-		Description: view.Desc,
-		IsActive:    view.IsActive,
-		CreatedAt:   view.CreatedAt,
-		UpdatedAt:   view.UpdatedAt,
+		ServiceID:   result.ServiceID.String(),
+		Name:        result.Name,
+		Description: result.Desc,
+		IsActive:    result.IsActive,
+		CreatedAt:   result.CreatedAt,
+		UpdatedAt:   result.UpdatedAt,
 	}
 }
 
@@ -70,12 +70,12 @@ func (h *Handler) CreateService(c *gin.Context) {
 		Description: req.Description,
 	}
 
-	view, err := h.serviceMgmt.CreateService(ctx, cmd)
+	result, err := h.serviceMgmt.CreateService(ctx, cmd)
 	if err != nil {
 		c.Error(err)
 		return
 	}
 
-	response := toCreateServiceResponse(view)
+	response := toCreateServiceResponse(result)
 	c.JSON(http.StatusCreated, response)
 }

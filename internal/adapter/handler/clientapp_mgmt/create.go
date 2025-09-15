@@ -28,16 +28,16 @@ type CreateClientAppResponse struct {
 	UpdatedAt   time.Time `json:"updated_at" example:"2023-01-01T00:00:00Z"`
 }
 
-func toCreateClientAppResponse(view *in.CreateClientAppView) *CreateClientAppResponse {
+func toCreateClientAppResponse(result *in.CreateClientAppResult) *CreateClientAppResponse {
 	return &CreateClientAppResponse{
-		ServiceID:   view.ServiceID.String(),
-		ClientAppID: view.ClientAppID.String(),
-		Name:        view.Name,
-		Description: view.Desc,
-		IsActive:    view.IsActive,
-		Secret:      string(view.Secret),
-		CreatedAt:   view.CreatedAt,
-		UpdatedAt:   view.UpdatedAt,
+		ServiceID:   result.ServiceID.String(),
+		ClientAppID: result.ClientAppID.String(),
+		Name:        result.Name,
+		Description: result.Desc,
+		IsActive:    result.IsActive,
+		Secret:      string(result.Secret),
+		CreatedAt:   result.CreatedAt,
+		UpdatedAt:   result.UpdatedAt,
 	}
 }
 
@@ -75,12 +75,12 @@ func (h *Handler) CreateClientApp(c *gin.Context) {
 		Desc:      req.Description,
 	}
 
-	view, err := h.clientAppMgmt.CreateClientApp(ctx, cmd)
+	result, err := h.clientAppMgmt.CreateClientApp(ctx, cmd)
 	if err != nil {
 		c.Error(err)
 		return
 	}
 
-	response := toCreateClientAppResponse(view)
+	response := toCreateClientAppResponse(result)
 	c.JSON(http.StatusCreated, response)
 }

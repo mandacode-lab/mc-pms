@@ -30,16 +30,16 @@ type IdentifyByTokenResponse struct {
 	RawData   map[string]any `json:"raw_data"`
 }
 
-func toIdentifyByTokenResponse(view *in.UserIdentityView) *IdentifyByTokenResponse {
+func toIdentifyByTokenResponse(result *in.UserIdentityResult) *IdentifyByTokenResponse {
 	return &IdentifyByTokenResponse{
-		ServiceID: view.ServiceID.String(),
-		UserID:    view.UserID.String(),
-		Nickname:  view.Nickname,
-		Email:     view.Email,
-		Provider:  string(view.Provider),
-		CreatedAt: view.CreatedAt,
-		UpdatedAt: view.UpdatedAt,
-		RawData:   view.RawData,
+		ServiceID: result.ServiceID.String(),
+		UserID:    result.UserID.String(),
+		Nickname:  result.Nickname,
+		Email:     result.Email,
+		Provider:  string(result.Provider),
+		CreatedAt: result.CreatedAt,
+		UpdatedAt: result.UpdatedAt,
+		RawData:   result.RawData,
 	}
 }
 
@@ -93,13 +93,13 @@ func (h *Handler) IdentifyByToken(c *gin.Context) {
 		ClientAppSecret: []byte(clientAppSecret),
 	}
 
-	view, err := h.identifyUser.IdentifyByToken(ctx, cmd)
+	result, err := h.identifyUser.IdentifyByToken(ctx, cmd)
 	if err != nil {
 		c.Error(err)
 		return
 	}
 
-	response := toIdentifyByTokenResponse(view)
+	response := toIdentifyByTokenResponse(result)
 	c.JSON(http.StatusOK, response)
 }
 

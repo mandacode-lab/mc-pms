@@ -31,16 +31,16 @@ type IdentifyByCodeResponse struct {
 	RawData   map[string]any `json:"raw_data"`
 }
 
-func toIdentifyByCodeResponse(view *in.UserIdentityView) *IdentifyByCodeResponse {
+func toIdentifyByCodeResponse(result *in.UserIdentityResult) *IdentifyByCodeResponse {
 	return &IdentifyByCodeResponse{
-		ServiceID: view.ServiceID.String(),
-		UserID:    view.UserID.String(),
-		Nickname:  view.Nickname,
-		Email:     view.Email,
-		Provider:  string(view.Provider),
-		CreatedAt: view.CreatedAt,
-		UpdatedAt: view.UpdatedAt,
-		RawData:   view.RawData,
+		ServiceID: result.ServiceID.String(),
+		UserID:    result.UserID.String(),
+		Nickname:  result.Nickname,
+		Email:     result.Email,
+		Provider:  string(result.Provider),
+		CreatedAt: result.CreatedAt,
+		UpdatedAt: result.UpdatedAt,
+		RawData:   result.RawData,
 	}
 }
 
@@ -97,12 +97,12 @@ func (h *Handler) IdentifyByCode(c *gin.Context) {
 		ClientAppSecret: []byte(clientAppSecret),
 	}
 
-	view, err := h.identifyUser.IdentifyByCode(ctx, cmd)
+	result, err := h.identifyUser.IdentifyByCode(ctx, cmd)
 	if err != nil {
 		c.Error(err)
 		return
 	}
 
-	response := toIdentifyByCodeResponse(view)
+	response := toIdentifyByCodeResponse(result)
 	c.JSON(http.StatusOK, response)
 }

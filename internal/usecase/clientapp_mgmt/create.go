@@ -11,7 +11,7 @@ import (
 	"github.com/mandacode-com/mandacode-service-hub/pkg/utils"
 )
 
-func (u *Usecase) CreateClientApp(ctx context.Context, cmd *in.CreateClientAppCommand) (*in.CreateClientAppView, error) {
+func (u *Usecase) CreateClientApp(ctx context.Context, cmd *in.CreateClientAppCommand) (*in.CreateClientAppResult, error) {
 	// Validate service exists
 	service, err := u.serviceQueryRepo.FindByPublicID(ctx, cmd.ServiceID)
 	if err != nil {
@@ -60,8 +60,8 @@ func (u *Usecase) CreateClientApp(ctx context.Context, cmd *in.CreateClientAppCo
 		return nil, err
 	}
 
-	// Convert to view
-	return &in.CreateClientAppView{
+	// Convert to result
+	return &in.CreateClientAppResult{
 		ClientAppInfo: toClientAppInfo(savedClientApp, cmd.ServiceID),
 		Secret:        returnedSecret,
 	}, nil

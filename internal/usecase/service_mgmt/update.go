@@ -8,7 +8,7 @@ import (
 	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
 )
 
-func (u *Usecase) UpdateService(ctx context.Context, cmd *in.UpdateServiceCommand) (*in.UpdateServiceView, error) {
+func (u *Usecase) UpdateService(ctx context.Context, cmd *in.UpdateServiceCommand) (*in.UpdateServiceResult, error) {
 	// Find the service by public ID
 	service, err := u.serviceQueryRepo.FindByPublicID(ctx, cmd.ServiceID)
 	if err != nil {
@@ -40,8 +40,8 @@ func (u *Usecase) UpdateService(ctx context.Context, cmd *in.UpdateServiceComman
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	// Convert to view
-	return &in.UpdateServiceView{
+	// Convert to result
+	return &in.UpdateServiceResult{
 		ServiceInfo: toServiceInfo(service),
 	}, nil
 }

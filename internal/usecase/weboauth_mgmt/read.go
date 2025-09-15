@@ -8,7 +8,7 @@ import (
 	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
 )
 
-func (u *Usecase) ReadWebOAuth(ctx context.Context, query *in.ReadWebOAuthQuery) (*in.ReadWebOAuthView, error) {
+func (u *Usecase) ReadWebOAuth(ctx context.Context, query *in.ReadWebOAuthQuery) (*in.ReadWebOAuthResult, error) {
 	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, query.ClientAppID)
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrClientAppNotFoundMsg, err)
@@ -33,12 +33,12 @@ func (u *Usecase) ReadWebOAuth(ctx context.Context, query *in.ReadWebOAuthQuery)
 		webOAuthInfos = append(webOAuthInfos, toWebOAuthInfo(wo, clientApp.PublicID()))
 	}
 
-	return &in.ReadWebOAuthView{
+	return &in.ReadWebOAuthResult{
 		WebOAuths: webOAuthInfos,
 	}, nil
 }
 
-func (u *Usecase) ReadWebOAuthSecret(ctx context.Context, query *in.ReadWebOAuthSecretQuery) (*in.ReadWebOAuthSecretView, error) {
+func (u *Usecase) ReadWebOAuthSecret(ctx context.Context, query *in.ReadWebOAuthSecretQuery) (*in.ReadWebOAuthSecretResult, error) {
 	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, query.ClientAppID)
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrClientAppNotFoundMsg, err)
@@ -59,7 +59,7 @@ func (u *Usecase) ReadWebOAuthSecret(ctx context.Context, query *in.ReadWebOAuth
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	return &in.ReadWebOAuthSecretView{
+	return &in.ReadWebOAuthSecretResult{
 		OAuthSecret: oauthSecret,
 	}, nil
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
 )
 
-func (u *Usecase) IdentifyByCode(ctx context.Context, cmd *in.IdentifyByCode) (*in.UserIdentityView, error) {
+func (u *Usecase) IdentifyByCode(ctx context.Context, cmd *in.IdentifyByCode) (*in.UserIdentityResult, error) {
 	// Validate state parameter to prevent CSRF attacks
 	if cmd.State == "" {
 		return nil, merr.New(merr.ErrBadRequest, ErrMissingStateMsg, nil)
@@ -68,5 +68,5 @@ func (u *Usecase) IdentifyByCode(ctx context.Context, cmd *in.IdentifyByCode) (*
 
 	rawData := u.extractRawData(oauthUserInfo)
 
-	return u.buildUserIdentityView(ctx, userIdentity, clientApp.ServiceID(), rawData)
+	return u.buildUserIdentityResult(ctx, userIdentity, clientApp.ServiceID(), rawData)
 }

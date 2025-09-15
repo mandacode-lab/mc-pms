@@ -56,7 +56,7 @@ func (u *Usecase) findOrCreateUser(ctx context.Context, serviceID serviceval.ID,
 	return userIdentity, nil
 }
 
-func (u *Usecase) buildUserIdentityView(ctx context.Context, userIdentity *useridentity.UserIdentity, serviceID serviceval.ID, rawData map[string]any) (*in.UserIdentityView, error) {
+func (u *Usecase) buildUserIdentityResult(ctx context.Context, userIdentity *useridentity.UserIdentity, serviceID serviceval.ID, rawData map[string]any) (*in.UserIdentityResult, error) {
 	userInfo, err := u.userInfoQueryRepo.FindByUserIdentityID(ctx, userIdentity.ID())
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrInternalServerMsg, err)
@@ -67,7 +67,7 @@ func (u *Usecase) buildUserIdentityView(ctx context.Context, userIdentity *useri
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	return toUserIdentityView(userIdentity, userInfo, service.PublicID(), rawData), nil
+	return toUserIdentityResult(userIdentity, userInfo, service.PublicID(), rawData), nil
 }
 
 func (u *Usecase) extractRawData(oauthUserInfo *out.OAuthUserInfo) map[string]any {

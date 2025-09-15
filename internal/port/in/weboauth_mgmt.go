@@ -21,7 +21,7 @@ type ReadWebOAuthQuery struct {
 	Provider    *shared.Provider
 }
 
-type ReadWebOAuthView struct {
+type ReadWebOAuthResult struct {
 	WebOAuths []WebOAuthInfo
 }
 
@@ -34,7 +34,7 @@ type UpdateWebOAuthCommand struct {
 	OAuthSecret   *[]byte
 }
 
-type UpdateWebOAuthView struct {
+type UpdateWebOAuthResult struct {
 	WebOAuthInfo
 }
 
@@ -48,14 +48,14 @@ type ReadWebOAuthSecretQuery struct {
 	Provider    shared.Provider
 }
 
-type ReadWebOAuthSecretView struct {
+type ReadWebOAuthSecretResult struct {
 	OAuthSecret []byte
 }
 
 type WebOAuthMgmtUsecase interface {
 	RegisterWebOAuth(ctx context.Context, cmd *RegisterWebOAuthCommand) error
-	ReadWebOAuth(ctx context.Context, query *ReadWebOAuthQuery) (*ReadWebOAuthView, error)
-	ReadWebOAuthSecret(ctx context.Context, query *ReadWebOAuthSecretQuery) (*ReadWebOAuthSecretView, error)
+	ReadWebOAuth(ctx context.Context, query *ReadWebOAuthQuery) (*ReadWebOAuthResult, error)
+	ReadWebOAuthSecret(ctx context.Context, query *ReadWebOAuthSecretQuery) (*ReadWebOAuthSecretResult, error)
 	UpdateWebOAuth(ctx context.Context, cmd *UpdateWebOAuthCommand) error
 	DeleteWebOAuth(ctx context.Context, cmd *DeleteWebOAuthCommand) error
 }

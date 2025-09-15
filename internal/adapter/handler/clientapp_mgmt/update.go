@@ -26,15 +26,15 @@ type UpdateClientAppResponse struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
-func toUpdateClientAppResponse(view *in.UpdateClientAppView) *UpdateClientAppResponse {
+func toUpdateClientAppResponse(result *in.UpdateClientAppResult) *UpdateClientAppResponse {
 	return &UpdateClientAppResponse{
-		ServiceID:   view.ServiceID.String(),
-		ClientAppID: view.ClientAppID.String(),
-		Name:        view.Name,
-		Description: view.Desc,
-		IsActive:    view.IsActive,
-		CreatedAt:   view.CreatedAt,
-		UpdatedAt:   view.UpdatedAt,
+		ServiceID:   result.ServiceID.String(),
+		ClientAppID: result.ClientAppID.String(),
+		Name:        result.Name,
+		Description: result.Desc,
+		IsActive:    result.IsActive,
+		CreatedAt:   result.CreatedAt,
+		UpdatedAt:   result.UpdatedAt,
 	}
 }
 
@@ -74,12 +74,12 @@ func (h *Handler) UpdateClientApp(c *gin.Context) {
 		NewDesc:     &req.Description,
 	}
 
-	view, err := h.clientAppMgmt.UpdateClientApp(ctx, cmd)
+	result, err := h.clientAppMgmt.UpdateClientApp(ctx, cmd)
 	if err != nil {
 		c.Error(err)
 		return
 	}
 
-	response := toUpdateClientAppResponse(view)
+	response := toUpdateClientAppResponse(result)
 	c.JSON(http.StatusOK, response)
 }

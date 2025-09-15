@@ -11,7 +11,7 @@ type CreateServiceCommand struct {
 	Description string
 }
 
-type CreateServiceView struct {
+type CreateServiceResult struct {
 	ServiceInfo
 }
 
@@ -26,12 +26,12 @@ type UpdateServiceCommand struct {
 	NewIsActive *bool
 }
 
-type UpdateServiceView struct {
+type UpdateServiceResult struct {
 	ServiceInfo
 }
 
 type ServiceMgmtUsecase interface {
-	CreateService(ctx context.Context, cmd *CreateServiceCommand) (*CreateServiceView, error)
+	CreateService(ctx context.Context, cmd *CreateServiceCommand) (*CreateServiceResult, error)
 	DeleteService(ctx context.Context, cmd *DeleteServiceCommand) error
-	UpdateService(ctx context.Context, cmd *UpdateServiceCommand) (*UpdateServiceView, error)
+	UpdateService(ctx context.Context, cmd *UpdateServiceCommand) (*UpdateServiceResult, error)
 }

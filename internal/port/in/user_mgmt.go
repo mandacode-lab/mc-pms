@@ -16,7 +16,7 @@ type FindUserInfoQuery struct {
 	Nickname  *string
 }
 
-type FindUserInfoView struct {
+type FindUserInfoResult struct {
 	Users []UserInfo
 }
 
@@ -25,6 +25,6 @@ type DeleteUserCommand struct {
 }
 
 type UserMgmtUsecase interface {
-	FindUserInfo(ctx context.Context, query *FindUserInfoQuery) (*FindUserInfoView, error)
+	FindUserInfo(ctx context.Context, query *FindUserInfoQuery) (*FindUserInfoResult, error)
 	DeleteUser(ctx context.Context, cmd *DeleteUserCommand) error
 }

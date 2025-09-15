@@ -7,7 +7,7 @@ import (
 	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
 )
 
-func (u *Usecase) IdentifyByToken(ctx context.Context, cmd *in.IdentifyByToken) (*in.UserIdentityView, error) {
+func (u *Usecase) IdentifyByToken(ctx context.Context, cmd *in.IdentifyByToken) (*in.UserIdentityResult, error) {
 	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, cmd.ClientApp)
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrClientAppNotFoundMsg, err)
@@ -39,5 +39,5 @@ func (u *Usecase) IdentifyByToken(ctx context.Context, cmd *in.IdentifyByToken) 
 
 	rawData := u.extractRawData(oauthUserInfo)
 
-	return u.buildUserIdentityView(ctx, userIdentity, clientApp.ServiceID(), rawData)
+	return u.buildUserIdentityResult(ctx, userIdentity, clientApp.ServiceID(), rawData)
 }

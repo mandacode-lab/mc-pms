@@ -8,7 +8,7 @@ import (
 	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
 )
 
-func (u *Usecase) UpdateClientApp(ctx context.Context, cmd *in.UpdateClientAppCommand) (*in.UpdateClientAppView, error) {
+func (u *Usecase) UpdateClientApp(ctx context.Context, cmd *in.UpdateClientAppCommand) (*in.UpdateClientAppResult, error) {
 	// Find the client app by public ID
 	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, cmd.ClientAppID)
 	if err != nil {
@@ -46,8 +46,8 @@ func (u *Usecase) UpdateClientApp(ctx context.Context, cmd *in.UpdateClientAppCo
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	// Convert to view
-	return &in.UpdateClientAppView{
+	// Convert to result
+	return &in.UpdateClientAppResult{
 		ClientAppInfo: toClientAppInfo(clientApp, service.PublicID()),
 	}, nil
 }

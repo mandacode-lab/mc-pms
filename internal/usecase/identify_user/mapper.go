@@ -7,8 +7,8 @@ import (
 	"github.com/mandacode-com/mandacode-service-hub/internal/port/in"
 )
 
-func toUserIdentityView(userIdentity *useridentity.UserIdentity, userInfo *userinfo.UserInfo, servicePublicID serviceval.PublicID, rawData map[string]any) *in.UserIdentityView {
-	return &in.UserIdentityView{
+func toUserIdentityResult(userIdentity *useridentity.UserIdentity, userInfo *userinfo.UserInfo, servicePublicID serviceval.PublicID, rawData map[string]any) *in.UserIdentityResult {
+	return &in.UserIdentityResult{
 		UserInfo: in.UserInfo{
 			ServiceID: servicePublicID,
 			UserID:    userIdentity.PublicID(),

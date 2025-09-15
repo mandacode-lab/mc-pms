@@ -25,14 +25,14 @@ type UpdateServiceResponse struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
-func toUpdateServiceResponse(view *in.UpdateServiceView) *UpdateServiceResponse {
+func toUpdateServiceResponse(result *in.UpdateServiceResult) *UpdateServiceResponse {
 	return &UpdateServiceResponse{
-		ServiceID:   view.ServiceID.String(),
-		Name:        view.Name,
-		Description: view.Desc,
-		IsActive:    view.IsActive,
-		CreatedAt:   view.CreatedAt,
-		UpdatedAt:   view.UpdatedAt,
+		ServiceID:   result.ServiceID.String(),
+		Name:        result.Name,
+		Description: result.Desc,
+		IsActive:    result.IsActive,
+		CreatedAt:   result.CreatedAt,
+		UpdatedAt:   result.UpdatedAt,
 	}
 }
 
@@ -80,12 +80,12 @@ func (h *Handler) UpdateService(c *gin.Context) {
 		NewDesc:   &req.Description,
 	}
 
-	view, err := h.serviceMgmt.UpdateService(ctx, cmd)
+	result, err := h.serviceMgmt.UpdateService(ctx, cmd)
 	if err != nil {
 		c.Error(err)
 		return
 	}
 
-	response := toUpdateServiceResponse(view)
+	response := toUpdateServiceResponse(result)
 	c.JSON(http.StatusOK, response)
 }

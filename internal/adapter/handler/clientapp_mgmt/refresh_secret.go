@@ -14,9 +14,9 @@ type RefreshSecretResponse struct {
 	Secret string `json:"secret"`
 }
 
-func toRefreshSecretResponse(view *in.RefreshSecretView) *RefreshSecretResponse {
+func toRefreshSecretResponse(result *in.RefreshSecretResult) *RefreshSecretResponse {
 	return &RefreshSecretResponse{
-		Secret: string(view.Secret),
+		Secret: string(result.Secret),
 	}
 }
 
@@ -45,12 +45,12 @@ func (h *Handler) RefreshSecret(c *gin.Context) {
 		ClientAppID: clientAppPublicID,
 	}
 
-	view, err := h.clientAppMgmt.RefreshSecret(ctx, cmd)
+	result, err := h.clientAppMgmt.RefreshSecret(ctx, cmd)
 	if err != nil {
 		c.Error(err)
 		return
 	}
 
-	response := toRefreshSecretResponse(view)
+	response := toRefreshSecretResponse(result)
 	c.JSON(http.StatusOK, response)
 }

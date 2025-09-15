@@ -39,9 +39,9 @@ func toUserResponse(info in.UserInfo) UserResponse {
 	}
 }
 
-func toFindUserInfoResponse(view *in.FindUserInfoView) *FindUserInfoResponse {
-	users := make([]UserResponse, len(view.Users))
-	for i, info := range view.Users {
+func toFindUserInfoResponse(result *in.FindUserInfoResult) *FindUserInfoResponse {
+	users := make([]UserResponse, len(result.Users))
+	for i, info := range result.Users {
 		users[i] = toUserResponse(info)
 	}
 	return &FindUserInfoResponse{
@@ -114,12 +114,12 @@ func (h *Handler) FindUserInfo(c *gin.Context) {
 		Nickname:  nickname,
 	}
 
-	view, err := h.userMgmt.FindUserInfo(ctx, query)
+	result, err := h.userMgmt.FindUserInfo(ctx, query)
 	if err != nil {
 		c.Error(err)
 		return
 	}
 
-	response := toFindUserInfoResponse(view)
+	response := toFindUserInfoResponse(result)
 	c.JSON(http.StatusOK, response)
 }

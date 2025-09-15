@@ -13,7 +13,7 @@ type CreateClientAppCommand struct {
 	Desc      string
 }
 
-type CreateClientAppView struct {
+type CreateClientAppResult struct {
 	ClientAppInfo
 	Secret []byte
 }
@@ -26,7 +26,7 @@ type RefreshSecretCommand struct {
 	ClientAppID clientappval.PublicID
 }
 
-type RefreshSecretView struct {
+type RefreshSecretResult struct {
 	Secret []byte
 }
 
@@ -37,7 +37,7 @@ type UpdateClientAppCommand struct {
 	NewIsActive *bool
 }
 
-type UpdateClientAppView struct {
+type UpdateClientAppResult struct {
 	ClientAppInfo
 }
 
@@ -45,16 +45,16 @@ type ListClientAppsCommand struct {
 	ServiceID serviceval.PublicID
 }
 
-type ListClientAppsView struct {
+type ListClientAppsResult struct {
 	ServiceID  serviceval.PublicID
 	ClientApps []ClientAppInfo
 }
 
 
 type ClientAppMgmtUsecase interface {
-	CreateClientApp(ctx context.Context, cmd *CreateClientAppCommand) (*CreateClientAppView, error)
+	CreateClientApp(ctx context.Context, cmd *CreateClientAppCommand) (*CreateClientAppResult, error)
 	DeleteClientApp(ctx context.Context, cmd *DeleteClientAppCommand) error
-	RefreshSecret(ctx context.Context, cmd *RefreshSecretCommand) (*RefreshSecretView, error)
-	UpdateClientApp(ctx context.Context, cmd *UpdateClientAppCommand) (*UpdateClientAppView, error)
-	ListClientApps(ctx context.Context, cmd *ListClientAppsCommand) (*ListClientAppsView, error)
+	RefreshSecret(ctx context.Context, cmd *RefreshSecretCommand) (*RefreshSecretResult, error)
+	UpdateClientApp(ctx context.Context, cmd *UpdateClientAppCommand) (*UpdateClientAppResult, error)
+	ListClientApps(ctx context.Context, cmd *ListClientAppsCommand) (*ListClientAppsResult, error)
 }

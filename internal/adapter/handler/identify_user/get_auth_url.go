@@ -22,10 +22,10 @@ type GetAuthURLResponse struct {
 	State   string `json:"state" example:"random_state_string_123"`
 }
 
-func toGetAuthURLResponse(view *in.GetAuthURLView) *GetAuthURLResponse {
+func toGetAuthURLResponse(result *in.GetAuthURLResult) *GetAuthURLResponse {
 	return &GetAuthURLResponse{
-		AuthURL: view.AuthURL,
-		State:   view.State,
+		AuthURL: result.AuthURL,
+		State:   result.State,
 	}
 }
 
@@ -77,12 +77,12 @@ func (h *Handler) GetAuthURL(c *gin.Context) {
 		ClientAppSecret: []byte(clientAppSecret),
 	}
 
-	view, err := h.identifyUser.GetAuthURL(ctx, cmd)
+	result, err := h.identifyUser.GetAuthURL(ctx, cmd)
 	if err != nil {
 		c.Error(err)
 		return
 	}
 
-	response := toGetAuthURLResponse(view)
+	response := toGetAuthURLResponse(result)
 	c.JSON(http.StatusOK, response)
 }

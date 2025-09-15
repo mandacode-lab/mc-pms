@@ -7,7 +7,7 @@ import (
 	"github.com/mandacode-com/mandacode-service-hub/internal/domain/shared"
 )
 
-type UserIdentityView struct {
+type UserIdentityResult struct {
 	UserInfo
 	RawData map[string]any
 }
@@ -33,13 +33,13 @@ type GetAuthURL struct {
 	ClientAppSecret []byte
 }
 
-type GetAuthURLView struct {
+type GetAuthURLResult struct {
 	AuthURL string
 	State   string
 }
 
 type IdentifyUserUsecase interface {
-	IdentifyByCode(ctx context.Context, cmd *IdentifyByCode) (*UserIdentityView, error)
-	IdentifyByToken(ctx context.Context, cmd *IdentifyByToken) (*UserIdentityView, error)
-	GetAuthURL(ctx context.Context, cmd *GetAuthURL) (*GetAuthURLView, error)
+	IdentifyByCode(ctx context.Context, cmd *IdentifyByCode) (*UserIdentityResult, error)
+	IdentifyByToken(ctx context.Context, cmd *IdentifyByToken) (*UserIdentityResult, error)
+	GetAuthURL(ctx context.Context, cmd *GetAuthURL) (*GetAuthURLResult, error)
 }

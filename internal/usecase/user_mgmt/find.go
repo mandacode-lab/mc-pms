@@ -8,7 +8,7 @@ import (
 	"github.com/mandacode-com/mandacode-service-hub/internal/port/out"
 )
 
-func (u *Usecase) FindUserInfo(ctx context.Context, query *in.FindUserInfoQuery) (*in.FindUserInfoView, error) {
+func (u *Usecase) FindUserInfo(ctx context.Context, query *in.FindUserInfoQuery) (*in.FindUserInfoResult, error) {
 	// Build filter from query parameters
 	filter := &out.UserInfoListFilter{}
 	if query.Email != nil {
@@ -37,10 +37,10 @@ func (u *Usecase) FindUserInfo(ctx context.Context, query *in.FindUserInfoQuery)
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	// Convert to view models
+	// Convert to result models
 	users := toUserInfos(userInfos, u.userIdentityQueryRepo, u.serviceQueryRepo, ctx)
 
-	return &in.FindUserInfoView{
+	return &in.FindUserInfoResult{
 		Users: users,
 	}, nil
 }

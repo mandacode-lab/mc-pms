@@ -10,7 +10,7 @@ import (
 	"github.com/mandacode-com/mandacode-service-hub/pkg/utils"
 )
 
-func (u *Usecase) CreateService(ctx context.Context, cmd *in.CreateServiceCommand) (*in.CreateServiceView, error) {
+func (u *Usecase) CreateService(ctx context.Context, cmd *in.CreateServiceCommand) (*in.CreateServiceResult, error) {
 	// Check if service with same name already exists
 	existing, err := u.serviceQueryRepo.FindByName(ctx, cmd.Name)
 	if err == nil && existing != nil {
@@ -35,8 +35,8 @@ func (u *Usecase) CreateService(ctx context.Context, cmd *in.CreateServiceComman
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	// Convert to view
-	return &in.CreateServiceView{
+	// Convert to result
+	return &in.CreateServiceResult{
 		ServiceInfo: toServiceInfo(savedService),
 	}, nil
 }

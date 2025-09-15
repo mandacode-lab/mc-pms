@@ -38,13 +38,13 @@ func toClientAppResponse(info in.ClientAppInfo) ClientAppResponse {
 	}
 }
 
-func toListClientAppsResponse(view *in.ListClientAppsView) *ListClientAppsResponse {
-	clientApps := make([]ClientAppResponse, len(view.ClientApps))
-	for i, info := range view.ClientApps {
+func toListClientAppsResponse(result *in.ListClientAppsResult) *ListClientAppsResponse {
+	clientApps := make([]ClientAppResponse, len(result.ClientApps))
+	for i, info := range result.ClientApps {
 		clientApps[i] = toClientAppResponse(info)
 	}
 	return &ListClientAppsResponse{
-		ServiceID:  view.ServiceID.String(),
+		ServiceID:  result.ServiceID.String(),
 		ClientApps: clientApps,
 	}
 }
@@ -80,12 +80,12 @@ func (h *Handler) ListClientApps(c *gin.Context) {
 		ServiceID: servicePublicID,
 	}
 
-	view, err := h.clientAppMgmt.ListClientApps(ctx, cmd)
+	result, err := h.clientAppMgmt.ListClientApps(ctx, cmd)
 	if err != nil {
 		c.Error(err)
 		return
 	}
 
-	response := toListClientAppsResponse(view)
+	response := toListClientAppsResponse(result)
 	c.JSON(http.StatusOK, response)
 }
