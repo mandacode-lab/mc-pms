@@ -39,6 +39,5 @@ type ClientAppQueryRepository interface {
 	FindByID(ctx context.Context, id clientappval.ID) (*clientapp.ClientApp, error)
 	FindByPublicID(ctx context.Context, publicID clientappval.PublicID) (*clientapp.ClientApp, error)
 	FindByName(ctx context.Context, name string) (*clientapp.ClientApp, error)
-	FindByServiceID(ctx context.Context, serviceID serviceval.ID) ([]*clientapp.ClientApp, error)
 	List(ctx context.Context, filter *ClientAppListFilter, options *ClientAppListOptions) ([]*clientapp.ClientApp, int, error)
 }

@@ -166,23 +166,6 @@ func (r *EntClientAppQueryRepository) FindByName(ctx context.Context, name strin
 	return r.toDomain(entClient), nil
 }
 
-func (r *EntClientAppQueryRepository) FindByServiceID(ctx context.Context, serviceID serviceval.ID) ([]*clientapp.ClientApp, error) {
-	entClients, err := r.client.ClientApp.Query().
-		Where(entclientapp.HasServiceWith(entservice.ID(serviceID.Value()))).
-		WithService().
-		All(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	clients := make([]*clientapp.ClientApp, 0, len(entClients))
-	for _, entClient := range entClients {
-		clients = append(clients, r.toDomain(entClient))
-	}
-
-	return clients, nil
-}
-
 func (r *EntClientAppQueryRepository) List(ctx context.Context, filter *out.ClientAppListFilter, options *out.ClientAppListOptions) ([]*clientapp.ClientApp, int, error) {
 	query := r.client.ClientApp.Query().WithService()
 
