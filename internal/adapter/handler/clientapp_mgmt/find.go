@@ -78,7 +78,7 @@ func (h *Handler) ListClientApps(c *gin.Context) {
 	}
 
 	usecaseReq := &in.ListClientAppsRequest{
-		ServiceID: serviceID,
+		ServiceID: &serviceID,
 	}
 
 	result, err := h.clientAppMgmt.ListClientApps(ctx, usecaseReq)

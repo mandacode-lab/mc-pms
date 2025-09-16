@@ -41,8 +41,21 @@ type UpdateClientAppResponse struct {
 	ClientAppInfo
 }
 
+type FindClientAppRequest struct {
+	ClientAppID *clientappval.PublicID
+	Name        *string
+}
+
+type FindClientAppResponse struct {
+	ClientAppInfo
+}
+
 type ListClientAppsRequest struct {
-	ServiceID serviceval.PublicID
+	ServiceID    *serviceval.PublicID
+	NameContains *string
+	IsActive     *bool
+	Limit        int
+	Offset       int
 }
 
 type ListClientAppsResponse struct {
@@ -55,5 +68,6 @@ type ClientAppMgmtUsecase interface {
 	DeleteClientApp(ctx context.Context, req *DeleteClientAppRequest) error
 	RefreshSecret(ctx context.Context, req *RefreshSecretRequest) (*RefreshSecretResponse, error)
 	UpdateClientApp(ctx context.Context, req *UpdateClientAppRequest) (*UpdateClientAppResponse, error)
+	FindClientApp(ctx context.Context, req *FindClientAppRequest) (*FindClientAppResponse, error)
 	ListClientApps(ctx context.Context, req *ListClientAppsRequest) (*ListClientAppsResponse, error)
 }

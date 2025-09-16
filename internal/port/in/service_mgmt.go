@@ -30,8 +30,30 @@ type UpdateServiceResponse struct {
 	ServiceInfo
 }
 
+type FindServiceRequest struct {
+	Name     *string
+	PublicID *serviceval.PublicID
+}
+
+type FindServiceByNameResponse struct {
+	ServiceInfo
+}
+
+type ListServicesRequest struct {
+	NameContains *string
+	IsActive     *bool
+	Limit        int
+	Offset       int
+}
+
+type ListServicesResponse struct {
+	Services []ServiceInfo
+}
+
 type ServiceMgmtUsecase interface {
 	CreateService(ctx context.Context, req *CreateServiceRequest) (*CreateServiceResponse, error)
 	DeleteService(ctx context.Context, req *DeleteServiceRequest) error
 	UpdateService(ctx context.Context, req *UpdateServiceRequest) (*UpdateServiceResponse, error)
+	FindService(ctx context.Context, req *FindServiceRequest) (*FindServiceByNameResponse, error)
+	ListServices(ctx context.Context, req *ListServicesRequest) (*ListServicesResponse, error)
 }

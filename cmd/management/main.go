@@ -7,10 +7,10 @@ import (
 	"syscall"
 
 	"github.com/joho/godotenv"
-	"github.com/mandacode-com/merver"
 	"github.com/mandacode-com/mandacode-ssam/cmd/shared"
 	"github.com/mandacode-com/mandacode-ssam/configs"
 	_ "github.com/mandacode-com/mandacode-ssam/docs/management"
+	"github.com/mandacode-com/merver"
 	"github.com/rs/zerolog/log"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -28,7 +28,6 @@ import (
 // @in header
 // @name Authorization
 // @description Type "Bearer" followed by a space and JWT token.
-
 
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
