@@ -220,4 +220,3 @@ func (r *EntServiceQueryRepository) toDomain(entService *ent.Service) *service.S
 		entService.UpdatedAt,
 	)
 }
-

@@ -6,6 +6,14 @@ type ManagementConfig struct {
 	Server   ServerConfig   `envPrefix:""`
 	Postgres PostgresConfig `envPrefix:""`
 	Redis    RedisConfig    `envPrefix:""`
+	IAM      IAMConfig      `envPrefix:"IAM_"`
+}
+
+type IAMConfig struct {
+	Enabled     bool   `env:"ENABLED" envDefault:"true"`
+	ServiceURL  string `env:"SERVICE_URL" envDefault:"http://localhost:8080"`
+	ServiceName string `env:"SERVICE_NAME" envDefault:"mandacode-ssam"`
+	ClientName  string `env:"CLIENT_NAME" envDefault:"iam-client"`
 }
 
 func LoadManagementConfig() (*ManagementConfig, error) {
