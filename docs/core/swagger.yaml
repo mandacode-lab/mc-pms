@@ -1,5 +1,38 @@
 basePath: /v1
 definitions:
+  internal_adapter_handler_client_access.ClientAppResponse:
+    properties:
+      client_app_id:
+        type: string
+      description:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        type: string
+    type: object
+  internal_adapter_handler_client_access.ServiceInfoResponse:
+    properties:
+      description:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        type: string
+      service_id:
+        type: string
+    type: object
+  internal_adapter_handler_client_access.VerifyClientResponse:
+    properties:
+      client_app:
+        $ref: '#/definitions/internal_adapter_handler_client_access.ClientAppResponse'
+      is_valid:
+        type: boolean
+      service_id:
+        type: string
+      service_info:
+        $ref: '#/definitions/internal_adapter_handler_client_access.ServiceInfoResponse'
+    type: object
   internal_adapter_handler_clientapp_mgmt.ClientAppResponse:
     properties:
       client_app_id:
@@ -225,7 +258,8 @@ info:
     email: support@swagger.io
     name: API Support
     url: http://www.swagger.io/support
-  description: Multi-tenant service management and client application API
+  description: Basic Authentication using ClientAppID as username and ClientSecret
+    as password
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -233,6 +267,36 @@ info:
   title: MandaCode Service Hub Core API
   version: "1.0"
 paths:
+  /client-access/verify:
+    post:
+      consumes:
+      - application/json
+      description: Verify client application credentials using Basic Authentication
+        (client_id:client_secret)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Client verification result
+          schema:
+            $ref: '#/definitions/internal_adapter_handler_client_access.VerifyClientResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "401":
+          description: Unauthorized - Invalid credentials
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      security:
+      - BasicAuth: []
+      summary: Verify client credentials
+      tags:
+      - client-access
   /client-apps:
     get:
       description: List all OAuth client applications for a specific service
@@ -425,6 +489,8 @@ paths:
       tags:
       - services
 securityDefinitions:
+  BasicAuth:
+    type: basic
   Bearer:
     description: Type "Bearer" followed by a space and JWT token.
     in: header

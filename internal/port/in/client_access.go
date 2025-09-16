@@ -5,8 +5,8 @@ import (
 )
 
 type VerifyClientRequest struct {
-	ClientID string
-	Secret   []byte
+	ClientID     string
+	ClientSecret []byte
 }
 
 type VerifyClientResponse struct {

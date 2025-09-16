@@ -14,6 +14,7 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/ent"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/cache"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/encoder"
+	"github.com/mandacode-com/mandacode-ssam/internal/adapter/handler/client_access"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/handler/clientapp_mgmt"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/handler/service_mgmt"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/hasher"
@@ -22,6 +23,7 @@ import (
 	redisinfra "github.com/mandacode-com/mandacode-ssam/internal/infra/redis"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
+	client_access_usecase "github.com/mandacode-com/mandacode-ssam/internal/usecase/client_access"
 	clientapp_mgmt_usecase "github.com/mandacode-com/mandacode-ssam/internal/usecase/clientapp_mgmt"
 	service_mgmt_usecase "github.com/mandacode-com/mandacode-ssam/internal/usecase/service_mgmt"
 	"github.com/redis/go-redis/v9"
@@ -134,6 +136,18 @@ func (a *Adapter) ProvideClientAppMgmtUsecase() in.ClientAppMgmtUsecase {
 
 func (a *Adapter) ProvideClientAppMgmtHandler() *clientapp_mgmt.Handler {
 	return clientapp_mgmt.NewHandler(a.ProvideClientAppMgmtUsecase())
+}
+
+func (a *Adapter) ProvideClientAccessUsecase() in.ClientAccessUsecase {
+	return client_access_usecase.NewUsecase(
+		a.clientAppQueryRepo,
+		a.serviceQueryRepo,
+		a.hasher,
+	)
+}
+
+func (a *Adapter) ProvideClientAccessHandler() *client_access.Handler {
+	return client_access.NewHandler(a.ProvideClientAccessUsecase())
 }
 
 func (a *Adapter) Close() error {

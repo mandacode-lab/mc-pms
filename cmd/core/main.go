@@ -35,6 +35,9 @@ import (
 // @name Authorization
 // @description Type "Bearer" followed by a space and JWT token.
 
+// @securityDefinitions.basic BasicAuth
+// @description Basic Authentication using ClientAppID as username and ClientSecret as password
+
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -78,6 +81,11 @@ func main() {
 	clientAppGroup := v1.Group("/client-apps")
 	clientAppMgmtHandler := adapter.ProvideClientAppMgmtHandler()
 	clientAppMgmtHandler.RegisterRoutes(clientAppGroup)
+
+	// Client access routes
+	clientAccessGroup := v1.Group("/client-access")
+	clientAccessHandler := adapter.ProvideClientAccessHandler()
+	clientAccessHandler.RegisterRoutes(clientAccessGroup)
 
 	// Swagger documentation
 	srv.GetEngine().GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

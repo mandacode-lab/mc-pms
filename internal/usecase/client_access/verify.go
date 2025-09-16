@@ -32,7 +32,7 @@ func (u *Usecase) VerifyClient(ctx context.Context, req *in.VerifyClientRequest)
 	}
 
 	// Verify secret
-	err = u.hasher.Compare(ctx, clientApp.SecretHash().Value(), req.Secret)
+	err = u.hasher.Compare(ctx, clientApp.SecretHash().Value(), req.ClientSecret)
 	if err != nil {
 		return &in.VerifyClientResponse{
 			IsValid:       false,
