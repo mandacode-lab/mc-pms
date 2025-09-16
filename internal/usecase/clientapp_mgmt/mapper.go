@@ -9,8 +9,8 @@ import (
 
 func toClientAppInfo(ca *clientapp.ClientApp, serviceID serviceval.PublicID) in.ClientAppInfo {
 	return in.ClientAppInfo{
-		ServiceID:   serviceID.String(),
-		ClientAppID: ca.PublicID().String(),
+		ServiceID:   serviceID,
+		ClientAppID: ca.PublicID(),
 		Name:        ca.Name(),
 		Desc:        utils.StringValue(ca.Description()),
 		IsActive:    ca.IsActive(),

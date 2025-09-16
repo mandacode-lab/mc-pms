@@ -2,10 +2,13 @@ package in
 
 import (
 	"time"
+
+	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
 )
 
 type ServiceInfo struct {
-	ServiceID string
+	ServiceID serviceval.PublicID
 	Name      string
 	Desc      string
 	IsActive  bool
@@ -14,31 +17,11 @@ type ServiceInfo struct {
 }
 
 type ClientAppInfo struct {
-	ServiceID   string
-	ClientAppID string
+	ServiceID   serviceval.PublicID
+	ClientAppID clientappval.PublicID
 	Name        string
 	Desc        string
 	IsActive    bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
-}
-
-type UserInfo struct {
-	ServiceID string
-	UserID    string
-	Nickname  string
-	Email     string
-	Provider  string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
-type WebOAuthInfo struct {
-	ClientAppID   string
-	Provider      string
-	OAuthClientID string
-	RedirectURI   string
-	Scopes        []string
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
 }

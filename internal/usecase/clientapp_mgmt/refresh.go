@@ -10,14 +10,8 @@ import (
 )
 
 func (u *Usecase) RefreshSecret(ctx context.Context, req *in.RefreshSecretRequest) (*in.RefreshSecretResponse, error) {
-	// Parse client app ID
-	clientAppID, err := clientappval.ParsePublicID(req.ClientAppID)
-	if err != nil {
-		return nil, merr.New(merr.ErrBadRequest, ErrInvalidClientAppIDMsg, err)
-	}
-
 	// Find the client app by public ID
-	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, clientAppID)
+	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, req.ClientAppID)
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrClientAppNotFoundMsg, err)
 	}

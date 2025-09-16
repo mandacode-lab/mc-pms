@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
@@ -27,8 +28,8 @@ type ListClientAppsResponse struct {
 
 func toClientAppResponse(info in.ClientAppInfo) ClientAppResponse {
 	return ClientAppResponse{
-		ServiceID:   info.ServiceID,
-		ClientAppID: info.ClientAppID,
+		ServiceID:   info.ServiceID.String(),
+		ClientAppID: info.ClientAppID.String(),
 		Name:        info.Name,
 		Description: info.Desc,
 		IsActive:    info.IsActive,
@@ -43,7 +44,7 @@ func toListClientAppsResponse(result *in.ListClientAppsResponse) *ListClientApps
 		clientApps[i] = toClientAppResponse(info)
 	}
 	return &ListClientAppsResponse{
-		ServiceID:  result.ServiceID,
+		ServiceID:  result.ServiceID.String(),
 		ClientApps: clientApps,
 	}
 }
@@ -61,9 +62,17 @@ func toListClientAppsResponse(result *in.ListClientAppsResponse) *ListClientApps
 func (h *Handler) ListClientApps(c *gin.Context) {
 	ctx := c.Request.Context()
 
-	serviceID := c.Query("service_id")
-	if serviceID == "" {
+	serviceIDStr := c.Query("service_id")
+	if serviceIDStr == "" {
 		err := merr.New(merr.ErrBadRequest, "service_id is required", nil)
+		c.Error(err)
+		return
+	}
+
+	// Parse service ID
+	serviceID, err := serviceval.ParsePublicID(serviceIDStr)
+	if err != nil {
+		err := merr.New(merr.ErrBadRequest, "invalid service ID", err)
 		c.Error(err)
 		return
 	}

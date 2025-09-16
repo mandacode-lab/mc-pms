@@ -5,7 +5,6 @@ import (
 
 	"github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp"
 	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/mandacode-ssam/pkg/utils"
@@ -13,14 +12,8 @@ import (
 )
 
 func (u *Usecase) CreateClientApp(ctx context.Context, req *in.CreateClientAppRequest) (*in.CreateClientAppResponse, error) {
-	// Parse service ID
-	serviceID, err := serviceval.ParsePublicID(req.ServiceID)
-	if err != nil {
-		return nil, merr.New(merr.ErrBadRequest, ErrInvalidServiceIDMsg, err)
-	}
-
 	// Validate service exists
-	service, err := u.serviceQueryRepo.FindByPublicID(ctx, serviceID)
+	service, err := u.serviceQueryRepo.FindByPublicID(ctx, req.ServiceID)
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrServiceNotFoundMsg, err)
 	}

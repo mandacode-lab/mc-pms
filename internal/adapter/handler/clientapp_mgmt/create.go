@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
@@ -29,8 +30,8 @@ type CreateClientAppResponse struct {
 
 func toCreateClientAppResponse(result *in.CreateClientAppResponse) *CreateClientAppResponse {
 	return &CreateClientAppResponse{
-		ServiceID:   result.ServiceID,
-		ClientAppID: result.ClientAppID,
+		ServiceID:   result.ServiceID.String(),
+		ClientAppID: result.ClientAppID.String(),
 		Name:        result.Name,
 		Description: result.Desc,
 		IsActive:    result.IsActive,
@@ -61,8 +62,16 @@ func (h *Handler) CreateClientApp(c *gin.Context) {
 		return
 	}
 
+	// Parse service ID
+	serviceID, err := serviceval.ParsePublicID(req.ServiceID)
+	if err != nil {
+		err := merr.New(merr.ErrBadRequest, "invalid service ID", err)
+		c.Error(err)
+		return
+	}
+
 	usecaseReq := &in.CreateClientAppRequest{
-		ServiceID: req.ServiceID,
+		ServiceID: serviceID,
 		Name:      req.Name,
 		Desc:      req.Description,
 	}

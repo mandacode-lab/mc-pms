@@ -26,7 +26,7 @@ type CreateServiceResponse struct {
 
 func toCreateServiceResponse(result *in.CreateServiceResponse) *CreateServiceResponse {
 	return &CreateServiceResponse{
-		ServiceID:   result.ServiceID,
+		ServiceID:   result.ServiceID.String(),
 		Name:        result.Name,
 		Description: result.Desc,
 		IsActive:    result.IsActive,

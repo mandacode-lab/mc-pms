@@ -2,6 +2,8 @@ package in
 
 import (
 	"context"
+
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
 )
 
 type CreateServiceRequest struct {
@@ -14,11 +16,11 @@ type CreateServiceResponse struct {
 }
 
 type DeleteServiceRequest struct {
-	ServiceID string
+	ServiceID serviceval.PublicID
 }
 
 type UpdateServiceRequest struct {
-	ServiceID   string
+	ServiceID   serviceval.PublicID
 	NewName     *string
 	NewDesc     *string
 	NewIsActive *bool

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
@@ -27,8 +28,8 @@ type UpdateClientAppResponse struct {
 
 func toUpdateClientAppResponse(result *in.UpdateClientAppResponse) *UpdateClientAppResponse {
 	return &UpdateClientAppResponse{
-		ServiceID:   result.ServiceID,
-		ClientAppID: result.ClientAppID,
+		ServiceID:   result.ServiceID.String(),
+		ClientAppID: result.ClientAppID.String(),
 		Name:        result.Name,
 		Description: result.Desc,
 		IsActive:    result.IsActive,
@@ -52,7 +53,15 @@ func toUpdateClientAppResponse(result *in.UpdateClientAppResponse) *UpdateClient
 func (h *Handler) UpdateClientApp(c *gin.Context) {
 	ctx := c.Request.Context()
 
-	clientAppID := c.Param("id")
+	clientAppIDStr := c.Param("id")
+
+	// Parse client app ID
+	clientAppID, err := clientappval.ParsePublicID(clientAppIDStr)
+	if err != nil {
+		err := merr.New(merr.ErrBadRequest, "invalid client app ID", err)
+		c.Error(err)
+		return
+	}
 
 	var req UpdateClientAppRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

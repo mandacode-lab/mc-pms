@@ -10,14 +10,8 @@ import (
 )
 
 func (u *Usecase) UpdateService(ctx context.Context, req *in.UpdateServiceRequest) (*in.UpdateServiceResponse, error) {
-	// Parse service ID
-	serviceID, err := serviceval.ParsePublicID(req.ServiceID)
-	if err != nil {
-		return nil, merr.New(merr.ErrBadRequest, ErrInvalidServiceIDMsg, err)
-	}
-
 	// Find the service by public ID
-	service, err := u.serviceQueryRepo.FindByPublicID(ctx, serviceID)
+	service, err := u.serviceQueryRepo.FindByPublicID(ctx, req.ServiceID)
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrServiceNotFoundMsg, err)
 	}

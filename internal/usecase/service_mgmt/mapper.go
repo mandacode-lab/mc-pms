@@ -8,7 +8,7 @@ import (
 
 func toServiceInfo(s *service.Service) in.ServiceInfo {
 	return in.ServiceInfo{
-		ServiceID: s.PublicID().String(),
+		ServiceID: s.PublicID(),
 		Name:      s.Name().Value(),
 		Desc:      utils.StringValue(s.Description()),
 		IsActive:  s.IsActive(),

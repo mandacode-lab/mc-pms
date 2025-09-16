@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
@@ -26,7 +27,7 @@ type UpdateServiceResponse struct {
 
 func toUpdateServiceResponse(result *in.UpdateServiceResponse) *UpdateServiceResponse {
 	return &UpdateServiceResponse{
-		ServiceID:   result.ServiceID,
+		ServiceID:   result.ServiceID.String(),
 		Name:        result.Name,
 		Description: result.Desc,
 		IsActive:    result.IsActive,
@@ -51,7 +52,15 @@ func toUpdateServiceResponse(result *in.UpdateServiceResponse) *UpdateServiceRes
 func (h *Handler) UpdateService(c *gin.Context) {
 	ctx := c.Request.Context()
 
-	serviceID := c.Param("id")
+	serviceIDStr := c.Param("id")
+
+	// Parse service ID
+	serviceID, err := serviceval.ParsePublicID(serviceIDStr)
+	if err != nil {
+		err := merr.New(merr.ErrBadRequest, "invalid service ID", err)
+		c.Error(err)
+		return
+	}
 
 	var req UpdateServiceRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
