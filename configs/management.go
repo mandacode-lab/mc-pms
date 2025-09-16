@@ -1,6 +1,6 @@
 package configs
 
-type CoreConfig struct {
+type ManagementConfig struct {
 	Env      string         `env:"ENV" envDefault:"prod" validate:"oneof=dev staging prod"`
 	KEK      string         `env:"KEK" validate:"required,len=64,hexadecimal"` // 256-bit hex-encoded key (64 chars)
 	Server   ServerConfig   `envPrefix:""`
@@ -8,8 +8,8 @@ type CoreConfig struct {
 	Redis    RedisConfig    `envPrefix:""`
 }
 
-func LoadCoreConfig() (*CoreConfig, error) {
-	cfg := &CoreConfig{}
+func LoadManagementConfig() (*ManagementConfig, error) {
+	cfg := &ManagementConfig{}
 	if err := LoadConfig(cfg); err != nil {
 		return nil, err
 	}

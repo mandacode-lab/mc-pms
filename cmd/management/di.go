@@ -14,7 +14,6 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/ent"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/cache"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/encoder"
-	"github.com/mandacode-com/mandacode-ssam/internal/adapter/handler/client_access"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/handler/clientapp_mgmt"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/handler/service_mgmt"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/hasher"
@@ -23,7 +22,6 @@ import (
 	redisinfra "github.com/mandacode-com/mandacode-ssam/internal/infra/redis"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
-	client_access_usecase "github.com/mandacode-com/mandacode-ssam/internal/usecase/client_access"
 	clientapp_mgmt_usecase "github.com/mandacode-com/mandacode-ssam/internal/usecase/clientapp_mgmt"
 	service_mgmt_usecase "github.com/mandacode-com/mandacode-ssam/internal/usecase/service_mgmt"
 	"github.com/redis/go-redis/v9"
@@ -52,7 +50,7 @@ type Adapter struct {
 	txManager   out.TransactionManager
 }
 
-func NewAdapter(ctx context.Context, cfg *configs.CoreConfig) (*Adapter, error) {
+func NewAdapter(ctx context.Context, cfg *configs.ManagementConfig) (*Adapter, error) {
 	// Database setup
 	db, err := sql.Open("postgres", cfg.Postgres.GetDSN())
 	if err != nil {
@@ -138,17 +136,6 @@ func (a *Adapter) ProvideClientAppMgmtHandler() *clientapp_mgmt.Handler {
 	return clientapp_mgmt.NewHandler(a.ProvideClientAppMgmtUsecase())
 }
 
-func (a *Adapter) ProvideClientAccessUsecase() in.ClientAccessUsecase {
-	return client_access_usecase.NewUsecase(
-		a.clientAppQueryRepo,
-		a.serviceQueryRepo,
-		a.hasher,
-	)
-}
-
-func (a *Adapter) ProvideClientAccessHandler() *client_access.Handler {
-	return client_access.NewHandler(a.ProvideClientAccessUsecase())
-}
 
 func (a *Adapter) Close() error {
 	if a.client != nil {

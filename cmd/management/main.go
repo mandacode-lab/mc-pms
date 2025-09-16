@@ -10,23 +10,17 @@ import (
 	"github.com/mandacode-com/merver"
 	"github.com/mandacode-com/mandacode-ssam/cmd/shared"
 	"github.com/mandacode-com/mandacode-ssam/configs"
-	_ "github.com/mandacode-com/mandacode-ssam/docs/core"
+	_ "github.com/mandacode-com/mandacode-ssam/docs/management"
 	"github.com/rs/zerolog/log"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title           MandaCode Service Hub Core API
+// @title           MandaCode Service Hub Management API
 // @version         1.0
-// @description     Multi-tenant service management and client application API
-// @termsOfService  http://swagger.io/terms/
+// @description     Multi-tenant service and client application management API
 
 // @contact.name   API Support
-// @contact.url    http://www.swagger.io/support
-// @contact.email  support@swagger.io
-
-// @license.name  Apache 2.0
-// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
 // @BasePath  /v1
 
@@ -35,8 +29,6 @@ import (
 // @name Authorization
 // @description Type "Bearer" followed by a space and JWT token.
 
-// @securityDefinitions.basic BasicAuth
-// @description Basic Authentication using ClientAppID as username and ClientSecret as password
 
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
@@ -44,20 +36,20 @@ func main() {
 
 	// Load .env file if not production
 	if os.Getenv("ENV") != "prod" {
-		if err := godotenv.Load(".env.dev.core"); err != nil {
-			log.Warn().Err(err).Msg("Could not load .env.dev.core file, using system environment variables")
+		if err := godotenv.Load(".env.dev.management"); err != nil {
+			log.Warn().Err(err).Msg("Could not load .env.dev.management file, using system environment variables")
 		}
 	}
 
 	// Load configuration
-	cfg, err := configs.LoadCoreConfig()
+	cfg, err := configs.LoadManagementConfig()
 	if err != nil {
 		panic("Failed to load config: " + err.Error())
 	}
 
 	// Setup logger
 	logger := shared.SetupLogger(cfg.Env)
-	logger.Info().Msg("Starting core service")
+	logger.Info().Msg("Starting management service")
 
 	// Setup dependencies
 	adapter, err := NewAdapter(ctx, cfg)
@@ -81,11 +73,6 @@ func main() {
 	clientAppGroup := v1.Group("/client-apps")
 	clientAppMgmtHandler := adapter.ProvideClientAppMgmtHandler()
 	clientAppMgmtHandler.RegisterRoutes(clientAppGroup)
-
-	// Client access routes
-	clientAccessGroup := v1.Group("/client-access")
-	clientAccessHandler := adapter.ProvideClientAccessHandler()
-	clientAccessHandler.RegisterRoutes(clientAccessGroup)
 
 	// Swagger documentation
 	srv.GetEngine().GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
