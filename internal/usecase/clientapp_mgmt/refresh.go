@@ -3,7 +3,6 @@ package clientapp_mgmt
 import (
 	"context"
 
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/merr"
@@ -31,11 +30,8 @@ func (u *Usecase) RefreshSecret(ctx context.Context, req *in.RefreshSecretReques
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	// Create secret hash from the computed hash
-	secretHash := clientappval.NewSecretHash(hash)
-
 	// Regenerate secret using domain logic
-	returnedSecret := clientApp.RegenerateSecret(plainSecret, secretHash)
+	clientApp.RegenerateSecret(hash)
 
 	// Update in repository within transaction
 	err = u.txManager.WithTx(ctx, func(tx out.Tx) error {
@@ -46,6 +42,6 @@ func (u *Usecase) RefreshSecret(ctx context.Context, req *in.RefreshSecretReques
 	}
 
 	return &in.RefreshSecretResponse{
-		Secret: returnedSecret,
+		Secret: plainSecret,
 	}, nil
 }

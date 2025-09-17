@@ -15,7 +15,7 @@ type ClientApp struct {
 	serviceID   serviceval.ID
 	name        string
 	description *string
-	secretHash  clientappval.SecretHash
+	secretHash  []byte
 	isActive    bool
 	createdAt   time.Time
 	updatedAt   time.Time
@@ -28,7 +28,7 @@ func NewClientApp(
 	serviceID serviceval.ID,
 	name string,
 	description *string,
-	secretHash clientappval.SecretHash,
+	secretHash []byte,
 	isActive bool,
 	createdAt time.Time,
 	updatedAt time.Time,
@@ -47,7 +47,7 @@ func NewClientApp(
 	}
 }
 
-func DraftClientApp(serviceID serviceval.ID, name string, description *string, plainSecret []byte, secretHash clientappval.SecretHash) (*ClientApp, []byte) {
+func DraftClientApp(serviceID serviceval.ID, name string, description *string, secretHash []byte) *ClientApp {
 	now := time.Now().UTC()
 	id := clientappval.NewID(0) // ID will be set by the database
 	publicID := clientappval.NewPublicID(uuid.New())
@@ -64,8 +64,7 @@ func DraftClientApp(serviceID serviceval.ID, name string, description *string, p
 		now,
 	)
 
-	ca.raise(NewClientAppCreatedEvent(ca.publicID.String(), ca.name))
-	return ca, plainSecret
+	return ca
 }
 
 // Getter methods
@@ -90,7 +89,7 @@ func (ca *ClientApp) Description() *string {
 	return ca.description
 }
 
-func (ca *ClientApp) SecretHash() clientappval.SecretHash {
+func (ca *ClientApp) SecretHash() []byte {
 	return ca.secretHash
 }
 
@@ -122,20 +121,10 @@ func (ca *ClientApp) UpdateDescription(description *string) {
 	ca.raise(NewClientAppUpdatedEvent(ca.publicID.String(), "description_changed"))
 }
 
-func (ca *ClientApp) RegenerateSecret(plainSecret []byte, secretHash clientappval.SecretHash) []byte {
+func (ca *ClientApp) RegenerateSecret(secretHash []byte) {
 	ca.secretHash = secretHash
 	ca.updatedAt = time.Now().UTC()
 	ca.raise(NewClientAppUpdatedEvent(ca.publicID.String(), "secret_regenerated"))
-
-	return plainSecret
-}
-
-func (ca *ClientApp) VerifySecret(plainSecret string, hash []byte) bool {
-	return ca.secretHash.VerifySecret(plainSecret, hash)
-}
-
-func (ca *ClientApp) VerifySecretBytes(plainSecret []byte, hash []byte) bool {
-	return ca.secretHash.VerifySecretBytes(plainSecret, hash)
 }
 
 func (ca *ClientApp) Activate() {

@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp"
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/mandacode-ssam/pkg/utils"
@@ -38,13 +37,10 @@ func (u *Usecase) CreateClientApp(ctx context.Context, req *in.CreateClientAppRe
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	// Create secret hash from the computed hash
-	secretHash := clientappval.NewSecretHash(hash)
-
 	// Create new client app using domain logic
 	desc := utils.StringNil(req.Desc)
 
-	clientAppEntity, returnedSecret := clientapp.DraftClientApp(service.ID(), req.Name, desc, plainSecret, secretHash)
+	clientAppEntity := clientapp.DraftClientApp(service.ID(), req.Name, desc, hash)
 
 	// Save to repository within transaction
 	var savedClientApp *clientapp.ClientApp
@@ -63,6 +59,6 @@ func (u *Usecase) CreateClientApp(ctx context.Context, req *in.CreateClientAppRe
 	// Convert to result
 	return &in.CreateClientAppResponse{
 		ClientAppInfo: toClientAppInfo(savedClientApp, service.PublicID()),
-		Secret:        returnedSecret,
+		Secret:        plainSecret,
 	}, nil
 }

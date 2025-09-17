@@ -40,7 +40,7 @@ func (r *EntClientAppRepository) Create(ctx context.Context, tx out.Tx, clientEn
 		SetServiceID(clientEntity.ServiceID().Value()).
 		SetName(clientEntity.Name()).
 		SetNillableDescription(clientEntity.Description()).
-		SetSecretHash(clientEntity.SecretHash().Value()).
+		SetSecretHash(clientEntity.SecretHash()).
 		SetIsActive(clientEntity.IsActive()).
 		Save(ctx)
 	if err != nil {
@@ -66,7 +66,7 @@ func (r *EntClientAppRepository) Update(ctx context.Context, tx out.Tx, clientEn
 	_, err := builder.
 		SetName(clientEntity.Name()).
 		SetNillableDescription(clientEntity.Description()).
-		SetSecretHash(clientEntity.SecretHash().Value()).
+		SetSecretHash(clientEntity.SecretHash()).
 		SetIsActive(clientEntity.IsActive()).
 		Save(ctx)
 
@@ -99,15 +99,13 @@ func (r *EntClientAppRepository) toDomain(entClient *ent.ClientApp) *clientapp.C
 	id := clientappval.NewID(entClient.ID)
 	publicID := clientappval.NewPublicID(entClient.PublicID)
 	serviceID := serviceval.NewID(entClient.Edges.Service.ID)
-	secretHash := clientappval.NewSecretHash(entClient.SecretHash)
-
 	return clientapp.NewClientApp(
 		id,
 		publicID,
 		serviceID,
 		entClient.Name,
 		&entClient.Description,
-		secretHash,
+		entClient.SecretHash,
 		entClient.IsActive,
 		entClient.CreatedAt,
 		entClient.UpdatedAt,
@@ -215,8 +213,6 @@ func (r *EntClientAppQueryRepository) toDomain(entClient *ent.ClientApp) *client
 	id := clientappval.NewID(entClient.ID)
 	publicID := clientappval.NewPublicID(entClient.PublicID)
 	serviceID := serviceval.NewID(entClient.Edges.Service.ID)
-	secretHash := clientappval.NewSecretHash(entClient.SecretHash)
-
 	var description *string
 	if entClient.Description != "" {
 		description = &entClient.Description
@@ -228,7 +224,7 @@ func (r *EntClientAppQueryRepository) toDomain(entClient *ent.ClientApp) *client
 		serviceID,
 		entClient.Name,
 		description,
-		secretHash,
+		entClient.SecretHash,
 		entClient.IsActive,
 		entClient.CreatedAt,
 		entClient.UpdatedAt,
