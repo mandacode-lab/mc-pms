@@ -1,65 +1,38 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "OAuth authentication and user identity management API",
-        "title": "MandaCode Service Hub Auth API",
-        "termsOfService": "http://swagger.io/terms/",
+        "description": "Basic Authentication using ClientAppID as username and ClientSecret as password",
+        "title": "MandaCode Service Hub Client API",
         "contact": {
-            "name": "API Support",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+            "name": "API Support"
         },
         "version": "1.0"
     },
     "basePath": "/v1",
     "paths": {
-        "/auth/auth-url": {
-            "get": {
-                "description": "Generate OAuth authorization URL for specified provider and client app",
+        "/client-access/verify": {
+            "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Verify client application credentials using Basic Authentication (client_id:client_secret)",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "client-access"
                 ],
-                "summary": "Get OAuth authorization URL",
-                "parameters": [
-                    {
-                        "enum": [
-                            "google",
-                            "kakao",
-                            "naver"
-                        ],
-                        "type": "string",
-                        "description": "OAuth Provider",
-                        "name": "provider",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Client Application ID",
-                        "name": "client_app_id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Client Application Secret",
-                        "name": "client_app_secret",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
+                "summary": "Verify client credentials",
                 "responses": {
                     "200": {
-                        "description": "Authorization URL and state",
+                        "description": "Client verification result",
                         "schema": {
-                            "$ref": "#/definitions/internal_adapter_handler_identify_user.GetAuthURLResponse"
+                            "$ref": "#/definitions/internal_adapter_handler_client_access.VerifyClientResponse"
                         }
                     },
                     "400": {
@@ -68,149 +41,8 @@
                             "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
-                    "404": {
-                        "description": "Resource not found",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/auth/identify-by-code": {
-            "get": {
-                "description": "Identify user using OAuth authorization code flow",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Identify user by code",
-                "parameters": [
-                    {
-                        "enum": [
-                            "google",
-                            "kakao",
-                            "naver"
-                        ],
-                        "type": "string",
-                        "description": "OAuth Provider",
-                        "name": "provider",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "OAuth authorization code",
-                        "name": "oauth_code",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "OAuth state parameter",
-                        "name": "state",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Client Application ID",
-                        "name": "client_app_id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Client Application Secret",
-                        "name": "client_app_secret",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User identity information",
-                        "schema": {
-                            "$ref": "#/definitions/internal_adapter_handler_identify_user.IdentifyByCodeResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/auth/identify-by-token": {
-            "get": {
-                "description": "Identify user using OAuth access token",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Identify user by token",
-                "parameters": [
-                    {
-                        "enum": [
-                            "google",
-                            "kakao",
-                            "naver"
-                        ],
-                        "type": "string",
-                        "description": "OAuth Provider",
-                        "name": "provider",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "OAuth access token",
-                        "name": "token",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Client Application ID",
-                        "name": "client_app_id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Client Application Secret",
-                        "name": "client_app_secret",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User identity information",
-                        "schema": {
-                            "$ref": "#/definitions/internal_adapter_handler_identify_user.IdentifyByTokenResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
+                    "401": {
+                        "description": "Unauthorized - Invalid credentials",
                         "schema": {
                             "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
@@ -513,173 +345,6 @@
                     }
                 }
             }
-        },
-        "/users": {
-            "get": {
-                "description": "Find user information based on various filter criteria",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Find users",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Service ID",
-                        "name": "service_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "query"
-                    },
-                    {
-                        "enum": [
-                            "google",
-                            "kakao",
-                            "naver"
-                        ],
-                        "type": "string",
-                        "description": "OAuth Provider",
-                        "name": "provider",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "User email",
-                        "name": "email",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "User nickname",
-                        "name": "nickname",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of matching users",
-                        "schema": {
-                            "$ref": "#/definitions/user_mgmt.FindUserInfoResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/weboauth": {
-            "get": {
-                "description": "Read OAuth configurations for a client application",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "weboauth"
-                ],
-                "summary": "Read OAuth configs",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Client App ID",
-                        "name": "client_app_id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "enum": [
-                            "google",
-                            "kakao",
-                            "naver"
-                        ],
-                        "type": "string",
-                        "description": "OAuth Provider",
-                        "name": "provider",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OAuth configurations",
-                        "schema": {
-                            "$ref": "#/definitions/weboauth_mgmt.ReadWebOAuthResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/weboauth/register": {
-            "post": {
-                "description": "Register OAuth configuration for a client application",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "weboauth"
-                ],
-                "summary": "Register OAuth config",
-                "parameters": [
-                    {
-                        "description": "OAuth registration request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/weboauth_mgmt.RegisterWebOAuthRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "OAuth registered successfully",
-                        "schema": {
-                            "$ref": "#/definitions/weboauth_mgmt.RegisterWebOAuthResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -829,76 +494,54 @@
                 }
             }
         },
-        "internal_adapter_handler_identify_user.GetAuthURLResponse": {
+        "internal_adapter_handler_client_access.ClientAppResponse": {
             "type": "object",
             "properties": {
-                "auth_url": {
-                    "type": "string",
-                    "example": "https://accounts.google.com/o/oauth2/v2/auth?client_id=abc\u0026redirect_uri=def\u0026response_type=code\u0026scope=openid+profile+email\u0026state=xyz"
-                },
-                "state": {
-                    "type": "string",
-                    "example": "random_state_string_123"
-                }
-            }
-        },
-        "internal_adapter_handler_identify_user.IdentifyByCodeResponse": {
-            "type": "object",
-            "properties": {
-                "created_at": {
+                "client_app_id": {
                     "type": "string"
                 },
-                "email": {
+                "description": {
                     "type": "string"
                 },
-                "nickname": {
-                    "type": "string"
+                "is_active": {
+                    "type": "boolean"
                 },
-                "provider": {
-                    "type": "string"
-                },
-                "raw_data": {
-                    "type": "object",
-                    "additionalProperties": {}
-                },
-                "service_id": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "user_id": {
+                "name": {
                     "type": "string"
                 }
             }
         },
-        "internal_adapter_handler_identify_user.IdentifyByTokenResponse": {
+        "internal_adapter_handler_client_access.ServiceInfoResponse": {
             "type": "object",
             "properties": {
-                "created_at": {
+                "description": {
                     "type": "string"
                 },
-                "email": {
+                "is_active": {
+                    "type": "boolean"
+                },
+                "name": {
                     "type": "string"
                 },
-                "nickname": {
+                "service_id": {
                     "type": "string"
+                }
+            }
+        },
+        "internal_adapter_handler_client_access.VerifyClientResponse": {
+            "type": "object",
+            "properties": {
+                "client_app": {
+                    "$ref": "#/definitions/internal_adapter_handler_client_access.ClientAppResponse"
                 },
-                "provider": {
-                    "type": "string"
-                },
-                "raw_data": {
-                    "type": "object",
-                    "additionalProperties": {}
+                "is_valid": {
+                    "type": "boolean"
                 },
                 "service_id": {
                     "type": "string"
                 },
-                "updated_at": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "string"
+                "service_info": {
+                    "$ref": "#/definitions/internal_adapter_handler_client_access.ServiceInfoResponse"
                 }
             }
         },
@@ -1055,140 +698,11 @@
                     "type": "string"
                 }
             }
-        },
-        "user_mgmt.FindUserInfoResponse": {
-            "type": "object",
-            "properties": {
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/user_mgmt.UserResponse"
-                    }
-                }
-            }
-        },
-        "user_mgmt.UserResponse": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string",
-                    "example": "2023-01-01T00:00:00Z"
-                },
-                "email": {
-                    "type": "string",
-                    "example": "john.doe@example.com"
-                },
-                "nickname": {
-                    "type": "string",
-                    "example": "john_doe"
-                },
-                "provider": {
-                    "type": "string",
-                    "example": "google"
-                },
-                "service_id": {
-                    "type": "string",
-                    "example": "srv_1234567890abcdef"
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2023-01-01T00:00:00Z"
-                },
-                "user_id": {
-                    "type": "string",
-                    "example": "usr_abcdef1234567890"
-                }
-            }
-        },
-        "weboauth_mgmt.ReadWebOAuthResponse": {
-            "type": "object",
-            "properties": {
-                "web_oauths": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/weboauth_mgmt.WebOAuthResponse"
-                    }
-                }
-            }
-        },
-        "weboauth_mgmt.RegisterWebOAuthRequest": {
-            "type": "object",
-            "required": [
-                "client_app_id",
-                "oauth_client_id",
-                "oauth_secret",
-                "provider",
-                "redirect_uri",
-                "scopes"
-            ],
-            "properties": {
-                "client_app_id": {
-                    "type": "string"
-                },
-                "oauth_client_id": {
-                    "type": "string"
-                },
-                "oauth_secret": {
-                    "type": "string"
-                },
-                "provider": {
-                    "type": "string"
-                },
-                "redirect_uri": {
-                    "type": "string"
-                },
-                "scopes": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "weboauth_mgmt.RegisterWebOAuthResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "weboauth_mgmt.WebOAuthResponse": {
-            "type": "object",
-            "properties": {
-                "client_app_id": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "oauth_client_id": {
-                    "type": "string"
-                },
-                "provider": {
-                    "type": "string"
-                },
-                "redirect_uri": {
-                    "type": "string"
-                },
-                "scopes": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
         }
     },
     "securityDefinitions": {
-        "Bearer": {
-            "description": "Type \"Bearer\" followed by a space and JWT token.",
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
+        "BasicAuth": {
+            "type": "basic"
         }
     }
 }

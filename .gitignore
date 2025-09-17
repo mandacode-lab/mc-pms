@@ -48,7 +48,6 @@ Thumbs.db
 /dist/
 
 # Generated files
-/third_party/
 **/*.pb.go
 **/*.pb.validate.go
 **/ent/migrate/migrations/*.sql

@@ -1,17 +1,10 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Basic Authentication using ClientAppID as username and ClientSecret as password",
-        "title": "MandaCode Service Hub Core API",
-        "termsOfService": "http://swagger.io/terms/",
+        "description": "Multi-tenant service and client application management API",
+        "title": "MandaCode Service Hub Management API",
         "contact": {
-            "name": "API Support",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+            "name": "API Support"
         },
         "version": "1.0"
     },
@@ -39,7 +32,7 @@
                     "200": {
                         "description": "Client verification result",
                         "schema": {
-                            "$ref": "#/definitions/internal_adapter_handler_client_access.VerifyClientResponse"
+                            "$ref": "#/definitions/client_access.VerifyClientResponse"
                         }
                     },
                     "400": {
@@ -355,7 +348,7 @@
         }
     },
     "definitions": {
-        "internal_adapter_handler_client_access.ClientAppResponse": {
+        "client_access.ClientAppResponse": {
             "type": "object",
             "properties": {
                 "client_app_id": {
@@ -372,7 +365,7 @@
                 }
             }
         },
-        "internal_adapter_handler_client_access.ServiceInfoResponse": {
+        "client_access.ServiceInfoResponse": {
             "type": "object",
             "properties": {
                 "description": {
@@ -389,11 +382,11 @@
                 }
             }
         },
-        "internal_adapter_handler_client_access.VerifyClientResponse": {
+        "client_access.VerifyClientResponse": {
             "type": "object",
             "properties": {
                 "client_app": {
-                    "$ref": "#/definitions/internal_adapter_handler_client_access.ClientAppResponse"
+                    "$ref": "#/definitions/client_access.ClientAppResponse"
                 },
                 "is_valid": {
                     "type": "boolean"
@@ -402,7 +395,7 @@
                     "type": "string"
                 },
                 "service_info": {
-                    "$ref": "#/definitions/internal_adapter_handler_client_access.ServiceInfoResponse"
+                    "$ref": "#/definitions/client_access.ServiceInfoResponse"
                 }
             }
         },
@@ -708,9 +701,6 @@
         }
     },
     "securityDefinitions": {
-        "BasicAuth": {
-            "type": "basic"
-        },
         "Bearer": {
             "description": "Type \"Bearer\" followed by a space and JWT token.",
             "type": "apiKey",

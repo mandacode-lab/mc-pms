@@ -86,10 +86,8 @@ install-tools:
 # Swagger documentation
 swagger-gen:
 	@echo "Generating Swagger documentation..."
-	@echo "  - Core service documentation"
-	@swag init --parseDependency --parseInternal --generalInfo ./cmd/core/main.go --output ./docs/core
-	@echo "Swagger docs generated:"
-	@echo "  - Core: /swagger/index.html (port 8081)"
+	@swag init --parseDependency --parseInternal --generalInfo ./cmd/client/main.go --output ./docs/client
+	@swag init --parseDependency --parseInternal --generalInfo ./cmd/management/main.go --output ./docs/management
 
 swagger-clean:
 	@echo "Cleaning Swagger documentation..."
@@ -118,4 +116,3 @@ help:
 	@echo "Setup Commands:"
 	@echo "  install-tools  - Install required development tools"
 	@echo ""
-	@echo "For more details on each command, check the Makefile comments."
