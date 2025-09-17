@@ -11,12 +11,3 @@ type ClientApp func(*sql.Selector)
 
 // Service is the predicate function for service builders.
 type Service func(*sql.Selector)
-
-// UserIdentity is the predicate function for useridentity builders.
-type UserIdentity func(*sql.Selector)
-
-// UserInfo is the predicate function for userinfo builders.
-type UserInfo func(*sql.Selector)
-
-// WebOAuth is the predicate function for weboauth builders.
-type WebOAuth func(*sql.Selector)

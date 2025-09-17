@@ -14,8 +14,6 @@ func NewSecretHash(hash []byte) SecretHash {
 	return SecretHash{value: hash}
 }
 
-
-
 func HashSecretFromBytes(plainSecret []byte, hash []byte) SecretHash {
 	return SecretHash{value: hash}
 }
@@ -23,8 +21,6 @@ func HashSecretFromBytes(plainSecret []byte, hash []byte) SecretHash {
 func HashSecret(plainSecret string, hash []byte) SecretHash {
 	return SecretHash{value: hash}
 }
-
-
 
 func (sh SecretHash) Value() []byte {
 	return sh.value

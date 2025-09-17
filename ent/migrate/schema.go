@@ -74,117 +74,13 @@ var (
 			},
 		},
 	}
-	// UserIdentitiesColumns holds the columns for the "user_identities" table.
-	UserIdentitiesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "public_id", Type: field.TypeUUID, Unique: true},
-		{Name: "provider_id", Type: field.TypeString},
-		{Name: "provider", Type: field.TypeEnum, Enums: []string{"google", "apple"}},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "service_id", Type: field.TypeInt64},
-	}
-	// UserIdentitiesTable holds the schema information for the "user_identities" table.
-	UserIdentitiesTable = &schema.Table{
-		Name:       "user_identities",
-		Columns:    UserIdentitiesColumns,
-		PrimaryKey: []*schema.Column{UserIdentitiesColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "user_identities_services_user_identities",
-				Columns:    []*schema.Column{UserIdentitiesColumns[6]},
-				RefColumns: []*schema.Column{ServicesColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "useridentity_public_id",
-				Unique:  true,
-				Columns: []*schema.Column{UserIdentitiesColumns[1]},
-			},
-			{
-				Name:    "useridentity_service_id_provider_provider_id",
-				Unique:  true,
-				Columns: []*schema.Column{UserIdentitiesColumns[6], UserIdentitiesColumns[3], UserIdentitiesColumns[2]},
-			},
-		},
-	}
-	// UserInfosColumns holds the columns for the "user_infos" table.
-	UserInfosColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "public_id", Type: field.TypeUUID, Unique: true},
-		{Name: "nickname", Type: field.TypeString},
-		{Name: "email", Type: field.TypeString},
-		{Name: "raw_data", Type: field.TypeBytes, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "user_identity_user_info", Type: field.TypeInt64, Unique: true},
-	}
-	// UserInfosTable holds the schema information for the "user_infos" table.
-	UserInfosTable = &schema.Table{
-		Name:       "user_infos",
-		Columns:    UserInfosColumns,
-		PrimaryKey: []*schema.Column{UserInfosColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "user_infos_user_identities_user_info",
-				Columns:    []*schema.Column{UserInfosColumns[7]},
-				RefColumns: []*schema.Column{UserIdentitiesColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-	}
-	// WebOauthsColumns holds the columns for the "web_oauths" table.
-	WebOauthsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "provider", Type: field.TypeEnum, Enums: []string{"google", "apple"}},
-		{Name: "oauth_client_id", Type: field.TypeString},
-		{Name: "oauth_secret_ct", Type: field.TypeBytes},
-		{Name: "oauth_secret_nonce", Type: field.TypeBytes},
-		{Name: "dek_wrapped", Type: field.TypeBytes},
-		{Name: "dek_nonce", Type: field.TypeBytes},
-		{Name: "dek_rotated_at", Type: field.TypeTime},
-		{Name: "redirect_uri", Type: field.TypeString, Nullable: true},
-		{Name: "scopes", Type: field.TypeJSON, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "client_app_id", Type: field.TypeInt64},
-	}
-	// WebOauthsTable holds the schema information for the "web_oauths" table.
-	WebOauthsTable = &schema.Table{
-		Name:       "web_oauths",
-		Columns:    WebOauthsColumns,
-		PrimaryKey: []*schema.Column{WebOauthsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "web_oauths_client_apps_web_oauths",
-				Columns:    []*schema.Column{WebOauthsColumns[12]},
-				RefColumns: []*schema.Column{ClientAppsColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "weboauth_client_app_id_provider",
-				Unique:  true,
-				Columns: []*schema.Column{WebOauthsColumns[12], WebOauthsColumns[1]},
-			},
-		},
-	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		ClientAppsTable,
 		ServicesTable,
-		UserIdentitiesTable,
-		UserInfosTable,
-		WebOauthsTable,
 	}
 )
 
 func init() {
 	ClientAppsTable.ForeignKeys[0].RefTable = ServicesTable
-	UserIdentitiesTable.ForeignKeys[0].RefTable = ServicesTable
-	UserInfosTable.ForeignKeys[0].RefTable = UserIdentitiesTable
-	WebOauthsTable.ForeignKeys[0].RefTable = ClientAppsTable
 }

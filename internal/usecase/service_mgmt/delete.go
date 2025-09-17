@@ -3,14 +3,14 @@ package service_mgmt
 import (
 	"context"
 
-	"github.com/mandacode-com/merr"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
+	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) DeleteService(ctx context.Context, cmd *in.DeleteServiceCommand) error {
+func (u *Usecase) DeleteService(ctx context.Context, req *in.DeleteServiceRequest) error {
 	// Find the service by public ID
-	service, err := u.serviceQueryRepo.FindByPublicID(ctx, cmd.ServiceID)
+	service, err := u.serviceQueryRepo.FindByPublicID(ctx, req.ServiceID)
 	if err != nil {
 		return merr.New(merr.ErrNotFound, ErrServiceNotFoundMsg, err)
 	}

@@ -88,11 +88,8 @@ swagger-gen:
 	@echo "Generating Swagger documentation..."
 	@echo "  - Core service documentation"
 	@swag init --parseDependency --parseInternal --generalInfo ./cmd/core/main.go --output ./docs/core
-	@echo "  - Auth service documentation"
-	@swag init --parseDependency --parseInternal --generalInfo ./cmd/auth/main.go --output ./docs/auth
 	@echo "Swagger docs generated:"
 	@echo "  - Core: /swagger/index.html (port 8081)"
-	@echo "  - Auth: /swagger/index.html (port 8080)"
 
 swagger-clean:
 	@echo "Cleaning Swagger documentation..."

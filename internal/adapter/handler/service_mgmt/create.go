@@ -5,10 +5,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
-	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
 type CreateServiceRequest struct {
@@ -25,7 +24,7 @@ type CreateServiceResponse struct {
 	UpdatedAt   time.Time `json:"updated_at" example:"2023-01-01T00:00:00Z"`
 }
 
-func toCreateServiceResponse(result *in.CreateServiceResult) *CreateServiceResponse {
+func toCreateServiceResponse(result *in.CreateServiceResponse) *CreateServiceResponse {
 	return &CreateServiceResponse{
 		ServiceID:   result.ServiceID.String(),
 		Name:        result.Name,
@@ -58,19 +57,12 @@ func (h *Handler) CreateService(c *gin.Context) {
 		return
 	}
 
-	serviceName, err := serviceval.NewName(req.Name)
-	if err != nil {
-		err := merr.New(merr.ErrBadRequest, "invalid service name", err)
-		c.Error(err)
-		return
-	}
-
-	cmd := &in.CreateServiceCommand{
-		Name:        serviceName,
+	usecaseReq := &in.CreateServiceRequest{
+		Name:        req.Name,
 		Description: req.Description,
 	}
 
-	result, err := h.serviceMgmt.CreateService(ctx, cmd)
+	result, err := h.serviceMgmt.CreateService(ctx, usecaseReq)
 	if err != nil {
 		c.Error(err)
 		return

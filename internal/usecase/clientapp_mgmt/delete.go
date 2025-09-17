@@ -3,14 +3,14 @@ package clientapp_mgmt
 import (
 	"context"
 
-	"github.com/mandacode-com/merr"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
+	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) DeleteClientApp(ctx context.Context, cmd *in.DeleteClientAppCommand) error {
+func (u *Usecase) DeleteClientApp(ctx context.Context, req *in.DeleteClientAppRequest) error {
 	// Find the client app by public ID
-	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, cmd.ClientAppID)
+	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, req.ClientAppID)
 	if err != nil {
 		return merr.New(merr.ErrNotFound, ErrClientAppNotFoundMsg, err)
 	}
@@ -25,4 +25,3 @@ func (u *Usecase) DeleteClientApp(ctx context.Context, cmd *in.DeleteClientAppCo
 
 	return nil
 }
-

@@ -28,7 +28,7 @@ type CreateClientAppResponse struct {
 	UpdatedAt   time.Time `json:"updated_at" example:"2023-01-01T00:00:00Z"`
 }
 
-func toCreateClientAppResponse(result *in.CreateClientAppResult) *CreateClientAppResponse {
+func toCreateClientAppResponse(result *in.CreateClientAppResponse) *CreateClientAppResponse {
 	return &CreateClientAppResponse{
 		ServiceID:   result.ServiceID.String(),
 		ClientAppID: result.ClientAppID.String(),
@@ -62,20 +62,21 @@ func (h *Handler) CreateClientApp(c *gin.Context) {
 		return
 	}
 
-	servicePublicID, err := serviceval.ParsePublicID(req.ServiceID)
+	// Parse service ID
+	serviceID, err := serviceval.ParsePublicID(req.ServiceID)
 	if err != nil {
-		err := merr.New(merr.ErrBadRequest, "invalid service_id format", err)
+		err := merr.New(merr.ErrBadRequest, "invalid service ID", err)
 		c.Error(err)
 		return
 	}
 
-	cmd := &in.CreateClientAppCommand{
-		ServiceID: servicePublicID,
+	usecaseReq := &in.CreateClientAppRequest{
+		ServiceID: serviceID,
 		Name:      req.Name,
 		Desc:      req.Description,
 	}
 
-	result, err := h.clientAppMgmt.CreateClientApp(ctx, cmd)
+	result, err := h.clientAppMgmt.CreateClientApp(ctx, usecaseReq)
 	if err != nil {
 		c.Error(err)
 		return

@@ -5,8 +5,6 @@ import (
 
 	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
 	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
-	useridentityval "github.com/mandacode-com/mandacode-ssam/internal/domain/useridentity/value"
 )
 
 type ServiceInfo struct {
@@ -26,24 +24,4 @@ type ClientAppInfo struct {
 	IsActive    bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
-}
-
-type UserInfo struct {
-	ServiceID serviceval.PublicID
-	UserID    useridentityval.PublicID
-	Nickname  string
-	Email     string
-	Provider  shared.Provider
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
-type WebOAuthInfo struct {
-	ClientAppID   clientappval.PublicID
-	Provider      shared.Provider
-	OAuthClientID string
-	RedirectURI   string
-	Scopes        []string
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
 }

@@ -40,11 +40,9 @@ type Service struct {
 type ServiceEdges struct {
 	// ClientApps holds the value of the client_apps edge.
 	ClientApps []*ClientApp `json:"client_apps,omitempty"`
-	// UserIdentities holds the value of the user_identities edge.
-	UserIdentities []*UserIdentity `json:"user_identities,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [1]bool
 }
 
 // ClientAppsOrErr returns the ClientApps value or an error if the edge
@@ -54,15 +52,6 @@ func (e ServiceEdges) ClientAppsOrErr() ([]*ClientApp, error) {
 		return e.ClientApps, nil
 	}
 	return nil, &NotLoadedError{edge: "client_apps"}
-}
-
-// UserIdentitiesOrErr returns the UserIdentities value or an error if the edge
-// was not loaded in eager-loading.
-func (e ServiceEdges) UserIdentitiesOrErr() ([]*UserIdentity, error) {
-	if e.loadedTypes[1] {
-		return e.UserIdentities, nil
-	}
-	return nil, &NotLoadedError{edge: "user_identities"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -153,11 +142,6 @@ func (_m *Service) Value(name string) (ent.Value, error) {
 // QueryClientApps queries the "client_apps" edge of the Service entity.
 func (_m *Service) QueryClientApps() *ClientAppQuery {
 	return NewServiceClient(_m.config).QueryClientApps(_m)
-}
-
-// QueryUserIdentities queries the "user_identities" edge of the Service entity.
-func (_m *Service) QueryUserIdentities() *UserIdentityQuery {
-	return NewServiceClient(_m.config).QueryUserIdentities(_m)
 }
 
 // Update returns a builder for updating this Service.

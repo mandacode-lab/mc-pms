@@ -3,23 +3,30 @@ package service_mgmt
 import (
 	"context"
 
-	"github.com/mandacode-com/merr"
 	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/mandacode-ssam/pkg/utils"
+	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) CreateService(ctx context.Context, cmd *in.CreateServiceCommand) (*in.CreateServiceResult, error) {
+func (u *Usecase) CreateService(ctx context.Context, req *in.CreateServiceRequest) (*in.CreateServiceResponse, error) {
+	// Parse service name
+	serviceName, err := serviceval.NewName(req.Name)
+	if err != nil {
+		return nil, merr.New(merr.ErrBadRequest, ErrInvalidServiceNameMsg, err)
+	}
+
 	// Check if service with same name already exists
-	existing, err := u.serviceQueryRepo.FindByName(ctx, cmd.Name)
+	existing, err := u.serviceQueryRepo.FindByName(ctx, serviceName)
 	if err == nil && existing != nil {
 		return nil, merr.New(merr.ErrConflict, ErrServiceAlreadyExistsMsg, nil)
 	}
 
 	// Create new service using domain logic
-	desc := utils.StringNil(cmd.Description)
-	serviceEntity := service.DraftService(cmd.Name, desc)
+	desc := utils.StringNil(req.Description)
+	serviceEntity := service.DraftService(serviceName, desc)
 
 	// Save to repository within transaction
 	var savedService *service.Service
@@ -36,7 +43,7 @@ func (u *Usecase) CreateService(ctx context.Context, cmd *in.CreateServiceComman
 	}
 
 	// Convert to result
-	return &in.CreateServiceResult{
+	return &in.CreateServiceResponse{
 		ServiceInfo: toServiceInfo(savedService),
 	}, nil
 }

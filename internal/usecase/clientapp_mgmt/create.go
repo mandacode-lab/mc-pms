@@ -3,23 +3,22 @@ package clientapp_mgmt
 import (
 	"context"
 
-	"github.com/mandacode-com/merr"
 	"github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp"
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/mandacode-ssam/pkg/utils"
+	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) CreateClientApp(ctx context.Context, cmd *in.CreateClientAppCommand) (*in.CreateClientAppResult, error) {
+func (u *Usecase) CreateClientApp(ctx context.Context, req *in.CreateClientAppRequest) (*in.CreateClientAppResponse, error) {
 	// Validate service exists
-	service, err := u.serviceQueryRepo.FindByPublicID(ctx, cmd.ServiceID)
+	service, err := u.serviceQueryRepo.FindByPublicID(ctx, req.ServiceID)
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrServiceNotFoundMsg, err)
 	}
 
 	// Validate input
-	if cmd.Name == "" {
+	if req.Name == "" {
 		return nil, merr.New(merr.ErrBadRequest, ErrInvalidClientAppNameMsg, nil)
 	}
 
@@ -38,13 +37,10 @@ func (u *Usecase) CreateClientApp(ctx context.Context, cmd *in.CreateClientAppCo
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	// Create secret hash from the computed hash
-	secretHash := clientappval.NewSecretHash(hash)
-
 	// Create new client app using domain logic
-	desc := utils.StringNil(cmd.Desc)
+	desc := utils.StringNil(req.Desc)
 
-	clientAppEntity, returnedSecret := clientapp.DraftClientApp(service.ID(), cmd.Name, desc, plainSecret, secretHash)
+	clientAppEntity := clientapp.DraftClientApp(service.ID(), req.Name, desc, hash)
 
 	// Save to repository within transaction
 	var savedClientApp *clientapp.ClientApp
@@ -61,8 +57,8 @@ func (u *Usecase) CreateClientApp(ctx context.Context, cmd *in.CreateClientAppCo
 	}
 
 	// Convert to result
-	return &in.CreateClientAppResult{
-		ClientAppInfo: toClientAppInfo(savedClientApp, cmd.ServiceID),
-		Secret:        returnedSecret,
+	return &in.CreateClientAppResponse{
+		ClientAppInfo: toClientAppInfo(savedClientApp, service.PublicID()),
+		Secret:        plainSecret,
 	}, nil
 }

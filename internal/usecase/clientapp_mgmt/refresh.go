@@ -3,15 +3,14 @@ package clientapp_mgmt
 import (
 	"context"
 
-	"github.com/mandacode-com/merr"
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
+	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) RefreshSecret(ctx context.Context, cmd *in.RefreshSecretCommand) (*in.RefreshSecretResult, error) {
+func (u *Usecase) RefreshSecret(ctx context.Context, req *in.RefreshSecretRequest) (*in.RefreshSecretResponse, error) {
 	// Find the client app by public ID
-	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, cmd.ClientAppID)
+	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, req.ClientAppID)
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrClientAppNotFoundMsg, err)
 	}
@@ -31,11 +30,8 @@ func (u *Usecase) RefreshSecret(ctx context.Context, cmd *in.RefreshSecretComman
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	// Create secret hash from the computed hash
-	secretHash := clientappval.NewSecretHash(hash)
-
 	// Regenerate secret using domain logic
-	returnedSecret := clientApp.RegenerateSecret(plainSecret, secretHash)
+	clientApp.RegenerateSecret(hash)
 
 	// Update in repository within transaction
 	err = u.txManager.WithTx(ctx, func(tx out.Tx) error {
@@ -45,7 +41,7 @@ func (u *Usecase) RefreshSecret(ctx context.Context, cmd *in.RefreshSecretComman
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	return &in.RefreshSecretResult{
-		Secret: returnedSecret,
+	return &in.RefreshSecretResponse{
+		Secret: plainSecret,
 	}, nil
 }

@@ -9,9 +9,6 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
 	"github.com/mandacode-com/mandacode-ssam/ent/schema"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/ent/useridentity"
-	"github.com/mandacode-com/mandacode-ssam/ent/userinfo"
-	"github.com/mandacode-com/mandacode-ssam/ent/weboauth"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -70,88 +67,4 @@ func init() {
 	service.DefaultUpdatedAt = serviceDescUpdatedAt.Default.(func() time.Time)
 	// service.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	service.UpdateDefaultUpdatedAt = serviceDescUpdatedAt.UpdateDefault.(func() time.Time)
-	useridentityFields := schema.UserIdentity{}.Fields()
-	_ = useridentityFields
-	// useridentityDescPublicID is the schema descriptor for public_id field.
-	useridentityDescPublicID := useridentityFields[2].Descriptor()
-	// useridentity.DefaultPublicID holds the default value on creation for the public_id field.
-	useridentity.DefaultPublicID = useridentityDescPublicID.Default.(func() uuid.UUID)
-	// useridentityDescProviderID is the schema descriptor for provider_id field.
-	useridentityDescProviderID := useridentityFields[3].Descriptor()
-	// useridentity.ProviderIDValidator is a validator for the "provider_id" field. It is called by the builders before save.
-	useridentity.ProviderIDValidator = useridentityDescProviderID.Validators[0].(func(string) error)
-	// useridentityDescCreatedAt is the schema descriptor for created_at field.
-	useridentityDescCreatedAt := useridentityFields[5].Descriptor()
-	// useridentity.DefaultCreatedAt holds the default value on creation for the created_at field.
-	useridentity.DefaultCreatedAt = useridentityDescCreatedAt.Default.(func() time.Time)
-	// useridentityDescUpdatedAt is the schema descriptor for updated_at field.
-	useridentityDescUpdatedAt := useridentityFields[6].Descriptor()
-	// useridentity.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	useridentity.DefaultUpdatedAt = useridentityDescUpdatedAt.Default.(func() time.Time)
-	// useridentity.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	useridentity.UpdateDefaultUpdatedAt = useridentityDescUpdatedAt.UpdateDefault.(func() time.Time)
-	userinfoFields := schema.UserInfo{}.Fields()
-	_ = userinfoFields
-	// userinfoDescPublicID is the schema descriptor for public_id field.
-	userinfoDescPublicID := userinfoFields[1].Descriptor()
-	// userinfo.DefaultPublicID holds the default value on creation for the public_id field.
-	userinfo.DefaultPublicID = userinfoDescPublicID.Default.(func() uuid.UUID)
-	// userinfoDescNickname is the schema descriptor for nickname field.
-	userinfoDescNickname := userinfoFields[2].Descriptor()
-	// userinfo.NicknameValidator is a validator for the "nickname" field. It is called by the builders before save.
-	userinfo.NicknameValidator = userinfoDescNickname.Validators[0].(func(string) error)
-	// userinfoDescEmail is the schema descriptor for email field.
-	userinfoDescEmail := userinfoFields[3].Descriptor()
-	// userinfo.EmailValidator is a validator for the "email" field. It is called by the builders before save.
-	userinfo.EmailValidator = userinfoDescEmail.Validators[0].(func(string) error)
-	// userinfoDescCreatedAt is the schema descriptor for created_at field.
-	userinfoDescCreatedAt := userinfoFields[5].Descriptor()
-	// userinfo.DefaultCreatedAt holds the default value on creation for the created_at field.
-	userinfo.DefaultCreatedAt = userinfoDescCreatedAt.Default.(func() time.Time)
-	// userinfoDescUpdatedAt is the schema descriptor for updated_at field.
-	userinfoDescUpdatedAt := userinfoFields[6].Descriptor()
-	// userinfo.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	userinfo.DefaultUpdatedAt = userinfoDescUpdatedAt.Default.(func() time.Time)
-	// userinfo.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	userinfo.UpdateDefaultUpdatedAt = userinfoDescUpdatedAt.UpdateDefault.(func() time.Time)
-	weboauthFields := schema.WebOAuth{}.Fields()
-	_ = weboauthFields
-	// weboauthDescClientAppID is the schema descriptor for client_app_id field.
-	weboauthDescClientAppID := weboauthFields[1].Descriptor()
-	// weboauth.ClientAppIDValidator is a validator for the "client_app_id" field. It is called by the builders before save.
-	weboauth.ClientAppIDValidator = weboauthDescClientAppID.Validators[0].(func(int64) error)
-	// weboauthDescOauthClientID is the schema descriptor for oauth_client_id field.
-	weboauthDescOauthClientID := weboauthFields[3].Descriptor()
-	// weboauth.OauthClientIDValidator is a validator for the "oauth_client_id" field. It is called by the builders before save.
-	weboauth.OauthClientIDValidator = weboauthDescOauthClientID.Validators[0].(func(string) error)
-	// weboauthDescOauthSecretCt is the schema descriptor for oauth_secret_ct field.
-	weboauthDescOauthSecretCt := weboauthFields[4].Descriptor()
-	// weboauth.OauthSecretCtValidator is a validator for the "oauth_secret_ct" field. It is called by the builders before save.
-	weboauth.OauthSecretCtValidator = weboauthDescOauthSecretCt.Validators[0].(func([]byte) error)
-	// weboauthDescOauthSecretNonce is the schema descriptor for oauth_secret_nonce field.
-	weboauthDescOauthSecretNonce := weboauthFields[5].Descriptor()
-	// weboauth.OauthSecretNonceValidator is a validator for the "oauth_secret_nonce" field. It is called by the builders before save.
-	weboauth.OauthSecretNonceValidator = weboauthDescOauthSecretNonce.Validators[0].(func([]byte) error)
-	// weboauthDescDekWrapped is the schema descriptor for dek_wrapped field.
-	weboauthDescDekWrapped := weboauthFields[6].Descriptor()
-	// weboauth.DekWrappedValidator is a validator for the "dek_wrapped" field. It is called by the builders before save.
-	weboauth.DekWrappedValidator = weboauthDescDekWrapped.Validators[0].(func([]byte) error)
-	// weboauthDescDekNonce is the schema descriptor for dek_nonce field.
-	weboauthDescDekNonce := weboauthFields[7].Descriptor()
-	// weboauth.DekNonceValidator is a validator for the "dek_nonce" field. It is called by the builders before save.
-	weboauth.DekNonceValidator = weboauthDescDekNonce.Validators[0].(func([]byte) error)
-	// weboauthDescDekRotatedAt is the schema descriptor for dek_rotated_at field.
-	weboauthDescDekRotatedAt := weboauthFields[8].Descriptor()
-	// weboauth.DefaultDekRotatedAt holds the default value on creation for the dek_rotated_at field.
-	weboauth.DefaultDekRotatedAt = weboauthDescDekRotatedAt.Default.(func() time.Time)
-	// weboauthDescCreatedAt is the schema descriptor for created_at field.
-	weboauthDescCreatedAt := weboauthFields[11].Descriptor()
-	// weboauth.DefaultCreatedAt holds the default value on creation for the created_at field.
-	weboauth.DefaultCreatedAt = weboauthDescCreatedAt.Default.(func() time.Time)
-	// weboauthDescUpdatedAt is the schema descriptor for updated_at field.
-	weboauthDescUpdatedAt := weboauthFields[12].Descriptor()
-	// weboauth.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	weboauth.DefaultUpdatedAt = weboauthDescUpdatedAt.Default.(func() time.Time)
-	// weboauth.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	weboauth.UpdateDefaultUpdatedAt = weboauthDescUpdatedAt.UpdateDefault.(func() time.Time)
 }

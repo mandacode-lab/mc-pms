@@ -379,29 +379,6 @@ func HasClientAppsWith(preds ...predicate.ClientApp) predicate.Service {
 	})
 }
 
-// HasUserIdentities applies the HasEdge predicate on the "user_identities" edge.
-func HasUserIdentities() predicate.Service {
-	return predicate.Service(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, UserIdentitiesTable, UserIdentitiesColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasUserIdentitiesWith applies the HasEdge predicate on the "user_identities" edge with a given conditions (other predicates).
-func HasUserIdentitiesWith(preds ...predicate.UserIdentity) predicate.Service {
-	return predicate.Service(func(s *sql.Selector) {
-		step := newUserIdentitiesStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Service) predicate.Service {
 	return predicate.Service(sql.AndPredicates(predicates...))

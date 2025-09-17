@@ -14,9 +14,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/ent/useridentity"
-	"github.com/mandacode-com/mandacode-ssam/ent/userinfo"
-	"github.com/mandacode-com/mandacode-ssam/ent/weboauth"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -77,11 +74,8 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			clientapp.Table:    clientapp.ValidColumn,
-			service.Table:      service.ValidColumn,
-			useridentity.Table: useridentity.ValidColumn,
-			userinfo.Table:     userinfo.ValidColumn,
-			weboauth.Table:     weboauth.ValidColumn,
+			clientapp.Table: clientapp.ValidColumn,
+			service.Table:   service.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

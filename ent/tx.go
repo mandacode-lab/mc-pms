@@ -16,12 +16,6 @@ type Tx struct {
 	ClientApp *ClientAppClient
 	// Service is the client for interacting with the Service builders.
 	Service *ServiceClient
-	// UserIdentity is the client for interacting with the UserIdentity builders.
-	UserIdentity *UserIdentityClient
-	// UserInfo is the client for interacting with the UserInfo builders.
-	UserInfo *UserInfoClient
-	// WebOAuth is the client for interacting with the WebOAuth builders.
-	WebOAuth *WebOAuthClient
 
 	// lazily loaded.
 	client     *Client
@@ -155,9 +149,6 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.ClientApp = NewClientAppClient(tx.config)
 	tx.Service = NewServiceClient(tx.config)
-	tx.UserIdentity = NewUserIdentityClient(tx.config)
-	tx.UserInfo = NewUserInfoClient(tx.config)
-	tx.WebOAuth = NewWebOAuthClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

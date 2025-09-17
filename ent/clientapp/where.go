@@ -449,29 +449,6 @@ func HasServiceWith(preds ...predicate.Service) predicate.ClientApp {
 	})
 }
 
-// HasWebOauths applies the HasEdge predicate on the "web_oauths" edge.
-func HasWebOauths() predicate.ClientApp {
-	return predicate.ClientApp(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, WebOauthsTable, WebOauthsColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasWebOauthsWith applies the HasEdge predicate on the "web_oauths" edge with a given conditions (other predicates).
-func HasWebOauthsWith(preds ...predicate.WebOAuth) predicate.ClientApp {
-	return predicate.ClientApp(func(s *sql.Selector) {
-		step := newWebOauthsStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.ClientApp) predicate.ClientApp {
 	return predicate.ClientApp(sql.AndPredicates(predicates...))

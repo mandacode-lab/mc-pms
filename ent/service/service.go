@@ -29,8 +29,6 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// EdgeClientApps holds the string denoting the client_apps edge name in mutations.
 	EdgeClientApps = "client_apps"
-	// EdgeUserIdentities holds the string denoting the user_identities edge name in mutations.
-	EdgeUserIdentities = "user_identities"
 	// Table holds the table name of the service in the database.
 	Table = "services"
 	// ClientAppsTable is the table that holds the client_apps relation/edge.
@@ -40,13 +38,6 @@ const (
 	ClientAppsInverseTable = "client_apps"
 	// ClientAppsColumn is the table column denoting the client_apps relation/edge.
 	ClientAppsColumn = "service_id"
-	// UserIdentitiesTable is the table that holds the user_identities relation/edge.
-	UserIdentitiesTable = "user_identities"
-	// UserIdentitiesInverseTable is the table name for the UserIdentity entity.
-	// It exists in this package in order to avoid circular dependency with the "useridentity" package.
-	UserIdentitiesInverseTable = "user_identities"
-	// UserIdentitiesColumn is the table column denoting the user_identities relation/edge.
-	UserIdentitiesColumn = "service_id"
 )
 
 // Columns holds all SQL columns for service fields.
@@ -136,31 +127,10 @@ func ByClientApps(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newClientAppsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-
-// ByUserIdentitiesCount orders the results by user_identities count.
-func ByUserIdentitiesCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newUserIdentitiesStep(), opts...)
-	}
-}
-
-// ByUserIdentities orders the results by user_identities terms.
-func ByUserIdentities(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newUserIdentitiesStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
 func newClientAppsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ClientAppsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, ClientAppsTable, ClientAppsColumn),
-	)
-}
-func newUserIdentitiesStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(UserIdentitiesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, UserIdentitiesTable, UserIdentitiesColumn),
 	)
 }
