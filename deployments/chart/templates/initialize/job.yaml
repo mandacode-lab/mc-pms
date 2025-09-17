@@ -1,26 +1,20 @@
-{{- if .Values.auth.enabled }}
-apiVersion: apps/v1
-kind: Deployment
+{{- if .Values.initialize.enabled }}
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: {{ include "defined.fullname" . }}-auth
+  name: {{ include "defined.fullname" . }}-initialize
   labels:
-    {{- include "defined.auth.labels" . | nindent 4 }}
+    {{- include "defined.initialize.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.auth.autoscaling.enabled }}
-  replicas: {{ .Values.auth.replicaCount }}
-  {{- end }}
-  selector:
-    matchLabels:
-      {{- include "defined.auth.selectorLabels" . | nindent 6 }}
+  backoffLimit: {{ .Values.initialize.backoffLimit }}
   template:
     metadata:
       annotations:
-        checksum/configmap: {{ include (print $.Template.BasePath "/auth/configmap.yaml") . | sha256sum }}
         checksum/db-secret: {{ include (print $.Template.BasePath "/shared/db-secret.yaml") . | sha256sum }}
         checksum/redis-secret: {{ include (print $.Template.BasePath "/shared/redis-secret.yaml") . | sha256sum }}
         checksum/kek-secret: {{ include (print $.Template.BasePath "/shared/kek-secret.yaml") . | sha256sum }}
       labels:
-        {{- include "defined.auth.selectorLabels" . | nindent 8 }}
+        {{- include "defined.initialize.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -29,39 +23,22 @@ spec:
       serviceAccountName: {{ include "defined.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      restartPolicy: {{ .Values.initialize.restartPolicy }}
       containers:
-        - name: auth
+        - name: initialize
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.registry }}/{{ .Values.auth.imageName }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.initialize.imageName }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.auth.service.targetPort }}
-              protocol: TCP
           envFrom:
-            - configMapRef:
-                name: {{ include "defined.auth.configMapName" . }}
             - secretRef:
                 name: {{ include "defined.databaseSecretName" . }}
             - secretRef:
                 name: {{ include "defined.redisSecretName" . }}
             - secretRef:
                 name: {{ include "defined.kekSecretName" . }}
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: http
-            initialDelaySeconds: 30
-            periodSeconds: 30
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: http
-            initialDelaySeconds: 5
-            periodSeconds: 10
           resources:
-            {{- toYaml .Values.auth.resources | nindent 12 }}
+            {{- toYaml .Values.initialize.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

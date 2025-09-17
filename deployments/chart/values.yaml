@@ -11,8 +11,8 @@ image:
     - name: "regcred"
 
 # Service configuration
-auth:
-  imageName: "mandacode-ssam-auth"
+client:
+  imageName: "mandacode-ssam-client"
   enabled: true
   replicaCount: 2
   service:
@@ -36,14 +36,14 @@ auth:
     readTimeout: "30s"
     writeTimeout: "30s"
 
-core:
-  imageName: "mandacode-ssam-core"
+management:
+  imageName: "mandacode-ssam-management"
   enabled: true
   replicaCount: 2
   service:
     type: ClusterIP
     port: 8081
-    targetPort: 8081
+    targetPort: 8080
   resources:
     limits:
       cpu: 500m
@@ -60,6 +60,19 @@ core:
   server:
     readTimeout: "30s"
     writeTimeout: "30s"
+
+initialize:
+  imageName: "mandacode-ssam-initialize"
+  enabled: true
+  restartPolicy: OnFailure
+  backoffLimit: 3
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
 
 # Database configuration
 database:

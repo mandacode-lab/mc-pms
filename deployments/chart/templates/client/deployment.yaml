@@ -1,26 +1,26 @@
-{{- if .Values.core.enabled }}
+{{- if .Values.client.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "defined.fullname" . }}-core
+  name: {{ include "defined.fullname" . }}-client
   labels:
-    {{- include "defined.core.labels" . | nindent 4 }}
+    {{- include "defined.client.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.core.autoscaling.enabled }}
-  replicas: {{ .Values.core.replicaCount }}
+  {{- if not .Values.client.autoscaling.enabled }}
+  replicas: {{ .Values.client.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "defined.core.selectorLabels" . | nindent 6 }}
+      {{- include "defined.client.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
-        checksum/configmap: {{ include (print $.Template.BasePath "/core/configmap.yaml") . | sha256sum }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/client/configmap.yaml") . | sha256sum }}
         checksum/db-secret: {{ include (print $.Template.BasePath "/shared/db-secret.yaml") . | sha256sum }}
         checksum/redis-secret: {{ include (print $.Template.BasePath "/shared/redis-secret.yaml") . | sha256sum }}
         checksum/kek-secret: {{ include (print $.Template.BasePath "/shared/kek-secret.yaml") . | sha256sum }}
       labels:
-        {{- include "defined.core.selectorLabels" . | nindent 8 }}
+        {{- include "defined.client.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -30,18 +30,18 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: core
+        - name: client
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.registry }}/{{ .Values.core.imageName }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.client.imageName }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.core.service.targetPort }}
+              containerPort: {{ .Values.client.service.targetPort }}
               protocol: TCP
           envFrom:
             - configMapRef:
-                name: {{ include "defined.core.configMapName" . }}
+                name: {{ include "defined.client.configMapName" . }}
             - secretRef:
                 name: {{ include "defined.databaseSecretName" . }}
             - secretRef:
@@ -61,7 +61,7 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 10
           resources:
-            {{- toYaml .Values.core.resources | nindent 12 }}
+            {{- toYaml .Values.client.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

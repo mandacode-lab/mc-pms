@@ -1,0 +1,13 @@
+{{- if .Values.management.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "defined.management.configMapName" . }}
+  labels:
+    {{- include "defined.management.labels" . | nindent 4 }}
+data:
+  ENV: {{ .Values.global.env | default "prod" | quote }}
+  PORT: "8080"
+  READ_TIMEOUT: {{ .Values.management.server.readTimeout | quote }}
+  WRITE_TIMEOUT: {{ .Values.management.server.writeTimeout | quote }}
+{{- end }}

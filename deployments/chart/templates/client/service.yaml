@@ -1,0 +1,17 @@
+{{- if .Values.client.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "defined.fullname" . }}-client
+  labels:
+    {{- include "defined.client.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.client.service.type }}
+  ports:
+    - port: {{ .Values.client.service.port }}
+      targetPort: {{ .Values.client.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "defined.client.selectorLabels" . | nindent 4 }}
+{{- end }}
