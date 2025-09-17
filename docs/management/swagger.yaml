@@ -1,6 +1,6 @@
 basePath: /v1
 definitions:
-  internal_adapter_handler_client_access.ClientAppResponse:
+  client_access.ClientAppResponse:
     properties:
       client_app_id:
         type: string
@@ -11,7 +11,7 @@ definitions:
       name:
         type: string
     type: object
-  internal_adapter_handler_client_access.ServiceInfoResponse:
+  client_access.ServiceInfoResponse:
     properties:
       description:
         type: string
@@ -22,16 +22,16 @@ definitions:
       service_id:
         type: string
     type: object
-  internal_adapter_handler_client_access.VerifyClientResponse:
+  client_access.VerifyClientResponse:
     properties:
       client_app:
-        $ref: '#/definitions/internal_adapter_handler_client_access.ClientAppResponse'
+        $ref: '#/definitions/client_access.ClientAppResponse'
       is_valid:
         type: boolean
       service_id:
         type: string
       service_info:
-        $ref: '#/definitions/internal_adapter_handler_client_access.ServiceInfoResponse'
+        $ref: '#/definitions/client_access.ServiceInfoResponse'
     type: object
   internal_adapter_handler_clientapp_mgmt.ClientAppResponse:
     properties:
@@ -255,16 +255,9 @@ definitions:
     type: object
 info:
   contact:
-    email: support@swagger.io
     name: API Support
-    url: http://www.swagger.io/support
-  description: Basic Authentication using ClientAppID as username and ClientSecret
-    as password
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://swagger.io/terms/
-  title: MandaCode Service Hub Core API
+  description: Multi-tenant service and client application management API
+  title: MandaCode Service Hub Management API
   version: "1.0"
 paths:
   /client-access/verify:
@@ -279,7 +272,7 @@ paths:
         "200":
           description: Client verification result
           schema:
-            $ref: '#/definitions/internal_adapter_handler_client_access.VerifyClientResponse'
+            $ref: '#/definitions/client_access.VerifyClientResponse'
         "400":
           description: Bad request
           schema:
@@ -489,8 +482,6 @@ paths:
       tags:
       - services
 securityDefinitions:
-  BasicAuth:
-    type: basic
   Bearer:
     description: Type "Bearer" followed by a space and JWT token.
     in: header

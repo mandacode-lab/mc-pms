@@ -41,9 +41,9 @@ func (p Permission) Validate() bool {
 }
 
 type PermissionAllowInfo struct {
-	Allowed    bool
-	Action     Action
-	Version    string
+	Allowed bool
+	Action  Action
+	Version string
 }
 
 // IAMService defines methods for interacting with an Identity and Access Management system.

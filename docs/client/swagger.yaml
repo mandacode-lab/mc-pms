@@ -99,54 +99,38 @@ definitions:
       updated_at:
         type: string
     type: object
-  internal_adapter_handler_identify_user.GetAuthURLResponse:
+  internal_adapter_handler_client_access.ClientAppResponse:
     properties:
-      auth_url:
-        example: https://accounts.google.com/o/oauth2/v2/auth?client_id=abc&redirect_uri=def&response_type=code&scope=openid+profile+email&state=xyz
+      client_app_id:
         type: string
-      state:
-        example: random_state_string_123
+      description:
+        type: string
+      is_active:
+        type: boolean
+      name:
         type: string
     type: object
-  internal_adapter_handler_identify_user.IdentifyByCodeResponse:
+  internal_adapter_handler_client_access.ServiceInfoResponse:
     properties:
-      created_at:
+      description:
         type: string
-      email:
+      is_active:
+        type: boolean
+      name:
         type: string
-      nickname:
-        type: string
-      provider:
-        type: string
-      raw_data:
-        additionalProperties: {}
-        type: object
       service_id:
-        type: string
-      updated_at:
-        type: string
-      user_id:
         type: string
     type: object
-  internal_adapter_handler_identify_user.IdentifyByTokenResponse:
+  internal_adapter_handler_client_access.VerifyClientResponse:
     properties:
-      created_at:
-        type: string
-      email:
-        type: string
-      nickname:
-        type: string
-      provider:
-        type: string
-      raw_data:
-        additionalProperties: {}
-        type: object
+      client_app:
+        $ref: '#/definitions/internal_adapter_handler_client_access.ClientAppResponse'
+      is_valid:
+        type: boolean
       service_id:
         type: string
-      updated_at:
-        type: string
-      user_id:
-        type: string
+      service_info:
+        $ref: '#/definitions/internal_adapter_handler_client_access.ServiceInfoResponse'
     type: object
   merr.ErrCode:
     enum:
@@ -269,248 +253,44 @@ definitions:
       updated_at:
         type: string
     type: object
-  user_mgmt.FindUserInfoResponse:
-    properties:
-      users:
-        items:
-          $ref: '#/definitions/user_mgmt.UserResponse'
-        type: array
-    type: object
-  user_mgmt.UserResponse:
-    properties:
-      created_at:
-        example: "2023-01-01T00:00:00Z"
-        type: string
-      email:
-        example: john.doe@example.com
-        type: string
-      nickname:
-        example: john_doe
-        type: string
-      provider:
-        example: google
-        type: string
-      service_id:
-        example: srv_1234567890abcdef
-        type: string
-      updated_at:
-        example: "2023-01-01T00:00:00Z"
-        type: string
-      user_id:
-        example: usr_abcdef1234567890
-        type: string
-    type: object
-  weboauth_mgmt.ReadWebOAuthResponse:
-    properties:
-      web_oauths:
-        items:
-          $ref: '#/definitions/weboauth_mgmt.WebOAuthResponse'
-        type: array
-    type: object
-  weboauth_mgmt.RegisterWebOAuthRequest:
-    properties:
-      client_app_id:
-        type: string
-      oauth_client_id:
-        type: string
-      oauth_secret:
-        type: string
-      provider:
-        type: string
-      redirect_uri:
-        type: string
-      scopes:
-        items:
-          type: string
-        type: array
-    required:
-    - client_app_id
-    - oauth_client_id
-    - oauth_secret
-    - provider
-    - redirect_uri
-    - scopes
-    type: object
-  weboauth_mgmt.RegisterWebOAuthResponse:
-    properties:
-      message:
-        type: string
-    type: object
-  weboauth_mgmt.WebOAuthResponse:
-    properties:
-      client_app_id:
-        type: string
-      created_at:
-        type: string
-      oauth_client_id:
-        type: string
-      provider:
-        type: string
-      redirect_uri:
-        type: string
-      scopes:
-        items:
-          type: string
-        type: array
-      updated_at:
-        type: string
-    type: object
 info:
   contact:
-    email: support@swagger.io
     name: API Support
-    url: http://www.swagger.io/support
-  description: OAuth authentication and user identity management API
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://swagger.io/terms/
-  title: MandaCode Service Hub Auth API
+  description: Basic Authentication using ClientAppID as username and ClientSecret
+    as password
+  title: MandaCode Service Hub Client API
   version: "1.0"
 paths:
-  /auth/auth-url:
-    get:
-      description: Generate OAuth authorization URL for specified provider and client
-        app
-      parameters:
-      - description: OAuth Provider
-        enum:
-        - google
-        - kakao
-        - naver
-        in: query
-        name: provider
-        required: true
-        type: string
-      - description: Client Application ID
-        in: query
-        name: client_app_id
-        required: true
-        type: string
-      - description: Client Application Secret
-        in: query
-        name: client_app_secret
-        required: true
-        type: string
+  /client-access/verify:
+    post:
+      consumes:
+      - application/json
+      description: Verify client application credentials using Basic Authentication
+        (client_id:client_secret)
       produces:
       - application/json
       responses:
         "200":
-          description: Authorization URL and state
+          description: Client verification result
           schema:
-            $ref: '#/definitions/internal_adapter_handler_identify_user.GetAuthURLResponse'
+            $ref: '#/definitions/internal_adapter_handler_client_access.VerifyClientResponse'
         "400":
           description: Bad request
           schema:
             $ref: '#/definitions/merrmid.ErrorResponse'
-        "404":
-          description: Resource not found
+        "401":
+          description: Unauthorized - Invalid credentials
           schema:
             $ref: '#/definitions/merrmid.ErrorResponse'
         "500":
           description: Internal server error
           schema:
             $ref: '#/definitions/merrmid.ErrorResponse'
-      summary: Get OAuth authorization URL
+      security:
+      - BasicAuth: []
+      summary: Verify client credentials
       tags:
-      - auth
-  /auth/identify-by-code:
-    get:
-      description: Identify user using OAuth authorization code flow
-      parameters:
-      - description: OAuth Provider
-        enum:
-        - google
-        - kakao
-        - naver
-        in: query
-        name: provider
-        required: true
-        type: string
-      - description: OAuth authorization code
-        in: query
-        name: oauth_code
-        required: true
-        type: string
-      - description: OAuth state parameter
-        in: query
-        name: state
-        required: true
-        type: string
-      - description: Client Application ID
-        in: query
-        name: client_app_id
-        required: true
-        type: string
-      - description: Client Application Secret
-        in: query
-        name: client_app_secret
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: User identity information
-          schema:
-            $ref: '#/definitions/internal_adapter_handler_identify_user.IdentifyByCodeResponse'
-        "400":
-          description: Invalid request
-          schema:
-            $ref: '#/definitions/merrmid.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/merrmid.ErrorResponse'
-      summary: Identify user by code
-      tags:
-      - auth
-  /auth/identify-by-token:
-    get:
-      description: Identify user using OAuth access token
-      parameters:
-      - description: OAuth Provider
-        enum:
-        - google
-        - kakao
-        - naver
-        in: query
-        name: provider
-        required: true
-        type: string
-      - description: OAuth access token
-        in: query
-        name: token
-        required: true
-        type: string
-      - description: Client Application ID
-        in: query
-        name: client_app_id
-        required: true
-        type: string
-      - description: Client Application Secret
-        in: query
-        name: client_app_secret
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: User identity information
-          schema:
-            $ref: '#/definitions/internal_adapter_handler_identify_user.IdentifyByTokenResponse'
-        "400":
-          description: Invalid request
-          schema:
-            $ref: '#/definitions/merrmid.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/merrmid.ErrorResponse'
-      summary: Identify user by token
-      tags:
-      - auth
+      - client-access
   /client-apps:
     get:
       description: List all OAuth client applications for a specific service
@@ -702,121 +482,7 @@ paths:
       summary: Update a service
       tags:
       - services
-  /users:
-    get:
-      description: Find user information based on various filter criteria
-      parameters:
-      - description: Service ID
-        in: query
-        name: service_id
-        type: string
-      - description: User ID
-        in: query
-        name: user_id
-        type: string
-      - description: OAuth Provider
-        enum:
-        - google
-        - kakao
-        - naver
-        in: query
-        name: provider
-        type: string
-      - description: User email
-        in: query
-        name: email
-        type: string
-      - description: User nickname
-        in: query
-        name: nickname
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: List of matching users
-          schema:
-            $ref: '#/definitions/user_mgmt.FindUserInfoResponse'
-        "400":
-          description: Invalid request
-          schema:
-            $ref: '#/definitions/merrmid.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/merrmid.ErrorResponse'
-      summary: Find users
-      tags:
-      - users
-  /weboauth:
-    get:
-      description: Read OAuth configurations for a client application
-      parameters:
-      - description: Client App ID
-        in: query
-        name: client_app_id
-        required: true
-        type: string
-      - description: OAuth Provider
-        enum:
-        - google
-        - kakao
-        - naver
-        in: query
-        name: provider
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OAuth configurations
-          schema:
-            $ref: '#/definitions/weboauth_mgmt.ReadWebOAuthResponse'
-        "400":
-          description: Invalid request
-          schema:
-            $ref: '#/definitions/merrmid.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/merrmid.ErrorResponse'
-      summary: Read OAuth configs
-      tags:
-      - weboauth
-  /weboauth/register:
-    post:
-      consumes:
-      - application/json
-      description: Register OAuth configuration for a client application
-      parameters:
-      - description: OAuth registration request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/weboauth_mgmt.RegisterWebOAuthRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: OAuth registered successfully
-          schema:
-            $ref: '#/definitions/weboauth_mgmt.RegisterWebOAuthResponse'
-        "400":
-          description: Invalid request
-          schema:
-            $ref: '#/definitions/merrmid.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/merrmid.ErrorResponse'
-      summary: Register OAuth config
-      tags:
-      - weboauth
 securityDefinitions:
-  Bearer:
-    description: Type "Bearer" followed by a space and JWT token.
-    in: header
-    name: Authorization
-    type: apiKey
+  BasicAuth:
+    type: basic
 swagger: "2.0"
