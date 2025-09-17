@@ -48,36 +48,21 @@ app.kubernetes.io/name: {{ include "defined.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+
 {{/*
-Auth service labels
+Management service labels
 */}}
-{{- define "defined.auth.labels" -}}
+{{- define "defined.management.labels" -}}
 {{ include "defined.labels" . }}
-app.kubernetes.io/component: auth
+app.kubernetes.io/component: management
 {{- end }}
 
 {{/*
-Auth selector labels
+Management selector labels
 */}}
-{{- define "defined.auth.selectorLabels" -}}
+{{- define "defined.management.selectorLabels" -}}
 {{ include "defined.selectorLabels" . }}
-app.kubernetes.io/component: auth
-{{- end }}
-
-{{/*
-Core service labels
-*/}}
-{{- define "defined.core.labels" -}}
-{{ include "defined.labels" . }}
-app.kubernetes.io/component: core
-{{- end }}
-
-{{/*
-Core selector labels
-*/}}
-{{- define "defined.core.selectorLabels" -}}
-{{ include "defined.selectorLabels" . }}
-app.kubernetes.io/component: core
+app.kubernetes.io/component: management
 {{- end }}
 
 {{/*
@@ -127,10 +112,43 @@ KEK Secret Name
 {{/*
 ConfigMap names
 */}}
-{{- define "defined.auth.configMapName" -}}
-{{- printf "%s-auth-config" (include "defined.fullname" .) }}
+
+{{/*
+Client service labels
+*/}}
+{{- define "defined.client.labels" -}}
+{{ include "defined.labels" . }}
+app.kubernetes.io/component: client
 {{- end }}
 
-{{- define "defined.core.configMapName" -}}
-{{- printf "%s-core-config" (include "defined.fullname" .) }}
+{{/*
+Client selector labels
+*/}}
+{{- define "defined.client.selectorLabels" -}}
+{{ include "defined.selectorLabels" . }}
+app.kubernetes.io/component: client
+{{- end }}
+
+{{- define "defined.client.configMapName" -}}
+{{- printf "%s-client-config" (include "defined.fullname" .) }}
+{{- end }}
+
+{{- define "defined.management.configMapName" -}}
+{{- printf "%s-management-config" (include "defined.fullname" .) }}
+{{- end }}
+
+{{/*
+Initialize service labels
+*/}}
+{{- define "defined.initialize.labels" -}}
+{{ include "defined.labels" . }}
+app.kubernetes.io/component: initialize
+{{- end }}
+
+{{/*
+Initialize selector labels
+*/}}
+{{- define "defined.initialize.selectorLabels" -}}
+{{ include "defined.selectorLabels" . }}
+app.kubernetes.io/component: initialize
 {{- end }}

@@ -1,0 +1,54 @@
+############################
+# 1. Build Stage
+############################
+FROM golang:1.25-alpine AS builder
+
+# Install necessary tools
+RUN apk add --no-cache git=2.49.1-r0
+
+# Set working directory
+WORKDIR /app
+
+# Set Go environment
+ENV CGO_ENABLED=0 \
+  GOOS=linux \
+  GOARCH=amd64
+
+# Copy go.mod and go.sum first (for caching)
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the entire source code
+COPY . .
+
+# Build the Go binary (static)
+RUN go build -o server ./cmd/management
+
+############################
+# 2. CA Certificates Stage
+############################
+FROM alpine:3.22.1 AS certs
+RUN apk add --no-cache ca-certificates=20250619-r0
+
+############################
+# 3. Runtime Stage (scratch)
+############################
+FROM scratch AS prod
+
+# Copy built binary only
+COPY --from=builder /app/server /app/server
+
+# Copy CA certs for TLS verification
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+# Create non-root user
+USER 1001
+
+# Set environment variables
+ENV ENV=prod
+ENV HTTP_PORT=8080
+
+# Expose ports
+EXPOSE 8080
+
+ENTRYPOINT ["/app/server"]
