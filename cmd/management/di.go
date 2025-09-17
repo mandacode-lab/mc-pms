@@ -44,7 +44,6 @@ type Adapter struct {
 
 	// Services
 	hasher      out.Hasher
-	kekProvider out.KekProvider
 	secretGen   out.ByteRandGen
 	encoder     out.Encoder
 	txManager   out.TransactionManager
