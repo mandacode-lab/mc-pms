@@ -41,7 +41,7 @@ func RequirePermission(iamService out.IAMService, resource out.Resource, action 
 		}
 
 		// Check permission with IAM service
-		permissionInfo, err := iamService.HasPermission(ctx, userID, permission)
+		allowed, err := iamService.HasPermission(ctx, userID, permission)
 		if err != nil {
 			err := merr.New(merr.ErrInternalServerError, "failed to check permission", err)
 			c.Error(err)
@@ -50,7 +50,7 @@ func RequirePermission(iamService out.IAMService, resource out.Resource, action 
 		}
 
 		// Check if permission is allowed
-		if !permissionInfo.Allowed {
+		if !allowed {
 			err := merr.New(merr.ErrForbidden, "insufficient permissions", nil)
 			c.Error(err)
 			c.Abort()
@@ -59,7 +59,7 @@ func RequirePermission(iamService out.IAMService, resource out.Resource, action 
 
 		// Store user ID and permission info in context for use in handlers
 		c.Set(UserIDKey, userID)
-		c.Set(PermissionKey, permissionInfo)
+		c.Set(PermissionKey, allowed)
 
 		c.Next()
 	}

@@ -10,14 +10,14 @@ type (
 )
 
 const (
-	ResourceService       Resource = "service"
-	ResourceServiceAccess Resource = "service_access"
+	ResourceService   Resource = "mrn::ssam:Service"
+	ResourceClientApp Resource = "mrn::ssam:ClientApp"
 )
 
 const (
-	ActionRead   Action = "read"
-	ActionWrite  Action = "write"
-	ActionDelete Action = "delete"
+	ActionRead   Action = "ssam:read"
+	ActionWrite  Action = "ssam:write"
+	ActionDelete Action = "ssam:delete"
 )
 
 type Permission struct {
@@ -40,13 +40,7 @@ func (p Permission) Validate() bool {
 	return validResources[p.Resource] && validActions[p.Action]
 }
 
-type PermissionAllowInfo struct {
-	Allowed bool
-	Action  Action
-	Version string
-}
-
 // IAMService defines methods for interacting with an Identity and Access Management system.
 type IAMService interface {
-	HasPermission(ctx context.Context, userID string, permission Permission) (PermissionAllowInfo, error)
+	HasPermission(ctx context.Context, userID string, permission Permission) (bool, error)
 }
