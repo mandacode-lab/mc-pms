@@ -18,6 +18,8 @@ jobs:
       contents: read
       packages: write
       security-events: write
+      actions: read
+      id-token: write
     strategy:
       matrix:
         app: [client, management]
@@ -77,6 +79,7 @@ jobs:
       - name: Upload Trivy scan results
         if: github.event_name != 'pull_request'
         uses: github/codeql-action/upload-sarif@v3
+        continue-on-error: true
         with:
           sarif_file: 'trivy-results-${{ matrix.app }}.sarif'
           category: 'trivy-${{ matrix.app }}'
@@ -92,6 +95,8 @@ jobs:
       contents: read
       packages: write
       security-events: write
+      actions: read
+      id-token: write
 
     steps:
       - name: Checkout repository
