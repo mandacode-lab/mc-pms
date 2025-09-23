@@ -5,4 +5,7 @@ const (
 	ErrServiceNotFoundMsg   = "service not found"
 	ErrClientAppNotFoundMsg = "client app not found"
 	ErrInvalidClientIDMsg   = "invalid client_id format"
+	ErrClientAppInactiveMsg = "client app is inactive"
+	ErrInvalidClientSecretMsg = "invalid client_secret"
+	ErrServiceInactiveMsg   = "service is inactive"
 )

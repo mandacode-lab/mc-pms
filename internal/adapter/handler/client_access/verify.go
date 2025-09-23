@@ -4,54 +4,19 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
 )
 
 type VerifyClientResponse struct {
-	IsValid     bool                 `json:"is_valid"`
-	ServiceID   string               `json:"service_id,omitempty"`
-	ServiceInfo *ServiceInfoResponse `json:"service_info,omitempty"`
-	ClientApp   *ClientAppResponse   `json:"client_app,omitempty"`
-}
-
-type ServiceInfoResponse struct {
-	ServiceID   string `json:"service_id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	IsActive    bool   `json:"is_active"`
-}
-
-type ClientAppResponse struct {
-	ClientAppID string `json:"client_app_id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	IsActive    bool   `json:"is_active"`
+	ServiceID string `json:"service_id"`
 }
 
 func toVerifyClientResponse(result *in.VerifyClientResponse) *VerifyClientResponse {
-	if !result.IsValid {
-		return &VerifyClientResponse{
-			IsValid: false,
-		}
-	}
-
 	return &VerifyClientResponse{
-		IsValid:   true,
-		ServiceID: result.ServiceID,
-		ServiceInfo: &ServiceInfoResponse{
-			ServiceID:   result.ServiceInfo.ServiceID.String(),
-			Name:        result.ServiceInfo.Name,
-			Description: result.ServiceInfo.Desc,
-			IsActive:    result.ServiceInfo.IsActive,
-		},
-		ClientApp: &ClientAppResponse{
-			ClientAppID: result.ClientAppID.String(),
-			Name:        result.ClientAppInfo.Name,
-			Description: result.ClientAppInfo.Desc,
-			IsActive:    result.ClientAppInfo.IsActive,
-		},
+		ServiceID: result.ServiceID.String(),
 	}
 }
 
@@ -62,9 +27,11 @@ func toVerifyClientResponse(result *in.VerifyClientResponse) *VerifyClientRespon
 // @Accept json
 // @Produce json
 // @Security BasicAuth
-// @Success 200 {object} VerifyClientResponse "Client verification result"
-// @Failure 400 {object} merrmid.ErrorResponse "Bad request"
-// @Failure 401 {object} merrmid.ErrorResponse "Unauthorized - Invalid credentials"
+// @Success 200 {object} VerifyClientResponse "Client verification successful - returns service_id"
+// @Failure 400 {object} merrmid.ErrorResponse "Bad request - Invalid client_id format"
+// @Failure 401 {object} merrmid.ErrorResponse "Unauthorized - Invalid client_secret"
+// @Failure 403 {object} merrmid.ErrorResponse "Forbidden - Client or service inactive"
+// @Failure 404 {object} merrmid.ErrorResponse "Not found - Client or service not found"
 // @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
 // @Router /client-access/verify [post]
 func (h *Handler) VerifyClient(c *gin.Context) {
@@ -91,9 +58,17 @@ func (h *Handler) VerifyClient(c *gin.Context) {
 		return
 	}
 
+	// Parse client ID
+	clientID, err := clientappval.ParsePublicID(username)
+	if err != nil {
+		err := merr.New(merr.ErrBadRequest, "invalid client_id format", err)
+		c.Error(err)
+		return
+	}
+
 	// Create usecase request
 	usecaseReq := &in.VerifyClientRequest{
-		ClientID:     username,         // client_id from Basic Auth username
+		ClientID:     clientID,         // client_id from Basic Auth username
 		ClientSecret: []byte(password), // client_secret from Basic Auth password
 	}
 
