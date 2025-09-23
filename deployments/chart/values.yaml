@@ -61,19 +61,6 @@ management:
     readTimeout: "30s"
     writeTimeout: "30s"
 
-initialize:
-  imageName: "mandacode-ssam-initialize"
-  enabled: true
-  restartPolicy: OnFailure
-  backoffLimit: 3
-  resources:
-    limits:
-      cpu: 200m
-      memory: 256Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-
 # Database configuration
 database:
   existingSecret: ""

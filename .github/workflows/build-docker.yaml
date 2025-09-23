@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        app: [auth, core]
+        app: [client, management]
     
     steps:
       - name: Checkout
