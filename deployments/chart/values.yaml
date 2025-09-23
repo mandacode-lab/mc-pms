@@ -61,9 +61,6 @@ management:
   iam:
     enabled: true
     serviceUrl: "http://localhost:8080"
-  systemClient:
-    serviceName: "system"
-    clientName: "system-client"
 
 # Database configuration
 database:
@@ -115,7 +112,7 @@ securityContext:
   allowPrivilegeEscalation: false
   capabilities:
     drop:
-    - ALL
+      - ALL
   seccompProfile:
     type: RuntimeDefault
 
