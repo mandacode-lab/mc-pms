@@ -22,8 +22,6 @@ import (
 
 // @contact.name   API Support
 
-// @BasePath  /v1
-
 // @securityDefinitions.basic BasicAuth
 // @description Basic Authentication using ClientAppID as username and ClientSecret as password
 
@@ -59,10 +57,10 @@ func main() {
 	srv := shared.SetupServer(&cfg.Server, &logger)
 
 	// Register routes
-	v1 := srv.GetEngine().Group("/v1")
+	engine := srv.GetEngine()
 
 	// Client access routes
-	clientAccessGroup := v1.Group("/client-access")
+	clientAccessGroup := engine.Group("/client-access")
 	clientAccessHandler := adapter.ProvideClientAccessHandler()
 	clientAccessHandler.RegisterRoutes(clientAccessGroup)
 
@@ -83,4 +81,3 @@ func main() {
 		logger.Fatal().Str("error", err.Error()).Msg("failed to run server group")
 	}
 }
-

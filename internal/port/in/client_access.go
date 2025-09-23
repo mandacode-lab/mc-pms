@@ -2,18 +2,18 @@ package in
 
 import (
 	"context"
+
+	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
+	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
 )
 
 type VerifyClientRequest struct {
-	ClientID     string
+	ClientID     clientappval.PublicID
 	ClientSecret []byte
 }
 
 type VerifyClientResponse struct {
-	IsValid   bool
-	ServiceID string
-	ServiceInfo
-	ClientAppInfo
+	ServiceID serviceval.PublicID
 }
 
 type ClientAccessUsecase interface {

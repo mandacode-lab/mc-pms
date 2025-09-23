@@ -6,7 +6,6 @@ import (
 	"github.com/google/uuid"
 	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
 	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
 )
 
 type ClientApp struct {
@@ -19,7 +18,6 @@ type ClientApp struct {
 	isActive    bool
 	createdAt   time.Time
 	updatedAt   time.Time
-	events      []shared.DomainEvent
 }
 
 func NewClientApp(
@@ -43,7 +41,6 @@ func NewClientApp(
 		isActive:    isActive,
 		createdAt:   createdAt,
 		updatedAt:   updatedAt,
-		events:      make([]shared.DomainEvent, 0),
 	}
 }
 
@@ -111,27 +108,23 @@ func (ca *ClientApp) UpdateName(name string) {
 	if ca.name != name {
 		ca.name = name
 		ca.updatedAt = time.Now().UTC()
-		ca.raise(NewClientAppUpdatedEvent(ca.publicID.String(), "name_changed"))
 	}
 }
 
 func (ca *ClientApp) UpdateDescription(description *string) {
 	ca.description = description
 	ca.updatedAt = time.Now().UTC()
-	ca.raise(NewClientAppUpdatedEvent(ca.publicID.String(), "description_changed"))
 }
 
 func (ca *ClientApp) RegenerateSecret(secretHash []byte) {
 	ca.secretHash = secretHash
 	ca.updatedAt = time.Now().UTC()
-	ca.raise(NewClientAppUpdatedEvent(ca.publicID.String(), "secret_regenerated"))
 }
 
 func (ca *ClientApp) Activate() {
 	if !ca.isActive {
 		ca.isActive = true
 		ca.updatedAt = time.Now().UTC()
-		ca.raise(NewClientAppUpdatedEvent(ca.publicID.String(), "activated"))
 	}
 }
 
@@ -139,18 +132,5 @@ func (ca *ClientApp) Deactivate() {
 	if ca.isActive {
 		ca.isActive = false
 		ca.updatedAt = time.Now().UTC()
-		ca.raise(NewClientAppUpdatedEvent(ca.publicID.String(), "deactivated"))
 	}
-}
-
-// Event methods
-
-func (ca *ClientApp) raise(e shared.DomainEvent) {
-	ca.events = append(ca.events, e)
-}
-
-func (ca *ClientApp) PullEvents() []shared.DomainEvent {
-	events := ca.events
-	ca.events = nil
-	return events
 }

@@ -22,8 +22,6 @@ import (
 
 // @contact.name   API Support
 
-// @BasePath  /v1
-
 // @securityDefinitions.apikey Bearer
 // @in header
 // @name Authorization
@@ -61,15 +59,15 @@ func main() {
 	srv := shared.SetupServer(&cfg.Server, &logger)
 
 	// Register routes
-	v1 := srv.GetEngine().Group("/v1")
+	engine := srv.GetEngine()
 
 	// Service management routes
-	serviceGroup := v1.Group("/services")
+	serviceGroup := engine.Group("/services")
 	serviceMgmtHandler := adapter.ProvideServiceMgmtHandler()
 	serviceMgmtHandler.RegisterRoutes(serviceGroup)
 
 	// Client app management routes
-	clientAppGroup := v1.Group("/client-apps")
+	clientAppGroup := engine.Group("/client-apps")
 	clientAppMgmtHandler := adapter.ProvideClientAppMgmtHandler()
 	clientAppMgmtHandler.RegisterRoutes(clientAppGroup)
 

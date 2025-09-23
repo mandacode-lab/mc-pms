@@ -1,4 +1,4 @@
-package clientappval
+package value
 
 import (
 	"errors"
