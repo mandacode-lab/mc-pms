@@ -11,8 +11,7 @@ WORKDIR /app
 
 # Set Go environment
 ENV CGO_ENABLED=0 \
-  GOOS=linux \
-  GOARCH=amd64
+  GOOS=linux
 
 # Copy go.mod and go.sum first (for caching)
 COPY go.mod go.sum ./

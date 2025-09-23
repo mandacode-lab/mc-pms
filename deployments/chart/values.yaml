@@ -30,8 +30,10 @@ client:
     targetCPUUtilizationPercentage: 70
     targetMemoryUtilizationPercentage: 70
   server:
-    readTimeout: "30s"
-    writeTimeout: "30s"
+    readTimeout: "60s"
+    writeTimeout: "60s"
+    readHeaderTimeout: "30s"
+    idleTimeout: "120s"
 
 management:
   imageName: "management"
@@ -56,8 +58,10 @@ management:
     targetCPUUtilizationPercentage: 70
     targetMemoryUtilizationPercentage: 70
   server:
-    readTimeout: "30s"
-    writeTimeout: "30s"
+    readTimeout: "60s"
+    writeTimeout: "60s"
+    readHeaderTimeout: "30s"
+    idleTimeout: "120s"
   iam:
     enabled: true
     serviceUrl: "http://localhost:8080"

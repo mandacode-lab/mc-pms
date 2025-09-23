@@ -60,8 +60,12 @@ func SetupServer(cfg *configs.ServerConfig, logger *zerolog.Logger) *HTTPServer 
 	})
 
 	httpServer := &http.Server{
-		Addr:    cfg.GenerateAddress(),
-		Handler: engine,
+		Addr:              cfg.GenerateAddress(),
+		Handler:           engine,
+		ReadHeaderTimeout: cfg.ReadHeaderTimeout,
+		ReadTimeout:       cfg.ReadTimeout,
+		WriteTimeout:      cfg.WriteTimeout,
+		IdleTimeout:       cfg.IdleTimeout,
 	}
 
 	return &HTTPServer{

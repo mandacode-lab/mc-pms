@@ -38,7 +38,7 @@ func (m *PermissionMiddleware) RequirePermission(resource out.Resource, action o
 		userID := c.GetHeader("X-User-ID")
 		if userID == "" {
 			err := merr.New(merr.ErrUnauthorized, "missing X-User-ID header", nil)
-			c.Error(err)
+			_ = c.Error(err)
 			c.Abort()
 			return
 		}
@@ -53,7 +53,7 @@ func (m *PermissionMiddleware) RequirePermission(resource out.Resource, action o
 		// Validate permission structure
 		if !permission.Validate() {
 			err := merr.New(merr.ErrBadRequest, "invalid permission structure", nil)
-			c.Error(err)
+			_ = c.Error(err)
 			c.Abort()
 			return
 		}
@@ -62,7 +62,7 @@ func (m *PermissionMiddleware) RequirePermission(resource out.Resource, action o
 		allowed, err := m.IAMService.HasPermission(ctx, userID, permission)
 		if err != nil {
 			err := merr.New(merr.ErrInternalServerError, "failed to check permission", err)
-			c.Error(err)
+			_ = c.Error(err)
 			c.Abort()
 			return
 		}
@@ -70,7 +70,7 @@ func (m *PermissionMiddleware) RequirePermission(resource out.Resource, action o
 		// Check if permission is allowed
 		if !allowed {
 			err := merr.New(merr.ErrForbidden, "insufficient permissions", nil)
-			c.Error(err)
+			_ = c.Error(err)
 			c.Abort()
 			return
 		}

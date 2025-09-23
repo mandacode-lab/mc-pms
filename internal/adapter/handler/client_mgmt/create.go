@@ -58,7 +58,7 @@ func (h *Handler) CreateClientApp(c *gin.Context) {
 	var req CreateClientAppRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid request body", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -66,7 +66,7 @@ func (h *Handler) CreateClientApp(c *gin.Context) {
 	serviceID, err := serviceval.ParsePublicID(req.ServiceID)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid service ID", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -78,7 +78,7 @@ func (h *Handler) CreateClientApp(c *gin.Context) {
 
 	result, err := h.clientAppMgmt.CreateClientApp(ctx, usecaseReq)
 	if err != nil {
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 

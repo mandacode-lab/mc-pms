@@ -58,14 +58,14 @@ func (h *Handler) UpdateService(c *gin.Context) {
 	serviceID, err := serviceval.ParsePublicID(serviceIDStr)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid service ID", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
 	var req UpdateServiceRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid request body", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -77,7 +77,7 @@ func (h *Handler) UpdateService(c *gin.Context) {
 
 	result, err := h.serviceMgmt.UpdateService(ctx, usecaseReq)
 	if err != nil {
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 

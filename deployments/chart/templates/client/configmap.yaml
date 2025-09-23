@@ -10,4 +10,6 @@ data:
   PORT: "8080"
   READ_TIMEOUT: {{ .Values.client.server.readTimeout | quote }}
   WRITE_TIMEOUT: {{ .Values.client.server.writeTimeout | quote }}
+  READ_HEADER_TIMEOUT: {{ .Values.client.server.readHeaderTimeout | quote }}
+  IDLE_TIMEOUT: {{ .Values.client.server.idleTimeout | quote }}
 {{- end }}
