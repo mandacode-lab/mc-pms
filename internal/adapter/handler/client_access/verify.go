@@ -42,19 +42,19 @@ func (h *Handler) VerifyClient(c *gin.Context) {
 	username, password, hasAuth := c.Request.BasicAuth()
 	if !hasAuth {
 		err := merr.New(merr.ErrUnauthorized, "Basic Auth credentials required", nil)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
 	if username == "" {
 		err := merr.New(merr.ErrBadRequest, "client_id cannot be empty", nil)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
 	if password == "" {
 		err := merr.New(merr.ErrBadRequest, "client_secret cannot be empty", nil)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
