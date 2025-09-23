@@ -18,7 +18,6 @@ spec:
         checksum/configmap: {{ include (print $.Template.BasePath "/management/configmap.yaml") . | sha256sum }}
         checksum/db-secret: {{ include (print $.Template.BasePath "/shared/db-secret.yaml") . | sha256sum }}
         checksum/redis-secret: {{ include (print $.Template.BasePath "/shared/redis-secret.yaml") . | sha256sum }}
-        checksum/kek-secret: {{ include (print $.Template.BasePath "/shared/kek-secret.yaml") . | sha256sum }}
       labels:
         {{- include "defined.management.selectorLabels" . | nindent 8 }}
     spec:
@@ -46,8 +45,6 @@ spec:
                 name: {{ include "defined.databaseSecretName" . }}
             - secretRef:
                 name: {{ include "defined.redisSecretName" . }}
-            - secretRef:
-                name: {{ include "defined.kekSecretName" . }}
           livenessProbe:
             httpGet:
               path: /health
