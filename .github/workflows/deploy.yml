@@ -54,7 +54,7 @@ jobs:
           password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./build/package/Dockerfile.${{ matrix.app }}
@@ -64,10 +64,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha,scope=${{ matrix.app }}
           cache-to: type=gha,mode=max,scope=${{ matrix.app }}
-          build-args: |
-            BUILDTIME=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
-            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
-            REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
 
       - name: Run Trivy vulnerability scanner
         if: github.event_name != 'pull_request'
@@ -124,7 +120,7 @@ jobs:
           password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 
       - name: Build and push Migration image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./build/package/Dockerfile.migration
