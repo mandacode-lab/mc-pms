@@ -50,8 +50,6 @@ Thumbs.db
 # Generated files
 **/*.pb.go
 **/*.pb.validate.go
-**/ent/migrate/migrations/*.sql
-**/ent/migrate/migrations/atlas.sum
 
 # Temporary files
 /tmp/
