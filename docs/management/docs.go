@@ -37,19 +37,31 @@ const docTemplate = `{
                 "summary": "Verify client credentials",
                 "responses": {
                     "200": {
-                        "description": "Client verification result",
+                        "description": "Client verification successful - returns service_id",
                         "schema": {
                             "$ref": "#/definitions/client_access.VerifyClientResponse"
                         }
                     },
                     "400": {
-                        "description": "Bad request",
+                        "description": "Bad request - Invalid client_id format",
                         "schema": {
                             "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "401": {
-                        "description": "Unauthorized - Invalid credentials",
+                        "description": "Unauthorized - Invalid client_secret",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Client or service inactive",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not found - Client or service not found",
                         "schema": {
                             "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
@@ -355,54 +367,11 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "client_access.ClientAppResponse": {
-            "type": "object",
-            "properties": {
-                "client_app_id": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "is_active": {
-                    "type": "boolean"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "client_access.ServiceInfoResponse": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "is_active": {
-                    "type": "boolean"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "service_id": {
-                    "type": "string"
-                }
-            }
-        },
         "client_access.VerifyClientResponse": {
             "type": "object",
             "properties": {
-                "client_app": {
-                    "$ref": "#/definitions/client_access.ClientAppResponse"
-                },
-                "is_valid": {
-                    "type": "boolean"
-                },
                 "service_id": {
                     "type": "string"
-                },
-                "service_info": {
-                    "$ref": "#/definitions/client_access.ServiceInfoResponse"
                 }
             }
         },
@@ -721,7 +690,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "",
-	BasePath:         "/v1",
+	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "MandaCode Service Hub Management API",
 	Description:      "Multi-tenant service and client application management API",
