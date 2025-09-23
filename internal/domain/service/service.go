@@ -5,7 +5,6 @@ import (
 
 	"github.com/google/uuid"
 	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/shared"
 )
 
 type Service struct {
@@ -16,7 +15,6 @@ type Service struct {
 	isActive    bool
 	createdAt   time.Time
 	updatedAt   time.Time
-	events      []shared.DomainEvent
 }
 
 func NewService(
@@ -36,7 +34,6 @@ func NewService(
 		isActive:    isActive,
 		createdAt:   createdAt,
 		updatedAt:   updatedAt,
-		events:      make([]shared.DomainEvent, 0),
 	}
 }
 
@@ -55,7 +52,6 @@ func DraftService(name serviceval.Name, description *string) *Service {
 		now,
 	)
 
-	s.raise(NewServiceCreatedEvent(s.publicID.String(), s.name.Value()))
 	return s
 }
 
@@ -95,21 +91,18 @@ func (s *Service) UpdateName(name serviceval.Name) {
 	if s.name.Value() != name.Value() {
 		s.name = name
 		s.updatedAt = time.Now().UTC()
-		s.raise(NewServiceUpdatedEvent(s.publicID.String(), "name_changed"))
 	}
 }
 
 func (s *Service) UpdateDescription(description *string) {
 	s.description = description
 	s.updatedAt = time.Now().UTC()
-	s.raise(NewServiceUpdatedEvent(s.publicID.String(), "description_changed"))
 }
 
 func (s *Service) Activate() {
 	if !s.isActive {
 		s.isActive = true
 		s.updatedAt = time.Now().UTC()
-		s.raise(NewServiceUpdatedEvent(s.publicID.String(), "activated"))
 	}
 }
 
@@ -117,17 +110,5 @@ func (s *Service) Deactivate() {
 	if s.isActive {
 		s.isActive = false
 		s.updatedAt = time.Now().UTC()
-		s.raise(NewServiceUpdatedEvent(s.publicID.String(), "deactivated"))
 	}
-}
-
-// Event methods
-func (s *Service) raise(e shared.DomainEvent) {
-	s.events = append(s.events, e)
-}
-
-func (s *Service) PullEvents() []shared.DomainEvent {
-	events := s.events
-	s.events = nil
-	return events
 }

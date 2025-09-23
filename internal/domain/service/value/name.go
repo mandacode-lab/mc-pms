@@ -1,4 +1,4 @@
-package serviceval
+package value
 
 import (
 	"errors"
