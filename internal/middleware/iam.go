@@ -13,11 +13,25 @@ const (
 
 type PermissionMiddleware struct {
 	IAMService out.IAMService
+	Enabled    bool
 }
 
 // RequirePermission creates a middleware that checks if the user has the required permission
 func (m *PermissionMiddleware) RequirePermission(resource out.Resource, action out.Action) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// If IAM is disabled, skip all permission checks and allow the request
+		if !m.Enabled {
+			// Set a default user ID if none provided when IAM is disabled
+			userID := c.GetHeader("X-User-ID")
+			if userID == "" {
+				userID = "system" // Default user when IAM is disabled
+			}
+			c.Set(UserIDKey, userID)
+			c.Set(PermissionKey, true)
+			c.Next()
+			return
+		}
+
 		ctx := c.Request.Context()
 
 		// Extract user ID from X-User-ID header
