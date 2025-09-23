@@ -17,9 +17,11 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/handler/clientapp_mgmt"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/handler/service_mgmt"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/hasher"
+	"github.com/mandacode-com/mandacode-ssam/internal/adapter/iam"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/random"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/repository"
 	redisinfra "github.com/mandacode-com/mandacode-ssam/internal/infra/redis"
+	"github.com/mandacode-com/mandacode-ssam/internal/middleware"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	clientapp_mgmt_usecase "github.com/mandacode-com/mandacode-ssam/internal/usecase/clientapp_mgmt"
@@ -47,6 +49,10 @@ type Adapter struct {
 	secretGen   out.ByteRandGen
 	encoder     out.Encoder
 	txManager   out.TransactionManager
+	iamService  out.IAMService
+
+	// Middleware
+	permissionMiddleware *middleware.PermissionMiddleware
 }
 
 func NewAdapter(ctx context.Context, cfg *configs.ManagementConfig) (*Adapter, error) {
@@ -86,24 +92,31 @@ func NewAdapter(ctx context.Context, cfg *configs.ManagementConfig) (*Adapter, e
 
 	// Services
 	hasherSvc := hasher.NewBcryptHasher()
-
 	secretGen := random.NewCryptoByteRandGen()
 	encoderSvc := encoder.NewBase64Encoder()
 	txManager := repository.NewEntTransactionManager(client)
+	iamSvc := iam.NewHTTPIAMService(cfg.IAM.ServiceURL)
+
+	// Middleware
+	permissionMiddleware := &middleware.PermissionMiddleware{
+		IAMService: iamSvc,
+	}
 
 	return &Adapter{
-		db:                    db,
-		client:                client,
-		cacheClient:           cacheClient,
-		cacheStore:            cacheStore,
-		serviceRepo:           serviceRepo,
-		serviceQueryRepo:      serviceQueryRepo,
-		clientAppRepo:         clientAppRepo,
-		clientAppQueryRepo:    clientAppQueryRepo,
-		hasher:                hasherSvc,
-		secretGen:             secretGen,
-		encoder:               encoderSvc,
-		txManager:             txManager,
+		db:                   db,
+		client:               client,
+		cacheClient:          cacheClient,
+		cacheStore:           cacheStore,
+		serviceRepo:          serviceRepo,
+		serviceQueryRepo:     serviceQueryRepo,
+		clientAppRepo:        clientAppRepo,
+		clientAppQueryRepo:   clientAppQueryRepo,
+		hasher:               hasherSvc,
+		secretGen:            secretGen,
+		encoder:              encoderSvc,
+		txManager:            txManager,
+		iamService:           iamSvc,
+		permissionMiddleware: permissionMiddleware,
 	}, nil
 }
 
@@ -116,7 +129,9 @@ func (a *Adapter) ProvideServiceMgmtUsecase() in.ServiceMgmtUsecase {
 }
 
 func (a *Adapter) ProvideServiceMgmtHandler() *service_mgmt.Handler {
-	return service_mgmt.NewHandler(a.ProvideServiceMgmtUsecase())
+	handler := service_mgmt.NewHandler(a.ProvideServiceMgmtUsecase())
+	handler.SetPermissionMiddleware(a.permissionMiddleware)
+	return handler
 }
 
 func (a *Adapter) ProvideClientAppMgmtUsecase() in.ClientAppMgmtUsecase {
@@ -132,7 +147,9 @@ func (a *Adapter) ProvideClientAppMgmtUsecase() in.ClientAppMgmtUsecase {
 }
 
 func (a *Adapter) ProvideClientAppMgmtHandler() *clientapp_mgmt.Handler {
-	return clientapp_mgmt.NewHandler(a.ProvideClientAppMgmtUsecase())
+	handler := clientapp_mgmt.NewHandler(a.ProvideClientAppMgmtUsecase())
+	handler.SetPermissionMiddleware(a.permissionMiddleware)
+	return handler
 }
 
 

@@ -12,17 +12,13 @@ import (
 )
 
 type HTTPIAMService struct {
-	baseURL      string
-	httpClient   *http.Client
-	clientAppID  string
-	clientSecret string
+	baseURL    string
+	httpClient *http.Client
 }
 
-func NewHTTPIAMService(baseURL, clientAppID, clientSecret string) *HTTPIAMService {
+func NewHTTPIAMService(baseURL string) *HTTPIAMService {
 	return &HTTPIAMService{
-		baseURL:      baseURL,
-		clientAppID:  clientAppID,
-		clientSecret: clientSecret,
+		baseURL: baseURL,
 		httpClient: &http.Client{
 			Timeout: 10 * time.Second,
 		},
@@ -38,11 +34,10 @@ type PermissionCheckRequest struct {
 
 type PermissionCheckResponse struct {
 	Allowed bool   `json:"allowed"`
-	Action  string `json:"action"`
 	Version string `json:"version"`
 }
 
-func (s *HTTPIAMService) HasPermission(ctx context.Context, userID string, permission out.Permission) (out.PermissionAllowInfo, error) {
+func (s *HTTPIAMService) HasPermission(ctx context.Context, userID string, permission out.Permission) (bool, error) {
 	// Prepare request payload
 	req := PermissionCheckRequest{
 		UserID:   userID,
@@ -54,65 +49,33 @@ func (s *HTTPIAMService) HasPermission(ctx context.Context, userID string, permi
 	// Marshal request to JSON
 	jsonData, err := json.Marshal(req)
 	if err != nil {
-		return out.PermissionAllowInfo{}, fmt.Errorf("failed to marshal permission check request: %w", err)
+		return false, fmt.Errorf("failed to marshal permission check request: %w", err)
 	}
 
 	// Create HTTP request
 	url := fmt.Sprintf("%s/v1/permissions/check", s.baseURL)
 	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBuffer(jsonData))
 	if err != nil {
-		return out.PermissionAllowInfo{}, fmt.Errorf("failed to create HTTP request: %w", err)
+		return false, fmt.Errorf("failed to create HTTP request: %w", err)
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
 
-	// Set Basic Authentication using ClientAppID and ClientSecret
-	httpReq.SetBasicAuth(s.clientAppID, s.clientSecret)
-
 	// Execute HTTP request
 	resp, err := s.httpClient.Do(httpReq)
 	if err != nil {
-		return out.PermissionAllowInfo{}, fmt.Errorf("failed to execute IAM request: %w", err)
+		return false, fmt.Errorf("failed to execute IAM request: %w", err)
 	}
 	defer resp.Body.Close()
 
-	// Handle HTTP status codes
-	switch resp.StatusCode {
-	case http.StatusOK:
-		// Permission check successful, parse response
-		var permResp PermissionCheckResponse
-		if err := json.NewDecoder(resp.Body).Decode(&permResp); err != nil {
-			return out.PermissionAllowInfo{}, fmt.Errorf("failed to decode permission check response: %w", err)
-		}
-
-		return out.PermissionAllowInfo{
-			Allowed: permResp.Allowed,
-			Action:  out.Action(permResp.Action),
-			Version: permResp.Version,
-		}, nil
-
-	case http.StatusUnauthorized:
-		return out.PermissionAllowInfo{
-			Allowed: false,
-			Action:  permission.Action,
-			Version: "",
-		}, nil
-
-	case http.StatusForbidden:
-		return out.PermissionAllowInfo{
-			Allowed: false,
-			Action:  permission.Action,
-			Version: "",
-		}, nil
-
-	case http.StatusBadRequest:
-		return out.PermissionAllowInfo{}, fmt.Errorf("invalid permission check request")
-
-	case http.StatusInternalServerError:
-		return out.PermissionAllowInfo{}, fmt.Errorf("IAM service internal error")
-
-	default:
-		return out.PermissionAllowInfo{}, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	if resp.StatusCode != http.StatusOK {
+		return false, nil
 	}
-}
 
+	var permResp PermissionCheckResponse
+	if err := json.NewDecoder(resp.Body).Decode(&permResp); err != nil {
+		return false, fmt.Errorf("failed to decode permission check response: %w", err)
+	}
+
+	return permResp.Allowed, nil
+}
