@@ -3,7 +3,6 @@ package shared
 import (
 	"context"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/mandacode-ssam/configs"
