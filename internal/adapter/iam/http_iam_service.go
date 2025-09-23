@@ -66,7 +66,11 @@ func (s *HTTPIAMService) HasPermission(ctx context.Context, userID string, permi
 	if err != nil {
 		return false, fmt.Errorf("failed to execute IAM request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			// Log error but don't return since we want to continue with response processing
+		}
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		return false, nil

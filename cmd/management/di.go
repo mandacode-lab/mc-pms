@@ -161,14 +161,21 @@ func (a *Adapter) ProvideClientAppMgmtHandler() *clientmgmt.Handler {
 }
 
 func (a *Adapter) Close() error {
+	var err error
 	if a.client != nil {
-		a.client.Close()
+		if closeErr := a.client.Close(); closeErr != nil {
+			err = closeErr
+		}
 	}
 	if a.db != nil {
-		a.db.Close()
+		if closeErr := a.db.Close(); closeErr != nil {
+			err = closeErr
+		}
 	}
 	if a.cacheClient != nil {
-		a.cacheClient.Close()
+		if closeErr := a.cacheClient.Close(); closeErr != nil {
+			err = closeErr
+		}
 	}
-	return nil
+	return err
 }

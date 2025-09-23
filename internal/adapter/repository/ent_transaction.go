@@ -34,7 +34,7 @@ func (tm *EntTransactionManager) WithTx(ctx context.Context, fn func(tx out.Tx) 
 
 	defer func() {
 		if r := recover(); r != nil {
-			tx.Rollback()
+			_ = tx.Rollback() // Best effort rollback
 			panic(r)
 		}
 	}()

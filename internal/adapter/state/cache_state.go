@@ -54,7 +54,7 @@ func (s *CacheStateService) ValidateState(ctx context.Context, state string) boo
 	}
 
 	// Delete the state after validation (one-time use)
-	s.cache.Del(ctx, key)
+	_ = s.cache.Del(ctx, key) // Best effort deletion
 
 	return true
 }

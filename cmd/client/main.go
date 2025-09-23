@@ -51,7 +51,11 @@ func main() {
 	if err != nil {
 		logger.Fatal().Err(err).Msg("Failed to create adapter")
 	}
-	defer adapter.Close()
+	defer func() {
+		if closeErr := adapter.Close(); closeErr != nil {
+			logger.Error().Err(closeErr).Msg("Failed to close adapter")
+		}
+	}()
 
 	// Setup server
 	srv := shared.SetupServer(&cfg.Server, &logger)
