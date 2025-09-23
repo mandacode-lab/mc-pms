@@ -1,8 +1,12 @@
 package value
 
 import (
+	"errors"
+
 	"github.com/google/uuid"
 )
+
+var ErrInvalidPublicID = errors.New("invalid clientapp public ID")
 
 type PublicID struct {
 	value uuid.UUID
@@ -15,7 +19,7 @@ func NewPublicID(value uuid.UUID) PublicID {
 func ParsePublicID(value string) (PublicID, error) {
 	parsed, err := uuid.Parse(value)
 	if err != nil {
-		return PublicID{}, ErrInvalidID
+		return PublicID{}, ErrInvalidPublicID
 	}
 	return PublicID{value: parsed}, nil
 }

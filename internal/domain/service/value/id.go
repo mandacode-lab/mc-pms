@@ -5,9 +5,7 @@ import (
 	"strconv"
 )
 
-var (
-	ErrInvalidID = errors.New("invalid service ID")
-)
+var ErrInvalidID = errors.New("invalid service ID")
 
 type ID struct {
 	value int64
