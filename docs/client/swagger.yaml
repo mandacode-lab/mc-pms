@@ -1,5 +1,5 @@
 definitions:
-  clientapp_mgmt.ClientAppResponse:
+  clientmgmt.ClientAppResponse:
     properties:
       client_app_id:
         type: string
@@ -16,7 +16,7 @@ definitions:
       updated_at:
         type: string
     type: object
-  clientapp_mgmt.CreateClientAppRequest:
+  clientmgmt.CreateClientAppRequest:
     properties:
       description:
         example: Description of my application
@@ -31,7 +31,7 @@ definitions:
     - name
     - service_id
     type: object
-  clientapp_mgmt.CreateClientAppResponse:
+  clientmgmt.CreateClientAppResponse:
     properties:
       client_app_id:
         example: app_abcdef1234567890
@@ -58,21 +58,21 @@ definitions:
         example: "2023-01-01T00:00:00Z"
         type: string
     type: object
-  clientapp_mgmt.ListClientAppsResponse:
+  clientmgmt.ListClientAppsResponse:
     properties:
       client_apps:
         items:
-          $ref: '#/definitions/clientapp_mgmt.ClientAppResponse'
+          $ref: '#/definitions/clientmgmt.ClientAppResponse'
         type: array
       service_id:
         type: string
     type: object
-  clientapp_mgmt.RefreshSecretResponse:
+  clientmgmt.RefreshSecretResponse:
     properties:
       secret:
         type: string
     type: object
-  clientapp_mgmt.UpdateClientAppRequest:
+  clientmgmt.UpdateClientAppRequest:
     properties:
       description:
         type: string
@@ -81,7 +81,7 @@ definitions:
     required:
     - name
     type: object
-  clientapp_mgmt.UpdateClientAppResponse:
+  clientmgmt.UpdateClientAppResponse:
     properties:
       client_app_id:
         type: string
@@ -168,7 +168,7 @@ definitions:
       error:
         type: string
     type: object
-  service_mgmt.CreateServiceRequest:
+  servicemgmt.CreateServiceRequest:
     properties:
       description:
         example: Service description
@@ -179,7 +179,7 @@ definitions:
     required:
     - name
     type: object
-  service_mgmt.CreateServiceResponse:
+  servicemgmt.CreateServiceResponse:
     properties:
       created_at:
         example: "2023-01-01T00:00:00Z"
@@ -200,7 +200,7 @@ definitions:
         example: "2023-01-01T00:00:00Z"
         type: string
     type: object
-  service_mgmt.UpdateServiceRequest:
+  servicemgmt.UpdateServiceRequest:
     properties:
       description:
         type: string
@@ -209,7 +209,7 @@ definitions:
     required:
     - name
     type: object
-  service_mgmt.UpdateServiceResponse:
+  servicemgmt.UpdateServiceResponse:
     properties:
       created_at:
         type: string
@@ -285,7 +285,7 @@ paths:
         "200":
           description: List of client apps
           schema:
-            $ref: '#/definitions/clientapp_mgmt.ListClientAppsResponse'
+            $ref: '#/definitions/clientmgmt.ListClientAppsResponse'
         "400":
           description: Invalid request
           schema:
@@ -307,14 +307,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/clientapp_mgmt.CreateClientAppRequest'
+          $ref: '#/definitions/clientmgmt.CreateClientAppRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created client app with secret
           schema:
-            $ref: '#/definitions/clientapp_mgmt.CreateClientAppResponse'
+            $ref: '#/definitions/clientmgmt.CreateClientAppResponse'
         "400":
           description: Invalid request
           schema:
@@ -342,14 +342,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/clientapp_mgmt.UpdateClientAppRequest'
+          $ref: '#/definitions/clientmgmt.UpdateClientAppRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Updated client app
           schema:
-            $ref: '#/definitions/clientapp_mgmt.UpdateClientAppResponse'
+            $ref: '#/definitions/clientmgmt.UpdateClientAppResponse'
         "400":
           description: Invalid request
           schema:
@@ -376,7 +376,7 @@ paths:
         "200":
           description: New secret
           schema:
-            $ref: '#/definitions/clientapp_mgmt.RefreshSecretResponse'
+            $ref: '#/definitions/clientmgmt.RefreshSecretResponse'
         "400":
           description: Invalid request
           schema:
@@ -399,14 +399,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/service_mgmt.CreateServiceRequest'
+          $ref: '#/definitions/servicemgmt.CreateServiceRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created service
           schema:
-            $ref: '#/definitions/service_mgmt.CreateServiceResponse'
+            $ref: '#/definitions/servicemgmt.CreateServiceResponse'
         "400":
           description: Bad request
           schema:
@@ -438,14 +438,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/service_mgmt.UpdateServiceRequest'
+          $ref: '#/definitions/servicemgmt.UpdateServiceRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Updated service
           schema:
-            $ref: '#/definitions/service_mgmt.UpdateServiceResponse'
+            $ref: '#/definitions/servicemgmt.UpdateServiceResponse'
         "400":
           description: Bad request
           schema:

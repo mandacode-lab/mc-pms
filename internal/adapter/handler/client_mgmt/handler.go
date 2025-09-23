@@ -1,4 +1,4 @@
-package clientapp_mgmt
+package clientmgmt
 
 import (
 	"github.com/gin-gonic/gin"

@@ -1,4 +1,4 @@
-package service_mgmt
+package servicemgmt
 
 import (
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"

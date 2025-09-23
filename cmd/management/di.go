@@ -14,7 +14,7 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/ent"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/cache"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/encoder"
-	"github.com/mandacode-com/mandacode-ssam/internal/adapter/handler/clientapp_mgmt"
+	"github.com/mandacode-com/mandacode-ssam/internal/adapter/handler/client_mgmt"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/handler/service_mgmt"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/hasher"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/iam"
@@ -24,8 +24,8 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/internal/middleware"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
-	clientapp_mgmt_usecase "github.com/mandacode-com/mandacode-ssam/internal/usecase/clientapp_mgmt"
-	service_mgmt_usecase "github.com/mandacode-com/mandacode-ssam/internal/usecase/service_mgmt"
+	client_usecase "github.com/mandacode-com/mandacode-ssam/internal/usecase/client_mgmt"
+	service_usecase "github.com/mandacode-com/mandacode-ssam/internal/usecase/service_mgmt"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -39,17 +39,17 @@ type Adapter struct {
 	cacheStore  out.CacheStore
 
 	// Repositories
-	serviceRepo           out.ServiceRepository
-	serviceQueryRepo      out.ServiceQueryRepository
-	clientAppRepo         out.ClientAppRepository
-	clientAppQueryRepo    out.ClientAppQueryRepository
+	serviceRepo        out.ServiceRepository
+	serviceQueryRepo   out.ServiceQueryRepository
+	clientAppRepo      out.ClientAppRepository
+	clientAppQueryRepo out.ClientAppQueryRepository
 
 	// Services
-	hasher      out.Hasher
-	secretGen   out.ByteRandGen
-	encoder     out.Encoder
-	txManager   out.TransactionManager
-	iamService  out.IAMService
+	hasher     out.Hasher
+	secretGen  out.ByteRandGen
+	encoder    out.Encoder
+	txManager  out.TransactionManager
+	iamService out.IAMService
 
 	// Middleware
 	permissionMiddleware *middleware.PermissionMiddleware
@@ -121,21 +121,21 @@ func NewAdapter(ctx context.Context, cfg *configs.ManagementConfig) (*Adapter, e
 }
 
 func (a *Adapter) ProvideServiceMgmtUsecase() in.ServiceMgmtUsecase {
-	return service_mgmt_usecase.NewUsecase(
+	return service_usecase.NewUsecase(
 		a.serviceRepo,
 		a.serviceQueryRepo,
 		a.txManager,
 	)
 }
 
-func (a *Adapter) ProvideServiceMgmtHandler() *service_mgmt.Handler {
-	handler := service_mgmt.NewHandler(a.ProvideServiceMgmtUsecase())
+func (a *Adapter) ProvideServiceMgmtHandler() *servicemgmt.Handler {
+	handler := servicemgmt.NewHandler(a.ProvideServiceMgmtUsecase())
 	handler.SetPermissionMiddleware(a.permissionMiddleware)
 	return handler
 }
 
 func (a *Adapter) ProvideClientAppMgmtUsecase() in.ClientAppMgmtUsecase {
-	return clientapp_mgmt_usecase.NewUsecase(
+	return client_usecase.NewUsecase(
 		a.clientAppRepo,
 		a.clientAppQueryRepo,
 		a.serviceQueryRepo,
@@ -146,12 +146,11 @@ func (a *Adapter) ProvideClientAppMgmtUsecase() in.ClientAppMgmtUsecase {
 	)
 }
 
-func (a *Adapter) ProvideClientAppMgmtHandler() *clientapp_mgmt.Handler {
-	handler := clientapp_mgmt.NewHandler(a.ProvideClientAppMgmtUsecase())
+func (a *Adapter) ProvideClientAppMgmtHandler() *clientmgmt.Handler {
+	handler := clientmgmt.NewHandler(a.ProvideClientAppMgmtUsecase())
 	handler.SetPermissionMiddleware(a.permissionMiddleware)
 	return handler
 }
-
 
 func (a *Adapter) Close() error {
 	if a.client != nil {

@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mandacode-com/mandacode-ssam/configs"
 	merrmid "github.com/mandacode-com/merr/middleware"
 	mervermid "github.com/mandacode-com/merver/middleware"
-	"github.com/mandacode-com/mandacode-ssam/configs"
 	"github.com/rs/zerolog"
 )
 
@@ -70,4 +70,3 @@ func SetupServer(cfg *configs.ServerConfig, logger *zerolog.Logger) *HTTPServer 
 		logger: logger,
 	}
 }
-

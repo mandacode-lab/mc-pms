@@ -39,7 +39,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Client verification successful - returns service_id",
                         "schema": {
-                            "$ref": "#/definitions/client_access.VerifyClientResponse"
+                            "$ref": "#/definitions/clientaccess.VerifyClientResponse"
                         }
                     },
                     "400": {
@@ -98,7 +98,7 @@ const docTemplate = `{
                     "200": {
                         "description": "List of client apps",
                         "schema": {
-                            "$ref": "#/definitions/internal_adapter_handler_clientapp_mgmt.ListClientAppsResponse"
+                            "$ref": "#/definitions/internal_adapter_handler_client_mgmt.ListClientAppsResponse"
                         }
                     },
                     "400": {
@@ -134,7 +134,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_adapter_handler_clientapp_mgmt.CreateClientAppRequest"
+                            "$ref": "#/definitions/internal_adapter_handler_client_mgmt.CreateClientAppRequest"
                         }
                     }
                 ],
@@ -142,7 +142,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created client app with secret",
                         "schema": {
-                            "$ref": "#/definitions/internal_adapter_handler_clientapp_mgmt.CreateClientAppResponse"
+                            "$ref": "#/definitions/internal_adapter_handler_client_mgmt.CreateClientAppResponse"
                         }
                     },
                     "400": {
@@ -187,7 +187,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_adapter_handler_clientapp_mgmt.UpdateClientAppRequest"
+                            "$ref": "#/definitions/internal_adapter_handler_client_mgmt.UpdateClientAppRequest"
                         }
                     }
                 ],
@@ -195,7 +195,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Updated client app",
                         "schema": {
-                            "$ref": "#/definitions/internal_adapter_handler_clientapp_mgmt.UpdateClientAppResponse"
+                            "$ref": "#/definitions/internal_adapter_handler_client_mgmt.UpdateClientAppResponse"
                         }
                     },
                     "400": {
@@ -236,7 +236,7 @@ const docTemplate = `{
                     "200": {
                         "description": "New secret",
                         "schema": {
-                            "$ref": "#/definitions/internal_adapter_handler_clientapp_mgmt.RefreshSecretResponse"
+                            "$ref": "#/definitions/internal_adapter_handler_client_mgmt.RefreshSecretResponse"
                         }
                     },
                     "400": {
@@ -367,7 +367,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "client_access.VerifyClientResponse": {
+        "clientaccess.VerifyClientResponse": {
             "type": "object",
             "properties": {
                 "service_id": {
@@ -375,7 +375,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_adapter_handler_clientapp_mgmt.ClientAppResponse": {
+        "internal_adapter_handler_client_mgmt.ClientAppResponse": {
             "type": "object",
             "properties": {
                 "client_app_id": {
@@ -401,7 +401,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_adapter_handler_clientapp_mgmt.CreateClientAppRequest": {
+        "internal_adapter_handler_client_mgmt.CreateClientAppRequest": {
             "type": "object",
             "required": [
                 "name",
@@ -422,7 +422,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_adapter_handler_clientapp_mgmt.CreateClientAppResponse": {
+        "internal_adapter_handler_client_mgmt.CreateClientAppResponse": {
             "type": "object",
             "properties": {
                 "client_app_id": {
@@ -459,13 +459,13 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_adapter_handler_clientapp_mgmt.ListClientAppsResponse": {
+        "internal_adapter_handler_client_mgmt.ListClientAppsResponse": {
             "type": "object",
             "properties": {
                 "client_apps": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/internal_adapter_handler_clientapp_mgmt.ClientAppResponse"
+                        "$ref": "#/definitions/internal_adapter_handler_client_mgmt.ClientAppResponse"
                     }
                 },
                 "service_id": {
@@ -473,7 +473,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_adapter_handler_clientapp_mgmt.RefreshSecretResponse": {
+        "internal_adapter_handler_client_mgmt.RefreshSecretResponse": {
             "type": "object",
             "properties": {
                 "secret": {
@@ -481,7 +481,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_adapter_handler_clientapp_mgmt.UpdateClientAppRequest": {
+        "internal_adapter_handler_client_mgmt.UpdateClientAppRequest": {
             "type": "object",
             "required": [
                 "name"
@@ -495,7 +495,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_adapter_handler_clientapp_mgmt.UpdateClientAppResponse": {
+        "internal_adapter_handler_client_mgmt.UpdateClientAppResponse": {
             "type": "object",
             "properties": {
                 "client_app_id": {

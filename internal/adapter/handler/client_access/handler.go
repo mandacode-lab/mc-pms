@@ -1,4 +1,4 @@
-package client_access
+package clientaccess
 
 import (
 	"github.com/gin-gonic/gin"

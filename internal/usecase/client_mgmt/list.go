@@ -1,4 +1,4 @@
-package clientapp_mgmt
+package clientmgmt
 
 import (
 	"context"

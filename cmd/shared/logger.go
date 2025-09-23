@@ -39,4 +39,3 @@ func SetupLogger(env string) zerolog.Logger {
 func SystemLog(l zerolog.Logger) *zerolog.Event {
 	return l.WithLevel(SystemLevel)
 }
-

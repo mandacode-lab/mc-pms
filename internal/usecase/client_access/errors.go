@@ -1,11 +1,11 @@
-package client_access
+package clientaccess
 
 const (
-	ErrInternalServerMsg    = "internal server error"
-	ErrServiceNotFoundMsg   = "service not found"
-	ErrClientAppNotFoundMsg = "client app not found"
-	ErrInvalidClientIDMsg   = "invalid client_id format"
-	ErrClientAppInactiveMsg = "client app is inactive"
+	ErrInternalServerMsg      = "internal server error"
+	ErrServiceNotFoundMsg     = "service not found"
+	ErrClientAppNotFoundMsg   = "client app not found"
+	ErrInvalidClientIDMsg     = "invalid client_id format"
+	ErrClientAppInactiveMsg   = "client app is inactive"
 	ErrInvalidClientSecretMsg = "invalid client_secret"
-	ErrServiceInactiveMsg   = "service is inactive"
+	ErrServiceInactiveMsg     = "service is inactive"
 )

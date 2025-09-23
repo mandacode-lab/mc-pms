@@ -1,4 +1,4 @@
-package clientapp_mgmt
+package clientmgmt
 
 const (
 	ErrInternalServerMsg         = "internal server error"

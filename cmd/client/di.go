@@ -19,7 +19,7 @@ import (
 	redisinfra "github.com/mandacode-com/mandacode-ssam/internal/infra/redis"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
-	client_access_usecase "github.com/mandacode-com/mandacode-ssam/internal/usecase/client_access"
+	access_usecase "github.com/mandacode-com/mandacode-ssam/internal/usecase/client_access"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -88,15 +88,15 @@ func NewAdapter(ctx context.Context, cfg *configs.ClientConfig) (*Adapter, error
 }
 
 func (a *Adapter) ProvideClientAccessUsecase() in.ClientAccessUsecase {
-	return client_access_usecase.NewUsecase(
+	return access_usecase.NewUsecase(
 		a.clientAppQueryRepo,
 		a.serviceQueryRepo,
 		a.hasher,
 	)
 }
 
-func (a *Adapter) ProvideClientAccessHandler() *client_access.Handler {
-	return client_access.NewHandler(a.ProvideClientAccessUsecase())
+func (a *Adapter) ProvideClientAccessHandler() *clientaccess.Handler {
+	return clientaccess.NewHandler(a.ProvideClientAccessUsecase())
 }
 
 func (a *Adapter) Close() error {

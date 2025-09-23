@@ -1,4 +1,4 @@
-package client_access
+package clientaccess
 
 import (
 	"context"

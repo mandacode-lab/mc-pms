@@ -1,4 +1,4 @@
-package service_mgmt
+package servicemgmt
 
 const (
 	ErrInternalServerMsg       = "internal server error"

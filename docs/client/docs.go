@@ -98,7 +98,7 @@ const docTemplate = `{
                     "200": {
                         "description": "List of client apps",
                         "schema": {
-                            "$ref": "#/definitions/clientapp_mgmt.ListClientAppsResponse"
+                            "$ref": "#/definitions/clientmgmt.ListClientAppsResponse"
                         }
                     },
                     "400": {
@@ -134,7 +134,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/clientapp_mgmt.CreateClientAppRequest"
+                            "$ref": "#/definitions/clientmgmt.CreateClientAppRequest"
                         }
                     }
                 ],
@@ -142,7 +142,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created client app with secret",
                         "schema": {
-                            "$ref": "#/definitions/clientapp_mgmt.CreateClientAppResponse"
+                            "$ref": "#/definitions/clientmgmt.CreateClientAppResponse"
                         }
                     },
                     "400": {
@@ -187,7 +187,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/clientapp_mgmt.UpdateClientAppRequest"
+                            "$ref": "#/definitions/clientmgmt.UpdateClientAppRequest"
                         }
                     }
                 ],
@@ -195,7 +195,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Updated client app",
                         "schema": {
-                            "$ref": "#/definitions/clientapp_mgmt.UpdateClientAppResponse"
+                            "$ref": "#/definitions/clientmgmt.UpdateClientAppResponse"
                         }
                     },
                     "400": {
@@ -236,7 +236,7 @@ const docTemplate = `{
                     "200": {
                         "description": "New secret",
                         "schema": {
-                            "$ref": "#/definitions/clientapp_mgmt.RefreshSecretResponse"
+                            "$ref": "#/definitions/clientmgmt.RefreshSecretResponse"
                         }
                     },
                     "400": {
@@ -274,7 +274,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service_mgmt.CreateServiceRequest"
+                            "$ref": "#/definitions/servicemgmt.CreateServiceRequest"
                         }
                     }
                 ],
@@ -282,7 +282,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created service",
                         "schema": {
-                            "$ref": "#/definitions/service_mgmt.CreateServiceResponse"
+                            "$ref": "#/definitions/servicemgmt.CreateServiceResponse"
                         }
                     },
                     "400": {
@@ -333,7 +333,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service_mgmt.UpdateServiceRequest"
+                            "$ref": "#/definitions/servicemgmt.UpdateServiceRequest"
                         }
                     }
                 ],
@@ -341,7 +341,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Updated service",
                         "schema": {
-                            "$ref": "#/definitions/service_mgmt.UpdateServiceResponse"
+                            "$ref": "#/definitions/servicemgmt.UpdateServiceResponse"
                         }
                     },
                     "400": {
@@ -367,7 +367,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "clientapp_mgmt.ClientAppResponse": {
+        "clientmgmt.ClientAppResponse": {
             "type": "object",
             "properties": {
                 "client_app_id": {
@@ -393,7 +393,7 @@ const docTemplate = `{
                 }
             }
         },
-        "clientapp_mgmt.CreateClientAppRequest": {
+        "clientmgmt.CreateClientAppRequest": {
             "type": "object",
             "required": [
                 "name",
@@ -414,7 +414,7 @@ const docTemplate = `{
                 }
             }
         },
-        "clientapp_mgmt.CreateClientAppResponse": {
+        "clientmgmt.CreateClientAppResponse": {
             "type": "object",
             "properties": {
                 "client_app_id": {
@@ -451,13 +451,13 @@ const docTemplate = `{
                 }
             }
         },
-        "clientapp_mgmt.ListClientAppsResponse": {
+        "clientmgmt.ListClientAppsResponse": {
             "type": "object",
             "properties": {
                 "client_apps": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/clientapp_mgmt.ClientAppResponse"
+                        "$ref": "#/definitions/clientmgmt.ClientAppResponse"
                     }
                 },
                 "service_id": {
@@ -465,7 +465,7 @@ const docTemplate = `{
                 }
             }
         },
-        "clientapp_mgmt.RefreshSecretResponse": {
+        "clientmgmt.RefreshSecretResponse": {
             "type": "object",
             "properties": {
                 "secret": {
@@ -473,7 +473,7 @@ const docTemplate = `{
                 }
             }
         },
-        "clientapp_mgmt.UpdateClientAppRequest": {
+        "clientmgmt.UpdateClientAppRequest": {
             "type": "object",
             "required": [
                 "name"
@@ -487,7 +487,7 @@ const docTemplate = `{
                 }
             }
         },
-        "clientapp_mgmt.UpdateClientAppResponse": {
+        "clientmgmt.UpdateClientAppResponse": {
             "type": "object",
             "properties": {
                 "client_app_id": {
@@ -593,7 +593,7 @@ const docTemplate = `{
                 }
             }
         },
-        "service_mgmt.CreateServiceRequest": {
+        "servicemgmt.CreateServiceRequest": {
             "type": "object",
             "required": [
                 "name"
@@ -609,7 +609,7 @@ const docTemplate = `{
                 }
             }
         },
-        "service_mgmt.CreateServiceResponse": {
+        "servicemgmt.CreateServiceResponse": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -638,7 +638,7 @@ const docTemplate = `{
                 }
             }
         },
-        "service_mgmt.UpdateServiceRequest": {
+        "servicemgmt.UpdateServiceRequest": {
             "type": "object",
             "required": [
                 "name"
@@ -652,7 +652,7 @@ const docTemplate = `{
                 }
             }
         },
-        "service_mgmt.UpdateServiceResponse": {
+        "servicemgmt.UpdateServiceResponse": {
             "type": "object",
             "properties": {
                 "created_at": {
