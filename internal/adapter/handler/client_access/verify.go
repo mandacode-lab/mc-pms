@@ -62,7 +62,7 @@ func (h *Handler) VerifyClient(c *gin.Context) {
 	clientID, err := clientappval.ParsePublicID(username)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid client_id format", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -75,7 +75,7 @@ func (h *Handler) VerifyClient(c *gin.Context) {
 	// Call usecase
 	result, err := h.clientAccess.VerifyClient(ctx, usecaseReq)
 	if err != nil {
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 

@@ -59,14 +59,14 @@ func (h *Handler) UpdateClientApp(c *gin.Context) {
 	clientAppID, err := clientappval.ParsePublicID(clientAppIDStr)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid client app ID", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
 	var req UpdateClientAppRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid request body", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -78,7 +78,7 @@ func (h *Handler) UpdateClientApp(c *gin.Context) {
 
 	result, err := h.clientAppMgmt.UpdateClientApp(ctx, usecaseReq)
 	if err != nil {
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 

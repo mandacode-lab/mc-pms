@@ -70,7 +70,7 @@ func (m *PermissionMiddleware) RequirePermission(resource out.Resource, action o
 		// Check if permission is allowed
 		if !allowed {
 			err := merr.New(merr.ErrForbidden, "insufficient permissions", nil)
-			c.Error(err)
+			_ = c.Error(err)
 			c.Abort()
 			return
 		}

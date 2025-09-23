@@ -65,7 +65,7 @@ func (h *Handler) ListClientApps(c *gin.Context) {
 	serviceIDStr := c.Query("service_id")
 	if serviceIDStr == "" {
 		err := merr.New(merr.ErrBadRequest, "service_id is required", nil)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -73,7 +73,7 @@ func (h *Handler) ListClientApps(c *gin.Context) {
 	serviceID, err := serviceval.ParsePublicID(serviceIDStr)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid service ID", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -83,7 +83,7 @@ func (h *Handler) ListClientApps(c *gin.Context) {
 
 	result, err := h.clientAppMgmt.ListClientApps(ctx, usecaseReq)
 	if err != nil {
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 

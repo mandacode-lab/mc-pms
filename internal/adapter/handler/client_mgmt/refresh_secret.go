@@ -39,7 +39,7 @@ func (h *Handler) RefreshSecret(c *gin.Context) {
 	clientAppID, err := clientappval.ParsePublicID(clientAppIDStr)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid client app ID", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -49,7 +49,7 @@ func (h *Handler) RefreshSecret(c *gin.Context) {
 
 	result, err := h.clientAppMgmt.RefreshSecret(ctx, usecaseReq)
 	if err != nil {
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
