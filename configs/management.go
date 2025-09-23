@@ -15,4 +15,3 @@ func LoadManagementConfig() (*ManagementConfig, error) {
 	}
 	return cfg, nil
 }
-
