@@ -95,11 +95,19 @@ func NewAdapter(ctx context.Context, cfg *configs.ManagementConfig) (*Adapter, e
 	secretGen := random.NewCryptoByteRandGen()
 	encoderSvc := encoder.NewBase64Encoder()
 	txManager := repository.NewEntTransactionManager(client)
-	iamSvc := iam.NewHTTPIAMService(cfg.IAM.ServiceURL)
+
+	// IAM Service - choose based on configuration
+	var iamSvc out.IAMService
+	if cfg.IAM.Enabled {
+		iamSvc = iam.NewHTTPIAMService(cfg.IAM.ServiceURL)
+	} else {
+		iamSvc = iam.NewNoOpIAMService()
+	}
 
 	// Middleware
 	permissionMiddleware := &middleware.PermissionMiddleware{
 		IAMService: iamSvc,
+		Enabled:    cfg.IAM.Enabled,
 	}
 
 	return &Adapter{

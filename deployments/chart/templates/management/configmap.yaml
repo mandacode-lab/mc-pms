@@ -6,8 +6,10 @@ metadata:
   labels:
     {{- include "defined.management.labels" . | nindent 4 }}
 data:
-  ENV: {{ .Values.global.env | default "prod" | quote }}
+  ENV: {{ .Values.management.env | default "prod" | quote }}
   PORT: "8080"
   READ_TIMEOUT: {{ .Values.management.server.readTimeout | quote }}
   WRITE_TIMEOUT: {{ .Values.management.server.writeTimeout | quote }}
+  IAM_ENABLED: {{ .Values.management.iam.enabled | default true | quote }}
+  IAM_SERVICE_URL: {{ .Values.management.iam.serviceUrl | default "http://localhost:8080" | quote }}
 {{- end }}
