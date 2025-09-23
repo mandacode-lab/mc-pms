@@ -1,7 +1,3 @@
-# Global configuration
-global:
-  env: "prod"
-
 # Image configuration
 image:
   registry: ""
@@ -12,8 +8,9 @@ image:
 
 # Service configuration
 client:
-  imageName: "mandacode-ssam-client"
+  imageName: "client"
   enabled: true
+  env: "prod"
   replicaCount: 2
   service:
     type: ClusterIP
@@ -31,18 +28,19 @@ client:
     minReplicas: 2
     maxReplicas: 10
     targetCPUUtilizationPercentage: 70
-    targetMemoryUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 70
   server:
     readTimeout: "30s"
     writeTimeout: "30s"
 
 management:
-  imageName: "mandacode-ssam-management"
+  imageName: "management"
   enabled: true
+  env: "prod"
   replicaCount: 2
   service:
     type: ClusterIP
-    port: 8081
+    port: 8080
     targetPort: 8080
   resources:
     limits:
@@ -56,10 +54,16 @@ management:
     minReplicas: 2
     maxReplicas: 10
     targetCPUUtilizationPercentage: 70
-    targetMemoryUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 70
   server:
     readTimeout: "30s"
     writeTimeout: "30s"
+  iam:
+    enabled: true
+    serviceUrl: "http://localhost:8080"
+  systemClient:
+    serviceName: "system"
+    clientName: "system-client"
 
 # Database configuration
 database:
@@ -93,8 +97,8 @@ kek:
 # Database migration configuration
 migration:
   enabled: true
-  imageName: "atlas"
-  version: "latest-alpine"
+  imageName: "migration"
+  version: "latest"
   resources:
     limits:
       cpu: 200m
@@ -108,6 +112,12 @@ securityContext:
   runAsNonRoot: true
   runAsUser: 1001
   runAsGroup: 1001
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+  seccompProfile:
+    type: RuntimeDefault
 
 podSecurityContext:
   runAsNonRoot: true

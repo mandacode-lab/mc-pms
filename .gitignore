@@ -74,9 +74,6 @@ Thumbs.db
 .make.env
 local.env
 
-CLAUDE.md
-CONTEXT.md
-
 *dev*
 
 values.yaml

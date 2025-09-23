@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "defined.client.labels" . | nindent 4 }}
 data:
-  ENV: {{ .Values.global.env | default "prod" | quote }}
+  ENV: {{ .Values.client.env | default "prod" | quote }}
   PORT: "8080"
   READ_TIMEOUT: {{ .Values.client.server.readTimeout | quote }}
   WRITE_TIMEOUT: {{ .Values.client.server.writeTimeout | quote }}
