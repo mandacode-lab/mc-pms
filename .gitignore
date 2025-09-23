@@ -72,8 +72,12 @@ Thumbs.db
 
 # Local environment
 .make.env
-local.env
+.local.env
+.dev.env
 
-*dev*
+# Build files
+management
+client
 
+# Helm values file
 values.yaml
