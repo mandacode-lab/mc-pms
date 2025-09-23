@@ -11,8 +11,12 @@ const (
 	UserIDKey     string = "user_id"
 )
 
+type PermissionMiddleware struct {
+	IAMService out.IAMService
+}
+
 // RequirePermission creates a middleware that checks if the user has the required permission
-func RequirePermission(iamService out.IAMService, resource out.Resource, action out.Action) gin.HandlerFunc {
+func (m *PermissionMiddleware) RequirePermission(resource out.Resource, action out.Action) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx := c.Request.Context()
 
@@ -41,7 +45,7 @@ func RequirePermission(iamService out.IAMService, resource out.Resource, action 
 		}
 
 		// Check permission with IAM service
-		allowed, err := iamService.HasPermission(ctx, userID, permission)
+		allowed, err := m.IAMService.HasPermission(ctx, userID, permission)
 		if err != nil {
 			err := merr.New(merr.ErrInternalServerError, "failed to check permission", err)
 			c.Error(err)

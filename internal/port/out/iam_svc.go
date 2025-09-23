@@ -28,7 +28,8 @@ type Permission struct {
 
 func (p Permission) Validate() bool {
 	validResources := map[Resource]bool{
-		ResourceService: true,
+		ResourceService:   true,
+		ResourceClientApp: true,
 	}
 
 	validActions := map[Action]bool{
