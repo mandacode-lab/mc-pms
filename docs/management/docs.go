@@ -153,6 +153,51 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "Delete a client application by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "client-apps"
+                ],
+                "summary": "Delete a client application",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client App ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Client app deleted successfully"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Client app not found",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/client-apps/{id}/refresh-secret": {
@@ -355,6 +400,51 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Resource not found",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a service by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "Delete a service",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Service deleted successfully"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Service not found",
                         "schema": {
                             "$ref": "#/definitions/merrmid.ErrorResponse"
                         }

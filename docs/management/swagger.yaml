@@ -313,6 +313,36 @@ paths:
       tags:
       - client-apps
   /client-apps/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a client application by ID
+      parameters:
+      - description: Client App ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Client app deleted successfully
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "404":
+          description: Client app not found
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: Delete a client application
+      tags:
+      - client-apps
     put:
       consumes:
       - application/json
@@ -450,6 +480,36 @@ paths:
       tags:
       - services
   /services/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a service by ID
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Service deleted successfully
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "404":
+          description: Service not found
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: Delete a service
+      tags:
+      - services
     put:
       consumes:
       - application/json
