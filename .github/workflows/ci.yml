@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 env:
   GO_VERSION: "1.25"
@@ -86,7 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [client, management]
+        service: [client, management, migration]
 
     steps:
       - uses: actions/checkout@v5
@@ -99,14 +99,46 @@ jobs:
           context: .
           file: ./build/package/Dockerfile.${{ matrix.service }}
           load: true
-          tags: mandacode-${{ matrix.service }}:test
+          tags: mandacode-ssam-${{ matrix.service }}:test
           cache-from: type=gha,scope=ci-${{ matrix.service }}
           cache-to: type=gha,mode=max,scope=ci-${{ matrix.service }}
 
       - name: Verify Image
         run: |
-          docker run --rm mandacode-${{ matrix.service }}:test --version 2>/dev/null || echo "Image built successfully"
-          docker inspect mandacode-${{ matrix.service }}:test --format='{{.Config.User}}' | grep -q "1001" && echo "Security: Running as non-root user"
+          # Verify image was built successfully
+          docker inspect mandacode-ssam-${{ matrix.service }}:test >/dev/null && echo "✅ ${{ matrix.service }} image built successfully"
+
+          # Verify security: running as non-root user
+          docker inspect mandacode-ssam-${{ matrix.service }}:test --format='{{.Config.User}}' | grep -q "1001" && echo "🔒 Security: Running as non-root user"
+
+      - name: Analyze Image
+        run: |
+          echo "Analyzing Docker image: mandacode-ssam-${{ matrix.service }}:test"
+
+          # Image size analysis
+          SIZE=$(docker inspect mandacode-ssam-${{ matrix.service }}:test --format='{{.Size}}' | awk '{printf "%.2f MB", $1/1024/1024}')
+          echo "Image size: $SIZE"
+
+          # Layer analysis
+          LAYERS=$(docker history mandacode-ssam-${{ matrix.service }}:test --no-trunc --format "table {{.CreatedBy}}" | wc -l)
+          echo "Number of layers: $LAYERS"
+
+          # Security analysis
+          echo "Security Analysis:"
+          docker inspect mandacode-ssam-${{ matrix.service }}:test --format='{{json .Config}}' | jq -r '
+            "User: " + (.User // "root"),
+            "WorkingDir: " + (.WorkingDir // "/"),
+            "Exposed Ports: " + (if .ExposedPorts then (.ExposedPorts | keys | join(", ")) else "none" end),
+            "Environment Variables: " + (.Env | length | tostring)
+          '
+
+      - name: Vulnerability Scan
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: mandacode-ssam-${{ matrix.service }}:test
+          format: "table"
+          exit-code: 0
+          severity: "CRITICAL,HIGH"
 
   helm:
     name: Helm Validation
