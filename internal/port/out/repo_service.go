@@ -25,7 +25,6 @@ type ServiceListOptions struct {
 	Order  ServiceListOrder
 }
 
-
 type ServiceRepository interface {
 	Create(ctx context.Context, tx Tx, service *entity.Service) (*entity.Service, error)
 	Update(ctx context.Context, tx Tx, service *entity.Service) error
@@ -39,3 +38,4 @@ type ServiceQueryRepository interface {
 	FindByName(ctx context.Context, name vo.ServiceName) (*entity.Service, error)
 	List(ctx context.Context, filter *ServiceListFilter, options *ServiceListOptions) ([]*entity.Service, int, error)
 }
+

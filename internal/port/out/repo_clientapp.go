@@ -26,7 +26,6 @@ type ClientAppListOptions struct {
 	Order  ClientAppListOrder
 }
 
-
 type ClientAppRepository interface {
 	Create(ctx context.Context, tx Tx, clientApp *entity.ClientApp) (*entity.ClientApp, error)
 	Update(ctx context.Context, tx Tx, clientApp *entity.ClientApp) error
