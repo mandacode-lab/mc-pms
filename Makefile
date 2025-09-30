@@ -86,8 +86,14 @@ install-tools:
 # Swagger documentation
 swagger-gen:
 	@echo "Generating Swagger documentation..."
-	@swag init --parseDependency --parseInternal --generalInfo ./cmd/client/main.go --output ./docs/client
-	@swag init --parseDependency --parseInternal --generalInfo ./cmd/management/main.go --output ./docs/management
+	@swag init --parseDependency --parseInternal \
+		--generalInfo ./cmd/client/main.go \
+		--output ./docs/client \
+		--exclude ./internal/adapter/handler/service_mgmt,./internal/adapter/handler/client_mgmt
+	@swag init --parseDependency --parseInternal \
+		--generalInfo ./cmd/management/main.go \
+		--output ./docs/management \
+		--exclude ./internal/adapter/handler/client_access
 
 swagger-clean:
 	@echo "Cleaning Swagger documentation..."
