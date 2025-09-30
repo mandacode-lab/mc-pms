@@ -42,8 +42,17 @@ func (s *HTTPServer) GetEngine() *gin.Engine {
 	return s.engine
 }
 
-func SetupServer(cfg *configs.ServerConfig, logger *zerolog.Logger) *HTTPServer {
+func SetupServer(
+	cfg *configs.ServerConfig,
+	logger *zerolog.Logger,
+	middlewares ...gin.HandlerFunc,
+) *HTTPServer {
 	engine := gin.New()
+
+	// Apply custom middlewares first
+	for _, mw := range middlewares {
+		engine.Use(mw)
+	}
 
 	// Middleware stack
 	engine.Use(mervermid.GinZeroLogger(logger))

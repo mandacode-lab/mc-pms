@@ -58,10 +58,10 @@ func main() {
 	}()
 
 	// Setup server
-	srv := shared.SetupServer(&cfg.Server, &logger)
+	server := shared.SetupServer(&cfg.Server, &logger)
 
 	// Register routes
-	engine := srv.GetEngine()
+	engine := server.GetEngine()
 
 	// Client access routes
 	clientAccessGroup := engine.Group("/client-access")
@@ -69,7 +69,7 @@ func main() {
 	clientAccessHandler.RegisterRoutes(clientAccessGroup)
 
 	// Swagger documentation
-	srv.GetEngine().GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Setup graceful shutdown
 	signalChan := make(chan os.Signal, 1)
@@ -80,7 +80,7 @@ func main() {
 		cancel()
 	}()
 
-	srvGroup := merver.NewServerGroup(srv)
+	srvGroup := merver.NewServerGroup(server)
 	if err := srvGroup.Run(ctx); err != nil {
 		logger.Fatal().Str("error", err.Error()).Msg("failed to run server group")
 	}
