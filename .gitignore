@@ -74,8 +74,8 @@ Thumbs.db
 .dev.env
 
 # Build files
-management
-client
+/management
+/client
 
 # Helm values file
 values.yaml

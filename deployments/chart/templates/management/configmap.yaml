@@ -12,6 +12,6 @@ data:
   WRITE_TIMEOUT: {{ .Values.management.server.writeTimeout | quote }}
   READ_HEADER_TIMEOUT: {{ .Values.management.server.readHeaderTimeout | quote }}
   IDLE_TIMEOUT: {{ .Values.management.server.idleTimeout | quote }}
-  IAM_ENABLED: {{ .Values.management.iam.enabled | default true | quote }}
-  IAM_SERVICE_URL: {{ .Values.management.iam.serviceUrl | default "http://localhost:8080" | quote }}
+  IAM_ENABLED: {{ .Values.management.iam.enabled | quote }}
+  IAM_SERVICE_URL: {{ .Values.management.iam.serviceUrl | quote }}
 {{- end }}
