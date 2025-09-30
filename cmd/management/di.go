@@ -99,16 +99,16 @@ func NewAdapter(ctx context.Context, cfg *configs.ManagementConfig) (*Adapter, e
 	// IAM Service - choose based on configuration
 	var iamSvc out.IAMService
 	if cfg.IAM.Enabled {
-		iamSvc = iam.NewHTTPIAMService(cfg.IAM.ServiceURL)
+		iamSvc, err = iam.NewHTTPIAMService(cfg.IAM.ServiceURL)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create IAM service: %w", err)
+		}
 	} else {
 		iamSvc = iam.NewNoOpIAMService()
 	}
 
 	// Middleware
-	permissionMiddleware := &middleware.PermissionMiddleware{
-		IAMService: iamSvc,
-		Enabled:    cfg.IAM.Enabled,
-	}
+	permissionMiddleware := middleware.NewPermissionMiddleware(iamSvc, cfg.IAM.Enabled)
 
 	return &Adapter{
 		db:                   db,

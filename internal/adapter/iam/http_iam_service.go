@@ -16,13 +16,34 @@ type HTTPIAMService struct {
 	httpClient *http.Client
 }
 
-func NewHTTPIAMService(baseURL string) *HTTPIAMService {
+func NewHTTPIAMService(baseURL string) (*HTTPIAMService, error) {
+	if baseURL == "" {
+		return nil, fmt.Errorf("baseURL cannot be empty")
+	}
+
+	// Ping the IAM service to ensure it's reachable
+	client := &http.Client{
+		Timeout: 5 * time.Second,
+	}
+	resp, err := client.Get(fmt.Sprintf("%s/health", baseURL))
+	if err != nil {
+		return nil, fmt.Errorf("failed to reach IAM service at %s: %w", baseURL, err)
+	}
+	defer func() {
+		_ = resp.Body.Close() // Best effort close
+	}()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("IAM service health check failed with status code: %d", resp.StatusCode)
+	}
+
+	// If we reach here, the IAM service is reachable and healthy
 	return &HTTPIAMService{
 		baseURL: baseURL,
 		httpClient: &http.Client{
 			Timeout: 10 * time.Second,
 		},
-	}
+	}, nil
 }
 
 type PermissionCheckRequest struct {
@@ -80,4 +101,26 @@ func (s *HTTPIAMService) HasPermission(ctx context.Context, userID string, permi
 	}
 
 	return permResp.Allowed, nil
+}
+
+func (s *HTTPIAMService) CheckHealth(ctx context.Context) error {
+	url := fmt.Sprintf("%s/health", s.baseURL)
+	httpReq, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return fmt.Errorf("failed to create health check request: %w", err)
+	}
+
+	resp, err := s.httpClient.Do(httpReq)
+	if err != nil {
+		return fmt.Errorf("failed to execute health check request: %w", err)
+	}
+	defer func() {
+		_ = resp.Body.Close() // Best effort close
+	}()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("IAM service unhealthy, status code: %d", resp.StatusCode)
+	}
+
+	return nil
 }

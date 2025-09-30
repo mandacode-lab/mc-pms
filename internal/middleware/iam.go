@@ -16,6 +16,13 @@ type PermissionMiddleware struct {
 	Enabled    bool
 }
 
+func NewPermissionMiddleware(iamService out.IAMService, enabled bool) *PermissionMiddleware {
+	return &PermissionMiddleware{
+		IAMService: iamService,
+		Enabled:    enabled,
+	}
+}
+
 // RequirePermission creates a middleware that checks if the user has the required permission
 func (m *PermissionMiddleware) RequirePermission(resource out.Resource, action out.Action) gin.HandlerFunc {
 	return func(c *gin.Context) {
