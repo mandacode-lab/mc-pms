@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
@@ -32,7 +32,7 @@ func (h *Handler) DeleteClientApp(c *gin.Context) {
 		return
 	}
 
-	publicID, err := clientappval.NewPublicIDFromString(clientAppID)
+	publicID, err := vo.ParseClientAppPublicID(clientAppID)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid client_app_id", err)
 		_ = c.Error(err)

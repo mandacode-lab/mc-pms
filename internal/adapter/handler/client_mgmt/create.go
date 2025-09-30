@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
@@ -63,7 +63,7 @@ func (h *Handler) CreateClientApp(c *gin.Context) {
 	}
 
 	// Parse service ID
-	serviceID, err := serviceval.ParsePublicID(req.ServiceID)
+	serviceID, err := vo.ParseServicePublicID(req.ServiceID)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid service ID", err)
 		_ = c.Error(err)

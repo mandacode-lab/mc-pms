@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
@@ -32,7 +32,7 @@ func (h *Handler) DeleteService(c *gin.Context) {
 		return
 	}
 
-	publicID, err := serviceval.NewPublicIDFromString(serviceID)
+	publicID, err := vo.ParseServicePublicID(serviceID)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid service_id", err)
 		_ = c.Error(err)
