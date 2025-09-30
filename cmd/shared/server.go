@@ -49,6 +49,10 @@ func SetupServer(
 ) *HTTPServer {
 	engine := gin.New()
 
+	// Disable automatic redirects
+	engine.RedirectTrailingSlash = false
+	engine.RedirectFixedPath = false
+
 	// Apply custom middlewares first
 	for _, mw := range middlewares {
 		engine.Use(mw)

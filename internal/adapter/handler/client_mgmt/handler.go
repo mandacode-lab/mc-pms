@@ -23,20 +23,13 @@ func (h *Handler) SetPermissionMiddleware(permission *middleware.PermissionMiddl
 }
 
 func (h *Handler) RegisterRoutes(rg *gin.RouterGroup) {
-	rg.POST("/",
-		h.permission.RequirePermission(out.ResourceClientApp, out.ActionWrite),
-		h.CreateClientApp,
-	)
-	rg.PUT("/:id",
-		h.permission.RequirePermission(out.ResourceClientApp, out.ActionWrite),
-		h.UpdateClientApp,
-	)
-	rg.POST("/:id/refresh-secret",
-		h.permission.RequirePermission(out.ResourceClientApp, out.ActionWrite),
-		h.RefreshSecret,
-	)
-	rg.GET("/",
-		h.permission.RequirePermission(out.ResourceClientApp, out.ActionRead),
-		h.ListClientApps,
-	)
+	read := h.permission.RequirePermission(out.ResourceClientApp, out.ActionRead)
+	write := h.permission.RequirePermission(out.ResourceClientApp, out.ActionWrite)
+
+	rg.GET("", read, h.ListClientApps)
+	rg.GET("/", read, h.ListClientApps)
+	rg.POST("", write, h.CreateClientApp)
+	rg.POST("/", write, h.CreateClientApp)
+	rg.PUT("/:id", write, h.UpdateClientApp)
+	rg.POST("/:id/refresh-secret", write, h.RefreshSecret)
 }
