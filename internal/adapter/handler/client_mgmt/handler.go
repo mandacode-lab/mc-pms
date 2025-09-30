@@ -31,5 +31,6 @@ func (h *Handler) RegisterRoutes(rg *gin.RouterGroup) {
 	rg.POST("", write, h.CreateClientApp)
 	rg.POST("/", write, h.CreateClientApp)
 	rg.PUT("/:id", write, h.UpdateClientApp)
+	rg.DELETE("/:id", write, h.DeleteClientApp)
 	rg.POST("/:id/refresh-secret", write, h.RefreshSecret)
 }

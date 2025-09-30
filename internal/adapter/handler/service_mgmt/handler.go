@@ -31,4 +31,5 @@ func (h *Handler) RegisterRoutes(rg *gin.RouterGroup) {
 	rg.POST("", write, h.CreateService)
 	rg.POST("/", write, h.CreateService)
 	rg.PUT("/:id", write, h.UpdateService)
+	rg.DELETE("/:id", write, h.DeleteService)
 }
