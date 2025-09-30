@@ -5,8 +5,8 @@ import (
 
 	"github.com/mandacode-com/mandacode-ssam/ent"
 	entservice "github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 )
 
@@ -20,7 +20,7 @@ func NewEntServiceRepository(client *ent.Client) out.ServiceRepository {
 	}
 }
 
-func (r *EntServiceRepository) Create(ctx context.Context, tx out.Tx, serviceEntity *service.Service) (*service.Service, error) {
+func (r *EntServiceRepository) Create(ctx context.Context, tx out.Tx, serviceEntity *entity.Service) (*entity.Service, error) {
 	var builder *ent.ServiceCreate
 
 	if tx != nil {
@@ -46,7 +46,7 @@ func (r *EntServiceRepository) Create(ctx context.Context, tx out.Tx, serviceEnt
 	return r.toDomain(entService), nil
 }
 
-func (r *EntServiceRepository) Update(ctx context.Context, tx out.Tx, serviceEntity *service.Service) error {
+func (r *EntServiceRepository) Update(ctx context.Context, tx out.Tx, serviceEntity *entity.Service) error {
 	var builder *ent.ServiceUpdateOne
 
 	if tx != nil {
@@ -68,7 +68,7 @@ func (r *EntServiceRepository) Update(ctx context.Context, tx out.Tx, serviceEnt
 	return err
 }
 
-func (r *EntServiceRepository) FindByID(ctx context.Context, id serviceval.ID) (*service.Service, error) {
+func (r *EntServiceRepository) FindByID(ctx context.Context, id vo.ServiceID) (*entity.Service, error) {
 	entService, err := r.client.Service.Get(ctx, id.Value())
 	if err != nil {
 		if ent.IsNotFound(err) {
@@ -79,7 +79,7 @@ func (r *EntServiceRepository) FindByID(ctx context.Context, id serviceval.ID) (
 	return r.toDomain(entService), nil
 }
 
-func (r *EntServiceRepository) Delete(ctx context.Context, tx out.Tx, serviceEntity *service.Service) error {
+func (r *EntServiceRepository) Delete(ctx context.Context, tx out.Tx, serviceEntity *entity.Service) error {
 	if tx != nil {
 		entTx, err := asEntTx(tx)
 		if err != nil {
@@ -90,17 +90,17 @@ func (r *EntServiceRepository) Delete(ctx context.Context, tx out.Tx, serviceEnt
 	return r.client.Service.DeleteOneID(serviceEntity.ID().Value()).Exec(ctx)
 }
 
-func (r *EntServiceRepository) toDomain(entService *ent.Service) *service.Service {
-	id := serviceval.NewID(entService.ID)
-	publicID := serviceval.NewPublicID(entService.PublicID)
-	name, _ := serviceval.NewName(entService.Name)
+func (r *EntServiceRepository) toDomain(entService *ent.Service) *entity.Service {
+	id := vo.NewServiceID(entService.ID)
+	publicID := vo.NewServicePublicID(entService.PublicID)
+	name, _ := vo.NewServiceName(entService.Name)
 
 	var description *string
 	if entService.Description != "" {
 		description = &entService.Description
 	}
 
-	return service.NewService(
+	return entity.NewService(
 		id,
 		publicID,
 		name,
@@ -121,7 +121,7 @@ func NewEntServiceQueryRepository(client *ent.Client) out.ServiceQueryRepository
 	}
 }
 
-func (r *EntServiceQueryRepository) FindByID(ctx context.Context, id serviceval.ID) (*service.Service, error) {
+func (r *EntServiceQueryRepository) FindByID(ctx context.Context, id vo.ServiceID) (*entity.Service, error) {
 	entService, err := r.client.Service.Get(ctx, id.Value())
 	if err != nil {
 		if ent.IsNotFound(err) {
@@ -132,7 +132,7 @@ func (r *EntServiceQueryRepository) FindByID(ctx context.Context, id serviceval.
 	return r.toDomain(entService), nil
 }
 
-func (r *EntServiceQueryRepository) FindByPublicID(ctx context.Context, publicID serviceval.PublicID) (*service.Service, error) {
+func (r *EntServiceQueryRepository) FindByPublicID(ctx context.Context, publicID vo.ServicePublicID) (*entity.Service, error) {
 	entService, err := r.client.Service.Query().
 		Where(entservice.PublicID(publicID.Value())).
 		Only(ctx)
@@ -145,7 +145,7 @@ func (r *EntServiceQueryRepository) FindByPublicID(ctx context.Context, publicID
 	return r.toDomain(entService), nil
 }
 
-func (r *EntServiceQueryRepository) FindByName(ctx context.Context, name serviceval.Name) (*service.Service, error) {
+func (r *EntServiceQueryRepository) FindByName(ctx context.Context, name vo.ServiceName) (*entity.Service, error) {
 	entService, err := r.client.Service.Query().
 		Where(entservice.Name(name.Value())).
 		Only(ctx)
@@ -158,7 +158,7 @@ func (r *EntServiceQueryRepository) FindByName(ctx context.Context, name service
 	return r.toDomain(entService), nil
 }
 
-func (r *EntServiceQueryRepository) List(ctx context.Context, filter *out.ServiceListFilter, options *out.ServiceListOptions) ([]*service.Service, int, error) {
+func (r *EntServiceQueryRepository) List(ctx context.Context, filter *out.ServiceListFilter, options *out.ServiceListOptions) ([]*entity.Service, int, error) {
 	query := r.client.Service.Query()
 
 	if filter != nil {
@@ -192,7 +192,7 @@ func (r *EntServiceQueryRepository) List(ctx context.Context, filter *out.Servic
 	}
 
 	count := len(entServices)
-	services := make([]*service.Service, 0, count)
+	services := make([]*entity.Service, 0, count)
 	for _, entService := range entServices {
 		services = append(services, r.toDomain(entService))
 	}
@@ -200,17 +200,17 @@ func (r *EntServiceQueryRepository) List(ctx context.Context, filter *out.Servic
 	return services, count, nil
 }
 
-func (r *EntServiceQueryRepository) toDomain(entService *ent.Service) *service.Service {
-	id := serviceval.NewID(entService.ID)
-	publicID := serviceval.NewPublicID(entService.PublicID)
-	name, _ := serviceval.NewName(entService.Name)
+func (r *EntServiceQueryRepository) toDomain(entService *ent.Service) *entity.Service {
+	id := vo.NewServiceID(entService.ID)
+	publicID := vo.NewServicePublicID(entService.PublicID)
+	name, _ := vo.NewServiceName(entService.Name)
 
 	var description *string
 	if entService.Description != "" {
 		description = &entService.Description
 	}
 
-	return service.NewService(
+	return entity.NewService(
 		id,
 		publicID,
 		name,

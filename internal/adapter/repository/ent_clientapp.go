@@ -6,9 +6,8 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/ent"
 	entclientapp "github.com/mandacode-com/mandacode-ssam/ent/clientapp"
 	entservice "github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp"
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 )
 
@@ -22,7 +21,7 @@ func NewEntClientAppRepository(client *ent.Client) out.ClientAppRepository {
 	}
 }
 
-func (r *EntClientAppRepository) Create(ctx context.Context, tx out.Tx, clientEntity *clientapp.ClientApp) (*clientapp.ClientApp, error) {
+func (r *EntClientAppRepository) Create(ctx context.Context, tx out.Tx, clientEntity *entity.ClientApp) (*entity.ClientApp, error) {
 	var builder *ent.ClientAppCreate
 
 	if tx != nil {
@@ -50,7 +49,7 @@ func (r *EntClientAppRepository) Create(ctx context.Context, tx out.Tx, clientEn
 	return r.toDomain(entClient), nil
 }
 
-func (r *EntClientAppRepository) Update(ctx context.Context, tx out.Tx, clientEntity *clientapp.ClientApp) error {
+func (r *EntClientAppRepository) Update(ctx context.Context, tx out.Tx, clientEntity *entity.ClientApp) error {
 	var builder *ent.ClientAppUpdateOne
 
 	if tx != nil {
@@ -73,7 +72,7 @@ func (r *EntClientAppRepository) Update(ctx context.Context, tx out.Tx, clientEn
 	return err
 }
 
-func (r *EntClientAppRepository) FindByID(ctx context.Context, id clientappval.ID) (*clientapp.ClientApp, error) {
+func (r *EntClientAppRepository) FindByID(ctx context.Context, id vo.ClientAppID) (*entity.ClientApp, error) {
 	entClient, err := r.client.ClientApp.Get(ctx, id.Value())
 	if err != nil {
 		if ent.IsNotFound(err) {
@@ -84,7 +83,7 @@ func (r *EntClientAppRepository) FindByID(ctx context.Context, id clientappval.I
 	return r.toDomain(entClient), nil
 }
 
-func (r *EntClientAppRepository) Delete(ctx context.Context, tx out.Tx, clientEntity *clientapp.ClientApp) error {
+func (r *EntClientAppRepository) Delete(ctx context.Context, tx out.Tx, clientEntity *entity.ClientApp) error {
 	if tx != nil {
 		entTx, err := asEntTx(tx)
 		if err != nil {
@@ -95,11 +94,11 @@ func (r *EntClientAppRepository) Delete(ctx context.Context, tx out.Tx, clientEn
 	return r.client.ClientApp.DeleteOneID(clientEntity.ID().Value()).Exec(ctx)
 }
 
-func (r *EntClientAppRepository) toDomain(entClient *ent.ClientApp) *clientapp.ClientApp {
-	id := clientappval.NewID(entClient.ID)
-	publicID := clientappval.NewPublicID(entClient.PublicID)
-	serviceID := serviceval.NewID(entClient.Edges.Service.ID)
-	return clientapp.NewClientApp(
+func (r *EntClientAppRepository) toDomain(entClient *ent.ClientApp) *entity.ClientApp {
+	id := vo.NewClientAppID(entClient.ID)
+	publicID := vo.NewClientAppPublicID(entClient.PublicID)
+	serviceID := vo.NewServiceID(entClient.Edges.Service.ID)
+	return entity.NewClientApp(
 		id,
 		publicID,
 		serviceID,
@@ -122,7 +121,7 @@ func NewEntClientAppQueryRepository(client *ent.Client) out.ClientAppQueryReposi
 	}
 }
 
-func (r *EntClientAppQueryRepository) FindByID(ctx context.Context, id clientappval.ID) (*clientapp.ClientApp, error) {
+func (r *EntClientAppQueryRepository) FindByID(ctx context.Context, id vo.ClientAppID) (*entity.ClientApp, error) {
 	entClient, err := r.client.ClientApp.Query().
 		Where(entclientapp.ID(id.Value())).
 		WithService().
@@ -136,7 +135,7 @@ func (r *EntClientAppQueryRepository) FindByID(ctx context.Context, id clientapp
 	return r.toDomain(entClient), nil
 }
 
-func (r *EntClientAppQueryRepository) FindByPublicID(ctx context.Context, publicID clientappval.PublicID) (*clientapp.ClientApp, error) {
+func (r *EntClientAppQueryRepository) FindByPublicID(ctx context.Context, publicID vo.ClientAppPublicID) (*entity.ClientApp, error) {
 	entClient, err := r.client.ClientApp.Query().
 		Where(entclientapp.PublicID(publicID.Value())).
 		WithService().
@@ -150,7 +149,7 @@ func (r *EntClientAppQueryRepository) FindByPublicID(ctx context.Context, public
 	return r.toDomain(entClient), nil
 }
 
-func (r *EntClientAppQueryRepository) FindByName(ctx context.Context, name string) (*clientapp.ClientApp, error) {
+func (r *EntClientAppQueryRepository) FindByName(ctx context.Context, name string) (*entity.ClientApp, error) {
 	entClient, err := r.client.ClientApp.Query().
 		Where(entclientapp.Name(name)).
 		WithService().
@@ -164,7 +163,7 @@ func (r *EntClientAppQueryRepository) FindByName(ctx context.Context, name strin
 	return r.toDomain(entClient), nil
 }
 
-func (r *EntClientAppQueryRepository) List(ctx context.Context, filter *out.ClientAppListFilter, options *out.ClientAppListOptions) ([]*clientapp.ClientApp, int, error) {
+func (r *EntClientAppQueryRepository) List(ctx context.Context, filter *out.ClientAppListFilter, options *out.ClientAppListOptions) ([]*entity.ClientApp, int, error) {
 	query := r.client.ClientApp.Query().WithService()
 
 	if filter != nil {
@@ -201,7 +200,7 @@ func (r *EntClientAppQueryRepository) List(ctx context.Context, filter *out.Clie
 	}
 
 	count := len(entClients)
-	clients := make([]*clientapp.ClientApp, 0, count)
+	clients := make([]*entity.ClientApp, 0, count)
 	for _, entClient := range entClients {
 		clients = append(clients, r.toDomain(entClient))
 	}
@@ -209,16 +208,16 @@ func (r *EntClientAppQueryRepository) List(ctx context.Context, filter *out.Clie
 	return clients, count, nil
 }
 
-func (r *EntClientAppQueryRepository) toDomain(entClient *ent.ClientApp) *clientapp.ClientApp {
-	id := clientappval.NewID(entClient.ID)
-	publicID := clientappval.NewPublicID(entClient.PublicID)
-	serviceID := serviceval.NewID(entClient.Edges.Service.ID)
+func (r *EntClientAppQueryRepository) toDomain(entClient *ent.ClientApp) *entity.ClientApp {
+	id := vo.NewClientAppID(entClient.ID)
+	publicID := vo.NewClientAppPublicID(entClient.PublicID)
+	serviceID := vo.NewServiceID(entClient.Edges.Service.ID)
 	var description *string
 	if entClient.Description != "" {
 		description = &entClient.Description
 	}
 
-	return clientapp.NewClientApp(
+	return entity.NewClientApp(
 		id,
 		publicID,
 		serviceID,
@@ -230,4 +229,3 @@ func (r *EntClientAppQueryRepository) toDomain(entClient *ent.ClientApp) *client
 		entClient.UpdatedAt,
 	)
 }
-
