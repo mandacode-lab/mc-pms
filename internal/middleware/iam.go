@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/merr"
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -28,6 +29,7 @@ func (m *PermissionMiddleware) RequirePermission(resource out.Resource, action o
 	return func(c *gin.Context) {
 		// If IAM is disabled, skip all permission checks and allow the request
 		if !m.Enabled {
+			log.Warn().Msg("IAM is disabled; skipping permission checks")
 			// Set a default user ID if none provided when IAM is disabled
 			userID := c.GetHeader("X-User-ID")
 			if userID == "" {
