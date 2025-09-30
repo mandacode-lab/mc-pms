@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/gin-contrib/cors"
 	"github.com/joho/godotenv"
 	"github.com/mandacode-com/mandacode-ssam/cmd/shared"
 	"github.com/mandacode-com/mandacode-ssam/configs"
@@ -59,8 +60,17 @@ func main() {
 		}
 	}()
 
+	// Setup CORS configuration for management API
+	corsConfig := cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization", "Accept", "X-Requested-With"},
+		AllowCredentials: true,
+		MaxAge:           12 * 3600, // 12 hours
+	}
+
 	// Setup server
-	server := shared.SetupServer(&cfg.Server, &logger)
+	server := shared.SetupServer(&cfg.Server, &logger, cors.New(corsConfig))
 
 	// Register routes
 	engine := server.GetEngine()
