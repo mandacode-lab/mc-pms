@@ -10,7 +10,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9
-	github.com/mandacode-com/merr v0.2.2
+	github.com/mandacode-com/merr v0.2.3
 	github.com/mandacode-com/merver v0.1.2
 	github.com/redis/go-redis/v9 v9.12.1
 	github.com/rs/zerolog v1.34.0

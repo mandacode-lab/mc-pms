@@ -23,6 +23,9 @@ func (h *Handler) SetPermissionMiddleware(permission *middleware.PermissionMiddl
 }
 
 func (h *Handler) RegisterRoutes(rg *gin.RouterGroup) {
+	rg.GET("/",
+		h.permission.RequirePermission(out.ResourceService, out.ActionRead),
+		h.ListServices)
 	rg.POST("/",
 		h.permission.RequirePermission(out.ResourceService, out.ActionWrite),
 		h.CreateService)

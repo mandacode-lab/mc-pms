@@ -130,6 +130,36 @@ definitions:
         example: "2023-01-01T00:00:00Z"
         type: string
     type: object
+  internal_adapter_handler_service_mgmt.ListServicesResponse:
+    properties:
+      services:
+        items:
+          $ref: '#/definitions/internal_adapter_handler_service_mgmt.ServiceResponse'
+        type: array
+      total:
+        type: integer
+    type: object
+  internal_adapter_handler_service_mgmt.ServiceResponse:
+    properties:
+      created_at:
+        example: "2023-01-01T00:00:00Z"
+        type: string
+      description:
+        example: Service description
+        type: string
+      is_active:
+        example: true
+        type: boolean
+      name:
+        example: My Service
+        type: string
+      service_id:
+        example: srv_1234567890abcdef
+        type: string
+      updated_at:
+        example: "2023-01-01T00:00:00Z"
+        type: string
+    type: object
   internal_adapter_handler_service_mgmt.UpdateServiceRequest:
     properties:
       description:
@@ -345,6 +375,47 @@ paths:
       tags:
       - client-apps
   /services:
+    get:
+      consumes:
+      - application/json
+      description: List all services with optional filters
+      parameters:
+      - description: Filter by name (contains)
+        in: query
+        name: name
+        type: string
+      - description: Filter by active status
+        in: query
+        name: is_active
+        type: boolean
+      - default: 50
+        description: Limit number of results
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of services
+          schema:
+            $ref: '#/definitions/internal_adapter_handler_service_mgmt.ListServicesResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: List services
+      tags:
+      - services
     post:
       consumes:
       - application/json
