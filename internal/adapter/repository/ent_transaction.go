@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/mandacode-com/mandacode-ssam/ent"
@@ -9,11 +10,14 @@ import (
 )
 
 func asEntTx(tx out.Tx) (*ent.Tx, error) {
-	entTx, ok := tx.(*ent.Tx)
-	if !ok {
-		return nil, fmt.Errorf("transaction type must be *ent.Tx")
+	if tx == nil {
+		return nil, errors.New("transaction is nil")
 	}
-	return entTx, nil
+
+	if entTx, ok := tx.(*ent.Tx); ok {
+		return entTx, nil
+	}
+	return nil, fmt.Errorf("transaction type must be *ent.Tx")
 }
 
 type EntTransactionManager struct {
@@ -34,16 +38,24 @@ func (tm *EntTransactionManager) WithTx(ctx context.Context, fn func(tx out.Tx) 
 
 	defer func() {
 		if r := recover(); r != nil {
-			_ = tx.Rollback() // Best effort rollback
+			if tx != nil {
+				_ = tx.Rollback() // Best effort rollback
+			}
 			panic(r)
 		}
 	}()
 
 	if err := fn(tx); err != nil {
-		if rollbackErr := tx.Rollback(); rollbackErr != nil {
-			return fmt.Errorf("failed to rollback transaction: %w", rollbackErr)
+		if tx != nil {
+			if rbErr := tx.Rollback(); rbErr != nil {
+				return fmt.Errorf("transaction rollback error: %w (original error: %v)", rbErr, err)
+			}
 		}
 		return err
+	}
+
+	if tx == nil {
+		return errors.New("transaction is nil")
 	}
 
 	if err := tx.Commit(); err != nil {
@@ -52,4 +64,3 @@ func (tm *EntTransactionManager) WithTx(ctx context.Context, fn func(tx out.Tx) 
 
 	return nil
 }
-

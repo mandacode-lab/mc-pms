@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 
 	"github.com/mandacode-com/mandacode-ssam/ent"
 	entclientapp "github.com/mandacode-com/mandacode-ssam/ent/clientapp"
@@ -9,6 +10,7 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
 	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
+	"github.com/mandacode-com/mandacode-ssam/pkg/utils"
 )
 
 type EntClientAppRepository struct {
@@ -31,7 +33,7 @@ func (r *EntClientAppRepository) Create(ctx context.Context, tx out.Tx, clientEn
 		}
 		builder = entTx.ClientApp.Create()
 	} else {
-		builder = r.client.ClientApp.Create()
+		return nil, errors.New("creating ClientApp requires a transaction")
 	}
 
 	entClient, err := builder.
@@ -46,7 +48,7 @@ func (r *EntClientAppRepository) Create(ctx context.Context, tx out.Tx, clientEn
 		return nil, err
 	}
 
-	return r.toDomain(entClient), nil
+	return r.toDomain(entClient)
 }
 
 func (r *EntClientAppRepository) Update(ctx context.Context, tx out.Tx, clientEntity *entity.ClientApp) error {
@@ -80,7 +82,8 @@ func (r *EntClientAppRepository) FindByID(ctx context.Context, id vo.ClientAppID
 		}
 		return nil, err
 	}
-	return r.toDomain(entClient), nil
+
+	return r.toDomain(entClient)
 }
 
 func (r *EntClientAppRepository) Delete(ctx context.Context, tx out.Tx, clientEntity *entity.ClientApp) error {
@@ -94,21 +97,21 @@ func (r *EntClientAppRepository) Delete(ctx context.Context, tx out.Tx, clientEn
 	return r.client.ClientApp.DeleteOneID(clientEntity.ID().Value()).Exec(ctx)
 }
 
-func (r *EntClientAppRepository) toDomain(entClient *ent.ClientApp) *entity.ClientApp {
+func (r *EntClientAppRepository) toDomain(entClient *ent.ClientApp) (*entity.ClientApp, error) {
 	id := vo.NewClientAppID(entClient.ID)
 	publicID := vo.NewClientAppPublicID(entClient.PublicID)
-	serviceID := vo.NewServiceID(entClient.Edges.Service.ID)
+	serviceID := vo.NewServiceID(entClient.ServiceID)
 	return entity.NewClientApp(
 		id,
 		publicID,
 		serviceID,
 		entClient.Name,
-		&entClient.Description,
+		utils.StringNil(entClient.Description),
 		entClient.SecretHash,
 		entClient.IsActive,
 		entClient.CreatedAt,
 		entClient.UpdatedAt,
-	)
+	), nil
 }
 
 type EntClientAppQueryRepository struct {

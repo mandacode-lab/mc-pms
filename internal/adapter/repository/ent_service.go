@@ -8,6 +8,7 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
 	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
+	"github.com/mandacode-com/mandacode-ssam/pkg/utils"
 )
 
 type EntServiceRepository struct {
@@ -129,7 +130,7 @@ func (r *EntServiceQueryRepository) FindByID(ctx context.Context, id vo.ServiceI
 		}
 		return nil, err
 	}
-	return r.toDomain(entService), nil
+	return r.toDomain(entService)
 }
 
 func (r *EntServiceQueryRepository) FindByPublicID(ctx context.Context, publicID vo.ServicePublicID) (*entity.Service, error) {
@@ -142,7 +143,7 @@ func (r *EntServiceQueryRepository) FindByPublicID(ctx context.Context, publicID
 		}
 		return nil, err
 	}
-	return r.toDomain(entService), nil
+	return r.toDomain(entService)
 }
 
 func (r *EntServiceQueryRepository) FindByName(ctx context.Context, name vo.ServiceName) (*entity.Service, error) {
@@ -155,7 +156,7 @@ func (r *EntServiceQueryRepository) FindByName(ctx context.Context, name vo.Serv
 		}
 		return nil, err
 	}
-	return r.toDomain(entService), nil
+	return r.toDomain(entService)
 }
 
 func (r *EntServiceQueryRepository) List(ctx context.Context, filter *out.ServiceListFilter, options *out.ServiceListOptions) ([]*entity.Service, int, error) {
@@ -193,22 +194,26 @@ func (r *EntServiceQueryRepository) List(ctx context.Context, filter *out.Servic
 
 	count := len(entServices)
 	services := make([]*entity.Service, 0, count)
-	for _, entService := range entServices {
-		services = append(services, r.toDomain(entService))
+	for i := range entServices {
+		service, err := r.toDomain(entServices[i])
+		if err != nil {
+			return nil, 0, err
+		}
+		services = append(services, service)
 	}
 
 	return services, count, nil
 }
 
-func (r *EntServiceQueryRepository) toDomain(entService *ent.Service) *entity.Service {
+func (r *EntServiceQueryRepository) toDomain(entService *ent.Service) (*entity.Service, error) {
 	id := vo.NewServiceID(entService.ID)
 	publicID := vo.NewServicePublicID(entService.PublicID)
-	name, _ := vo.NewServiceName(entService.Name)
-
-	var description *string
-	if entService.Description != "" {
-		description = &entService.Description
+	name, err := vo.NewServiceName(entService.Name)
+	if err != nil {
+		return nil, err
 	}
+
+	description := utils.StringNil(entService.Description)
 
 	return entity.NewService(
 		id,
@@ -218,5 +223,5 @@ func (r *EntServiceQueryRepository) toDomain(entService *ent.Service) *entity.Se
 		entService.IsActive,
 		entService.CreatedAt,
 		entService.UpdatedAt,
-	)
+	), nil
 }

@@ -22,7 +22,10 @@ func (u *Usecase) RefreshSecret(ctx context.Context, req *in.RefreshSecretReques
 	}
 
 	// Encode secret bytes to plain secret
-	plainSecret := u.encoder.Encode(secretBytes)
+	plainSecret, err := u.encoder.Encode(secretBytes)
+	if err != nil {
+		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
+	}
 
 	// Hash the plain secret
 	hash, err := u.hasher.Hash(ctx, plainSecret)

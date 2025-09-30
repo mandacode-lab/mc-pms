@@ -1,5 +1,5 @@
 package out
 
 type Encoder interface {
-	Encode(data []byte) []byte
+	Encode(data []byte) ([]byte, error)
 }

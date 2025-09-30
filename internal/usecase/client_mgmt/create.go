@@ -29,7 +29,10 @@ func (u *Usecase) CreateClientApp(ctx context.Context, req *in.CreateClientAppRe
 	}
 
 	// Encode secret bytes to plain secret
-	plainSecret := u.encoder.Encode(secretBytes)
+	plainSecret, err := u.encoder.Encode(secretBytes)
+	if err != nil {
+		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
+	}
 
 	// Hash the plain secret
 	hash, err := u.hasher.Hash(ctx, plainSecret)
@@ -45,11 +48,10 @@ func (u *Usecase) CreateClientApp(ctx context.Context, req *in.CreateClientAppRe
 	// Save to repository within transaction
 	var savedClientApp *entity.ClientApp
 	err = u.txManager.WithTx(ctx, func(tx out.Tx) error {
-		saved, err := u.clientAppRepo.Create(ctx, tx, clientAppEntity)
+		savedClientApp, err = u.clientAppRepo.Create(ctx, tx, clientAppEntity)
 		if err != nil {
 			return merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 		}
-		savedClientApp = saved
 		return nil
 	})
 	if err != nil {
