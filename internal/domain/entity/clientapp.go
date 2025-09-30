@@ -1,17 +1,16 @@
-package clientapp
+package entity
 
 import (
 	"time"
 
 	"github.com/google/uuid"
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
 )
 
 type ClientApp struct {
-	id          clientappval.ID
-	publicID    clientappval.PublicID
-	serviceID   serviceval.ID
+	id          vo.ClientAppID
+	publicID    vo.ClientAppPublicID
+	serviceID   vo.ServiceID
 	name        string
 	description *string
 	secretHash  []byte
@@ -21,9 +20,9 @@ type ClientApp struct {
 }
 
 func NewClientApp(
-	id clientappval.ID,
-	publicID clientappval.PublicID,
-	serviceID serviceval.ID,
+	id vo.ClientAppID,
+	publicID vo.ClientAppPublicID,
+	serviceID vo.ServiceID,
 	name string,
 	description *string,
 	secretHash []byte,
@@ -44,10 +43,10 @@ func NewClientApp(
 	}
 }
 
-func DraftClientApp(serviceID serviceval.ID, name string, description *string, secretHash []byte) *ClientApp {
+func DraftClientApp(serviceID vo.ServiceID, name string, description *string, secretHash []byte) *ClientApp {
 	now := time.Now().UTC()
-	id := clientappval.NewID(0) // ID will be set by the database
-	publicID := clientappval.NewPublicID(uuid.New())
+	id := vo.NewClientAppID(0) // ID will be set by the database
+	publicID := vo.NewClientAppPublicID(uuid.New())
 
 	ca := NewClientApp(
 		id,
@@ -66,15 +65,15 @@ func DraftClientApp(serviceID serviceval.ID, name string, description *string, s
 
 // Getter methods
 
-func (ca *ClientApp) ID() clientappval.ID {
+func (ca *ClientApp) ID() vo.ClientAppID {
 	return ca.id
 }
 
-func (ca *ClientApp) PublicID() clientappval.PublicID {
+func (ca *ClientApp) PublicID() vo.ClientAppPublicID {
 	return ca.publicID
 }
 
-func (ca *ClientApp) ServiceID() serviceval.ID {
+func (ca *ClientApp) ServiceID() vo.ServiceID {
 	return ca.serviceID
 }
 

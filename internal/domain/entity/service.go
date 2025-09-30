@@ -1,16 +1,16 @@
-package service
+package entity
 
 import (
 	"time"
 
 	"github.com/google/uuid"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
 )
 
 type Service struct {
-	id          serviceval.ID
-	publicID    serviceval.PublicID
-	name        serviceval.Name
+	id          vo.ServiceID
+	publicID    vo.ServicePublicID
+	name        vo.ServiceName
 	description *string
 	isActive    bool
 	createdAt   time.Time
@@ -18,9 +18,9 @@ type Service struct {
 }
 
 func NewService(
-	id serviceval.ID,
-	publicID serviceval.PublicID,
-	name serviceval.Name,
+	id vo.ServiceID,
+	publicID vo.ServicePublicID,
+	name vo.ServiceName,
 	description *string,
 	isActive bool,
 	createdAt time.Time,
@@ -37,10 +37,10 @@ func NewService(
 	}
 }
 
-func DraftService(name serviceval.Name, description *string) *Service {
+func DraftService(name vo.ServiceName, description *string) *Service {
 	now := time.Now().UTC()
-	id := serviceval.NewID(0) // ID will be set by the database
-	publicID := serviceval.NewPublicID(uuid.New())
+	id := vo.NewServiceID(0) // ID will be set by the database
+	publicID := vo.NewServicePublicID(uuid.New())
 
 	s := NewService(
 		id,
@@ -57,15 +57,15 @@ func DraftService(name serviceval.Name, description *string) *Service {
 
 // Getter methods
 
-func (s *Service) ID() serviceval.ID {
+func (s *Service) ID() vo.ServiceID {
 	return s.id
 }
 
-func (s *Service) PublicID() serviceval.PublicID {
+func (s *Service) PublicID() vo.ServicePublicID {
 	return s.publicID
 }
 
-func (s *Service) Name() serviceval.Name {
+func (s *Service) Name() vo.ServiceName {
 	return s.name
 }
 
@@ -87,7 +87,7 @@ func (s *Service) UpdatedAt() time.Time {
 
 // Business methods
 
-func (s *Service) UpdateName(name serviceval.Name) {
+func (s *Service) UpdateName(name vo.ServiceName) {
 	if s.name.Value() != name.Value() {
 		s.name = name
 		s.updatedAt = time.Now().UTC()

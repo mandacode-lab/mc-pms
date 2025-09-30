@@ -3,8 +3,8 @@ package servicemgmt
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/mandacode-ssam/pkg/utils"
@@ -13,7 +13,7 @@ import (
 
 func (u *Usecase) CreateService(ctx context.Context, req *in.CreateServiceRequest) (*in.CreateServiceResponse, error) {
 	// Parse service name
-	serviceName, err := serviceval.NewName(req.Name)
+	serviceName, err := vo.NewServiceName(req.Name)
 	if err != nil {
 		return nil, merr.New(merr.ErrBadRequest, ErrInvalidServiceNameMsg, err)
 	}
@@ -26,10 +26,10 @@ func (u *Usecase) CreateService(ctx context.Context, req *in.CreateServiceReques
 
 	// Create new service using domain logic
 	desc := utils.StringNil(req.Description)
-	serviceEntity := service.DraftService(serviceName, desc)
+	serviceEntity := entity.DraftService(serviceName, desc)
 
 	// Save to repository within transaction
-	var savedService *service.Service
+	var savedService *entity.Service
 	err = u.txManager.WithTx(ctx, func(tx out.Tx) error {
 		saved, err := u.serviceRepo.Create(ctx, tx, serviceEntity)
 		if err != nil {

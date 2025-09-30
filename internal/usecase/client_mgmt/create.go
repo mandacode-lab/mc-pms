@@ -3,7 +3,7 @@ package clientmgmt
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/mandacode-ssam/pkg/utils"
@@ -40,10 +40,10 @@ func (u *Usecase) CreateClientApp(ctx context.Context, req *in.CreateClientAppRe
 	// Create new client app using domain logic
 	desc := utils.StringNil(req.Desc)
 
-	clientAppEntity := clientapp.DraftClientApp(service.ID(), req.Name, desc, hash)
+	clientAppEntity := entity.DraftClientApp(service.ID(), req.Name, desc, hash)
 
 	// Save to repository within transaction
-	var savedClientApp *clientapp.ClientApp
+	var savedClientApp *entity.ClientApp
 	err = u.txManager.WithTx(ctx, func(tx out.Tx) error {
 		saved, err := u.clientAppRepo.Create(ctx, tx, clientAppEntity)
 		if err != nil {

@@ -3,13 +3,12 @@ package out
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp"
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
 )
 
 type ClientAppListFilter struct {
-	ServiceID *serviceval.ID
+	ServiceID *vo.ServiceID
 	Name      *string
 	IsActive  *bool
 }
@@ -29,15 +28,15 @@ type ClientAppListOptions struct {
 
 
 type ClientAppRepository interface {
-	Create(ctx context.Context, tx Tx, clientApp *clientapp.ClientApp) (*clientapp.ClientApp, error)
-	Update(ctx context.Context, tx Tx, clientApp *clientapp.ClientApp) error
-	FindByID(ctx context.Context, id clientappval.ID) (*clientapp.ClientApp, error)
-	Delete(ctx context.Context, tx Tx, clientApp *clientapp.ClientApp) error
+	Create(ctx context.Context, tx Tx, clientApp *entity.ClientApp) (*entity.ClientApp, error)
+	Update(ctx context.Context, tx Tx, clientApp *entity.ClientApp) error
+	FindByID(ctx context.Context, id vo.ClientAppID) (*entity.ClientApp, error)
+	Delete(ctx context.Context, tx Tx, clientApp *entity.ClientApp) error
 }
 
 type ClientAppQueryRepository interface {
-	FindByID(ctx context.Context, id clientappval.ID) (*clientapp.ClientApp, error)
-	FindByPublicID(ctx context.Context, publicID clientappval.PublicID) (*clientapp.ClientApp, error)
-	FindByName(ctx context.Context, name string) (*clientapp.ClientApp, error)
-	List(ctx context.Context, filter *ClientAppListFilter, options *ClientAppListOptions) ([]*clientapp.ClientApp, int, error)
+	FindByID(ctx context.Context, id vo.ClientAppID) (*entity.ClientApp, error)
+	FindByPublicID(ctx context.Context, publicID vo.ClientAppPublicID) (*entity.ClientApp, error)
+	FindByName(ctx context.Context, name string) (*entity.ClientApp, error)
+	List(ctx context.Context, filter *ClientAppListFilter, options *ClientAppListOptions) ([]*entity.ClientApp, int, error)
 }

@@ -3,12 +3,11 @@ package in
 import (
 	"time"
 
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
 )
 
 type ServiceInfo struct {
-	ServiceID serviceval.PublicID
+	ServiceID vo.ServicePublicID
 	Name      string
 	Desc      string
 	IsActive  bool
@@ -17,8 +16,8 @@ type ServiceInfo struct {
 }
 
 type ClientAppInfo struct {
-	ServiceID   serviceval.PublicID
-	ClientAppID clientappval.PublicID
+	ServiceID   vo.ServicePublicID
+	ClientAppID vo.ClientAppPublicID
 	Name        string
 	Desc        string
 	IsActive    bool

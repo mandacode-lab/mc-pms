@@ -3,7 +3,7 @@ package clientmgmt
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 )
@@ -17,7 +17,7 @@ func (u *Usecase) FindClientApp(ctx context.Context, req *in.FindClientAppReques
 		return nil, merr.New(merr.ErrBadRequest, "either client app ID or name must be provided", nil)
 	}
 
-	var clientApp *clientapp.ClientApp
+	var clientApp *entity.ClientApp
 	var err error
 
 	if req.ClientAppID != nil {

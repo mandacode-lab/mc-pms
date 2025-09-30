@@ -3,7 +3,7 @@ package in
 import (
 	"context"
 
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
 )
 
 type CreateServiceRequest struct {
@@ -16,11 +16,11 @@ type CreateServiceResponse struct {
 }
 
 type DeleteServiceRequest struct {
-	ServiceID serviceval.PublicID
+	ServiceID vo.ServicePublicID
 }
 
 type UpdateServiceRequest struct {
-	ServiceID   serviceval.PublicID
+	ServiceID   vo.ServicePublicID
 	NewName     *string
 	NewDesc     *string
 	NewIsActive *bool
@@ -32,7 +32,7 @@ type UpdateServiceResponse struct {
 
 type FindServiceRequest struct {
 	Name     *string
-	PublicID *serviceval.PublicID
+	PublicID *vo.ServicePublicID
 }
 
 type FindServiceByNameResponse struct {
