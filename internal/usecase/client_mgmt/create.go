@@ -28,14 +28,14 @@ func (u *Usecase) CreateClientApp(ctx context.Context, req *in.CreateClientAppRe
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	// Encode secret bytes to plain secret
-	plainSecret, err := u.encoder.Encode(secretBytes)
+	// Hash the secret bytes
+	hash, err := u.hasher.Hash(ctx, secretBytes)
 	if err != nil {
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	// Hash the plain secret
-	hash, err := u.hasher.Hash(ctx, plainSecret)
+	// Encode secret bytes to plain secret (for response only)
+	plainSecret, err := u.encoder.Encode(secretBytes)
 	if err != nil {
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
