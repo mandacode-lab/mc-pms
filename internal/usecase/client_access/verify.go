@@ -19,8 +19,14 @@ func (u *Usecase) VerifyClient(ctx context.Context, req *in.VerifyClientRequest)
 		return nil, merr.New(merr.ErrForbidden, ErrClientAppInactiveMsg, nil)
 	}
 
-	// Verify secret
-	err = u.hasher.Compare(ctx, clientApp.SecretHash(), req.ClientSecret)
+	// Decode the base64-encoded client secret to get original secret bytes
+	secretBytes, err := u.encoder.Decode(req.ClientSecret)
+	if err != nil {
+		return nil, merr.New(merr.ErrBadRequest, "invalid client_secret format", err)
+	}
+
+	// Verify secret: compare hash with decoded secret bytes
+	err = u.hasher.Compare(ctx, clientApp.SecretHash(), secretBytes)
 	if err != nil {
 		return nil, merr.New(merr.ErrUnauthorized, ErrInvalidClientSecretMsg, err)
 	}

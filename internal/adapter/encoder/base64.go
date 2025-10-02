@@ -21,6 +21,17 @@ func (e *Base64Encoder) Encode(data []byte) ([]byte, error) {
 	return []byte(encoded), nil
 }
 
+func (e *Base64Encoder) Decode(encoded []byte) ([]byte, error) {
+	if encoded == nil {
+		return nil, errors.New("encoded data is nil")
+	}
+	decoded, err := base64.StdEncoding.DecodeString(string(encoded))
+	if err != nil {
+		return nil, err
+	}
+	return decoded, nil
+}
+
 type Base64URLEncoder struct{}
 
 func NewBase64URLEncoder() out.Encoder {
@@ -33,4 +44,15 @@ func (e *Base64URLEncoder) Encode(data []byte) ([]byte, error) {
 	}
 	encoded := base64.URLEncoding.EncodeToString(data)
 	return []byte(encoded), nil
+}
+
+func (e *Base64URLEncoder) Decode(encoded []byte) ([]byte, error) {
+	if encoded == nil {
+		return nil, errors.New("encoded data is nil")
+	}
+	decoded, err := base64.URLEncoding.DecodeString(string(encoded))
+	if err != nil {
+		return nil, err
+	}
+	return decoded, nil
 }

@@ -69,7 +69,7 @@ func (h *Handler) VerifyClient(c *gin.Context) {
 	// Create usecase request
 	usecaseReq := &in.VerifyClientRequest{
 		ClientID:     clientID,         // client_id from Basic Auth username
-		ClientSecret: []byte(password), // client_secret from Basic Auth password
+		ClientSecret: []byte(password), // client_secret from Basic Auth password (base64 encoded)
 	}
 
 	// Call usecase

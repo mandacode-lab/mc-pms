@@ -24,9 +24,11 @@ func TestVerifyClient_ComparesWithRawSecretBytes(t *testing.T) {
 	// Simulate the flow:
 	// 1. During creation: secretBytes -> Hash(secretBytes) -> hashedSecret (stored in DB)
 	// 2. During creation: secretBytes -> Encode(secretBytes) -> encodedSecret (returned to user)
-	// 3. During verify: user sends secretBytes in Basic Auth
-	// 4. Compare(hashedSecret, secretBytes) should succeed
+	// 3. During verify: user sends encodedSecret in Basic Auth password
+	// 4. Usecase: Decode(encodedSecret) -> secretBytes
+	// 5. Compare(hashedSecret, secretBytes) should succeed
 	secretBytes := []byte("raw-secret-bytes")
+	encodedSecret := []byte("base64-encoded-secret")
 	hashedSecret := []byte("hashed-from-raw-bytes")
 
 	clientApp := entity.DraftClientApp(serviceID, "Test Client", nil, hashedSecret)
@@ -39,22 +41,27 @@ func TestVerifyClient_ComparesWithRawSecretBytes(t *testing.T) {
 	mockClientAppQueryRepo := mock.NewMockClientAppQueryRepository(ctrl)
 	mockServiceQueryRepo := mock.NewMockServiceQueryRepository(ctrl)
 	mockHasher := mock.NewMockHasher(ctrl)
+	mockEncoder := mock.NewMockEncoder(ctrl)
 
 	usecase := NewUsecase(
 		mockClientAppQueryRepo,
 		mockServiceQueryRepo,
 		mockHasher,
+		mockEncoder,
 	)
 
 	req := &in.VerifyClientRequest{
 		ClientID:     clientAppID,
-		ClientSecret: secretBytes, // User sends raw bytes (not encoded)
+		ClientSecret: encodedSecret, // User sends base64 encoded secret
 	}
 
 	// Set expectations
 	mockClientAppQueryRepo.EXPECT().FindByPublicID(ctx, clientAppID).Return(clientApp, nil)
 
-	// CRITICAL: Compare should be called with hashedSecret and raw secretBytes
+	// CRITICAL: Decode the encoded secret to get raw bytes
+	mockEncoder.EXPECT().Decode(encodedSecret).Return(secretBytes, nil)
+
+	// CRITICAL: Compare should be called with hashedSecret and decoded raw secretBytes
 	mockHasher.EXPECT().Compare(ctx, hashedSecret, secretBytes).Return(nil)
 
 	mockServiceQueryRepo.EXPECT().FindByID(ctx, serviceID).Return(service, nil)
@@ -76,7 +83,8 @@ func TestVerifyClient_FailsWithWrongSecret(t *testing.T) {
 	clientAppID := vo.NewClientAppPublicID(uuid.New())
 	serviceID := vo.NewServiceID(1)
 
-	wrongSecretBytes := []byte("wrong-secret")
+	wrongEncodedSecret := []byte("wrong-encoded-secret")
+	wrongSecretBytes := []byte("wrong-secret-bytes")
 	hashedSecret := []byte("hashed-from-correct-secret")
 
 	clientApp := entity.DraftClientApp(serviceID, "Test Client", nil, hashedSecret)
@@ -85,20 +93,25 @@ func TestVerifyClient_FailsWithWrongSecret(t *testing.T) {
 	mockClientAppQueryRepo := mock.NewMockClientAppQueryRepository(ctrl)
 	mockServiceQueryRepo := mock.NewMockServiceQueryRepository(ctrl)
 	mockHasher := mock.NewMockHasher(ctrl)
+	mockEncoder := mock.NewMockEncoder(ctrl)
 
 	usecase := NewUsecase(
 		mockClientAppQueryRepo,
 		mockServiceQueryRepo,
 		mockHasher,
+		mockEncoder,
 	)
 
 	req := &in.VerifyClientRequest{
 		ClientID:     clientAppID,
-		ClientSecret: wrongSecretBytes,
+		ClientSecret: wrongEncodedSecret,
 	}
 
 	// Set expectations
 	mockClientAppQueryRepo.EXPECT().FindByPublicID(ctx, clientAppID).Return(clientApp, nil)
+
+	// Decode the wrong encoded secret
+	mockEncoder.EXPECT().Decode(wrongEncodedSecret).Return(wrongSecretBytes, nil)
 
 	// Compare should fail with wrong secret
 	mockHasher.EXPECT().Compare(ctx, hashedSecret, wrongSecretBytes).Return(assert.AnError)

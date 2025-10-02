@@ -13,6 +13,7 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/configs"
 	"github.com/mandacode-com/mandacode-ssam/ent"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/cache"
+	"github.com/mandacode-com/mandacode-ssam/internal/adapter/encoder"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/handler/client_access"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/hasher"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/repository"
@@ -37,7 +38,8 @@ type Adapter struct {
 	clientAppQueryRepo out.ClientAppQueryRepository
 
 	// Services
-	hasher out.Hasher
+	hasher  out.Hasher
+	encoder out.Encoder
 }
 
 func NewAdapter(ctx context.Context, cfg *configs.ClientConfig) (*Adapter, error) {
@@ -75,6 +77,7 @@ func NewAdapter(ctx context.Context, cfg *configs.ClientConfig) (*Adapter, error
 
 	// Services
 	hasherSvc := hasher.NewBcryptHasher()
+	encoderSvc := encoder.NewBase64Encoder()
 
 	return &Adapter{
 		db:                 db,
@@ -84,6 +87,7 @@ func NewAdapter(ctx context.Context, cfg *configs.ClientConfig) (*Adapter, error
 		serviceQueryRepo:   serviceQueryRepo,
 		clientAppQueryRepo: clientAppQueryRepo,
 		hasher:             hasherSvc,
+		encoder:            encoderSvc,
 	}, nil
 }
 
@@ -92,6 +96,7 @@ func (a *Adapter) ProvideClientAccessUsecase() in.ClientAccessUsecase {
 		a.clientAppQueryRepo,
 		a.serviceQueryRepo,
 		a.hasher,
+		a.encoder,
 	)
 }
 
