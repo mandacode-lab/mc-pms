@@ -69,9 +69,7 @@ Thumbs.db
 /charts/*/requirements.lock
 
 # Local environment
-.make.env
-.local.env
-.dev.env
+.env.make
 
 # Build files
 /management

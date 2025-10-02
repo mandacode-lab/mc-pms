@@ -2,7 +2,7 @@
 # MandaCode Service Hub - Makefile
 # =============================================================================
 
--include .make.env
+-include .env.make
 
 .PHONY: install-tools swagger-gen swagger-clean help \
         generate-migrate apply-migrate build-migrate push-migrate check-migrate-name check-migrate-tag
@@ -99,6 +99,13 @@ swagger-clean:
 	@echo "Cleaning Swagger documentation..."
 	@rm -rf docs/
 	@echo "Swagger docs cleaned!"
+
+.PHONY: deploy
+deploy:
+	helm upgrade --install $(RELEASE_NAME) $(CHART_PATH) \
+		-n $(NAMESPACE) \
+		--create-namespace \
+		-f $(VALUES_FILE)
 
 # =============================================================================
 # HELP & DOCUMENTATION
