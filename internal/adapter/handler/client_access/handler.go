@@ -17,5 +17,4 @@ func NewHandler(clientAccess in.ClientAccessUsecase) *Handler {
 
 func (h *Handler) RegisterRoutes(rg *gin.RouterGroup) {
 	rg.POST("/verify", h.VerifyClient)
-	rg.GET("/service/:service_id/exists", h.CheckServiceExists)
 }

@@ -9,47 +9,6 @@
         "version": "1.0"
     },
     "paths": {
-        "/client-access/service/{service_id}/exists": {
-            "get": {
-                "description": "Check if a service exists by service ID. Returns 204 if exists, 404 if not found.",
-                "tags": [
-                    "client-access"
-                ],
-                "summary": "Check if service exists",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Service ID",
-                        "name": "service_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Service exists"
-                    },
-                    "400": {
-                        "description": "Bad request - Invalid service_id format",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Service not found",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/client-access/verify": {
             "post": {
                 "security": [
