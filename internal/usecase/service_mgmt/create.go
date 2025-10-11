@@ -4,10 +4,9 @@ import (
 	"context"
 
 	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
-	"github.com/mandacode-com/mandacode-ssam/pkg/utils"
 	"github.com/mandacode-com/merr"
 )
 
@@ -25,8 +24,14 @@ func (u *Usecase) CreateService(ctx context.Context, req *in.CreateServiceReques
 	}
 
 	// Create new service using domain logic
-	desc := utils.StringNil(req.Description)
-	serviceEntity := entity.DraftService(serviceName, desc)
+	desc, err := vo.NewServiceDescription(req.Description)
+	if err != nil {
+		return nil, merr.New(merr.ErrBadRequest, "invalid service description", err)
+	}
+	serviceEntity, err := entity.DraftService(serviceName, desc)
+	if err != nil {
+		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
+	}
 
 	// Save to repository within transaction
 	var savedService *entity.Service

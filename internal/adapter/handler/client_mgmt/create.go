@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
+	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
-	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
 type CreateClientAppRequest struct {
@@ -63,7 +63,7 @@ func (h *Handler) CreateClientApp(c *gin.Context) {
 	}
 
 	// Parse service ID
-	serviceID, err := vo.ParseServicePublicID(req.ServiceID)
+	serviceID, err := vo.NewServicePublicID(req.ServiceID)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid service ID", err)
 		_ = c.Error(err)

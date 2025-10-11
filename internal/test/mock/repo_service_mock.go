@@ -14,7 +14,7 @@ import (
 	reflect "reflect"
 
 	entity "github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
-	value_object "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
+	value_object "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 	out "github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	gomock "go.uber.org/mock/gomock"
 )

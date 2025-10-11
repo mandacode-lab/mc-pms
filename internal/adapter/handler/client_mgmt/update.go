@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"

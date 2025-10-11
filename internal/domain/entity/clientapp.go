@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 )
 
 type ClientApp struct {
@@ -12,7 +12,7 @@ type ClientApp struct {
 	publicID    vo.ClientAppPublicID
 	serviceID   vo.ServiceID
 	name        string
-	description *string
+	description vo.ClientAppDescription
 	secretHash  []byte
 	isActive    bool
 	createdAt   time.Time
@@ -24,7 +24,7 @@ func NewClientApp(
 	publicID vo.ClientAppPublicID,
 	serviceID vo.ServiceID,
 	name string,
-	description *string,
+	description vo.ClientAppDescription,
 	secretHash []byte,
 	isActive bool,
 	createdAt time.Time,
@@ -43,10 +43,19 @@ func NewClientApp(
 	}
 }
 
-func DraftClientApp(serviceID vo.ServiceID, name string, description *string, secretHash []byte) *ClientApp {
+func DraftClientApp(serviceID vo.ServiceID, name string, description vo.ClientAppDescription, secretHash []byte) (*ClientApp, error) {
 	now := time.Now().UTC()
-	id := vo.NewClientAppID(0) // ID will be set by the database
-	publicID := vo.NewClientAppPublicID(uuid.New())
+
+	// ID 1 is temporary, will be replaced by DB
+	id, err := vo.NewClientAppID(1)
+	if err != nil {
+		return nil, err
+	}
+
+	publicID, err := vo.NewClientAppPublicID(uuid.New().String())
+	if err != nil {
+		return nil, err
+	}
 
 	ca := NewClientApp(
 		id,
@@ -60,7 +69,7 @@ func DraftClientApp(serviceID vo.ServiceID, name string, description *string, se
 		now,
 	)
 
-	return ca
+	return ca, nil
 }
 
 // Getter methods
@@ -81,7 +90,7 @@ func (ca *ClientApp) Name() string {
 	return ca.name
 }
 
-func (ca *ClientApp) Description() *string {
+func (ca *ClientApp) Description() vo.ClientAppDescription {
 	return ca.description
 }
 
@@ -110,7 +119,7 @@ func (ca *ClientApp) UpdateName(name string) {
 	}
 }
 
-func (ca *ClientApp) UpdateDescription(description *string) {
+func (ca *ClientApp) UpdateDescription(description vo.ClientAppDescription) {
 	ca.description = description
 	ca.updatedAt = time.Now().UTC()
 }

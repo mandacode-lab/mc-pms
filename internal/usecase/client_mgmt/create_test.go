@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/mandacode-ssam/internal/test/mock"
@@ -19,11 +19,11 @@ func TestCreateClientApp_HashesSecretBytesNotEncodedSecret(t *testing.T) {
 	defer ctrl.Finish()
 
 	ctx := context.Background()
-	servicePublicID := vo.NewServicePublicID(uuid.New())
+	servicePublicID, _ := vo.NewServicePublicID(uuid.New().String())
 	serviceName, _ := vo.NewServiceName("Test Service")
-	serviceDesc := "Test Description"
+	serviceDesc, _ := vo.NewServiceDescription("Test Description")
 
-	service := entity.DraftService(serviceName, &serviceDesc)
+	service, _ := entity.DraftService(serviceName, serviceDesc)
 
 	secretBytes := []byte("raw-secret-bytes")
 	hashedSecret := []byte("hashed-from-raw-bytes")

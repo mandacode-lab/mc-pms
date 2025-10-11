@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
@@ -70,7 +70,7 @@ func (h *Handler) ListClientApps(c *gin.Context) {
 	}
 
 	// Parse service ID
-	serviceID, err := vo.ParseServicePublicID(serviceIDStr)
+	serviceID, err := vo.NewServicePublicID(serviceIDStr)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid service ID", err)
 		_ = c.Error(err)

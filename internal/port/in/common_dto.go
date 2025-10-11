@@ -3,7 +3,7 @@ package in
 import (
 	"time"
 
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 )
 
 type ServiceInfo struct {

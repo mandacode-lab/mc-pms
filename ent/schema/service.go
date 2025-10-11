@@ -54,4 +54,3 @@ func (Service) Indexes() []ent.Index {
 			Unique(),
 	}
 }
-

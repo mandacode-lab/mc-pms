@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
-	"github.com/mandacode-com/mandacode-ssam/pkg/utils"
 	"github.com/mandacode-com/merr"
 )
 
@@ -41,9 +41,15 @@ func (u *Usecase) CreateClientApp(ctx context.Context, req *in.CreateClientAppRe
 	}
 
 	// Create new client app using domain logic
-	desc := utils.StringNil(req.Desc)
+	desc, err := vo.NewClientAppDescription(req.Desc)
+	if err != nil {
+		return nil, merr.New(merr.ErrBadRequest, "invalid client app description", err)
+	}
 
-	clientAppEntity := entity.DraftClientApp(service.ID(), req.Name, desc, hash)
+	clientAppEntity, err := entity.DraftClientApp(service.ID(), req.Name, desc, hash)
+	if err != nil {
+		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
+	}
 
 	// Save to repository within transaction
 	var savedClientApp *entity.ClientApp

@@ -61,4 +61,3 @@ func (ClientApp) Indexes() []ent.Index {
 			Unique(),
 	}
 }
-

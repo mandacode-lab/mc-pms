@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/test/mock"
 	"github.com/stretchr/testify/assert"
@@ -18,8 +18,8 @@ func TestVerifyClient_ComparesWithRawSecretBytes(t *testing.T) {
 	defer ctrl.Finish()
 
 	ctx := context.Background()
-	clientAppID := vo.NewClientAppPublicID(uuid.New())
-	serviceID := vo.NewServiceID(1)
+	clientAppID, _ := vo.NewClientAppPublicID(uuid.New().String())
+	serviceID, _ := vo.NewServiceID(1)
 
 	// Simulate the flow:
 	// 1. During creation: secretBytes -> Hash(secretBytes) -> hashedSecret (stored in DB)
@@ -31,10 +31,12 @@ func TestVerifyClient_ComparesWithRawSecretBytes(t *testing.T) {
 	encodedSecret := []byte("base64-encoded-secret")
 	hashedSecret := []byte("hashed-from-raw-bytes")
 
-	clientApp := entity.DraftClientApp(serviceID, "Test Client", nil, hashedSecret)
+	desc, _ := vo.NewClientAppDescription("")
+	clientApp, _ := entity.DraftClientApp(serviceID, "Test Client", desc, hashedSecret)
 
 	serviceName, _ := vo.NewServiceName("Test Service")
-	service := entity.DraftService(serviceName, nil)
+	serviceDesc, _ := vo.NewServiceDescription("")
+	service, _ := entity.DraftService(serviceName, serviceDesc)
 	servicePublicID := service.PublicID()
 
 	// Create mocks
@@ -80,14 +82,15 @@ func TestVerifyClient_FailsWithWrongSecret(t *testing.T) {
 	defer ctrl.Finish()
 
 	ctx := context.Background()
-	clientAppID := vo.NewClientAppPublicID(uuid.New())
-	serviceID := vo.NewServiceID(1)
+	clientAppID, _ := vo.NewClientAppPublicID(uuid.New().String())
+	serviceID, _ := vo.NewServiceID(1)
 
 	wrongEncodedSecret := []byte("wrong-encoded-secret")
 	wrongSecretBytes := []byte("wrong-secret-bytes")
 	hashedSecret := []byte("hashed-from-correct-secret")
 
-	clientApp := entity.DraftClientApp(serviceID, "Test Client", nil, hashedSecret)
+	desc, _ := vo.NewClientAppDescription("")
+	clientApp, _ := entity.DraftClientApp(serviceID, "Test Client", desc, hashedSecret)
 
 	// Create mocks
 	mockClientAppQueryRepo := mock.NewMockClientAppQueryRepository(ctrl)

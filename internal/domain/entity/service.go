@@ -4,14 +4,14 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 )
 
 type Service struct {
 	id          vo.ServiceID
 	publicID    vo.ServicePublicID
 	name        vo.ServiceName
-	description *string
+	description vo.ServiceDescription
 	isActive    bool
 	createdAt   time.Time
 	updatedAt   time.Time
@@ -21,7 +21,7 @@ func NewService(
 	id vo.ServiceID,
 	publicID vo.ServicePublicID,
 	name vo.ServiceName,
-	description *string,
+	description vo.ServiceDescription,
 	isActive bool,
 	createdAt time.Time,
 	updatedAt time.Time,
@@ -37,10 +37,19 @@ func NewService(
 	}
 }
 
-func DraftService(name vo.ServiceName, description *string) *Service {
+func DraftService(name vo.ServiceName, description vo.ServiceDescription) (*Service, error) {
 	now := time.Now().UTC()
-	id := vo.NewServiceID(0) // ID will be set by the database
-	publicID := vo.NewServicePublicID(uuid.New())
+
+	// ID 0 is a special case for draft entities (will be set by DB)
+	id, err := vo.NewServiceID(1) // Use 1 temporarily, will be replaced by DB
+	if err != nil {
+		return nil, err
+	}
+
+	publicID, err := vo.NewServicePublicID(uuid.New().String())
+	if err != nil {
+		return nil, err
+	}
 
 	s := NewService(
 		id,
@@ -52,7 +61,7 @@ func DraftService(name vo.ServiceName, description *string) *Service {
 		now,
 	)
 
-	return s
+	return s, nil
 }
 
 // Getter methods
@@ -69,7 +78,7 @@ func (s *Service) Name() vo.ServiceName {
 	return s.name
 }
 
-func (s *Service) Description() *string {
+func (s *Service) Description() vo.ServiceDescription {
 	return s.description
 }
 
@@ -88,13 +97,13 @@ func (s *Service) UpdatedAt() time.Time {
 // Business methods
 
 func (s *Service) UpdateName(name vo.ServiceName) {
-	if s.name.Value() != name.Value() {
+	if s.name.String() != name.String() {
 		s.name = name
 		s.updatedAt = time.Now().UTC()
 	}
 }
 
-func (s *Service) UpdateDescription(description *string) {
+func (s *Service) UpdateDescription(description vo.ServiceDescription) {
 	s.description = description
 	s.updatedAt = time.Now().UTC()
 }

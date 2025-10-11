@@ -3,7 +3,7 @@ package servicemgmt
 import (
 	"context"
 
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/merr"
@@ -26,7 +26,11 @@ func (u *Usecase) UpdateService(ctx context.Context, req *in.UpdateServiceReques
 	}
 
 	if req.NewDesc != nil {
-		service.UpdateDescription(req.NewDesc)
+		desc, err := vo.NewServiceDescription(*req.NewDesc)
+		if err != nil {
+			return nil, merr.New(merr.ErrBadRequest, "invalid service description", err)
+		}
+		service.UpdateDescription(desc)
 	}
 
 	if req.NewIsActive != nil {

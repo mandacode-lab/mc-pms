@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 )
 
 type ClientAppListFilter struct {

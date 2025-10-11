@@ -2,9 +2,8 @@ package clientmgmt
 
 import (
 	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/value_object"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
-	"github.com/mandacode-com/mandacode-ssam/pkg/utils"
 )
 
 func toClientAppInfo(ca *entity.ClientApp, serviceID vo.ServicePublicID) in.ClientAppInfo {
@@ -12,7 +11,7 @@ func toClientAppInfo(ca *entity.ClientApp, serviceID vo.ServicePublicID) in.Clie
 		ServiceID:   serviceID,
 		ClientAppID: ca.PublicID(),
 		Name:        ca.Name(),
-		Desc:        utils.StringValue(ca.Description()),
+		Desc:        ca.Description().String(),
 		IsActive:    ca.IsActive(),
 		CreatedAt:   ca.CreatedAt(),
 		UpdatedAt:   ca.UpdatedAt(),
