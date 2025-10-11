@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/merr"
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -16,11 +17,19 @@ type PermissionMiddleware struct {
 	Enabled    bool
 }
 
+func NewPermissionMiddleware(iamService out.IAMService, enabled bool) *PermissionMiddleware {
+	return &PermissionMiddleware{
+		IAMService: iamService,
+		Enabled:    enabled,
+	}
+}
+
 // RequirePermission creates a middleware that checks if the user has the required permission
 func (m *PermissionMiddleware) RequirePermission(resource out.Resource, action out.Action) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// If IAM is disabled, skip all permission checks and allow the request
 		if !m.Enabled {
+			log.Warn().Msg("IAM is disabled; skipping permission checks")
 			// Set a default user ID if none provided when IAM is disabled
 			userID := c.GetHeader("X-User-ID")
 			if userID == "" {

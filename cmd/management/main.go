@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/gin-contrib/cors"
 	"github.com/joho/godotenv"
 	"github.com/mandacode-com/mandacode-ssam/cmd/shared"
 	"github.com/mandacode-com/mandacode-ssam/configs"
@@ -59,11 +60,20 @@ func main() {
 		}
 	}()
 
+	// Setup CORS configuration for management API
+	corsConfig := cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization", "Accept", "X-Requested-With"},
+		AllowCredentials: true,
+		MaxAge:           12 * 3600, // 12 hours
+	}
+
 	// Setup server
-	srv := shared.SetupServer(&cfg.Server, &logger)
+	server := shared.SetupServer(&cfg.Server, &logger, cors.New(corsConfig))
 
 	// Register routes
-	engine := srv.GetEngine()
+	engine := server.GetEngine()
 
 	// Service management routes
 	serviceGroup := engine.Group("/services")
@@ -76,7 +86,7 @@ func main() {
 	clientAppMgmtHandler.RegisterRoutes(clientAppGroup)
 
 	// Swagger documentation
-	srv.GetEngine().GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Setup graceful shutdown
 	signalChan := make(chan os.Signal, 1)
@@ -87,7 +97,7 @@ func main() {
 		cancel()
 	}()
 
-	srvGroup := merver.NewServerGroup(srv)
+	srvGroup := merver.NewServerGroup(server)
 	if err := srvGroup.Run(ctx); err != nil {
 		logger.Fatal().Str("error", err.Error()).Msg("failed to run server group")
 	}

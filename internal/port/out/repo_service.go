@@ -3,8 +3,8 @@ package out
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 )
 
 type ServiceListFilter struct {
@@ -25,17 +25,16 @@ type ServiceListOptions struct {
 	Order  ServiceListOrder
 }
 
-
 type ServiceRepository interface {
-	Create(ctx context.Context, tx Tx, service *service.Service) (*service.Service, error)
-	Update(ctx context.Context, tx Tx, service *service.Service) error
-	FindByID(ctx context.Context, id serviceval.ID) (*service.Service, error)
-	Delete(ctx context.Context, tx Tx, service *service.Service) error
+	Create(ctx context.Context, tx Tx, service *entity.Service) (*entity.Service, error)
+	Update(ctx context.Context, tx Tx, service *entity.Service) error
+	FindByID(ctx context.Context, id vo.ServiceID) (*entity.Service, error)
+	Delete(ctx context.Context, tx Tx, service *entity.Service) error
 }
 
 type ServiceQueryRepository interface {
-	FindByID(ctx context.Context, id serviceval.ID) (*service.Service, error)
-	FindByPublicID(ctx context.Context, publicID serviceval.PublicID) (*service.Service, error)
-	FindByName(ctx context.Context, name serviceval.Name) (*service.Service, error)
-	List(ctx context.Context, filter *ServiceListFilter, options *ServiceListOptions) ([]*service.Service, int, error)
+	FindByID(ctx context.Context, id vo.ServiceID) (*entity.Service, error)
+	FindByPublicID(ctx context.Context, publicID vo.ServicePublicID) (*entity.Service, error)
+	FindByName(ctx context.Context, name vo.ServiceName) (*entity.Service, error)
+	List(ctx context.Context, filter *ServiceListFilter, options *ServiceListOptions) ([]*entity.Service, int, error)
 }

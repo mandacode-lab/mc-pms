@@ -3,7 +3,7 @@ package clientmgmt
 import (
 	"context"
 
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/merr"
@@ -22,8 +22,8 @@ func (u *Usecase) ListClientApps(ctx context.Context, req *in.ListClientAppsRequ
 		req.Offset = 0
 	}
 
-	var serviceID serviceval.PublicID
-	var serviceInternalID *serviceval.ID
+	var serviceID vo.ServicePublicID
+	var serviceInternalID *vo.ServiceID
 
 	// Convert PublicID to internal ID for repository query
 	if req.ServiceID != nil {

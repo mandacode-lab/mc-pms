@@ -43,12 +43,12 @@ type Adapter struct {
 	serviceQueryRepo   out.ServiceQueryRepository
 	clientAppRepo      out.ClientAppRepository
 	clientAppQueryRepo out.ClientAppQueryRepository
+	txManager          out.TransactionManager
 
 	// Services
 	hasher     out.Hasher
 	secretGen  out.ByteRandGen
 	encoder    out.Encoder
-	txManager  out.TransactionManager
 	iamService out.IAMService
 
 	// Middleware
@@ -99,30 +99,37 @@ func NewAdapter(ctx context.Context, cfg *configs.ManagementConfig) (*Adapter, e
 	// IAM Service - choose based on configuration
 	var iamSvc out.IAMService
 	if cfg.IAM.Enabled {
-		iamSvc = iam.NewHTTPIAMService(cfg.IAM.ServiceURL)
+		iamSvc, err = iam.NewHTTPIAMService(cfg.IAM.ServiceURL)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create IAM service: %w", err)
+		}
 	} else {
 		iamSvc = iam.NewNoOpIAMService()
 	}
 
 	// Middleware
-	permissionMiddleware := &middleware.PermissionMiddleware{
-		IAMService: iamSvc,
-		Enabled:    cfg.IAM.Enabled,
-	}
+	permissionMiddleware := middleware.NewPermissionMiddleware(iamSvc, cfg.IAM.Enabled)
 
 	return &Adapter{
-		db:                   db,
-		client:               client,
-		cacheClient:          cacheClient,
-		cacheStore:           cacheStore,
-		serviceRepo:          serviceRepo,
-		serviceQueryRepo:     serviceQueryRepo,
-		clientAppRepo:        clientAppRepo,
-		clientAppQueryRepo:   clientAppQueryRepo,
+		// Database
+		db:     db,
+		client: client,
+
+		// Cache
+		cacheClient: cacheClient,
+		cacheStore:  cacheStore,
+
+		// Repositories
+		serviceRepo:        serviceRepo,
+		serviceQueryRepo:   serviceQueryRepo,
+		clientAppRepo:      clientAppRepo,
+		clientAppQueryRepo: clientAppQueryRepo,
+		txManager:          txManager,
+
+		// Services
 		hasher:               hasherSvc,
 		secretGen:            secretGen,
 		encoder:              encoderSvc,
-		txManager:            txManager,
 		iamService:           iamSvc,
 		permissionMiddleware: permissionMiddleware,
 	}, nil

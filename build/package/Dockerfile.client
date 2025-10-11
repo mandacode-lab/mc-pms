@@ -4,7 +4,7 @@
 FROM golang:1.25-alpine AS builder
 
 # Install necessary tools
-RUN apk add --no-cache git=2.49.1-r0
+RUN apk add --no-cache git
 
 # Set working directory
 WORKDIR /app
@@ -27,7 +27,7 @@ RUN go build -o server ./cmd/client
 # 2. CA Certificates Stage
 ############################
 FROM alpine:3.22.1 AS certs
-RUN apk add --no-cache ca-certificates=20250619-r0
+RUN apk add --no-cache ca-certificates
 
 ############################
 # 3. Runtime Stage (scratch)

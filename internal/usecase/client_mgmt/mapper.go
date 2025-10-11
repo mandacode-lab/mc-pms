@@ -1,25 +1,24 @@
 package clientmgmt
 
 import (
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
-	"github.com/mandacode-com/mandacode-ssam/pkg/utils"
 )
 
-func toClientAppInfo(ca *clientapp.ClientApp, serviceID serviceval.PublicID) in.ClientAppInfo {
+func toClientAppInfo(ca *entity.ClientApp, serviceID vo.ServicePublicID) in.ClientAppInfo {
 	return in.ClientAppInfo{
 		ServiceID:   serviceID,
 		ClientAppID: ca.PublicID(),
 		Name:        ca.Name(),
-		Desc:        utils.StringValue(ca.Description()),
+		Desc:        ca.Description().String(),
 		IsActive:    ca.IsActive(),
 		CreatedAt:   ca.CreatedAt(),
 		UpdatedAt:   ca.UpdatedAt(),
 	}
 }
 
-func toClientAppInfos(clientApps []*clientapp.ClientApp, serviceID serviceval.PublicID) []in.ClientAppInfo {
+func toClientAppInfos(clientApps []*entity.ClientApp, serviceID vo.ServicePublicID) []in.ClientAppInfo {
 	clientAppInfos := make([]in.ClientAppInfo, len(clientApps))
 	for i, ca := range clientApps {
 		clientAppInfos[i] = toClientAppInfo(ca, serviceID)

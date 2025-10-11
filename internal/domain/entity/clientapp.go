@@ -1,19 +1,18 @@
-package clientapp
+package entity
 
 import (
 	"time"
 
 	"github.com/google/uuid"
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 )
 
 type ClientApp struct {
-	id          clientappval.ID
-	publicID    clientappval.PublicID
-	serviceID   serviceval.ID
+	id          vo.ClientAppID
+	publicID    vo.ClientAppPublicID
+	serviceID   vo.ServiceID
 	name        string
-	description *string
+	description vo.ClientAppDescription
 	secretHash  []byte
 	isActive    bool
 	createdAt   time.Time
@@ -21,11 +20,11 @@ type ClientApp struct {
 }
 
 func NewClientApp(
-	id clientappval.ID,
-	publicID clientappval.PublicID,
-	serviceID serviceval.ID,
+	id vo.ClientAppID,
+	publicID vo.ClientAppPublicID,
+	serviceID vo.ServiceID,
 	name string,
-	description *string,
+	description vo.ClientAppDescription,
 	secretHash []byte,
 	isActive bool,
 	createdAt time.Time,
@@ -44,10 +43,19 @@ func NewClientApp(
 	}
 }
 
-func DraftClientApp(serviceID serviceval.ID, name string, description *string, secretHash []byte) *ClientApp {
+func DraftClientApp(serviceID vo.ServiceID, name string, description vo.ClientAppDescription, secretHash []byte) (*ClientApp, error) {
 	now := time.Now().UTC()
-	id := clientappval.NewID(0) // ID will be set by the database
-	publicID := clientappval.NewPublicID(uuid.New())
+
+	// ID 1 is temporary, will be replaced by DB
+	id, err := vo.NewClientAppID(1)
+	if err != nil {
+		return nil, err
+	}
+
+	publicID, err := vo.NewClientAppPublicID(uuid.New().String())
+	if err != nil {
+		return nil, err
+	}
 
 	ca := NewClientApp(
 		id,
@@ -61,20 +69,20 @@ func DraftClientApp(serviceID serviceval.ID, name string, description *string, s
 		now,
 	)
 
-	return ca
+	return ca, nil
 }
 
 // Getter methods
 
-func (ca *ClientApp) ID() clientappval.ID {
+func (ca *ClientApp) ID() vo.ClientAppID {
 	return ca.id
 }
 
-func (ca *ClientApp) PublicID() clientappval.PublicID {
+func (ca *ClientApp) PublicID() vo.ClientAppPublicID {
 	return ca.publicID
 }
 
-func (ca *ClientApp) ServiceID() serviceval.ID {
+func (ca *ClientApp) ServiceID() vo.ServiceID {
 	return ca.serviceID
 }
 
@@ -82,7 +90,7 @@ func (ca *ClientApp) Name() string {
 	return ca.name
 }
 
-func (ca *ClientApp) Description() *string {
+func (ca *ClientApp) Description() vo.ClientAppDescription {
 	return ca.description
 }
 
@@ -111,7 +119,7 @@ func (ca *ClientApp) UpdateName(name string) {
 	}
 }
 
-func (ca *ClientApp) UpdateDescription(description *string) {
+func (ca *ClientApp) UpdateDescription(description vo.ClientAppDescription) {
 	ca.description = description
 	ca.updatedAt = time.Now().UTC()
 }

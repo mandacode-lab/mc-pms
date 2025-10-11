@@ -17,64 +17,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/client-access/verify": {
-            "post": {
-                "security": [
-                    {
-                        "BasicAuth": []
-                    }
-                ],
-                "description": "Verify client application credentials using Basic Authentication (client_id:client_secret)",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "client-access"
-                ],
-                "summary": "Verify client credentials",
-                "responses": {
-                    "200": {
-                        "description": "Client verification successful - returns service_id",
-                        "schema": {
-                            "$ref": "#/definitions/clientaccess.VerifyClientResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request - Invalid client_id format",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized - Invalid client_secret",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden - Client or service inactive",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not found - Client or service not found",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/client-apps": {
             "get": {
                 "description": "List all OAuth client applications for a specific service",
@@ -211,6 +153,51 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "Delete a client application by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "client-apps"
+                ],
+                "summary": "Delete a client application",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client App ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Client app deleted successfully"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Client app not found",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/client-apps/{id}/refresh-secret": {
@@ -255,6 +242,67 @@ const docTemplate = `{
             }
         },
         "/services": {
+            "get": {
+                "description": "List all services with optional filters",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "List services",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by name (contains)",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Filter by active status",
+                        "name": "is_active",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 50,
+                        "description": "Limit number of results",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Offset for pagination",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of services",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_handler_service_mgmt.ListServicesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Create a new multi-tenant service",
                 "consumes": [
@@ -363,18 +411,55 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "Delete a service by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "Delete a service",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Service deleted successfully"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Service not found",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    }
+                }
             }
         }
     },
     "definitions": {
-        "clientaccess.VerifyClientResponse": {
-            "type": "object",
-            "properties": {
-                "service_id": {
-                    "type": "string"
-                }
-            }
-        },
         "internal_adapter_handler_client_mgmt.ClientAppResponse": {
             "type": "object",
             "properties": {
@@ -538,6 +623,49 @@ const docTemplate = `{
             }
         },
         "internal_adapter_handler_service_mgmt.CreateServiceResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2023-01-01T00:00:00Z"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Service description"
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "name": {
+                    "type": "string",
+                    "example": "My Service"
+                },
+                "service_id": {
+                    "type": "string",
+                    "example": "srv_1234567890abcdef"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2023-01-01T00:00:00Z"
+                }
+            }
+        },
+        "internal_adapter_handler_service_mgmt.ListServicesResponse": {
+            "type": "object",
+            "properties": {
+                "services": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_adapter_handler_service_mgmt.ServiceResponse"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "internal_adapter_handler_service_mgmt.ServiceResponse": {
             "type": "object",
             "properties": {
                 "created_at": {

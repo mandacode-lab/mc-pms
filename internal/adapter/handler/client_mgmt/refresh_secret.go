@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
@@ -36,7 +36,7 @@ func (h *Handler) RefreshSecret(c *gin.Context) {
 	clientAppIDStr := c.Param("id")
 
 	// Parse client app ID
-	clientAppID, err := clientappval.ParsePublicID(clientAppIDStr)
+	clientAppID, err := vo.ParseClientAppPublicID(clientAppIDStr)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid client app ID", err)
 		_ = c.Error(err)

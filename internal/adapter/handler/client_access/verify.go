@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
@@ -59,7 +59,7 @@ func (h *Handler) VerifyClient(c *gin.Context) {
 	}
 
 	// Parse client ID
-	clientID, err := clientappval.ParsePublicID(username)
+	clientID, err := vo.ParseClientAppPublicID(username)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid client_id format", err)
 		_ = c.Error(err)
@@ -69,7 +69,7 @@ func (h *Handler) VerifyClient(c *gin.Context) {
 	// Create usecase request
 	usecaseReq := &in.VerifyClientRequest{
 		ClientID:     clientID,         // client_id from Basic Auth username
-		ClientSecret: []byte(password), // client_secret from Basic Auth password
+		ClientSecret: []byte(password), // client_secret from Basic Auth password (base64 encoded)
 	}
 
 	// Call usecase
@@ -83,4 +83,3 @@ func (h *Handler) VerifyClient(c *gin.Context) {
 	response := toVerifyClientResponse(result)
 	c.JSON(http.StatusOK, response)
 }
-

@@ -3,12 +3,11 @@ package in
 import (
 	"context"
 
-	clientappval "github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp/value"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 )
 
 type CreateClientAppRequest struct {
-	ServiceID serviceval.PublicID
+	ServiceID vo.ServicePublicID
 	Name      string
 	Desc      string
 }
@@ -19,11 +18,11 @@ type CreateClientAppResponse struct {
 }
 
 type DeleteClientAppRequest struct {
-	ClientAppID clientappval.PublicID
+	ClientAppID vo.ClientAppPublicID
 }
 
 type RefreshSecretRequest struct {
-	ClientAppID clientappval.PublicID
+	ClientAppID vo.ClientAppPublicID
 }
 
 type RefreshSecretResponse struct {
@@ -31,7 +30,7 @@ type RefreshSecretResponse struct {
 }
 
 type UpdateClientAppRequest struct {
-	ClientAppID clientappval.PublicID
+	ClientAppID vo.ClientAppPublicID
 	NewName     *string
 	NewDesc     *string
 	NewIsActive *bool
@@ -42,7 +41,7 @@ type UpdateClientAppResponse struct {
 }
 
 type FindClientAppRequest struct {
-	ClientAppID *clientappval.PublicID
+	ClientAppID *vo.ClientAppPublicID
 	Name        *string
 }
 
@@ -51,7 +50,7 @@ type FindClientAppResponse struct {
 }
 
 type ListClientAppsRequest struct {
-	ServiceID    *serviceval.PublicID
+	ServiceID    *vo.ServicePublicID
 	NameContains *string
 	IsActive     *bool
 	Limit        int
@@ -59,7 +58,7 @@ type ListClientAppsRequest struct {
 }
 
 type ListClientAppsResponse struct {
-	ServiceID  serviceval.PublicID
+	ServiceID  vo.ServicePublicID
 	ClientApps []ClientAppInfo
 }
 

@@ -2,7 +2,7 @@
 # MandaCode Service Hub - Makefile
 # =============================================================================
 
--include .make.env
+-include .env.make
 
 .PHONY: install-tools swagger-gen swagger-clean help \
         generate-migrate apply-migrate build-migrate push-migrate check-migrate-name check-migrate-tag
@@ -86,13 +86,26 @@ install-tools:
 # Swagger documentation
 swagger-gen:
 	@echo "Generating Swagger documentation..."
-	@swag init --parseDependency --parseInternal --generalInfo ./cmd/client/main.go --output ./docs/client
-	@swag init --parseDependency --parseInternal --generalInfo ./cmd/management/main.go --output ./docs/management
+	@swag init --parseDependency --parseInternal \
+		--generalInfo ./cmd/client/main.go \
+		--output ./docs/client \
+		--exclude ./internal/adapter/handler/service_mgmt,./internal/adapter/handler/client_mgmt
+	@swag init --parseDependency --parseInternal \
+		--generalInfo ./cmd/management/main.go \
+		--output ./docs/management \
+		--exclude ./internal/adapter/handler/client_access
 
 swagger-clean:
 	@echo "Cleaning Swagger documentation..."
 	@rm -rf docs/
 	@echo "Swagger docs cleaned!"
+
+.PHONY: deploy
+deploy:
+	helm upgrade --install $(RELEASE_NAME) $(CHART_PATH) \
+		-n $(NAMESPACE) \
+		--create-namespace \
+		-f $(VALUES_FILE)
 
 # =============================================================================
 # HELP & DOCUMENTATION

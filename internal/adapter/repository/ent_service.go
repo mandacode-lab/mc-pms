@@ -5,8 +5,8 @@ import (
 
 	"github.com/mandacode-com/mandacode-ssam/ent"
 	entservice "github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 )
 
@@ -20,7 +20,7 @@ func NewEntServiceRepository(client *ent.Client) out.ServiceRepository {
 	}
 }
 
-func (r *EntServiceRepository) Create(ctx context.Context, tx out.Tx, serviceEntity *service.Service) (*service.Service, error) {
+func (r *EntServiceRepository) Create(ctx context.Context, tx out.Tx, serviceEntity *entity.Service) (*entity.Service, error) {
 	var builder *ent.ServiceCreate
 
 	if tx != nil {
@@ -33,20 +33,21 @@ func (r *EntServiceRepository) Create(ctx context.Context, tx out.Tx, serviceEnt
 		builder = r.client.Service.Create()
 	}
 
+	publicIDUUID, _ := serviceEntity.PublicID().UUID()
 	entService, err := builder.
-		SetPublicID(serviceEntity.PublicID().Value()).
-		SetName(serviceEntity.Name().Value()).
-		SetNillableDescription(serviceEntity.Description()).
+		SetPublicID(publicIDUUID).
+		SetName(serviceEntity.Name().String()).
+		SetNillableDescription(serviceEntity.Description().Ptr()).
 		SetIsActive(serviceEntity.IsActive()).
 		Save(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.toDomain(entService), nil
+	return r.toDomain(entService)
 }
 
-func (r *EntServiceRepository) Update(ctx context.Context, tx out.Tx, serviceEntity *service.Service) error {
+func (r *EntServiceRepository) Update(ctx context.Context, tx out.Tx, serviceEntity *entity.Service) error {
 	var builder *ent.ServiceUpdateOne
 
 	if tx != nil {
@@ -54,53 +55,62 @@ func (r *EntServiceRepository) Update(ctx context.Context, tx out.Tx, serviceEnt
 		if err != nil {
 			return err
 		}
-		builder = entTx.Service.UpdateOneID(serviceEntity.ID().Value())
+		builder = entTx.Service.UpdateOneID(serviceEntity.ID().Int64())
 	} else {
-		builder = r.client.Service.UpdateOneID(serviceEntity.ID().Value())
+		builder = r.client.Service.UpdateOneID(serviceEntity.ID().Int64())
 	}
 
 	_, err := builder.
-		SetName(serviceEntity.Name().Value()).
-		SetNillableDescription(serviceEntity.Description()).
+		SetName(serviceEntity.Name().String()).
+		SetNillableDescription(serviceEntity.Description().Ptr()).
 		SetIsActive(serviceEntity.IsActive()).
 		Save(ctx)
 
 	return err
 }
 
-func (r *EntServiceRepository) FindByID(ctx context.Context, id serviceval.ID) (*service.Service, error) {
-	entService, err := r.client.Service.Get(ctx, id.Value())
+func (r *EntServiceRepository) FindByID(ctx context.Context, id vo.ServiceID) (*entity.Service, error) {
+	entService, err := r.client.Service.Get(ctx, id.Int64())
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, nil
 		}
 		return nil, err
 	}
-	return r.toDomain(entService), nil
+	return r.toDomain(entService)
 }
 
-func (r *EntServiceRepository) Delete(ctx context.Context, tx out.Tx, serviceEntity *service.Service) error {
+func (r *EntServiceRepository) Delete(ctx context.Context, tx out.Tx, serviceEntity *entity.Service) error {
 	if tx != nil {
 		entTx, err := asEntTx(tx)
 		if err != nil {
 			return err
 		}
-		return entTx.Service.DeleteOneID(serviceEntity.ID().Value()).Exec(ctx)
+		return entTx.Service.DeleteOneID(serviceEntity.ID().Int64()).Exec(ctx)
 	}
-	return r.client.Service.DeleteOneID(serviceEntity.ID().Value()).Exec(ctx)
+	return r.client.Service.DeleteOneID(serviceEntity.ID().Int64()).Exec(ctx)
 }
 
-func (r *EntServiceRepository) toDomain(entService *ent.Service) *service.Service {
-	id := serviceval.NewID(entService.ID)
-	publicID := serviceval.NewPublicID(entService.PublicID)
-	name, _ := serviceval.NewName(entService.Name)
-
-	var description *string
-	if entService.Description != "" {
-		description = &entService.Description
+func (r *EntServiceRepository) toDomain(entService *ent.Service) (*entity.Service, error) {
+	id, err := vo.NewServiceID(entService.ID)
+	if err != nil {
+		return nil, err
+	}
+	publicID, err := vo.NewServicePublicID(entService.PublicID.String())
+	if err != nil {
+		return nil, err
+	}
+	name, err := vo.NewServiceName(entService.Name)
+	if err != nil {
+		return nil, err
 	}
 
-	return service.NewService(
+	description, err := vo.NewServiceDescription(entService.Description)
+	if err != nil {
+		return nil, err
+	}
+
+	return entity.NewService(
 		id,
 		publicID,
 		name,
@@ -108,7 +118,7 @@ func (r *EntServiceRepository) toDomain(entService *ent.Service) *service.Servic
 		entService.IsActive,
 		entService.CreatedAt,
 		entService.UpdatedAt,
-	)
+	), nil
 }
 
 type EntServiceQueryRepository struct {
@@ -121,20 +131,24 @@ func NewEntServiceQueryRepository(client *ent.Client) out.ServiceQueryRepository
 	}
 }
 
-func (r *EntServiceQueryRepository) FindByID(ctx context.Context, id serviceval.ID) (*service.Service, error) {
-	entService, err := r.client.Service.Get(ctx, id.Value())
+func (r *EntServiceQueryRepository) FindByID(ctx context.Context, id vo.ServiceID) (*entity.Service, error) {
+	entService, err := r.client.Service.Get(ctx, id.Int64())
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, nil
 		}
 		return nil, err
 	}
-	return r.toDomain(entService), nil
+	return r.toDomain(entService)
 }
 
-func (r *EntServiceQueryRepository) FindByPublicID(ctx context.Context, publicID serviceval.PublicID) (*service.Service, error) {
+func (r *EntServiceQueryRepository) FindByPublicID(ctx context.Context, publicID vo.ServicePublicID) (*entity.Service, error) {
+	publicIDUUID, err := publicID.UUID()
+	if err != nil {
+		return nil, err
+	}
 	entService, err := r.client.Service.Query().
-		Where(entservice.PublicID(publicID.Value())).
+		Where(entservice.PublicID(publicIDUUID)).
 		Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
@@ -142,12 +156,12 @@ func (r *EntServiceQueryRepository) FindByPublicID(ctx context.Context, publicID
 		}
 		return nil, err
 	}
-	return r.toDomain(entService), nil
+	return r.toDomain(entService)
 }
 
-func (r *EntServiceQueryRepository) FindByName(ctx context.Context, name serviceval.Name) (*service.Service, error) {
+func (r *EntServiceQueryRepository) FindByName(ctx context.Context, name vo.ServiceName) (*entity.Service, error) {
 	entService, err := r.client.Service.Query().
-		Where(entservice.Name(name.Value())).
+		Where(entservice.Name(name.String())).
 		Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
@@ -155,10 +169,10 @@ func (r *EntServiceQueryRepository) FindByName(ctx context.Context, name service
 		}
 		return nil, err
 	}
-	return r.toDomain(entService), nil
+	return r.toDomain(entService)
 }
 
-func (r *EntServiceQueryRepository) List(ctx context.Context, filter *out.ServiceListFilter, options *out.ServiceListOptions) ([]*service.Service, int, error) {
+func (r *EntServiceQueryRepository) List(ctx context.Context, filter *out.ServiceListFilter, options *out.ServiceListOptions) ([]*entity.Service, int, error) {
 	query := r.client.Service.Query()
 
 	if filter != nil {
@@ -192,25 +206,38 @@ func (r *EntServiceQueryRepository) List(ctx context.Context, filter *out.Servic
 	}
 
 	count := len(entServices)
-	services := make([]*service.Service, 0, count)
-	for _, entService := range entServices {
-		services = append(services, r.toDomain(entService))
+	services := make([]*entity.Service, 0, count)
+	for i := range entServices {
+		service, err := r.toDomain(entServices[i])
+		if err != nil {
+			return nil, 0, err
+		}
+		services = append(services, service)
 	}
 
 	return services, count, nil
 }
 
-func (r *EntServiceQueryRepository) toDomain(entService *ent.Service) *service.Service {
-	id := serviceval.NewID(entService.ID)
-	publicID := serviceval.NewPublicID(entService.PublicID)
-	name, _ := serviceval.NewName(entService.Name)
-
-	var description *string
-	if entService.Description != "" {
-		description = &entService.Description
+func (r *EntServiceQueryRepository) toDomain(entService *ent.Service) (*entity.Service, error) {
+	id, err := vo.NewServiceID(entService.ID)
+	if err != nil {
+		return nil, err
+	}
+	publicID, err := vo.NewServicePublicID(entService.PublicID.String())
+	if err != nil {
+		return nil, err
+	}
+	name, err := vo.NewServiceName(entService.Name)
+	if err != nil {
+		return nil, err
 	}
 
-	return service.NewService(
+	description, err := vo.NewServiceDescription(entService.Description)
+	if err != nil {
+		return nil, err
+	}
+
+	return entity.NewService(
 		id,
 		publicID,
 		name,
@@ -218,5 +245,5 @@ func (r *EntServiceQueryRepository) toDomain(entService *ent.Service) *service.S
 		entService.IsActive,
 		entService.CreatedAt,
 		entService.UpdatedAt,
-	)
+	), nil
 }

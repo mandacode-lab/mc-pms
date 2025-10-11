@@ -3,10 +3,10 @@ package clientmgmt
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/clientapp"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
-	"github.com/mandacode-com/mandacode-ssam/pkg/utils"
 	"github.com/mandacode-com/merr"
 )
 
@@ -28,28 +28,36 @@ func (u *Usecase) CreateClientApp(ctx context.Context, req *in.CreateClientAppRe
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	// Encode secret bytes to plain secret
-	plainSecret := u.encoder.Encode(secretBytes)
+	// Hash the secret bytes
+	hash, err := u.hasher.Hash(ctx, secretBytes)
+	if err != nil {
+		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
+	}
 
-	// Hash the plain secret
-	hash, err := u.hasher.Hash(ctx, plainSecret)
+	// Encode secret bytes to plain secret (for response only)
+	plainSecret, err := u.encoder.Encode(secretBytes)
 	if err != nil {
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
 	// Create new client app using domain logic
-	desc := utils.StringNil(req.Desc)
+	desc, err := vo.NewClientAppDescription(req.Desc)
+	if err != nil {
+		return nil, merr.New(merr.ErrBadRequest, "invalid client app description", err)
+	}
 
-	clientAppEntity := clientapp.DraftClientApp(service.ID(), req.Name, desc, hash)
+	clientAppEntity, err := entity.DraftClientApp(service.ID(), req.Name, desc, hash)
+	if err != nil {
+		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
+	}
 
 	// Save to repository within transaction
-	var savedClientApp *clientapp.ClientApp
+	var savedClientApp *entity.ClientApp
 	err = u.txManager.WithTx(ctx, func(tx out.Tx) error {
-		saved, err := u.clientAppRepo.Create(ctx, tx, clientAppEntity)
+		savedClientApp, err = u.clientAppRepo.Create(ctx, tx, clientAppEntity)
 		if err != nil {
 			return merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 		}
-		savedClientApp = saved
 		return nil
 	})
 	if err != nil {

@@ -98,16 +98,6 @@ Redis Secret Name
 {{- end }}
 {{- end }}
 
-{{/*
-KEK Secret Name
-*/}}
-{{- define "defined.kekSecretName" -}}
-{{- if .Values.kek.existingSecret }}
-{{- .Values.kek.existingSecret }}
-{{- else }}
-{{- printf "%s-kek" (include "defined.fullname" .) }}
-{{- end }}
-{{- end }}
 
 {{/*
 ConfigMap names

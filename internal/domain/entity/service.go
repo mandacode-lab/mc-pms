@@ -1,27 +1,27 @@
-package service
+package entity
 
 import (
 	"time"
 
 	"github.com/google/uuid"
-	serviceval "github.com/mandacode-com/mandacode-ssam/internal/domain/service/value"
+	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
 )
 
 type Service struct {
-	id          serviceval.ID
-	publicID    serviceval.PublicID
-	name        serviceval.Name
-	description *string
+	id          vo.ServiceID
+	publicID    vo.ServicePublicID
+	name        vo.ServiceName
+	description vo.ServiceDescription
 	isActive    bool
 	createdAt   time.Time
 	updatedAt   time.Time
 }
 
 func NewService(
-	id serviceval.ID,
-	publicID serviceval.PublicID,
-	name serviceval.Name,
-	description *string,
+	id vo.ServiceID,
+	publicID vo.ServicePublicID,
+	name vo.ServiceName,
+	description vo.ServiceDescription,
 	isActive bool,
 	createdAt time.Time,
 	updatedAt time.Time,
@@ -37,10 +37,19 @@ func NewService(
 	}
 }
 
-func DraftService(name serviceval.Name, description *string) *Service {
+func DraftService(name vo.ServiceName, description vo.ServiceDescription) (*Service, error) {
 	now := time.Now().UTC()
-	id := serviceval.NewID(0) // ID will be set by the database
-	publicID := serviceval.NewPublicID(uuid.New())
+
+	// ID 0 is a special case for draft entities (will be set by DB)
+	id, err := vo.NewServiceID(1) // Use 1 temporarily, will be replaced by DB
+	if err != nil {
+		return nil, err
+	}
+
+	publicID, err := vo.NewServicePublicID(uuid.New().String())
+	if err != nil {
+		return nil, err
+	}
 
 	s := NewService(
 		id,
@@ -52,24 +61,24 @@ func DraftService(name serviceval.Name, description *string) *Service {
 		now,
 	)
 
-	return s
+	return s, nil
 }
 
 // Getter methods
 
-func (s *Service) ID() serviceval.ID {
+func (s *Service) ID() vo.ServiceID {
 	return s.id
 }
 
-func (s *Service) PublicID() serviceval.PublicID {
+func (s *Service) PublicID() vo.ServicePublicID {
 	return s.publicID
 }
 
-func (s *Service) Name() serviceval.Name {
+func (s *Service) Name() vo.ServiceName {
 	return s.name
 }
 
-func (s *Service) Description() *string {
+func (s *Service) Description() vo.ServiceDescription {
 	return s.description
 }
 
@@ -87,14 +96,14 @@ func (s *Service) UpdatedAt() time.Time {
 
 // Business methods
 
-func (s *Service) UpdateName(name serviceval.Name) {
-	if s.name.Value() != name.Value() {
+func (s *Service) UpdateName(name vo.ServiceName) {
+	if s.name.String() != name.String() {
 		s.name = name
 		s.updatedAt = time.Now().UTC()
 	}
 }
 
-func (s *Service) UpdateDescription(description *string) {
+func (s *Service) UpdateDescription(description vo.ServiceDescription) {
 	s.description = description
 	s.updatedAt = time.Now().UTC()
 }

@@ -1,6 +1,6 @@
 # MandaCode SSAM
 
-Service management system for MandaCode 
+Service & Service Access Management (SSAM)
 
 ## Features
 - Service registration and discovery
