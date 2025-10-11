@@ -15,6 +15,11 @@ type VerifyClientResponse struct {
 	ServiceID vo.ServicePublicID
 }
 
+type CheckServiceExistsRequest struct {
+	ServiceID vo.ServicePublicID
+}
+
 type ClientAccessUsecase interface {
 	VerifyClient(ctx context.Context, req *VerifyClientRequest) (*VerifyClientResponse, error)
+	CheckServiceExists(ctx context.Context, req *CheckServiceExistsRequest) (bool, error)
 }
