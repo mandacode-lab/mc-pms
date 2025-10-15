@@ -39,7 +39,7 @@ type CreateClientInput struct {
 
 type CreateClientResult struct {
 	*ClientView
-	Secret    []byte
+	Secret []byte
 }
 
 type DeleteClientInput struct {
