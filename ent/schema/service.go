@@ -27,7 +27,7 @@ func (Service) Fields() []ent.Field {
 			NotEmpty(),
 		field.String("description").
 			Optional(),
-		field.Bool("active").
+		field.Bool("is_active").
 			Default(true),
 		field.Time("created_at").
 			Default(time.Now).

@@ -24,8 +24,8 @@ type Service struct {
 	Name string `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
-	// Active holds the value of the "active" field.
-	Active bool `json:"active,omitempty"`
+	// IsActive holds the value of the "is_active" field.
+	IsActive bool `json:"is_active,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -59,7 +59,7 @@ func (*Service) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case service.FieldActive:
+		case service.FieldIsActive:
 			values[i] = new(sql.NullBool)
 		case service.FieldID:
 			values[i] = new(sql.NullInt64)
@@ -108,11 +108,11 @@ func (_m *Service) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Description = value.String
 			}
-		case service.FieldActive:
+		case service.FieldIsActive:
 			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field active", values[i])
+				return fmt.Errorf("unexpected type %T for field is_active", values[i])
 			} else if value.Valid {
-				_m.Active = value.Bool
+				_m.IsActive = value.Bool
 			}
 		case service.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -176,8 +176,8 @@ func (_m *Service) String() string {
 	builder.WriteString("description=")
 	builder.WriteString(_m.Description)
 	builder.WriteString(", ")
-	builder.WriteString("active=")
-	builder.WriteString(fmt.Sprintf("%v", _m.Active))
+	builder.WriteString("is_active=")
+	builder.WriteString(fmt.Sprintf("%v", _m.IsActive))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))

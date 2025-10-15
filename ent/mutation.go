@@ -39,7 +39,7 @@ type ServiceMutation struct {
 	public_id          *uuid.UUID
 	name               *string
 	description        *string
-	active             *bool
+	is_active          *bool
 	created_at         *time.Time
 	updated_at         *time.Time
 	clearedFields      map[string]struct{}
@@ -276,40 +276,40 @@ func (m *ServiceMutation) ResetDescription() {
 	delete(m.clearedFields, service.FieldDescription)
 }
 
-// SetActive sets the "active" field.
-func (m *ServiceMutation) SetActive(b bool) {
-	m.active = &b
+// SetIsActive sets the "is_active" field.
+func (m *ServiceMutation) SetIsActive(b bool) {
+	m.is_active = &b
 }
 
-// Active returns the value of the "active" field in the mutation.
-func (m *ServiceMutation) Active() (r bool, exists bool) {
-	v := m.active
+// IsActive returns the value of the "is_active" field in the mutation.
+func (m *ServiceMutation) IsActive() (r bool, exists bool) {
+	v := m.is_active
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldActive returns the old "active" field's value of the Service entity.
+// OldIsActive returns the old "is_active" field's value of the Service entity.
 // If the Service object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServiceMutation) OldActive(ctx context.Context) (v bool, err error) {
+func (m *ServiceMutation) OldIsActive(ctx context.Context) (v bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldActive is only allowed on UpdateOne operations")
+		return v, errors.New("OldIsActive is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldActive requires an ID field in the mutation")
+		return v, errors.New("OldIsActive requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldActive: %w", err)
+		return v, fmt.Errorf("querying old value for OldIsActive: %w", err)
 	}
-	return oldValue.Active, nil
+	return oldValue.IsActive, nil
 }
 
-// ResetActive resets all changes to the "active" field.
-func (m *ServiceMutation) ResetActive() {
-	m.active = nil
+// ResetIsActive resets all changes to the "is_active" field.
+func (m *ServiceMutation) ResetIsActive() {
+	m.is_active = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -482,8 +482,8 @@ func (m *ServiceMutation) Fields() []string {
 	if m.description != nil {
 		fields = append(fields, service.FieldDescription)
 	}
-	if m.active != nil {
-		fields = append(fields, service.FieldActive)
+	if m.is_active != nil {
+		fields = append(fields, service.FieldIsActive)
 	}
 	if m.created_at != nil {
 		fields = append(fields, service.FieldCreatedAt)
@@ -505,8 +505,8 @@ func (m *ServiceMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case service.FieldDescription:
 		return m.Description()
-	case service.FieldActive:
-		return m.Active()
+	case service.FieldIsActive:
+		return m.IsActive()
 	case service.FieldCreatedAt:
 		return m.CreatedAt()
 	case service.FieldUpdatedAt:
@@ -526,8 +526,8 @@ func (m *ServiceMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldName(ctx)
 	case service.FieldDescription:
 		return m.OldDescription(ctx)
-	case service.FieldActive:
-		return m.OldActive(ctx)
+	case service.FieldIsActive:
+		return m.OldIsActive(ctx)
 	case service.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case service.FieldUpdatedAt:
@@ -562,12 +562,12 @@ func (m *ServiceMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDescription(v)
 		return nil
-	case service.FieldActive:
+	case service.FieldIsActive:
 		v, ok := value.(bool)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetActive(v)
+		m.SetIsActive(v)
 		return nil
 	case service.FieldCreatedAt:
 		v, ok := value.(time.Time)
@@ -650,8 +650,8 @@ func (m *ServiceMutation) ResetField(name string) error {
 	case service.FieldDescription:
 		m.ResetDescription()
 		return nil
-	case service.FieldActive:
-		m.ResetActive()
+	case service.FieldIsActive:
+		m.ResetIsActive()
 		return nil
 	case service.FieldCreatedAt:
 		m.ResetCreatedAt()

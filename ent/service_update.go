@@ -78,16 +78,16 @@ func (_u *ServiceUpdate) ClearDescription() *ServiceUpdate {
 	return _u
 }
 
-// SetActive sets the "active" field.
-func (_u *ServiceUpdate) SetActive(v bool) *ServiceUpdate {
-	_u.mutation.SetActive(v)
+// SetIsActive sets the "is_active" field.
+func (_u *ServiceUpdate) SetIsActive(v bool) *ServiceUpdate {
+	_u.mutation.SetIsActive(v)
 	return _u
 }
 
-// SetNillableActive sets the "active" field if the given value is not nil.
-func (_u *ServiceUpdate) SetNillableActive(v *bool) *ServiceUpdate {
+// SetNillableIsActive sets the "is_active" field if the given value is not nil.
+func (_u *ServiceUpdate) SetNillableIsActive(v *bool) *ServiceUpdate {
 	if v != nil {
-		_u.SetActive(*v)
+		_u.SetIsActive(*v)
 	}
 	return _u
 }
@@ -209,8 +209,8 @@ func (_u *ServiceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.DescriptionCleared() {
 		_spec.ClearField(service.FieldDescription, field.TypeString)
 	}
-	if value, ok := _u.mutation.Active(); ok {
-		_spec.SetField(service.FieldActive, field.TypeBool, value)
+	if value, ok := _u.mutation.IsActive(); ok {
+		_spec.SetField(service.FieldIsActive, field.TypeBool, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(service.FieldUpdatedAt, field.TypeTime, value)
@@ -328,16 +328,16 @@ func (_u *ServiceUpdateOne) ClearDescription() *ServiceUpdateOne {
 	return _u
 }
 
-// SetActive sets the "active" field.
-func (_u *ServiceUpdateOne) SetActive(v bool) *ServiceUpdateOne {
-	_u.mutation.SetActive(v)
+// SetIsActive sets the "is_active" field.
+func (_u *ServiceUpdateOne) SetIsActive(v bool) *ServiceUpdateOne {
+	_u.mutation.SetIsActive(v)
 	return _u
 }
 
-// SetNillableActive sets the "active" field if the given value is not nil.
-func (_u *ServiceUpdateOne) SetNillableActive(v *bool) *ServiceUpdateOne {
+// SetNillableIsActive sets the "is_active" field if the given value is not nil.
+func (_u *ServiceUpdateOne) SetNillableIsActive(v *bool) *ServiceUpdateOne {
 	if v != nil {
-		_u.SetActive(*v)
+		_u.SetIsActive(*v)
 	}
 	return _u
 }
@@ -489,8 +489,8 @@ func (_u *ServiceUpdateOne) sqlSave(ctx context.Context) (_node *Service, err er
 	if _u.mutation.DescriptionCleared() {
 		_spec.ClearField(service.FieldDescription, field.TypeString)
 	}
-	if value, ok := _u.mutation.Active(); ok {
-		_spec.SetField(service.FieldActive, field.TypeBool, value)
+	if value, ok := _u.mutation.IsActive(); ok {
+		_spec.SetField(service.FieldIsActive, field.TypeBool, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(service.FieldUpdatedAt, field.TypeTime, value)

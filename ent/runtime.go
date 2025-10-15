@@ -25,10 +25,10 @@ func init() {
 	serviceDescName := serviceFields[2].Descriptor()
 	// service.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	service.NameValidator = serviceDescName.Validators[0].(func(string) error)
-	// serviceDescActive is the schema descriptor for active field.
-	serviceDescActive := serviceFields[4].Descriptor()
-	// service.DefaultActive holds the default value on creation for the active field.
-	service.DefaultActive = serviceDescActive.Default.(bool)
+	// serviceDescIsActive is the schema descriptor for is_active field.
+	serviceDescIsActive := serviceFields[4].Descriptor()
+	// service.DefaultIsActive holds the default value on creation for the is_active field.
+	service.DefaultIsActive = serviceDescIsActive.Default.(bool)
 	// serviceDescCreatedAt is the schema descriptor for created_at field.
 	serviceDescCreatedAt := serviceFields[5].Descriptor()
 	// service.DefaultCreatedAt holds the default value on creation for the created_at field.
