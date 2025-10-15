@@ -1,4 +1,4 @@
-package svcclient
+package client
 
 import (
 	"errors"

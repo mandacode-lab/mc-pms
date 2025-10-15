@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/svcclient"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/client"
 )
 
 type VerifyClientInput struct {
-	ClientID     svcclient.PublicID
+	ClientID     client.PublicID
 	ClientSecret []byte // raw secret
 }
 
@@ -22,9 +22,9 @@ type ClientAccessUsecase interface {
 }
 
 type MgmtClientInfo struct {
-	ClientID  svcclient.PublicID
-	Name      svcclient.Name
-	Desc      svcclient.Description
+	ClientID  client.PublicID
+	Name      client.Name
+	Desc      client.Description
 	IsActive  bool
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -42,11 +42,11 @@ type CreateClientResult struct {
 }
 
 type DeleteClientInput struct {
-	ClientID svcclient.PublicID
+	ClientID client.PublicID
 }
 
 type RefreshSecretInput struct {
-	ClientID svcclient.PublicID
+	ClientID client.PublicID
 }
 
 type RefreshSecretResult struct {
@@ -54,7 +54,7 @@ type RefreshSecretResult struct {
 }
 
 type UpdateClientInput struct {
-	ClientID    svcclient.PublicID
+	ClientID    client.PublicID
 	NewName     *string
 	NewDesc     *string
 	NewIsActive *bool
@@ -65,8 +65,8 @@ type UpdateClientResult struct {
 }
 
 type FindClientInput struct {
-	ClientID *svcclient.PublicID
-	Name     *svcclient.Name
+	ClientID *client.PublicID
+	Name     *client.Name
 }
 
 type FindClientResult struct {

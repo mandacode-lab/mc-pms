@@ -1,4 +1,4 @@
-package svcclient
+package client
 
 import (
 	"time"
@@ -6,7 +6,7 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
 )
 
-type SvcClient struct {
+type Client struct {
 	id          ID
 	publicID    PublicID
 	name        Name
@@ -28,8 +28,8 @@ func NewSvcClient(
 	isActive bool,
 	createdAt time.Time,
 	updatedAt time.Time,
-) *SvcClient {
-	return &SvcClient{
+) *Client {
+	return &Client{
 		id:          id,
 		publicID:    publicID,
 		name:        name,
@@ -44,38 +44,38 @@ func NewSvcClient(
 
 // Getter methods
 
-func (sc *SvcClient) ID() ID {
+func (sc *Client) ID() ID {
 	return sc.id
 }
 
-func (sc *SvcClient) PublicID() PublicID {
+func (sc *Client) PublicID() PublicID {
 	return sc.publicID
 }
 
-func (sc *SvcClient) Name() Name {
+func (sc *Client) Name() Name {
 	return sc.name
 }
 
-func (sc *SvcClient) Description() Description {
+func (sc *Client) Description() Description {
 	return sc.description
 }
 
-func (sc *SvcClient) SecretHash() SecretHash {
+func (sc *Client) SecretHash() SecretHash {
 	return sc.secretHash
 }
 
-func (sc *SvcClient) ServiceID() service.ID {
+func (sc *Client) ServiceID() service.ID {
 	return sc.serviceID
 }
 
-func (sc *SvcClient) IsActive() bool {
+func (sc *Client) IsActive() bool {
 	return sc.isActive
 }
 
-func (sc *SvcClient) CreatedAt() time.Time {
+func (sc *Client) CreatedAt() time.Time {
 	return sc.createdAt
 }
 
-func (sc *SvcClient) UpdatedAt() time.Time {
+func (sc *Client) UpdatedAt() time.Time {
 	return sc.updatedAt
 }
