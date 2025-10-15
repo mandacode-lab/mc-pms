@@ -139,10 +139,61 @@ type EntClientAppQueryRepository struct {
 	client *ent.Client
 }
 
-func NewEntClientAppQueryRepository(client *ent.Client) client.ClientQueryRepository {
-	return &EntClientAppQueryRepository{
-		client: client,
+// ListWithServicePublicID implements client.ClientQueryRepository.
+func (r *EntClientAppQueryRepository) ListWithServicePublicID(ctx context.Context, filter *client.ClientListFilter, options *client.ClientListOptions) ([]*client.ClientWthService, int, error) {
+	query := r.client.SvcClient.Query().WithService()
+
+	if filter != nil {
+		if filter.ServiceID != nil {
+			query = query.Where(svcclient.HasServiceWith(entservice.ID(filter.ServiceID.Value())))
+		}
+		if filter.NameContains != nil {
+			query = query.Where(svcclient.NameContains(*filter.NameContains))
+		}
+		if filter.IsActive != nil {
+			query = query.Where(svcclient.IsActive(*filter.IsActive))
+		}
 	}
+
+	if options != nil {
+		switch options.Order {
+		case client.ClientListOrderNameAsc:
+			query = query.Order(ent.Asc(svcclient.FieldName))
+		case client.ClientListOrderNameDesc:
+			query = query.Order(ent.Desc(svcclient.FieldName))
+		}
+
+		if options.Limit > 0 {
+			query = query.Limit(options.Limit)
+		}
+		if options.Offset > 0 {
+			query = query.Offset(options.Offset)
+		}
+	}
+
+	entClients, err := query.All(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	count := len(entClients)
+	clients := make([]*client.ClientWthService, 0, count)
+	for _, entClient := range entClients {
+		clientModel, err := r.toDomain(entClient)
+		if err != nil {
+			return nil, 0, err
+		}
+		servicePublicID, err := service.NewPublicID(entClient.Edges.Service.PublicID)
+		if err != nil {
+			return nil, 0, err
+		}
+		clients = append(clients, &client.ClientWthService{
+			Client:    clientModel,
+			ServiceID: servicePublicID,
+		})
+	}
+
+	return clients, count, nil
 }
 
 func (r *EntClientAppQueryRepository) FindByID(ctx context.Context, id client.ID) (*client.Client, error) {
@@ -234,6 +285,12 @@ func (r *EntClientAppQueryRepository) List(ctx context.Context, filter *client.C
 	}
 
 	return clients, count, nil
+}
+
+func NewEntClientAppQueryRepository(client *ent.Client) client.ClientQueryRepository {
+	return &EntClientAppQueryRepository{
+		client: client,
+	}
 }
 
 func (r *EntClientAppQueryRepository) toDomain(entClient *ent.SvcClient) (*client.Client, error) {
