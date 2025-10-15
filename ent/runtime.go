@@ -7,7 +7,7 @@ import (
 
 	"github.com/mandacode-com/mandacode-ssam/ent/schema"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
+	"github.com/mandacode-com/mandacode-ssam/ent/svcclient"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -34,28 +34,28 @@ func init() {
 	service.DefaultUpdatedAt = serviceDescUpdatedAt.Default.(func() time.Time)
 	// service.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	service.UpdateDefaultUpdatedAt = serviceDescUpdatedAt.UpdateDefault.(func() time.Time)
-	serviceclientFields := schema.ServiceClient{}.Fields()
-	_ = serviceclientFields
-	// serviceclientDescSecretHash is the schema descriptor for secret_hash field.
-	serviceclientDescSecretHash := serviceclientFields[3].Descriptor()
-	// serviceclient.SecretHashValidator is a validator for the "secret_hash" field. It is called by the builders before save.
-	serviceclient.SecretHashValidator = serviceclientDescSecretHash.Validators[0].(func([]byte) error)
-	// serviceclientDescName is the schema descriptor for name field.
-	serviceclientDescName := serviceclientFields[4].Descriptor()
-	// serviceclient.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	serviceclient.NameValidator = serviceclientDescName.Validators[0].(func(string) error)
-	// serviceclientDescIsActive is the schema descriptor for is_active field.
-	serviceclientDescIsActive := serviceclientFields[6].Descriptor()
-	// serviceclient.DefaultIsActive holds the default value on creation for the is_active field.
-	serviceclient.DefaultIsActive = serviceclientDescIsActive.Default.(bool)
-	// serviceclientDescCreatedAt is the schema descriptor for created_at field.
-	serviceclientDescCreatedAt := serviceclientFields[7].Descriptor()
-	// serviceclient.DefaultCreatedAt holds the default value on creation for the created_at field.
-	serviceclient.DefaultCreatedAt = serviceclientDescCreatedAt.Default.(func() time.Time)
-	// serviceclientDescUpdatedAt is the schema descriptor for updated_at field.
-	serviceclientDescUpdatedAt := serviceclientFields[8].Descriptor()
-	// serviceclient.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	serviceclient.DefaultUpdatedAt = serviceclientDescUpdatedAt.Default.(func() time.Time)
-	// serviceclient.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	serviceclient.UpdateDefaultUpdatedAt = serviceclientDescUpdatedAt.UpdateDefault.(func() time.Time)
+	svcclientFields := schema.SvcClient{}.Fields()
+	_ = svcclientFields
+	// svcclientDescSecretHash is the schema descriptor for secret_hash field.
+	svcclientDescSecretHash := svcclientFields[3].Descriptor()
+	// svcclient.SecretHashValidator is a validator for the "secret_hash" field. It is called by the builders before save.
+	svcclient.SecretHashValidator = svcclientDescSecretHash.Validators[0].(func([]byte) error)
+	// svcclientDescName is the schema descriptor for name field.
+	svcclientDescName := svcclientFields[4].Descriptor()
+	// svcclient.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	svcclient.NameValidator = svcclientDescName.Validators[0].(func(string) error)
+	// svcclientDescIsActive is the schema descriptor for is_active field.
+	svcclientDescIsActive := svcclientFields[6].Descriptor()
+	// svcclient.DefaultIsActive holds the default value on creation for the is_active field.
+	svcclient.DefaultIsActive = svcclientDescIsActive.Default.(bool)
+	// svcclientDescCreatedAt is the schema descriptor for created_at field.
+	svcclientDescCreatedAt := svcclientFields[7].Descriptor()
+	// svcclient.DefaultCreatedAt holds the default value on creation for the created_at field.
+	svcclient.DefaultCreatedAt = svcclientDescCreatedAt.Default.(func() time.Time)
+	// svcclientDescUpdatedAt is the schema descriptor for updated_at field.
+	svcclientDescUpdatedAt := svcclientFields[8].Descriptor()
+	// svcclient.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	svcclient.DefaultUpdatedAt = svcclientDescUpdatedAt.Default.(func() time.Time)
+	// svcclient.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	svcclient.UpdateDefaultUpdatedAt = svcclientDescUpdatedAt.UpdateDefault.(func() time.Time)
 }

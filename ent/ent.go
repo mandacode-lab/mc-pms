@@ -13,7 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
+	"github.com/mandacode-com/mandacode-ssam/ent/svcclient"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -74,8 +74,8 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			service.Table:       service.ValidColumn,
-			serviceclient.Table: serviceclient.ValidColumn,
+			service.Table:   service.ValidColumn,
+			svcclient.Table: svcclient.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

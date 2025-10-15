@@ -11,48 +11,48 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
+	"github.com/mandacode-com/mandacode-ssam/ent/svcclient"
 )
 
-// ServiceClientCreate is the builder for creating a ServiceClient entity.
-type ServiceClientCreate struct {
+// SvcClientCreate is the builder for creating a SvcClient entity.
+type SvcClientCreate struct {
 	config
-	mutation *ServiceClientMutation
+	mutation *SvcClientMutation
 	hooks    []Hook
 }
 
 // SetServiceID sets the "service_id" field.
-func (_c *ServiceClientCreate) SetServiceID(v int64) *ServiceClientCreate {
+func (_c *SvcClientCreate) SetServiceID(v int64) *SvcClientCreate {
 	_c.mutation.SetServiceID(v)
 	return _c
 }
 
 // SetPublicID sets the "public_id" field.
-func (_c *ServiceClientCreate) SetPublicID(v string) *ServiceClientCreate {
+func (_c *SvcClientCreate) SetPublicID(v string) *SvcClientCreate {
 	_c.mutation.SetPublicID(v)
 	return _c
 }
 
 // SetSecretHash sets the "secret_hash" field.
-func (_c *ServiceClientCreate) SetSecretHash(v []byte) *ServiceClientCreate {
+func (_c *SvcClientCreate) SetSecretHash(v []byte) *SvcClientCreate {
 	_c.mutation.SetSecretHash(v)
 	return _c
 }
 
 // SetName sets the "name" field.
-func (_c *ServiceClientCreate) SetName(v string) *ServiceClientCreate {
+func (_c *SvcClientCreate) SetName(v string) *SvcClientCreate {
 	_c.mutation.SetName(v)
 	return _c
 }
 
 // SetDescription sets the "description" field.
-func (_c *ServiceClientCreate) SetDescription(v string) *ServiceClientCreate {
+func (_c *SvcClientCreate) SetDescription(v string) *SvcClientCreate {
 	_c.mutation.SetDescription(v)
 	return _c
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (_c *ServiceClientCreate) SetNillableDescription(v *string) *ServiceClientCreate {
+func (_c *SvcClientCreate) SetNillableDescription(v *string) *SvcClientCreate {
 	if v != nil {
 		_c.SetDescription(*v)
 	}
@@ -60,13 +60,13 @@ func (_c *ServiceClientCreate) SetNillableDescription(v *string) *ServiceClientC
 }
 
 // SetIsActive sets the "is_active" field.
-func (_c *ServiceClientCreate) SetIsActive(v bool) *ServiceClientCreate {
+func (_c *SvcClientCreate) SetIsActive(v bool) *SvcClientCreate {
 	_c.mutation.SetIsActive(v)
 	return _c
 }
 
 // SetNillableIsActive sets the "is_active" field if the given value is not nil.
-func (_c *ServiceClientCreate) SetNillableIsActive(v *bool) *ServiceClientCreate {
+func (_c *SvcClientCreate) SetNillableIsActive(v *bool) *SvcClientCreate {
 	if v != nil {
 		_c.SetIsActive(*v)
 	}
@@ -74,13 +74,13 @@ func (_c *ServiceClientCreate) SetNillableIsActive(v *bool) *ServiceClientCreate
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (_c *ServiceClientCreate) SetCreatedAt(v time.Time) *ServiceClientCreate {
+func (_c *SvcClientCreate) SetCreatedAt(v time.Time) *SvcClientCreate {
 	_c.mutation.SetCreatedAt(v)
 	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *ServiceClientCreate) SetNillableCreatedAt(v *time.Time) *ServiceClientCreate {
+func (_c *SvcClientCreate) SetNillableCreatedAt(v *time.Time) *SvcClientCreate {
 	if v != nil {
 		_c.SetCreatedAt(*v)
 	}
@@ -88,13 +88,13 @@ func (_c *ServiceClientCreate) SetNillableCreatedAt(v *time.Time) *ServiceClient
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (_c *ServiceClientCreate) SetUpdatedAt(v time.Time) *ServiceClientCreate {
+func (_c *SvcClientCreate) SetUpdatedAt(v time.Time) *SvcClientCreate {
 	_c.mutation.SetUpdatedAt(v)
 	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (_c *ServiceClientCreate) SetNillableUpdatedAt(v *time.Time) *ServiceClientCreate {
+func (_c *SvcClientCreate) SetNillableUpdatedAt(v *time.Time) *SvcClientCreate {
 	if v != nil {
 		_c.SetUpdatedAt(*v)
 	}
@@ -102,29 +102,29 @@ func (_c *ServiceClientCreate) SetNillableUpdatedAt(v *time.Time) *ServiceClient
 }
 
 // SetID sets the "id" field.
-func (_c *ServiceClientCreate) SetID(v int64) *ServiceClientCreate {
+func (_c *SvcClientCreate) SetID(v int64) *SvcClientCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
 
 // SetService sets the "service" edge to the Service entity.
-func (_c *ServiceClientCreate) SetService(v *Service) *ServiceClientCreate {
+func (_c *SvcClientCreate) SetService(v *Service) *SvcClientCreate {
 	return _c.SetServiceID(v.ID)
 }
 
-// Mutation returns the ServiceClientMutation object of the builder.
-func (_c *ServiceClientCreate) Mutation() *ServiceClientMutation {
+// Mutation returns the SvcClientMutation object of the builder.
+func (_c *SvcClientCreate) Mutation() *SvcClientMutation {
 	return _c.mutation
 }
 
-// Save creates the ServiceClient in the database.
-func (_c *ServiceClientCreate) Save(ctx context.Context) (*ServiceClient, error) {
+// Save creates the SvcClient in the database.
+func (_c *SvcClientCreate) Save(ctx context.Context) (*SvcClient, error) {
 	_c.defaults()
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (_c *ServiceClientCreate) SaveX(ctx context.Context) *ServiceClient {
+func (_c *SvcClientCreate) SaveX(ctx context.Context) *SvcClient {
 	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -133,74 +133,74 @@ func (_c *ServiceClientCreate) SaveX(ctx context.Context) *ServiceClient {
 }
 
 // Exec executes the query.
-func (_c *ServiceClientCreate) Exec(ctx context.Context) error {
+func (_c *SvcClientCreate) Exec(ctx context.Context) error {
 	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_c *ServiceClientCreate) ExecX(ctx context.Context) {
+func (_c *SvcClientCreate) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *ServiceClientCreate) defaults() {
+func (_c *SvcClientCreate) defaults() {
 	if _, ok := _c.mutation.IsActive(); !ok {
-		v := serviceclient.DefaultIsActive
+		v := svcclient.DefaultIsActive
 		_c.mutation.SetIsActive(v)
 	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
-		v := serviceclient.DefaultCreatedAt()
+		v := svcclient.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
-		v := serviceclient.DefaultUpdatedAt()
+		v := svcclient.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_c *ServiceClientCreate) check() error {
+func (_c *SvcClientCreate) check() error {
 	if _, ok := _c.mutation.ServiceID(); !ok {
-		return &ValidationError{Name: "service_id", err: errors.New(`ent: missing required field "ServiceClient.service_id"`)}
+		return &ValidationError{Name: "service_id", err: errors.New(`ent: missing required field "SvcClient.service_id"`)}
 	}
 	if _, ok := _c.mutation.PublicID(); !ok {
-		return &ValidationError{Name: "public_id", err: errors.New(`ent: missing required field "ServiceClient.public_id"`)}
+		return &ValidationError{Name: "public_id", err: errors.New(`ent: missing required field "SvcClient.public_id"`)}
 	}
 	if _, ok := _c.mutation.SecretHash(); !ok {
-		return &ValidationError{Name: "secret_hash", err: errors.New(`ent: missing required field "ServiceClient.secret_hash"`)}
+		return &ValidationError{Name: "secret_hash", err: errors.New(`ent: missing required field "SvcClient.secret_hash"`)}
 	}
 	if v, ok := _c.mutation.SecretHash(); ok {
-		if err := serviceclient.SecretHashValidator(v); err != nil {
-			return &ValidationError{Name: "secret_hash", err: fmt.Errorf(`ent: validator failed for field "ServiceClient.secret_hash": %w`, err)}
+		if err := svcclient.SecretHashValidator(v); err != nil {
+			return &ValidationError{Name: "secret_hash", err: fmt.Errorf(`ent: validator failed for field "SvcClient.secret_hash": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.Name(); !ok {
-		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "ServiceClient.name"`)}
+		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "SvcClient.name"`)}
 	}
 	if v, ok := _c.mutation.Name(); ok {
-		if err := serviceclient.NameValidator(v); err != nil {
-			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "ServiceClient.name": %w`, err)}
+		if err := svcclient.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "SvcClient.name": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.IsActive(); !ok {
-		return &ValidationError{Name: "is_active", err: errors.New(`ent: missing required field "ServiceClient.is_active"`)}
+		return &ValidationError{Name: "is_active", err: errors.New(`ent: missing required field "SvcClient.is_active"`)}
 	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "ServiceClient.created_at"`)}
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SvcClient.created_at"`)}
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
-		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "ServiceClient.updated_at"`)}
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "SvcClient.updated_at"`)}
 	}
 	if len(_c.mutation.ServiceIDs()) == 0 {
-		return &ValidationError{Name: "service", err: errors.New(`ent: missing required edge "ServiceClient.service"`)}
+		return &ValidationError{Name: "service", err: errors.New(`ent: missing required edge "SvcClient.service"`)}
 	}
 	return nil
 }
 
-func (_c *ServiceClientCreate) sqlSave(ctx context.Context) (*ServiceClient, error) {
+func (_c *SvcClientCreate) sqlSave(ctx context.Context) (*SvcClient, error) {
 	if err := _c.check(); err != nil {
 		return nil, err
 	}
@@ -220,49 +220,49 @@ func (_c *ServiceClientCreate) sqlSave(ctx context.Context) (*ServiceClient, err
 	return _node, nil
 }
 
-func (_c *ServiceClientCreate) createSpec() (*ServiceClient, *sqlgraph.CreateSpec) {
+func (_c *SvcClientCreate) createSpec() (*SvcClient, *sqlgraph.CreateSpec) {
 	var (
-		_node = &ServiceClient{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(serviceclient.Table, sqlgraph.NewFieldSpec(serviceclient.FieldID, field.TypeInt64))
+		_node = &SvcClient{config: _c.config}
+		_spec = sqlgraph.NewCreateSpec(svcclient.Table, sqlgraph.NewFieldSpec(svcclient.FieldID, field.TypeInt64))
 	)
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
 	if value, ok := _c.mutation.PublicID(); ok {
-		_spec.SetField(serviceclient.FieldPublicID, field.TypeString, value)
+		_spec.SetField(svcclient.FieldPublicID, field.TypeString, value)
 		_node.PublicID = value
 	}
 	if value, ok := _c.mutation.SecretHash(); ok {
-		_spec.SetField(serviceclient.FieldSecretHash, field.TypeBytes, value)
+		_spec.SetField(svcclient.FieldSecretHash, field.TypeBytes, value)
 		_node.SecretHash = value
 	}
 	if value, ok := _c.mutation.Name(); ok {
-		_spec.SetField(serviceclient.FieldName, field.TypeString, value)
+		_spec.SetField(svcclient.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
 	if value, ok := _c.mutation.Description(); ok {
-		_spec.SetField(serviceclient.FieldDescription, field.TypeString, value)
+		_spec.SetField(svcclient.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
 	if value, ok := _c.mutation.IsActive(); ok {
-		_spec.SetField(serviceclient.FieldIsActive, field.TypeBool, value)
+		_spec.SetField(svcclient.FieldIsActive, field.TypeBool, value)
 		_node.IsActive = value
 	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(serviceclient.FieldCreatedAt, field.TypeTime, value)
+		_spec.SetField(svcclient.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := _c.mutation.UpdatedAt(); ok {
-		_spec.SetField(serviceclient.FieldUpdatedAt, field.TypeTime, value)
+		_spec.SetField(svcclient.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
 	if nodes := _c.mutation.ServiceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   serviceclient.ServiceTable,
-			Columns: []string{serviceclient.ServiceColumn},
+			Table:   svcclient.ServiceTable,
+			Columns: []string{svcclient.ServiceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(service.FieldID, field.TypeInt64),
@@ -277,27 +277,27 @@ func (_c *ServiceClientCreate) createSpec() (*ServiceClient, *sqlgraph.CreateSpe
 	return _node, _spec
 }
 
-// ServiceClientCreateBulk is the builder for creating many ServiceClient entities in bulk.
-type ServiceClientCreateBulk struct {
+// SvcClientCreateBulk is the builder for creating many SvcClient entities in bulk.
+type SvcClientCreateBulk struct {
 	config
 	err      error
-	builders []*ServiceClientCreate
+	builders []*SvcClientCreate
 }
 
-// Save creates the ServiceClient entities in the database.
-func (_c *ServiceClientCreateBulk) Save(ctx context.Context) ([]*ServiceClient, error) {
+// Save creates the SvcClient entities in the database.
+func (_c *SvcClientCreateBulk) Save(ctx context.Context) ([]*SvcClient, error) {
 	if _c.err != nil {
 		return nil, _c.err
 	}
 	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
-	nodes := make([]*ServiceClient, len(_c.builders))
+	nodes := make([]*SvcClient, len(_c.builders))
 	mutators := make([]Mutator, len(_c.builders))
 	for i := range _c.builders {
 		func(i int, root context.Context) {
 			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-				mutation, ok := m.(*ServiceClientMutation)
+				mutation, ok := m.(*SvcClientMutation)
 				if !ok {
 					return nil, fmt.Errorf("unexpected mutation type %T", m)
 				}
@@ -344,7 +344,7 @@ func (_c *ServiceClientCreateBulk) Save(ctx context.Context) ([]*ServiceClient, 
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_c *ServiceClientCreateBulk) SaveX(ctx context.Context) []*ServiceClient {
+func (_c *SvcClientCreateBulk) SaveX(ctx context.Context) []*SvcClient {
 	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -353,13 +353,13 @@ func (_c *ServiceClientCreateBulk) SaveX(ctx context.Context) []*ServiceClient {
 }
 
 // Exec executes the query.
-func (_c *ServiceClientCreateBulk) Exec(ctx context.Context) error {
+func (_c *SvcClientCreateBulk) Exec(ctx context.Context) error {
 	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_c *ServiceClientCreateBulk) ExecX(ctx context.Context) {
+func (_c *SvcClientCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}

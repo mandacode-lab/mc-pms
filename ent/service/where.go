@@ -392,7 +392,7 @@ func HasClientApps() predicate.Service {
 }
 
 // HasClientAppsWith applies the HasEdge predicate on the "client_apps" edge with a given conditions (other predicates).
-func HasClientAppsWith(preds ...predicate.ServiceClient) predicate.Service {
+func HasClientAppsWith(preds ...predicate.SvcClient) predicate.Service {
 	return predicate.Service(func(s *sql.Selector) {
 		step := newClientAppsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

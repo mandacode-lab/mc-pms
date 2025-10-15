@@ -21,16 +21,16 @@ func (f ServiceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ServiceMutation", m)
 }
 
-// The ServiceClientFunc type is an adapter to allow the use of ordinary
-// function as ServiceClient mutator.
-type ServiceClientFunc func(context.Context, *ent.ServiceClientMutation) (ent.Value, error)
+// The SvcClientFunc type is an adapter to allow the use of ordinary
+// function as SvcClient mutator.
+type SvcClientFunc func(context.Context, *ent.SvcClientMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f ServiceClientFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.ServiceClientMutation); ok {
+func (f SvcClientFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.SvcClientMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ServiceClientMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SvcClientMutation", m)
 }
 
 // Condition is a hook condition function.

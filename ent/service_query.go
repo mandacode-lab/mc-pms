@@ -14,7 +14,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/mandacode-com/mandacode-ssam/ent/predicate"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
+	"github.com/mandacode-com/mandacode-ssam/ent/svcclient"
 )
 
 // ServiceQuery is the builder for querying Service entities.
@@ -24,7 +24,7 @@ type ServiceQuery struct {
 	order          []service.OrderOption
 	inters         []Interceptor
 	predicates     []predicate.Service
-	withClientApps *ServiceClientQuery
+	withClientApps *SvcClientQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -62,8 +62,8 @@ func (_q *ServiceQuery) Order(o ...service.OrderOption) *ServiceQuery {
 }
 
 // QueryClientApps chains the current query on the "client_apps" edge.
-func (_q *ServiceQuery) QueryClientApps() *ServiceClientQuery {
-	query := (&ServiceClientClient{config: _q.config}).Query()
+func (_q *ServiceQuery) QueryClientApps() *SvcClientQuery {
+	query := (&SvcClientClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -74,7 +74,7 @@ func (_q *ServiceQuery) QueryClientApps() *ServiceClientQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(service.Table, service.FieldID, selector),
-			sqlgraph.To(serviceclient.Table, serviceclient.FieldID),
+			sqlgraph.To(svcclient.Table, svcclient.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, service.ClientAppsTable, service.ClientAppsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
@@ -284,8 +284,8 @@ func (_q *ServiceQuery) Clone() *ServiceQuery {
 
 // WithClientApps tells the query-builder to eager-load the nodes that are connected to
 // the "client_apps" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *ServiceQuery) WithClientApps(opts ...func(*ServiceClientQuery)) *ServiceQuery {
-	query := (&ServiceClientClient{config: _q.config}).Query()
+func (_q *ServiceQuery) WithClientApps(opts ...func(*SvcClientQuery)) *ServiceQuery {
+	query := (&SvcClientClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -395,15 +395,15 @@ func (_q *ServiceQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Serv
 	}
 	if query := _q.withClientApps; query != nil {
 		if err := _q.loadClientApps(ctx, query, nodes,
-			func(n *Service) { n.Edges.ClientApps = []*ServiceClient{} },
-			func(n *Service, e *ServiceClient) { n.Edges.ClientApps = append(n.Edges.ClientApps, e) }); err != nil {
+			func(n *Service) { n.Edges.ClientApps = []*SvcClient{} },
+			func(n *Service, e *SvcClient) { n.Edges.ClientApps = append(n.Edges.ClientApps, e) }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (_q *ServiceQuery) loadClientApps(ctx context.Context, query *ServiceClientQuery, nodes []*Service, init func(*Service), assign func(*Service, *ServiceClient)) error {
+func (_q *ServiceQuery) loadClientApps(ctx context.Context, query *SvcClientQuery, nodes []*Service, init func(*Service), assign func(*Service, *SvcClient)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Service)
 	for i := range nodes {
@@ -414,9 +414,9 @@ func (_q *ServiceQuery) loadClientApps(ctx context.Context, query *ServiceClient
 		}
 	}
 	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(serviceclient.FieldServiceID)
+		query.ctx.AppendFieldOnce(svcclient.FieldServiceID)
 	}
-	query.Where(predicate.ServiceClient(func(s *sql.Selector) {
+	query.Where(predicate.SvcClient(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(service.ClientAppsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)

@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
+	"github.com/mandacode-com/mandacode-ssam/ent/svcclient"
 )
 
 // ServiceCreate is the builder for creating a Service entity.
@@ -95,14 +95,14 @@ func (_c *ServiceCreate) SetID(v int64) *ServiceCreate {
 	return _c
 }
 
-// AddClientAppIDs adds the "client_apps" edge to the ServiceClient entity by IDs.
+// AddClientAppIDs adds the "client_apps" edge to the SvcClient entity by IDs.
 func (_c *ServiceCreate) AddClientAppIDs(ids ...int64) *ServiceCreate {
 	_c.mutation.AddClientAppIDs(ids...)
 	return _c
 }
 
-// AddClientApps adds the "client_apps" edges to the ServiceClient entity.
-func (_c *ServiceCreate) AddClientApps(v ...*ServiceClient) *ServiceCreate {
+// AddClientApps adds the "client_apps" edges to the SvcClient entity.
+func (_c *ServiceCreate) AddClientApps(v ...*SvcClient) *ServiceCreate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -245,7 +245,7 @@ func (_c *ServiceCreate) createSpec() (*Service, *sqlgraph.CreateSpec) {
 			Columns: []string{service.ClientAppsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(serviceclient.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(svcclient.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

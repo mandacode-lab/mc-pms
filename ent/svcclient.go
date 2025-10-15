@@ -10,11 +10,11 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
+	"github.com/mandacode-com/mandacode-ssam/ent/svcclient"
 )
 
-// ServiceClient is the model entity for the ServiceClient schema.
-type ServiceClient struct {
+// SvcClient is the model entity for the SvcClient schema.
+type SvcClient struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
@@ -35,13 +35,13 @@ type ServiceClient struct {
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
-	// The values are being populated by the ServiceClientQuery when eager-loading is set.
-	Edges        ServiceClientEdges `json:"edges"`
+	// The values are being populated by the SvcClientQuery when eager-loading is set.
+	Edges        SvcClientEdges `json:"edges"`
 	selectValues sql.SelectValues
 }
 
-// ServiceClientEdges holds the relations/edges for other nodes in the graph.
-type ServiceClientEdges struct {
+// SvcClientEdges holds the relations/edges for other nodes in the graph.
+type SvcClientEdges struct {
 	// Service holds the value of the service edge.
 	Service *Service `json:"service,omitempty"`
 	// loadedTypes holds the information for reporting if a
@@ -51,7 +51,7 @@ type ServiceClientEdges struct {
 
 // ServiceOrErr returns the Service value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e ServiceClientEdges) ServiceOrErr() (*Service, error) {
+func (e SvcClientEdges) ServiceOrErr() (*Service, error) {
 	if e.Service != nil {
 		return e.Service, nil
 	} else if e.loadedTypes[0] {
@@ -61,19 +61,19 @@ func (e ServiceClientEdges) ServiceOrErr() (*Service, error) {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*ServiceClient) scanValues(columns []string) ([]any, error) {
+func (*SvcClient) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case serviceclient.FieldSecretHash:
+		case svcclient.FieldSecretHash:
 			values[i] = new([]byte)
-		case serviceclient.FieldIsActive:
+		case svcclient.FieldIsActive:
 			values[i] = new(sql.NullBool)
-		case serviceclient.FieldID, serviceclient.FieldServiceID:
+		case svcclient.FieldID, svcclient.FieldServiceID:
 			values[i] = new(sql.NullInt64)
-		case serviceclient.FieldPublicID, serviceclient.FieldName, serviceclient.FieldDescription:
+		case svcclient.FieldPublicID, svcclient.FieldName, svcclient.FieldDescription:
 			values[i] = new(sql.NullString)
-		case serviceclient.FieldCreatedAt, serviceclient.FieldUpdatedAt:
+		case svcclient.FieldCreatedAt, svcclient.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -83,62 +83,62 @@ func (*ServiceClient) scanValues(columns []string) ([]any, error) {
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the ServiceClient fields.
-func (_m *ServiceClient) assignValues(columns []string, values []any) error {
+// to the SvcClient fields.
+func (_m *SvcClient) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case serviceclient.FieldID:
+		case svcclient.FieldID:
 			value, ok := values[i].(*sql.NullInt64)
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
-		case serviceclient.FieldServiceID:
+		case svcclient.FieldServiceID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field service_id", values[i])
 			} else if value.Valid {
 				_m.ServiceID = value.Int64
 			}
-		case serviceclient.FieldPublicID:
+		case svcclient.FieldPublicID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field public_id", values[i])
 			} else if value.Valid {
 				_m.PublicID = value.String
 			}
-		case serviceclient.FieldSecretHash:
+		case svcclient.FieldSecretHash:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field secret_hash", values[i])
 			} else if value != nil {
 				_m.SecretHash = *value
 			}
-		case serviceclient.FieldName:
+		case svcclient.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				_m.Name = value.String
 			}
-		case serviceclient.FieldDescription:
+		case svcclient.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
 				_m.Description = value.String
 			}
-		case serviceclient.FieldIsActive:
+		case svcclient.FieldIsActive:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field is_active", values[i])
 			} else if value.Valid {
 				_m.IsActive = value.Bool
 			}
-		case serviceclient.FieldCreatedAt:
+		case svcclient.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
 				_m.CreatedAt = value.Time
 			}
-		case serviceclient.FieldUpdatedAt:
+		case svcclient.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
@@ -151,39 +151,39 @@ func (_m *ServiceClient) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// Value returns the ent.Value that was dynamically selected and assigned to the ServiceClient.
+// Value returns the ent.Value that was dynamically selected and assigned to the SvcClient.
 // This includes values selected through modifiers, order, etc.
-func (_m *ServiceClient) Value(name string) (ent.Value, error) {
+func (_m *SvcClient) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// QueryService queries the "service" edge of the ServiceClient entity.
-func (_m *ServiceClient) QueryService() *ServiceQuery {
-	return NewServiceClientClient(_m.config).QueryService(_m)
+// QueryService queries the "service" edge of the SvcClient entity.
+func (_m *SvcClient) QueryService() *ServiceQuery {
+	return NewSvcClientClient(_m.config).QueryService(_m)
 }
 
-// Update returns a builder for updating this ServiceClient.
-// Note that you need to call ServiceClient.Unwrap() before calling this method if this ServiceClient
+// Update returns a builder for updating this SvcClient.
+// Note that you need to call SvcClient.Unwrap() before calling this method if this SvcClient
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (_m *ServiceClient) Update() *ServiceClientUpdateOne {
-	return NewServiceClientClient(_m.config).UpdateOne(_m)
+func (_m *SvcClient) Update() *SvcClientUpdateOne {
+	return NewSvcClientClient(_m.config).UpdateOne(_m)
 }
 
-// Unwrap unwraps the ServiceClient entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the SvcClient entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (_m *ServiceClient) Unwrap() *ServiceClient {
+func (_m *SvcClient) Unwrap() *SvcClient {
 	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: ServiceClient is not a transactional entity")
+		panic("ent: SvcClient is not a transactional entity")
 	}
 	_m.config.driver = _tx.drv
 	return _m
 }
 
 // String implements the fmt.Stringer.
-func (_m *ServiceClient) String() string {
+func (_m *SvcClient) String() string {
 	var builder strings.Builder
-	builder.WriteString("ServiceClient(")
+	builder.WriteString("SvcClient(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("service_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.ServiceID))
@@ -212,5 +212,5 @@ func (_m *ServiceClient) String() string {
 	return builder.String()
 }
 
-// ServiceClients is a parsable slice of ServiceClient.
-type ServiceClients []*ServiceClient
+// SvcClients is a parsable slice of SvcClient.
+type SvcClients []*SvcClient

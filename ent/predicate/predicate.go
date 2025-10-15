@@ -9,5 +9,5 @@ import (
 // Service is the predicate function for service builders.
 type Service func(*sql.Selector)
 
-// ServiceClient is the predicate function for serviceclient builders.
-type ServiceClient func(*sql.Selector)
+// SvcClient is the predicate function for svcclient builders.
+type SvcClient func(*sql.Selector)

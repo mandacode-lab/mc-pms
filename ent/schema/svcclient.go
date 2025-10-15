@@ -9,13 +9,13 @@ import (
 	"entgo.io/ent/schema/index"
 )
 
-// ServiceClient holds the schema definition for the ServiceClient entity.
-type ServiceClient struct {
+// SvcClient holds the schema definition for the SvcClient entity.
+type SvcClient struct {
 	ent.Schema
 }
 
 // Fields of the ClientApp.
-func (ServiceClient) Fields() []ent.Field {
+func (SvcClient) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").
 			Unique(),
@@ -40,7 +40,7 @@ func (ServiceClient) Fields() []ent.Field {
 }
 
 // Edges of the ClientApp.
-func (ServiceClient) Edges() []ent.Edge {
+func (SvcClient) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("service", Service.Type).
 			Ref("client_apps").
@@ -51,7 +51,7 @@ func (ServiceClient) Edges() []ent.Edge {
 }
 
 // Indexes of the ClientApp.
-func (ServiceClient) Indexes() []ent.Index {
+func (SvcClient) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("public_id").
 			Unique(),

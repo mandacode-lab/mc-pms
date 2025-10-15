@@ -36,8 +36,8 @@ var (
 			},
 		},
 	}
-	// ServiceClientsColumns holds the columns for the "service_clients" table.
-	ServiceClientsColumns = []*schema.Column{
+	// SvcClientsColumns holds the columns for the "svc_clients" table.
+	SvcClientsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
 		{Name: "public_id", Type: field.TypeString, Unique: true},
 		{Name: "secret_hash", Type: field.TypeBytes},
@@ -48,39 +48,39 @@ var (
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "service_id", Type: field.TypeInt64},
 	}
-	// ServiceClientsTable holds the schema information for the "service_clients" table.
-	ServiceClientsTable = &schema.Table{
-		Name:       "service_clients",
-		Columns:    ServiceClientsColumns,
-		PrimaryKey: []*schema.Column{ServiceClientsColumns[0]},
+	// SvcClientsTable holds the schema information for the "svc_clients" table.
+	SvcClientsTable = &schema.Table{
+		Name:       "svc_clients",
+		Columns:    SvcClientsColumns,
+		PrimaryKey: []*schema.Column{SvcClientsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "service_clients_services_client_apps",
-				Columns:    []*schema.Column{ServiceClientsColumns[8]},
+				Symbol:     "svc_clients_services_client_apps",
+				Columns:    []*schema.Column{SvcClientsColumns[8]},
 				RefColumns: []*schema.Column{ServicesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "serviceclient_public_id",
+				Name:    "svcclient_public_id",
 				Unique:  true,
-				Columns: []*schema.Column{ServiceClientsColumns[1]},
+				Columns: []*schema.Column{SvcClientsColumns[1]},
 			},
 			{
-				Name:    "serviceclient_service_id_name",
+				Name:    "svcclient_service_id_name",
 				Unique:  true,
-				Columns: []*schema.Column{ServiceClientsColumns[8], ServiceClientsColumns[3]},
+				Columns: []*schema.Column{SvcClientsColumns[8], SvcClientsColumns[3]},
 			},
 		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		ServicesTable,
-		ServiceClientsTable,
+		SvcClientsTable,
 	}
 )
 
 func init() {
-	ServiceClientsTable.ForeignKeys[0].RefTable = ServicesTable
+	SvcClientsTable.ForeignKeys[0].RefTable = ServicesTable
 }

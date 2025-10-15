@@ -31,10 +31,10 @@ const (
 	// Table holds the table name of the service in the database.
 	Table = "services"
 	// ClientAppsTable is the table that holds the client_apps relation/edge.
-	ClientAppsTable = "service_clients"
-	// ClientAppsInverseTable is the table name for the ServiceClient entity.
-	// It exists in this package in order to avoid circular dependency with the "serviceclient" package.
-	ClientAppsInverseTable = "service_clients"
+	ClientAppsTable = "svc_clients"
+	// ClientAppsInverseTable is the table name for the SvcClient entity.
+	// It exists in this package in order to avoid circular dependency with the "svcclient" package.
+	ClientAppsInverseTable = "svc_clients"
 	// ClientAppsColumn is the table column denoting the client_apps relation/edge.
 	ClientAppsColumn = "service_id"
 )

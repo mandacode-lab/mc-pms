@@ -13,7 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/mandacode-com/mandacode-ssam/ent/predicate"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
+	"github.com/mandacode-com/mandacode-ssam/ent/svcclient"
 )
 
 const (
@@ -25,8 +25,8 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeService       = "Service"
-	TypeServiceClient = "ServiceClient"
+	TypeService   = "Service"
+	TypeSvcClient = "SvcClient"
 )
 
 // ServiceMutation represents an operation that mutates the Service nodes in the graph.
@@ -383,7 +383,7 @@ func (m *ServiceMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// AddClientAppIDs adds the "client_apps" edge to the ServiceClient entity by ids.
+// AddClientAppIDs adds the "client_apps" edge to the SvcClient entity by ids.
 func (m *ServiceMutation) AddClientAppIDs(ids ...int64) {
 	if m.client_apps == nil {
 		m.client_apps = make(map[int64]struct{})
@@ -393,17 +393,17 @@ func (m *ServiceMutation) AddClientAppIDs(ids ...int64) {
 	}
 }
 
-// ClearClientApps clears the "client_apps" edge to the ServiceClient entity.
+// ClearClientApps clears the "client_apps" edge to the SvcClient entity.
 func (m *ServiceMutation) ClearClientApps() {
 	m.clearedclient_apps = true
 }
 
-// ClientAppsCleared reports if the "client_apps" edge to the ServiceClient entity was cleared.
+// ClientAppsCleared reports if the "client_apps" edge to the SvcClient entity was cleared.
 func (m *ServiceMutation) ClientAppsCleared() bool {
 	return m.clearedclient_apps
 }
 
-// RemoveClientAppIDs removes the "client_apps" edge to the ServiceClient entity by IDs.
+// RemoveClientAppIDs removes the "client_apps" edge to the SvcClient entity by IDs.
 func (m *ServiceMutation) RemoveClientAppIDs(ids ...int64) {
 	if m.removedclient_apps == nil {
 		m.removedclient_apps = make(map[int64]struct{})
@@ -414,7 +414,7 @@ func (m *ServiceMutation) RemoveClientAppIDs(ids ...int64) {
 	}
 }
 
-// RemovedClientApps returns the removed IDs of the "client_apps" edge to the ServiceClient entity.
+// RemovedClientApps returns the removed IDs of the "client_apps" edge to the SvcClient entity.
 func (m *ServiceMutation) RemovedClientAppsIDs() (ids []int64) {
 	for id := range m.removedclient_apps {
 		ids = append(ids, id)
@@ -746,8 +746,8 @@ func (m *ServiceMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Service edge %s", name)
 }
 
-// ServiceClientMutation represents an operation that mutates the ServiceClient nodes in the graph.
-type ServiceClientMutation struct {
+// SvcClientMutation represents an operation that mutates the SvcClient nodes in the graph.
+type SvcClientMutation struct {
 	config
 	op             Op
 	typ            string
@@ -763,21 +763,21 @@ type ServiceClientMutation struct {
 	service        *int64
 	clearedservice bool
 	done           bool
-	oldValue       func(context.Context) (*ServiceClient, error)
-	predicates     []predicate.ServiceClient
+	oldValue       func(context.Context) (*SvcClient, error)
+	predicates     []predicate.SvcClient
 }
 
-var _ ent.Mutation = (*ServiceClientMutation)(nil)
+var _ ent.Mutation = (*SvcClientMutation)(nil)
 
-// serviceclientOption allows management of the mutation configuration using functional options.
-type serviceclientOption func(*ServiceClientMutation)
+// svcclientOption allows management of the mutation configuration using functional options.
+type svcclientOption func(*SvcClientMutation)
 
-// newServiceClientMutation creates new mutation for the ServiceClient entity.
-func newServiceClientMutation(c config, op Op, opts ...serviceclientOption) *ServiceClientMutation {
-	m := &ServiceClientMutation{
+// newSvcClientMutation creates new mutation for the SvcClient entity.
+func newSvcClientMutation(c config, op Op, opts ...svcclientOption) *SvcClientMutation {
+	m := &SvcClientMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeServiceClient,
+		typ:           TypeSvcClient,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -786,20 +786,20 @@ func newServiceClientMutation(c config, op Op, opts ...serviceclientOption) *Ser
 	return m
 }
 
-// withServiceClientID sets the ID field of the mutation.
-func withServiceClientID(id int64) serviceclientOption {
-	return func(m *ServiceClientMutation) {
+// withSvcClientID sets the ID field of the mutation.
+func withSvcClientID(id int64) svcclientOption {
+	return func(m *SvcClientMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *ServiceClient
+			value *SvcClient
 		)
-		m.oldValue = func(ctx context.Context) (*ServiceClient, error) {
+		m.oldValue = func(ctx context.Context) (*SvcClient, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().ServiceClient.Get(ctx, id)
+					value, err = m.Client().SvcClient.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -808,10 +808,10 @@ func withServiceClientID(id int64) serviceclientOption {
 	}
 }
 
-// withServiceClient sets the old ServiceClient of the mutation.
-func withServiceClient(node *ServiceClient) serviceclientOption {
-	return func(m *ServiceClientMutation) {
-		m.oldValue = func(context.Context) (*ServiceClient, error) {
+// withSvcClient sets the old SvcClient of the mutation.
+func withSvcClient(node *SvcClient) svcclientOption {
+	return func(m *SvcClientMutation) {
+		m.oldValue = func(context.Context) (*SvcClient, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -820,7 +820,7 @@ func withServiceClient(node *ServiceClient) serviceclientOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m ServiceClientMutation) Client() *Client {
+func (m SvcClientMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -828,7 +828,7 @@ func (m ServiceClientMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m ServiceClientMutation) Tx() (*Tx, error) {
+func (m SvcClientMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -838,14 +838,14 @@ func (m ServiceClientMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of ServiceClient entities.
-func (m *ServiceClientMutation) SetID(id int64) {
+// operation is only accepted on creation of SvcClient entities.
+func (m *SvcClientMutation) SetID(id int64) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *ServiceClientMutation) ID() (id int64, exists bool) {
+func (m *SvcClientMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -856,7 +856,7 @@ func (m *ServiceClientMutation) ID() (id int64, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *ServiceClientMutation) IDs(ctx context.Context) ([]int64, error) {
+func (m *SvcClientMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -865,19 +865,19 @@ func (m *ServiceClientMutation) IDs(ctx context.Context) ([]int64, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().ServiceClient.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().SvcClient.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetServiceID sets the "service_id" field.
-func (m *ServiceClientMutation) SetServiceID(i int64) {
+func (m *SvcClientMutation) SetServiceID(i int64) {
 	m.service = &i
 }
 
 // ServiceID returns the value of the "service_id" field in the mutation.
-func (m *ServiceClientMutation) ServiceID() (r int64, exists bool) {
+func (m *SvcClientMutation) ServiceID() (r int64, exists bool) {
 	v := m.service
 	if v == nil {
 		return
@@ -885,10 +885,10 @@ func (m *ServiceClientMutation) ServiceID() (r int64, exists bool) {
 	return *v, true
 }
 
-// OldServiceID returns the old "service_id" field's value of the ServiceClient entity.
-// If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
+// OldServiceID returns the old "service_id" field's value of the SvcClient entity.
+// If the SvcClient object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServiceClientMutation) OldServiceID(ctx context.Context) (v int64, err error) {
+func (m *SvcClientMutation) OldServiceID(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldServiceID is only allowed on UpdateOne operations")
 	}
@@ -903,17 +903,17 @@ func (m *ServiceClientMutation) OldServiceID(ctx context.Context) (v int64, err 
 }
 
 // ResetServiceID resets all changes to the "service_id" field.
-func (m *ServiceClientMutation) ResetServiceID() {
+func (m *SvcClientMutation) ResetServiceID() {
 	m.service = nil
 }
 
 // SetPublicID sets the "public_id" field.
-func (m *ServiceClientMutation) SetPublicID(s string) {
+func (m *SvcClientMutation) SetPublicID(s string) {
 	m.public_id = &s
 }
 
 // PublicID returns the value of the "public_id" field in the mutation.
-func (m *ServiceClientMutation) PublicID() (r string, exists bool) {
+func (m *SvcClientMutation) PublicID() (r string, exists bool) {
 	v := m.public_id
 	if v == nil {
 		return
@@ -921,10 +921,10 @@ func (m *ServiceClientMutation) PublicID() (r string, exists bool) {
 	return *v, true
 }
 
-// OldPublicID returns the old "public_id" field's value of the ServiceClient entity.
-// If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
+// OldPublicID returns the old "public_id" field's value of the SvcClient entity.
+// If the SvcClient object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServiceClientMutation) OldPublicID(ctx context.Context) (v string, err error) {
+func (m *SvcClientMutation) OldPublicID(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPublicID is only allowed on UpdateOne operations")
 	}
@@ -939,17 +939,17 @@ func (m *ServiceClientMutation) OldPublicID(ctx context.Context) (v string, err 
 }
 
 // ResetPublicID resets all changes to the "public_id" field.
-func (m *ServiceClientMutation) ResetPublicID() {
+func (m *SvcClientMutation) ResetPublicID() {
 	m.public_id = nil
 }
 
 // SetSecretHash sets the "secret_hash" field.
-func (m *ServiceClientMutation) SetSecretHash(b []byte) {
+func (m *SvcClientMutation) SetSecretHash(b []byte) {
 	m.secret_hash = &b
 }
 
 // SecretHash returns the value of the "secret_hash" field in the mutation.
-func (m *ServiceClientMutation) SecretHash() (r []byte, exists bool) {
+func (m *SvcClientMutation) SecretHash() (r []byte, exists bool) {
 	v := m.secret_hash
 	if v == nil {
 		return
@@ -957,10 +957,10 @@ func (m *ServiceClientMutation) SecretHash() (r []byte, exists bool) {
 	return *v, true
 }
 
-// OldSecretHash returns the old "secret_hash" field's value of the ServiceClient entity.
-// If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
+// OldSecretHash returns the old "secret_hash" field's value of the SvcClient entity.
+// If the SvcClient object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServiceClientMutation) OldSecretHash(ctx context.Context) (v []byte, err error) {
+func (m *SvcClientMutation) OldSecretHash(ctx context.Context) (v []byte, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldSecretHash is only allowed on UpdateOne operations")
 	}
@@ -975,17 +975,17 @@ func (m *ServiceClientMutation) OldSecretHash(ctx context.Context) (v []byte, er
 }
 
 // ResetSecretHash resets all changes to the "secret_hash" field.
-func (m *ServiceClientMutation) ResetSecretHash() {
+func (m *SvcClientMutation) ResetSecretHash() {
 	m.secret_hash = nil
 }
 
 // SetName sets the "name" field.
-func (m *ServiceClientMutation) SetName(s string) {
+func (m *SvcClientMutation) SetName(s string) {
 	m.name = &s
 }
 
 // Name returns the value of the "name" field in the mutation.
-func (m *ServiceClientMutation) Name() (r string, exists bool) {
+func (m *SvcClientMutation) Name() (r string, exists bool) {
 	v := m.name
 	if v == nil {
 		return
@@ -993,10 +993,10 @@ func (m *ServiceClientMutation) Name() (r string, exists bool) {
 	return *v, true
 }
 
-// OldName returns the old "name" field's value of the ServiceClient entity.
-// If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
+// OldName returns the old "name" field's value of the SvcClient entity.
+// If the SvcClient object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServiceClientMutation) OldName(ctx context.Context) (v string, err error) {
+func (m *SvcClientMutation) OldName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldName is only allowed on UpdateOne operations")
 	}
@@ -1011,17 +1011,17 @@ func (m *ServiceClientMutation) OldName(ctx context.Context) (v string, err erro
 }
 
 // ResetName resets all changes to the "name" field.
-func (m *ServiceClientMutation) ResetName() {
+func (m *SvcClientMutation) ResetName() {
 	m.name = nil
 }
 
 // SetDescription sets the "description" field.
-func (m *ServiceClientMutation) SetDescription(s string) {
+func (m *SvcClientMutation) SetDescription(s string) {
 	m.description = &s
 }
 
 // Description returns the value of the "description" field in the mutation.
-func (m *ServiceClientMutation) Description() (r string, exists bool) {
+func (m *SvcClientMutation) Description() (r string, exists bool) {
 	v := m.description
 	if v == nil {
 		return
@@ -1029,10 +1029,10 @@ func (m *ServiceClientMutation) Description() (r string, exists bool) {
 	return *v, true
 }
 
-// OldDescription returns the old "description" field's value of the ServiceClient entity.
-// If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
+// OldDescription returns the old "description" field's value of the SvcClient entity.
+// If the SvcClient object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServiceClientMutation) OldDescription(ctx context.Context) (v string, err error) {
+func (m *SvcClientMutation) OldDescription(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
 	}
@@ -1047,30 +1047,30 @@ func (m *ServiceClientMutation) OldDescription(ctx context.Context) (v string, e
 }
 
 // ClearDescription clears the value of the "description" field.
-func (m *ServiceClientMutation) ClearDescription() {
+func (m *SvcClientMutation) ClearDescription() {
 	m.description = nil
-	m.clearedFields[serviceclient.FieldDescription] = struct{}{}
+	m.clearedFields[svcclient.FieldDescription] = struct{}{}
 }
 
 // DescriptionCleared returns if the "description" field was cleared in this mutation.
-func (m *ServiceClientMutation) DescriptionCleared() bool {
-	_, ok := m.clearedFields[serviceclient.FieldDescription]
+func (m *SvcClientMutation) DescriptionCleared() bool {
+	_, ok := m.clearedFields[svcclient.FieldDescription]
 	return ok
 }
 
 // ResetDescription resets all changes to the "description" field.
-func (m *ServiceClientMutation) ResetDescription() {
+func (m *SvcClientMutation) ResetDescription() {
 	m.description = nil
-	delete(m.clearedFields, serviceclient.FieldDescription)
+	delete(m.clearedFields, svcclient.FieldDescription)
 }
 
 // SetIsActive sets the "is_active" field.
-func (m *ServiceClientMutation) SetIsActive(b bool) {
+func (m *SvcClientMutation) SetIsActive(b bool) {
 	m.is_active = &b
 }
 
 // IsActive returns the value of the "is_active" field in the mutation.
-func (m *ServiceClientMutation) IsActive() (r bool, exists bool) {
+func (m *SvcClientMutation) IsActive() (r bool, exists bool) {
 	v := m.is_active
 	if v == nil {
 		return
@@ -1078,10 +1078,10 @@ func (m *ServiceClientMutation) IsActive() (r bool, exists bool) {
 	return *v, true
 }
 
-// OldIsActive returns the old "is_active" field's value of the ServiceClient entity.
-// If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
+// OldIsActive returns the old "is_active" field's value of the SvcClient entity.
+// If the SvcClient object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServiceClientMutation) OldIsActive(ctx context.Context) (v bool, err error) {
+func (m *SvcClientMutation) OldIsActive(ctx context.Context) (v bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIsActive is only allowed on UpdateOne operations")
 	}
@@ -1096,17 +1096,17 @@ func (m *ServiceClientMutation) OldIsActive(ctx context.Context) (v bool, err er
 }
 
 // ResetIsActive resets all changes to the "is_active" field.
-func (m *ServiceClientMutation) ResetIsActive() {
+func (m *SvcClientMutation) ResetIsActive() {
 	m.is_active = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (m *ServiceClientMutation) SetCreatedAt(t time.Time) {
+func (m *SvcClientMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
 }
 
 // CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *ServiceClientMutation) CreatedAt() (r time.Time, exists bool) {
+func (m *SvcClientMutation) CreatedAt() (r time.Time, exists bool) {
 	v := m.created_at
 	if v == nil {
 		return
@@ -1114,10 +1114,10 @@ func (m *ServiceClientMutation) CreatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the ServiceClient entity.
-// If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the SvcClient entity.
+// If the SvcClient object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServiceClientMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *SvcClientMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
@@ -1132,17 +1132,17 @@ func (m *ServiceClientMutation) OldCreatedAt(ctx context.Context) (v time.Time, 
 }
 
 // ResetCreatedAt resets all changes to the "created_at" field.
-func (m *ServiceClientMutation) ResetCreatedAt() {
+func (m *SvcClientMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (m *ServiceClientMutation) SetUpdatedAt(t time.Time) {
+func (m *SvcClientMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
 }
 
 // UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *ServiceClientMutation) UpdatedAt() (r time.Time, exists bool) {
+func (m *SvcClientMutation) UpdatedAt() (r time.Time, exists bool) {
 	v := m.updated_at
 	if v == nil {
 		return
@@ -1150,10 +1150,10 @@ func (m *ServiceClientMutation) UpdatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the ServiceClient entity.
-// If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdatedAt returns the old "updated_at" field's value of the SvcClient entity.
+// If the SvcClient object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServiceClientMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *SvcClientMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
 	}
@@ -1168,25 +1168,25 @@ func (m *ServiceClientMutation) OldUpdatedAt(ctx context.Context) (v time.Time, 
 }
 
 // ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *ServiceClientMutation) ResetUpdatedAt() {
+func (m *SvcClientMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
 // ClearService clears the "service" edge to the Service entity.
-func (m *ServiceClientMutation) ClearService() {
+func (m *SvcClientMutation) ClearService() {
 	m.clearedservice = true
-	m.clearedFields[serviceclient.FieldServiceID] = struct{}{}
+	m.clearedFields[svcclient.FieldServiceID] = struct{}{}
 }
 
 // ServiceCleared reports if the "service" edge to the Service entity was cleared.
-func (m *ServiceClientMutation) ServiceCleared() bool {
+func (m *SvcClientMutation) ServiceCleared() bool {
 	return m.clearedservice
 }
 
 // ServiceIDs returns the "service" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // ServiceID instead. It exists only for internal usage by the builders.
-func (m *ServiceClientMutation) ServiceIDs() (ids []int64) {
+func (m *SvcClientMutation) ServiceIDs() (ids []int64) {
 	if id := m.service; id != nil {
 		ids = append(ids, *id)
 	}
@@ -1194,20 +1194,20 @@ func (m *ServiceClientMutation) ServiceIDs() (ids []int64) {
 }
 
 // ResetService resets all changes to the "service" edge.
-func (m *ServiceClientMutation) ResetService() {
+func (m *SvcClientMutation) ResetService() {
 	m.service = nil
 	m.clearedservice = false
 }
 
-// Where appends a list predicates to the ServiceClientMutation builder.
-func (m *ServiceClientMutation) Where(ps ...predicate.ServiceClient) {
+// Where appends a list predicates to the SvcClientMutation builder.
+func (m *SvcClientMutation) Where(ps ...predicate.SvcClient) {
 	m.predicates = append(m.predicates, ps...)
 }
 
-// WhereP appends storage-level predicates to the ServiceClientMutation builder. Using this method,
+// WhereP appends storage-level predicates to the SvcClientMutation builder. Using this method,
 // users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *ServiceClientMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.ServiceClient, len(ps))
+func (m *SvcClientMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.SvcClient, len(ps))
 	for i := range ps {
 		p[i] = ps[i]
 	}
@@ -1215,48 +1215,48 @@ func (m *ServiceClientMutation) WhereP(ps ...func(*sql.Selector)) {
 }
 
 // Op returns the operation name.
-func (m *ServiceClientMutation) Op() Op {
+func (m *SvcClientMutation) Op() Op {
 	return m.op
 }
 
 // SetOp allows setting the mutation operation.
-func (m *ServiceClientMutation) SetOp(op Op) {
+func (m *SvcClientMutation) SetOp(op Op) {
 	m.op = op
 }
 
-// Type returns the node type of this mutation (ServiceClient).
-func (m *ServiceClientMutation) Type() string {
+// Type returns the node type of this mutation (SvcClient).
+func (m *SvcClientMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *ServiceClientMutation) Fields() []string {
+func (m *SvcClientMutation) Fields() []string {
 	fields := make([]string, 0, 8)
 	if m.service != nil {
-		fields = append(fields, serviceclient.FieldServiceID)
+		fields = append(fields, svcclient.FieldServiceID)
 	}
 	if m.public_id != nil {
-		fields = append(fields, serviceclient.FieldPublicID)
+		fields = append(fields, svcclient.FieldPublicID)
 	}
 	if m.secret_hash != nil {
-		fields = append(fields, serviceclient.FieldSecretHash)
+		fields = append(fields, svcclient.FieldSecretHash)
 	}
 	if m.name != nil {
-		fields = append(fields, serviceclient.FieldName)
+		fields = append(fields, svcclient.FieldName)
 	}
 	if m.description != nil {
-		fields = append(fields, serviceclient.FieldDescription)
+		fields = append(fields, svcclient.FieldDescription)
 	}
 	if m.is_active != nil {
-		fields = append(fields, serviceclient.FieldIsActive)
+		fields = append(fields, svcclient.FieldIsActive)
 	}
 	if m.created_at != nil {
-		fields = append(fields, serviceclient.FieldCreatedAt)
+		fields = append(fields, svcclient.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
-		fields = append(fields, serviceclient.FieldUpdatedAt)
+		fields = append(fields, svcclient.FieldUpdatedAt)
 	}
 	return fields
 }
@@ -1264,23 +1264,23 @@ func (m *ServiceClientMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *ServiceClientMutation) Field(name string) (ent.Value, bool) {
+func (m *SvcClientMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case serviceclient.FieldServiceID:
+	case svcclient.FieldServiceID:
 		return m.ServiceID()
-	case serviceclient.FieldPublicID:
+	case svcclient.FieldPublicID:
 		return m.PublicID()
-	case serviceclient.FieldSecretHash:
+	case svcclient.FieldSecretHash:
 		return m.SecretHash()
-	case serviceclient.FieldName:
+	case svcclient.FieldName:
 		return m.Name()
-	case serviceclient.FieldDescription:
+	case svcclient.FieldDescription:
 		return m.Description()
-	case serviceclient.FieldIsActive:
+	case svcclient.FieldIsActive:
 		return m.IsActive()
-	case serviceclient.FieldCreatedAt:
+	case svcclient.FieldCreatedAt:
 		return m.CreatedAt()
-	case serviceclient.FieldUpdatedAt:
+	case svcclient.FieldUpdatedAt:
 		return m.UpdatedAt()
 	}
 	return nil, false
@@ -1289,83 +1289,83 @@ func (m *ServiceClientMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *ServiceClientMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *SvcClientMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case serviceclient.FieldServiceID:
+	case svcclient.FieldServiceID:
 		return m.OldServiceID(ctx)
-	case serviceclient.FieldPublicID:
+	case svcclient.FieldPublicID:
 		return m.OldPublicID(ctx)
-	case serviceclient.FieldSecretHash:
+	case svcclient.FieldSecretHash:
 		return m.OldSecretHash(ctx)
-	case serviceclient.FieldName:
+	case svcclient.FieldName:
 		return m.OldName(ctx)
-	case serviceclient.FieldDescription:
+	case svcclient.FieldDescription:
 		return m.OldDescription(ctx)
-	case serviceclient.FieldIsActive:
+	case svcclient.FieldIsActive:
 		return m.OldIsActive(ctx)
-	case serviceclient.FieldCreatedAt:
+	case svcclient.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
-	case serviceclient.FieldUpdatedAt:
+	case svcclient.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	}
-	return nil, fmt.Errorf("unknown ServiceClient field %s", name)
+	return nil, fmt.Errorf("unknown SvcClient field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *ServiceClientMutation) SetField(name string, value ent.Value) error {
+func (m *SvcClientMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case serviceclient.FieldServiceID:
+	case svcclient.FieldServiceID:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetServiceID(v)
 		return nil
-	case serviceclient.FieldPublicID:
+	case svcclient.FieldPublicID:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPublicID(v)
 		return nil
-	case serviceclient.FieldSecretHash:
+	case svcclient.FieldSecretHash:
 		v, ok := value.([]byte)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSecretHash(v)
 		return nil
-	case serviceclient.FieldName:
+	case svcclient.FieldName:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
 		return nil
-	case serviceclient.FieldDescription:
+	case svcclient.FieldDescription:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDescription(v)
 		return nil
-	case serviceclient.FieldIsActive:
+	case svcclient.FieldIsActive:
 		v, ok := value.(bool)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetIsActive(v)
 		return nil
-	case serviceclient.FieldCreatedAt:
+	case svcclient.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedAt(v)
 		return nil
-	case serviceclient.FieldUpdatedAt:
+	case svcclient.FieldUpdatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -1373,12 +1373,12 @@ func (m *ServiceClientMutation) SetField(name string, value ent.Value) error {
 		m.SetUpdatedAt(v)
 		return nil
 	}
-	return fmt.Errorf("unknown ServiceClient field %s", name)
+	return fmt.Errorf("unknown SvcClient field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *ServiceClientMutation) AddedFields() []string {
+func (m *SvcClientMutation) AddedFields() []string {
 	var fields []string
 	return fields
 }
@@ -1386,7 +1386,7 @@ func (m *ServiceClientMutation) AddedFields() []string {
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *ServiceClientMutation) AddedField(name string) (ent.Value, bool) {
+func (m *SvcClientMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	}
 	return nil, false
@@ -1395,86 +1395,86 @@ func (m *ServiceClientMutation) AddedField(name string) (ent.Value, bool) {
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *ServiceClientMutation) AddField(name string, value ent.Value) error {
+func (m *SvcClientMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	}
-	return fmt.Errorf("unknown ServiceClient numeric field %s", name)
+	return fmt.Errorf("unknown SvcClient numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *ServiceClientMutation) ClearedFields() []string {
+func (m *SvcClientMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(serviceclient.FieldDescription) {
-		fields = append(fields, serviceclient.FieldDescription)
+	if m.FieldCleared(svcclient.FieldDescription) {
+		fields = append(fields, svcclient.FieldDescription)
 	}
 	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *ServiceClientMutation) FieldCleared(name string) bool {
+func (m *SvcClientMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *ServiceClientMutation) ClearField(name string) error {
+func (m *SvcClientMutation) ClearField(name string) error {
 	switch name {
-	case serviceclient.FieldDescription:
+	case svcclient.FieldDescription:
 		m.ClearDescription()
 		return nil
 	}
-	return fmt.Errorf("unknown ServiceClient nullable field %s", name)
+	return fmt.Errorf("unknown SvcClient nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *ServiceClientMutation) ResetField(name string) error {
+func (m *SvcClientMutation) ResetField(name string) error {
 	switch name {
-	case serviceclient.FieldServiceID:
+	case svcclient.FieldServiceID:
 		m.ResetServiceID()
 		return nil
-	case serviceclient.FieldPublicID:
+	case svcclient.FieldPublicID:
 		m.ResetPublicID()
 		return nil
-	case serviceclient.FieldSecretHash:
+	case svcclient.FieldSecretHash:
 		m.ResetSecretHash()
 		return nil
-	case serviceclient.FieldName:
+	case svcclient.FieldName:
 		m.ResetName()
 		return nil
-	case serviceclient.FieldDescription:
+	case svcclient.FieldDescription:
 		m.ResetDescription()
 		return nil
-	case serviceclient.FieldIsActive:
+	case svcclient.FieldIsActive:
 		m.ResetIsActive()
 		return nil
-	case serviceclient.FieldCreatedAt:
+	case svcclient.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
-	case serviceclient.FieldUpdatedAt:
+	case svcclient.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
 	}
-	return fmt.Errorf("unknown ServiceClient field %s", name)
+	return fmt.Errorf("unknown SvcClient field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *ServiceClientMutation) AddedEdges() []string {
+func (m *SvcClientMutation) AddedEdges() []string {
 	edges := make([]string, 0, 1)
 	if m.service != nil {
-		edges = append(edges, serviceclient.EdgeService)
+		edges = append(edges, svcclient.EdgeService)
 	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *ServiceClientMutation) AddedIDs(name string) []ent.Value {
+func (m *SvcClientMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case serviceclient.EdgeService:
+	case svcclient.EdgeService:
 		if id := m.service; id != nil {
 			return []ent.Value{*id}
 		}
@@ -1483,31 +1483,31 @@ func (m *ServiceClientMutation) AddedIDs(name string) []ent.Value {
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *ServiceClientMutation) RemovedEdges() []string {
+func (m *SvcClientMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *ServiceClientMutation) RemovedIDs(name string) []ent.Value {
+func (m *SvcClientMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *ServiceClientMutation) ClearedEdges() []string {
+func (m *SvcClientMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 1)
 	if m.clearedservice {
-		edges = append(edges, serviceclient.EdgeService)
+		edges = append(edges, svcclient.EdgeService)
 	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *ServiceClientMutation) EdgeCleared(name string) bool {
+func (m *SvcClientMutation) EdgeCleared(name string) bool {
 	switch name {
-	case serviceclient.EdgeService:
+	case svcclient.EdgeService:
 		return m.clearedservice
 	}
 	return false
@@ -1515,22 +1515,22 @@ func (m *ServiceClientMutation) EdgeCleared(name string) bool {
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *ServiceClientMutation) ClearEdge(name string) error {
+func (m *SvcClientMutation) ClearEdge(name string) error {
 	switch name {
-	case serviceclient.EdgeService:
+	case svcclient.EdgeService:
 		m.ClearService()
 		return nil
 	}
-	return fmt.Errorf("unknown ServiceClient unique edge %s", name)
+	return fmt.Errorf("unknown SvcClient unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *ServiceClientMutation) ResetEdge(name string) error {
+func (m *SvcClientMutation) ResetEdge(name string) error {
 	switch name {
-	case serviceclient.EdgeService:
+	case svcclient.EdgeService:
 		m.ResetService()
 		return nil
 	}
-	return fmt.Errorf("unknown ServiceClient edge %s", name)
+	return fmt.Errorf("unknown SvcClient edge %s", name)
 }

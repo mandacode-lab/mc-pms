@@ -14,8 +14,8 @@ type Tx struct {
 	config
 	// Service is the client for interacting with the Service builders.
 	Service *ServiceClient
-	// ServiceClient is the client for interacting with the ServiceClient builders.
-	ServiceClient *ServiceClientClient
+	// SvcClient is the client for interacting with the SvcClient builders.
+	SvcClient *SvcClientClient
 
 	// lazily loaded.
 	client     *Client
@@ -148,7 +148,7 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.Service = NewServiceClient(tx.config)
-	tx.ServiceClient = NewServiceClientClient(tx.config)
+	tx.SvcClient = NewSvcClientClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

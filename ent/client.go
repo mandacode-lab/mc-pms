@@ -16,7 +16,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
-	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
+	"github.com/mandacode-com/mandacode-ssam/ent/svcclient"
 )
 
 // Client is the client that holds all ent builders.
@@ -26,8 +26,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// Service is the client for interacting with the Service builders.
 	Service *ServiceClient
-	// ServiceClient is the client for interacting with the ServiceClient builders.
-	ServiceClient *ServiceClientClient
+	// SvcClient is the client for interacting with the SvcClient builders.
+	SvcClient *SvcClientClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -40,7 +40,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Service = NewServiceClient(c.config)
-	c.ServiceClient = NewServiceClientClient(c.config)
+	c.SvcClient = NewSvcClientClient(c.config)
 }
 
 type (
@@ -131,10 +131,10 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:           ctx,
-		config:        cfg,
-		Service:       NewServiceClient(cfg),
-		ServiceClient: NewServiceClientClient(cfg),
+		ctx:       ctx,
+		config:    cfg,
+		Service:   NewServiceClient(cfg),
+		SvcClient: NewSvcClientClient(cfg),
 	}, nil
 }
 
@@ -152,10 +152,10 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:           ctx,
-		config:        cfg,
-		Service:       NewServiceClient(cfg),
-		ServiceClient: NewServiceClientClient(cfg),
+		ctx:       ctx,
+		config:    cfg,
+		Service:   NewServiceClient(cfg),
+		SvcClient: NewSvcClientClient(cfg),
 	}, nil
 }
 
@@ -185,14 +185,14 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Service.Use(hooks...)
-	c.ServiceClient.Use(hooks...)
+	c.SvcClient.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.Service.Intercept(interceptors...)
-	c.ServiceClient.Intercept(interceptors...)
+	c.SvcClient.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
@@ -200,8 +200,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
 	case *ServiceMutation:
 		return c.Service.mutate(ctx, m)
-	case *ServiceClientMutation:
-		return c.ServiceClient.mutate(ctx, m)
+	case *SvcClientMutation:
+		return c.SvcClient.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -316,13 +316,13 @@ func (c *ServiceClient) GetX(ctx context.Context, id int64) *Service {
 }
 
 // QueryClientApps queries the client_apps edge of a Service.
-func (c *ServiceClient) QueryClientApps(_m *Service) *ServiceClientQuery {
-	query := (&ServiceClientClient{config: c.config}).Query()
+func (c *ServiceClient) QueryClientApps(_m *Service) *SvcClientQuery {
+	query := (&SvcClientClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(service.Table, service.FieldID, id),
-			sqlgraph.To(serviceclient.Table, serviceclient.FieldID),
+			sqlgraph.To(svcclient.Table, svcclient.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, service.ClientAppsTable, service.ClientAppsColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
@@ -356,107 +356,107 @@ func (c *ServiceClient) mutate(ctx context.Context, m *ServiceMutation) (Value, 
 	}
 }
 
-// ServiceClientClient is a client for the ServiceClient schema.
-type ServiceClientClient struct {
+// SvcClientClient is a client for the SvcClient schema.
+type SvcClientClient struct {
 	config
 }
 
-// NewServiceClientClient returns a client for the ServiceClient from the given config.
-func NewServiceClientClient(c config) *ServiceClientClient {
-	return &ServiceClientClient{config: c}
+// NewSvcClientClient returns a client for the SvcClient from the given config.
+func NewSvcClientClient(c config) *SvcClientClient {
+	return &SvcClientClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `serviceclient.Hooks(f(g(h())))`.
-func (c *ServiceClientClient) Use(hooks ...Hook) {
-	c.hooks.ServiceClient = append(c.hooks.ServiceClient, hooks...)
+// A call to `Use(f, g, h)` equals to `svcclient.Hooks(f(g(h())))`.
+func (c *SvcClientClient) Use(hooks ...Hook) {
+	c.hooks.SvcClient = append(c.hooks.SvcClient, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `serviceclient.Intercept(f(g(h())))`.
-func (c *ServiceClientClient) Intercept(interceptors ...Interceptor) {
-	c.inters.ServiceClient = append(c.inters.ServiceClient, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `svcclient.Intercept(f(g(h())))`.
+func (c *SvcClientClient) Intercept(interceptors ...Interceptor) {
+	c.inters.SvcClient = append(c.inters.SvcClient, interceptors...)
 }
 
-// Create returns a builder for creating a ServiceClient entity.
-func (c *ServiceClientClient) Create() *ServiceClientCreate {
-	mutation := newServiceClientMutation(c.config, OpCreate)
-	return &ServiceClientCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a SvcClient entity.
+func (c *SvcClientClient) Create() *SvcClientCreate {
+	mutation := newSvcClientMutation(c.config, OpCreate)
+	return &SvcClientCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of ServiceClient entities.
-func (c *ServiceClientClient) CreateBulk(builders ...*ServiceClientCreate) *ServiceClientCreateBulk {
-	return &ServiceClientCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of SvcClient entities.
+func (c *SvcClientClient) CreateBulk(builders ...*SvcClientCreate) *SvcClientCreateBulk {
+	return &SvcClientCreateBulk{config: c.config, builders: builders}
 }
 
 // MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
 // a builder and applies setFunc on it.
-func (c *ServiceClientClient) MapCreateBulk(slice any, setFunc func(*ServiceClientCreate, int)) *ServiceClientCreateBulk {
+func (c *SvcClientClient) MapCreateBulk(slice any, setFunc func(*SvcClientCreate, int)) *SvcClientCreateBulk {
 	rv := reflect.ValueOf(slice)
 	if rv.Kind() != reflect.Slice {
-		return &ServiceClientCreateBulk{err: fmt.Errorf("calling to ServiceClientClient.MapCreateBulk with wrong type %T, need slice", slice)}
+		return &SvcClientCreateBulk{err: fmt.Errorf("calling to SvcClientClient.MapCreateBulk with wrong type %T, need slice", slice)}
 	}
-	builders := make([]*ServiceClientCreate, rv.Len())
+	builders := make([]*SvcClientCreate, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		builders[i] = c.Create()
 		setFunc(builders[i], i)
 	}
-	return &ServiceClientCreateBulk{config: c.config, builders: builders}
+	return &SvcClientCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for ServiceClient.
-func (c *ServiceClientClient) Update() *ServiceClientUpdate {
-	mutation := newServiceClientMutation(c.config, OpUpdate)
-	return &ServiceClientUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for SvcClient.
+func (c *SvcClientClient) Update() *SvcClientUpdate {
+	mutation := newSvcClientMutation(c.config, OpUpdate)
+	return &SvcClientUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *ServiceClientClient) UpdateOne(_m *ServiceClient) *ServiceClientUpdateOne {
-	mutation := newServiceClientMutation(c.config, OpUpdateOne, withServiceClient(_m))
-	return &ServiceClientUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *SvcClientClient) UpdateOne(_m *SvcClient) *SvcClientUpdateOne {
+	mutation := newSvcClientMutation(c.config, OpUpdateOne, withSvcClient(_m))
+	return &SvcClientUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *ServiceClientClient) UpdateOneID(id int64) *ServiceClientUpdateOne {
-	mutation := newServiceClientMutation(c.config, OpUpdateOne, withServiceClientID(id))
-	return &ServiceClientUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *SvcClientClient) UpdateOneID(id int64) *SvcClientUpdateOne {
+	mutation := newSvcClientMutation(c.config, OpUpdateOne, withSvcClientID(id))
+	return &SvcClientUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for ServiceClient.
-func (c *ServiceClientClient) Delete() *ServiceClientDelete {
-	mutation := newServiceClientMutation(c.config, OpDelete)
-	return &ServiceClientDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for SvcClient.
+func (c *SvcClientClient) Delete() *SvcClientDelete {
+	mutation := newSvcClientMutation(c.config, OpDelete)
+	return &SvcClientDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *ServiceClientClient) DeleteOne(_m *ServiceClient) *ServiceClientDeleteOne {
+func (c *SvcClientClient) DeleteOne(_m *SvcClient) *SvcClientDeleteOne {
 	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *ServiceClientClient) DeleteOneID(id int64) *ServiceClientDeleteOne {
-	builder := c.Delete().Where(serviceclient.ID(id))
+func (c *SvcClientClient) DeleteOneID(id int64) *SvcClientDeleteOne {
+	builder := c.Delete().Where(svcclient.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &ServiceClientDeleteOne{builder}
+	return &SvcClientDeleteOne{builder}
 }
 
-// Query returns a query builder for ServiceClient.
-func (c *ServiceClientClient) Query() *ServiceClientQuery {
-	return &ServiceClientQuery{
+// Query returns a query builder for SvcClient.
+func (c *SvcClientClient) Query() *SvcClientQuery {
+	return &SvcClientQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeServiceClient},
+		ctx:    &QueryContext{Type: TypeSvcClient},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a ServiceClient entity by its id.
-func (c *ServiceClientClient) Get(ctx context.Context, id int64) (*ServiceClient, error) {
-	return c.Query().Where(serviceclient.ID(id)).Only(ctx)
+// Get returns a SvcClient entity by its id.
+func (c *SvcClientClient) Get(ctx context.Context, id int64) (*SvcClient, error) {
+	return c.Query().Where(svcclient.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *ServiceClientClient) GetX(ctx context.Context, id int64) *ServiceClient {
+func (c *SvcClientClient) GetX(ctx context.Context, id int64) *SvcClient {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -464,15 +464,15 @@ func (c *ServiceClientClient) GetX(ctx context.Context, id int64) *ServiceClient
 	return obj
 }
 
-// QueryService queries the service edge of a ServiceClient.
-func (c *ServiceClientClient) QueryService(_m *ServiceClient) *ServiceQuery {
+// QueryService queries the service edge of a SvcClient.
+func (c *SvcClientClient) QueryService(_m *SvcClient) *ServiceQuery {
 	query := (&ServiceClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(serviceclient.Table, serviceclient.FieldID, id),
+			sqlgraph.From(svcclient.Table, svcclient.FieldID, id),
 			sqlgraph.To(service.Table, service.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, serviceclient.ServiceTable, serviceclient.ServiceColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, svcclient.ServiceTable, svcclient.ServiceColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -481,36 +481,36 @@ func (c *ServiceClientClient) QueryService(_m *ServiceClient) *ServiceQuery {
 }
 
 // Hooks returns the client hooks.
-func (c *ServiceClientClient) Hooks() []Hook {
-	return c.hooks.ServiceClient
+func (c *SvcClientClient) Hooks() []Hook {
+	return c.hooks.SvcClient
 }
 
 // Interceptors returns the client interceptors.
-func (c *ServiceClientClient) Interceptors() []Interceptor {
-	return c.inters.ServiceClient
+func (c *SvcClientClient) Interceptors() []Interceptor {
+	return c.inters.SvcClient
 }
 
-func (c *ServiceClientClient) mutate(ctx context.Context, m *ServiceClientMutation) (Value, error) {
+func (c *SvcClientClient) mutate(ctx context.Context, m *SvcClientMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&ServiceClientCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&SvcClientCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&ServiceClientUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&SvcClientUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&ServiceClientUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&SvcClientUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&ServiceClientDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&SvcClientDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown ServiceClient mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown SvcClient mutation op: %q", m.Op())
 	}
 }
 
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Service, ServiceClient []ent.Hook
+		Service, SvcClient []ent.Hook
 	}
 	inters struct {
-		Service, ServiceClient []ent.Interceptor
+		Service, SvcClient []ent.Interceptor
 	}
 )
