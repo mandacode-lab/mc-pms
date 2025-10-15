@@ -65,6 +65,8 @@ management:
   iam:
     enabled: true
     serviceUrl: "http://localhost:8080"
+  prefix:
+    service: "SSAM"
 
 # Database configuration
 database:

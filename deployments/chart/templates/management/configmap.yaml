@@ -14,4 +14,5 @@ data:
   IDLE_TIMEOUT: {{ .Values.management.server.idleTimeout | quote }}
   IAM_ENABLED: {{ .Values.management.iam.enabled | quote }}
   IAM_SERVICE_URL: {{ .Values.management.iam.serviceUrl | quote }}
+  ID_PREFIX_SERVICE: {{ .Values.management.prefix.service | quote }}
 {{- end }}
