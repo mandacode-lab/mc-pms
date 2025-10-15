@@ -18,7 +18,7 @@ type Client struct {
 	updatedAt   time.Time
 }
 
-func NewSvcClient(
+func NewClient(
 	id ID,
 	publicID PublicID,
 	name Name,
