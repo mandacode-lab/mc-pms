@@ -6,43 +6,15 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
 	"github.com/mandacode-com/mandacode-ssam/ent/schema"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
+	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
 )
 
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	clientappFields := schema.ClientApp{}.Fields()
-	_ = clientappFields
-	// clientappDescPublicID is the schema descriptor for public_id field.
-	clientappDescPublicID := clientappFields[2].Descriptor()
-	// clientapp.DefaultPublicID holds the default value on creation for the public_id field.
-	clientapp.DefaultPublicID = clientappDescPublicID.Default.(func() uuid.UUID)
-	// clientappDescSecretHash is the schema descriptor for secret_hash field.
-	clientappDescSecretHash := clientappFields[3].Descriptor()
-	// clientapp.SecretHashValidator is a validator for the "secret_hash" field. It is called by the builders before save.
-	clientapp.SecretHashValidator = clientappDescSecretHash.Validators[0].(func([]byte) error)
-	// clientappDescName is the schema descriptor for name field.
-	clientappDescName := clientappFields[4].Descriptor()
-	// clientapp.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	clientapp.NameValidator = clientappDescName.Validators[0].(func(string) error)
-	// clientappDescIsActive is the schema descriptor for is_active field.
-	clientappDescIsActive := clientappFields[6].Descriptor()
-	// clientapp.DefaultIsActive holds the default value on creation for the is_active field.
-	clientapp.DefaultIsActive = clientappDescIsActive.Default.(bool)
-	// clientappDescCreatedAt is the schema descriptor for created_at field.
-	clientappDescCreatedAt := clientappFields[7].Descriptor()
-	// clientapp.DefaultCreatedAt holds the default value on creation for the created_at field.
-	clientapp.DefaultCreatedAt = clientappDescCreatedAt.Default.(func() time.Time)
-	// clientappDescUpdatedAt is the schema descriptor for updated_at field.
-	clientappDescUpdatedAt := clientappFields[8].Descriptor()
-	// clientapp.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	clientapp.DefaultUpdatedAt = clientappDescUpdatedAt.Default.(func() time.Time)
-	// clientapp.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	clientapp.UpdateDefaultUpdatedAt = clientappDescUpdatedAt.UpdateDefault.(func() time.Time)
 	serviceFields := schema.Service{}.Fields()
 	_ = serviceFields
 	// serviceDescPublicID is the schema descriptor for public_id field.
@@ -67,4 +39,32 @@ func init() {
 	service.DefaultUpdatedAt = serviceDescUpdatedAt.Default.(func() time.Time)
 	// service.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	service.UpdateDefaultUpdatedAt = serviceDescUpdatedAt.UpdateDefault.(func() time.Time)
+	serviceclientFields := schema.ServiceClient{}.Fields()
+	_ = serviceclientFields
+	// serviceclientDescPublicID is the schema descriptor for public_id field.
+	serviceclientDescPublicID := serviceclientFields[2].Descriptor()
+	// serviceclient.DefaultPublicID holds the default value on creation for the public_id field.
+	serviceclient.DefaultPublicID = serviceclientDescPublicID.Default.(func() uuid.UUID)
+	// serviceclientDescSecretHash is the schema descriptor for secret_hash field.
+	serviceclientDescSecretHash := serviceclientFields[3].Descriptor()
+	// serviceclient.SecretHashValidator is a validator for the "secret_hash" field. It is called by the builders before save.
+	serviceclient.SecretHashValidator = serviceclientDescSecretHash.Validators[0].(func([]byte) error)
+	// serviceclientDescName is the schema descriptor for name field.
+	serviceclientDescName := serviceclientFields[4].Descriptor()
+	// serviceclient.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	serviceclient.NameValidator = serviceclientDescName.Validators[0].(func(string) error)
+	// serviceclientDescIsActive is the schema descriptor for is_active field.
+	serviceclientDescIsActive := serviceclientFields[6].Descriptor()
+	// serviceclient.DefaultIsActive holds the default value on creation for the is_active field.
+	serviceclient.DefaultIsActive = serviceclientDescIsActive.Default.(bool)
+	// serviceclientDescCreatedAt is the schema descriptor for created_at field.
+	serviceclientDescCreatedAt := serviceclientFields[7].Descriptor()
+	// serviceclient.DefaultCreatedAt holds the default value on creation for the created_at field.
+	serviceclient.DefaultCreatedAt = serviceclientDescCreatedAt.Default.(func() time.Time)
+	// serviceclientDescUpdatedAt is the schema descriptor for updated_at field.
+	serviceclientDescUpdatedAt := serviceclientFields[8].Descriptor()
+	// serviceclient.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	serviceclient.DefaultUpdatedAt = serviceclientDescUpdatedAt.Default.(func() time.Time)
+	// serviceclient.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	serviceclient.UpdateDefaultUpdatedAt = serviceclientDescUpdatedAt.UpdateDefault.(func() time.Time)
 }

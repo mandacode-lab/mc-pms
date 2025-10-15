@@ -9,18 +9,6 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/ent"
 )
 
-// The ClientAppFunc type is an adapter to allow the use of ordinary
-// function as ClientApp mutator.
-type ClientAppFunc func(context.Context, *ent.ClientAppMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f ClientAppFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.ClientAppMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ClientAppMutation", m)
-}
-
 // The ServiceFunc type is an adapter to allow the use of ordinary
 // function as Service mutator.
 type ServiceFunc func(context.Context, *ent.ServiceMutation) (ent.Value, error)
@@ -31,6 +19,18 @@ func (f ServiceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ServiceMutation", m)
+}
+
+// The ServiceClientFunc type is an adapter to allow the use of ordinary
+// function as ServiceClient mutator.
+type ServiceClientFunc func(context.Context, *ent.ServiceClientMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ServiceClientFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ServiceClientMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ServiceClientMutation", m)
 }
 
 // Condition is a hook condition function.

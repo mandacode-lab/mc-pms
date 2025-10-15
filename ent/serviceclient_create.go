@@ -11,31 +11,31 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
+	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
 )
 
-// ClientAppCreate is the builder for creating a ClientApp entity.
-type ClientAppCreate struct {
+// ServiceClientCreate is the builder for creating a ServiceClient entity.
+type ServiceClientCreate struct {
 	config
-	mutation *ClientAppMutation
+	mutation *ServiceClientMutation
 	hooks    []Hook
 }
 
 // SetServiceID sets the "service_id" field.
-func (_c *ClientAppCreate) SetServiceID(v int64) *ClientAppCreate {
+func (_c *ServiceClientCreate) SetServiceID(v int64) *ServiceClientCreate {
 	_c.mutation.SetServiceID(v)
 	return _c
 }
 
 // SetPublicID sets the "public_id" field.
-func (_c *ClientAppCreate) SetPublicID(v uuid.UUID) *ClientAppCreate {
+func (_c *ServiceClientCreate) SetPublicID(v uuid.UUID) *ServiceClientCreate {
 	_c.mutation.SetPublicID(v)
 	return _c
 }
 
 // SetNillablePublicID sets the "public_id" field if the given value is not nil.
-func (_c *ClientAppCreate) SetNillablePublicID(v *uuid.UUID) *ClientAppCreate {
+func (_c *ServiceClientCreate) SetNillablePublicID(v *uuid.UUID) *ServiceClientCreate {
 	if v != nil {
 		_c.SetPublicID(*v)
 	}
@@ -43,25 +43,25 @@ func (_c *ClientAppCreate) SetNillablePublicID(v *uuid.UUID) *ClientAppCreate {
 }
 
 // SetSecretHash sets the "secret_hash" field.
-func (_c *ClientAppCreate) SetSecretHash(v []byte) *ClientAppCreate {
+func (_c *ServiceClientCreate) SetSecretHash(v []byte) *ServiceClientCreate {
 	_c.mutation.SetSecretHash(v)
 	return _c
 }
 
 // SetName sets the "name" field.
-func (_c *ClientAppCreate) SetName(v string) *ClientAppCreate {
+func (_c *ServiceClientCreate) SetName(v string) *ServiceClientCreate {
 	_c.mutation.SetName(v)
 	return _c
 }
 
 // SetDescription sets the "description" field.
-func (_c *ClientAppCreate) SetDescription(v string) *ClientAppCreate {
+func (_c *ServiceClientCreate) SetDescription(v string) *ServiceClientCreate {
 	_c.mutation.SetDescription(v)
 	return _c
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (_c *ClientAppCreate) SetNillableDescription(v *string) *ClientAppCreate {
+func (_c *ServiceClientCreate) SetNillableDescription(v *string) *ServiceClientCreate {
 	if v != nil {
 		_c.SetDescription(*v)
 	}
@@ -69,13 +69,13 @@ func (_c *ClientAppCreate) SetNillableDescription(v *string) *ClientAppCreate {
 }
 
 // SetIsActive sets the "is_active" field.
-func (_c *ClientAppCreate) SetIsActive(v bool) *ClientAppCreate {
+func (_c *ServiceClientCreate) SetIsActive(v bool) *ServiceClientCreate {
 	_c.mutation.SetIsActive(v)
 	return _c
 }
 
 // SetNillableIsActive sets the "is_active" field if the given value is not nil.
-func (_c *ClientAppCreate) SetNillableIsActive(v *bool) *ClientAppCreate {
+func (_c *ServiceClientCreate) SetNillableIsActive(v *bool) *ServiceClientCreate {
 	if v != nil {
 		_c.SetIsActive(*v)
 	}
@@ -83,13 +83,13 @@ func (_c *ClientAppCreate) SetNillableIsActive(v *bool) *ClientAppCreate {
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (_c *ClientAppCreate) SetCreatedAt(v time.Time) *ClientAppCreate {
+func (_c *ServiceClientCreate) SetCreatedAt(v time.Time) *ServiceClientCreate {
 	_c.mutation.SetCreatedAt(v)
 	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *ClientAppCreate) SetNillableCreatedAt(v *time.Time) *ClientAppCreate {
+func (_c *ServiceClientCreate) SetNillableCreatedAt(v *time.Time) *ServiceClientCreate {
 	if v != nil {
 		_c.SetCreatedAt(*v)
 	}
@@ -97,13 +97,13 @@ func (_c *ClientAppCreate) SetNillableCreatedAt(v *time.Time) *ClientAppCreate {
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (_c *ClientAppCreate) SetUpdatedAt(v time.Time) *ClientAppCreate {
+func (_c *ServiceClientCreate) SetUpdatedAt(v time.Time) *ServiceClientCreate {
 	_c.mutation.SetUpdatedAt(v)
 	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (_c *ClientAppCreate) SetNillableUpdatedAt(v *time.Time) *ClientAppCreate {
+func (_c *ServiceClientCreate) SetNillableUpdatedAt(v *time.Time) *ServiceClientCreate {
 	if v != nil {
 		_c.SetUpdatedAt(*v)
 	}
@@ -111,29 +111,29 @@ func (_c *ClientAppCreate) SetNillableUpdatedAt(v *time.Time) *ClientAppCreate {
 }
 
 // SetID sets the "id" field.
-func (_c *ClientAppCreate) SetID(v int64) *ClientAppCreate {
+func (_c *ServiceClientCreate) SetID(v int64) *ServiceClientCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
 
 // SetService sets the "service" edge to the Service entity.
-func (_c *ClientAppCreate) SetService(v *Service) *ClientAppCreate {
+func (_c *ServiceClientCreate) SetService(v *Service) *ServiceClientCreate {
 	return _c.SetServiceID(v.ID)
 }
 
-// Mutation returns the ClientAppMutation object of the builder.
-func (_c *ClientAppCreate) Mutation() *ClientAppMutation {
+// Mutation returns the ServiceClientMutation object of the builder.
+func (_c *ServiceClientCreate) Mutation() *ServiceClientMutation {
 	return _c.mutation
 }
 
-// Save creates the ClientApp in the database.
-func (_c *ClientAppCreate) Save(ctx context.Context) (*ClientApp, error) {
+// Save creates the ServiceClient in the database.
+func (_c *ServiceClientCreate) Save(ctx context.Context) (*ServiceClient, error) {
 	_c.defaults()
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (_c *ClientAppCreate) SaveX(ctx context.Context) *ClientApp {
+func (_c *ServiceClientCreate) SaveX(ctx context.Context) *ServiceClient {
 	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -142,78 +142,78 @@ func (_c *ClientAppCreate) SaveX(ctx context.Context) *ClientApp {
 }
 
 // Exec executes the query.
-func (_c *ClientAppCreate) Exec(ctx context.Context) error {
+func (_c *ServiceClientCreate) Exec(ctx context.Context) error {
 	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_c *ClientAppCreate) ExecX(ctx context.Context) {
+func (_c *ServiceClientCreate) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *ClientAppCreate) defaults() {
+func (_c *ServiceClientCreate) defaults() {
 	if _, ok := _c.mutation.PublicID(); !ok {
-		v := clientapp.DefaultPublicID()
+		v := serviceclient.DefaultPublicID()
 		_c.mutation.SetPublicID(v)
 	}
 	if _, ok := _c.mutation.IsActive(); !ok {
-		v := clientapp.DefaultIsActive
+		v := serviceclient.DefaultIsActive
 		_c.mutation.SetIsActive(v)
 	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
-		v := clientapp.DefaultCreatedAt()
+		v := serviceclient.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
-		v := clientapp.DefaultUpdatedAt()
+		v := serviceclient.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_c *ClientAppCreate) check() error {
+func (_c *ServiceClientCreate) check() error {
 	if _, ok := _c.mutation.ServiceID(); !ok {
-		return &ValidationError{Name: "service_id", err: errors.New(`ent: missing required field "ClientApp.service_id"`)}
+		return &ValidationError{Name: "service_id", err: errors.New(`ent: missing required field "ServiceClient.service_id"`)}
 	}
 	if _, ok := _c.mutation.PublicID(); !ok {
-		return &ValidationError{Name: "public_id", err: errors.New(`ent: missing required field "ClientApp.public_id"`)}
+		return &ValidationError{Name: "public_id", err: errors.New(`ent: missing required field "ServiceClient.public_id"`)}
 	}
 	if _, ok := _c.mutation.SecretHash(); !ok {
-		return &ValidationError{Name: "secret_hash", err: errors.New(`ent: missing required field "ClientApp.secret_hash"`)}
+		return &ValidationError{Name: "secret_hash", err: errors.New(`ent: missing required field "ServiceClient.secret_hash"`)}
 	}
 	if v, ok := _c.mutation.SecretHash(); ok {
-		if err := clientapp.SecretHashValidator(v); err != nil {
-			return &ValidationError{Name: "secret_hash", err: fmt.Errorf(`ent: validator failed for field "ClientApp.secret_hash": %w`, err)}
+		if err := serviceclient.SecretHashValidator(v); err != nil {
+			return &ValidationError{Name: "secret_hash", err: fmt.Errorf(`ent: validator failed for field "ServiceClient.secret_hash": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.Name(); !ok {
-		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "ClientApp.name"`)}
+		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "ServiceClient.name"`)}
 	}
 	if v, ok := _c.mutation.Name(); ok {
-		if err := clientapp.NameValidator(v); err != nil {
-			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "ClientApp.name": %w`, err)}
+		if err := serviceclient.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "ServiceClient.name": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.IsActive(); !ok {
-		return &ValidationError{Name: "is_active", err: errors.New(`ent: missing required field "ClientApp.is_active"`)}
+		return &ValidationError{Name: "is_active", err: errors.New(`ent: missing required field "ServiceClient.is_active"`)}
 	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "ClientApp.created_at"`)}
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "ServiceClient.created_at"`)}
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
-		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "ClientApp.updated_at"`)}
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "ServiceClient.updated_at"`)}
 	}
 	if len(_c.mutation.ServiceIDs()) == 0 {
-		return &ValidationError{Name: "service", err: errors.New(`ent: missing required edge "ClientApp.service"`)}
+		return &ValidationError{Name: "service", err: errors.New(`ent: missing required edge "ServiceClient.service"`)}
 	}
 	return nil
 }
 
-func (_c *ClientAppCreate) sqlSave(ctx context.Context) (*ClientApp, error) {
+func (_c *ServiceClientCreate) sqlSave(ctx context.Context) (*ServiceClient, error) {
 	if err := _c.check(); err != nil {
 		return nil, err
 	}
@@ -233,49 +233,49 @@ func (_c *ClientAppCreate) sqlSave(ctx context.Context) (*ClientApp, error) {
 	return _node, nil
 }
 
-func (_c *ClientAppCreate) createSpec() (*ClientApp, *sqlgraph.CreateSpec) {
+func (_c *ServiceClientCreate) createSpec() (*ServiceClient, *sqlgraph.CreateSpec) {
 	var (
-		_node = &ClientApp{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(clientapp.Table, sqlgraph.NewFieldSpec(clientapp.FieldID, field.TypeInt64))
+		_node = &ServiceClient{config: _c.config}
+		_spec = sqlgraph.NewCreateSpec(serviceclient.Table, sqlgraph.NewFieldSpec(serviceclient.FieldID, field.TypeInt64))
 	)
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
 	if value, ok := _c.mutation.PublicID(); ok {
-		_spec.SetField(clientapp.FieldPublicID, field.TypeUUID, value)
+		_spec.SetField(serviceclient.FieldPublicID, field.TypeUUID, value)
 		_node.PublicID = value
 	}
 	if value, ok := _c.mutation.SecretHash(); ok {
-		_spec.SetField(clientapp.FieldSecretHash, field.TypeBytes, value)
+		_spec.SetField(serviceclient.FieldSecretHash, field.TypeBytes, value)
 		_node.SecretHash = value
 	}
 	if value, ok := _c.mutation.Name(); ok {
-		_spec.SetField(clientapp.FieldName, field.TypeString, value)
+		_spec.SetField(serviceclient.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
 	if value, ok := _c.mutation.Description(); ok {
-		_spec.SetField(clientapp.FieldDescription, field.TypeString, value)
+		_spec.SetField(serviceclient.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
 	if value, ok := _c.mutation.IsActive(); ok {
-		_spec.SetField(clientapp.FieldIsActive, field.TypeBool, value)
+		_spec.SetField(serviceclient.FieldIsActive, field.TypeBool, value)
 		_node.IsActive = value
 	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(clientapp.FieldCreatedAt, field.TypeTime, value)
+		_spec.SetField(serviceclient.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := _c.mutation.UpdatedAt(); ok {
-		_spec.SetField(clientapp.FieldUpdatedAt, field.TypeTime, value)
+		_spec.SetField(serviceclient.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
 	if nodes := _c.mutation.ServiceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   clientapp.ServiceTable,
-			Columns: []string{clientapp.ServiceColumn},
+			Table:   serviceclient.ServiceTable,
+			Columns: []string{serviceclient.ServiceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(service.FieldID, field.TypeInt64),
@@ -290,27 +290,27 @@ func (_c *ClientAppCreate) createSpec() (*ClientApp, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
-// ClientAppCreateBulk is the builder for creating many ClientApp entities in bulk.
-type ClientAppCreateBulk struct {
+// ServiceClientCreateBulk is the builder for creating many ServiceClient entities in bulk.
+type ServiceClientCreateBulk struct {
 	config
 	err      error
-	builders []*ClientAppCreate
+	builders []*ServiceClientCreate
 }
 
-// Save creates the ClientApp entities in the database.
-func (_c *ClientAppCreateBulk) Save(ctx context.Context) ([]*ClientApp, error) {
+// Save creates the ServiceClient entities in the database.
+func (_c *ServiceClientCreateBulk) Save(ctx context.Context) ([]*ServiceClient, error) {
 	if _c.err != nil {
 		return nil, _c.err
 	}
 	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
-	nodes := make([]*ClientApp, len(_c.builders))
+	nodes := make([]*ServiceClient, len(_c.builders))
 	mutators := make([]Mutator, len(_c.builders))
 	for i := range _c.builders {
 		func(i int, root context.Context) {
 			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-				mutation, ok := m.(*ClientAppMutation)
+				mutation, ok := m.(*ServiceClientMutation)
 				if !ok {
 					return nil, fmt.Errorf("unexpected mutation type %T", m)
 				}
@@ -357,7 +357,7 @@ func (_c *ClientAppCreateBulk) Save(ctx context.Context) ([]*ClientApp, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_c *ClientAppCreateBulk) SaveX(ctx context.Context) []*ClientApp {
+func (_c *ServiceClientCreateBulk) SaveX(ctx context.Context) []*ServiceClient {
 	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -366,13 +366,13 @@ func (_c *ClientAppCreateBulk) SaveX(ctx context.Context) []*ClientApp {
 }
 
 // Exec executes the query.
-func (_c *ClientAppCreateBulk) Exec(ctx context.Context) error {
+func (_c *ServiceClientCreateBulk) Exec(ctx context.Context) error {
 	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_c *ClientAppCreateBulk) ExecX(ctx context.Context) {
+func (_c *ServiceClientCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}

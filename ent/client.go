@@ -15,8 +15,8 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
+	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
 )
 
 // Client is the client that holds all ent builders.
@@ -24,10 +24,10 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// ClientApp is the client for interacting with the ClientApp builders.
-	ClientApp *ClientAppClient
 	// Service is the client for interacting with the Service builders.
 	Service *ServiceClient
+	// ServiceClient is the client for interacting with the ServiceClient builders.
+	ServiceClient *ServiceClientClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -39,8 +39,8 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.ClientApp = NewClientAppClient(c.config)
 	c.Service = NewServiceClient(c.config)
+	c.ServiceClient = NewServiceClientClient(c.config)
 }
 
 type (
@@ -131,10 +131,10 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:       ctx,
-		config:    cfg,
-		ClientApp: NewClientAppClient(cfg),
-		Service:   NewServiceClient(cfg),
+		ctx:           ctx,
+		config:        cfg,
+		Service:       NewServiceClient(cfg),
+		ServiceClient: NewServiceClientClient(cfg),
 	}, nil
 }
 
@@ -152,17 +152,17 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:       ctx,
-		config:    cfg,
-		ClientApp: NewClientAppClient(cfg),
-		Service:   NewServiceClient(cfg),
+		ctx:           ctx,
+		config:        cfg,
+		Service:       NewServiceClient(cfg),
+		ServiceClient: NewServiceClientClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		ClientApp.
+//		Service.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -184,175 +184,26 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.ClientApp.Use(hooks...)
 	c.Service.Use(hooks...)
+	c.ServiceClient.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.ClientApp.Intercept(interceptors...)
 	c.Service.Intercept(interceptors...)
+	c.ServiceClient.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
-	case *ClientAppMutation:
-		return c.ClientApp.mutate(ctx, m)
 	case *ServiceMutation:
 		return c.Service.mutate(ctx, m)
+	case *ServiceClientMutation:
+		return c.ServiceClient.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
-	}
-}
-
-// ClientAppClient is a client for the ClientApp schema.
-type ClientAppClient struct {
-	config
-}
-
-// NewClientAppClient returns a client for the ClientApp from the given config.
-func NewClientAppClient(c config) *ClientAppClient {
-	return &ClientAppClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `clientapp.Hooks(f(g(h())))`.
-func (c *ClientAppClient) Use(hooks ...Hook) {
-	c.hooks.ClientApp = append(c.hooks.ClientApp, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `clientapp.Intercept(f(g(h())))`.
-func (c *ClientAppClient) Intercept(interceptors ...Interceptor) {
-	c.inters.ClientApp = append(c.inters.ClientApp, interceptors...)
-}
-
-// Create returns a builder for creating a ClientApp entity.
-func (c *ClientAppClient) Create() *ClientAppCreate {
-	mutation := newClientAppMutation(c.config, OpCreate)
-	return &ClientAppCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of ClientApp entities.
-func (c *ClientAppClient) CreateBulk(builders ...*ClientAppCreate) *ClientAppCreateBulk {
-	return &ClientAppCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *ClientAppClient) MapCreateBulk(slice any, setFunc func(*ClientAppCreate, int)) *ClientAppCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &ClientAppCreateBulk{err: fmt.Errorf("calling to ClientAppClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*ClientAppCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &ClientAppCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for ClientApp.
-func (c *ClientAppClient) Update() *ClientAppUpdate {
-	mutation := newClientAppMutation(c.config, OpUpdate)
-	return &ClientAppUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *ClientAppClient) UpdateOne(_m *ClientApp) *ClientAppUpdateOne {
-	mutation := newClientAppMutation(c.config, OpUpdateOne, withClientApp(_m))
-	return &ClientAppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *ClientAppClient) UpdateOneID(id int64) *ClientAppUpdateOne {
-	mutation := newClientAppMutation(c.config, OpUpdateOne, withClientAppID(id))
-	return &ClientAppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for ClientApp.
-func (c *ClientAppClient) Delete() *ClientAppDelete {
-	mutation := newClientAppMutation(c.config, OpDelete)
-	return &ClientAppDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *ClientAppClient) DeleteOne(_m *ClientApp) *ClientAppDeleteOne {
-	return c.DeleteOneID(_m.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *ClientAppClient) DeleteOneID(id int64) *ClientAppDeleteOne {
-	builder := c.Delete().Where(clientapp.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &ClientAppDeleteOne{builder}
-}
-
-// Query returns a query builder for ClientApp.
-func (c *ClientAppClient) Query() *ClientAppQuery {
-	return &ClientAppQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeClientApp},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a ClientApp entity by its id.
-func (c *ClientAppClient) Get(ctx context.Context, id int64) (*ClientApp, error) {
-	return c.Query().Where(clientapp.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *ClientAppClient) GetX(ctx context.Context, id int64) *ClientApp {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryService queries the service edge of a ClientApp.
-func (c *ClientAppClient) QueryService(_m *ClientApp) *ServiceQuery {
-	query := (&ServiceClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(clientapp.Table, clientapp.FieldID, id),
-			sqlgraph.To(service.Table, service.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, clientapp.ServiceTable, clientapp.ServiceColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *ClientAppClient) Hooks() []Hook {
-	return c.hooks.ClientApp
-}
-
-// Interceptors returns the client interceptors.
-func (c *ClientAppClient) Interceptors() []Interceptor {
-	return c.inters.ClientApp
-}
-
-func (c *ClientAppClient) mutate(ctx context.Context, m *ClientAppMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&ClientAppCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&ClientAppUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&ClientAppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&ClientAppDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown ClientApp mutation op: %q", m.Op())
 	}
 }
 
@@ -465,13 +316,13 @@ func (c *ServiceClient) GetX(ctx context.Context, id int64) *Service {
 }
 
 // QueryClientApps queries the client_apps edge of a Service.
-func (c *ServiceClient) QueryClientApps(_m *Service) *ClientAppQuery {
-	query := (&ClientAppClient{config: c.config}).Query()
+func (c *ServiceClient) QueryClientApps(_m *Service) *ServiceClientQuery {
+	query := (&ServiceClientClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(service.Table, service.FieldID, id),
-			sqlgraph.To(clientapp.Table, clientapp.FieldID),
+			sqlgraph.To(serviceclient.Table, serviceclient.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, service.ClientAppsTable, service.ClientAppsColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
@@ -505,12 +356,161 @@ func (c *ServiceClient) mutate(ctx context.Context, m *ServiceMutation) (Value, 
 	}
 }
 
+// ServiceClientClient is a client for the ServiceClient schema.
+type ServiceClientClient struct {
+	config
+}
+
+// NewServiceClientClient returns a client for the ServiceClient from the given config.
+func NewServiceClientClient(c config) *ServiceClientClient {
+	return &ServiceClientClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `serviceclient.Hooks(f(g(h())))`.
+func (c *ServiceClientClient) Use(hooks ...Hook) {
+	c.hooks.ServiceClient = append(c.hooks.ServiceClient, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `serviceclient.Intercept(f(g(h())))`.
+func (c *ServiceClientClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ServiceClient = append(c.inters.ServiceClient, interceptors...)
+}
+
+// Create returns a builder for creating a ServiceClient entity.
+func (c *ServiceClientClient) Create() *ServiceClientCreate {
+	mutation := newServiceClientMutation(c.config, OpCreate)
+	return &ServiceClientCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ServiceClient entities.
+func (c *ServiceClientClient) CreateBulk(builders ...*ServiceClientCreate) *ServiceClientCreateBulk {
+	return &ServiceClientCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ServiceClientClient) MapCreateBulk(slice any, setFunc func(*ServiceClientCreate, int)) *ServiceClientCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ServiceClientCreateBulk{err: fmt.Errorf("calling to ServiceClientClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ServiceClientCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ServiceClientCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ServiceClient.
+func (c *ServiceClientClient) Update() *ServiceClientUpdate {
+	mutation := newServiceClientMutation(c.config, OpUpdate)
+	return &ServiceClientUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ServiceClientClient) UpdateOne(_m *ServiceClient) *ServiceClientUpdateOne {
+	mutation := newServiceClientMutation(c.config, OpUpdateOne, withServiceClient(_m))
+	return &ServiceClientUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ServiceClientClient) UpdateOneID(id int64) *ServiceClientUpdateOne {
+	mutation := newServiceClientMutation(c.config, OpUpdateOne, withServiceClientID(id))
+	return &ServiceClientUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ServiceClient.
+func (c *ServiceClientClient) Delete() *ServiceClientDelete {
+	mutation := newServiceClientMutation(c.config, OpDelete)
+	return &ServiceClientDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ServiceClientClient) DeleteOne(_m *ServiceClient) *ServiceClientDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ServiceClientClient) DeleteOneID(id int64) *ServiceClientDeleteOne {
+	builder := c.Delete().Where(serviceclient.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ServiceClientDeleteOne{builder}
+}
+
+// Query returns a query builder for ServiceClient.
+func (c *ServiceClientClient) Query() *ServiceClientQuery {
+	return &ServiceClientQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeServiceClient},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ServiceClient entity by its id.
+func (c *ServiceClientClient) Get(ctx context.Context, id int64) (*ServiceClient, error) {
+	return c.Query().Where(serviceclient.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ServiceClientClient) GetX(ctx context.Context, id int64) *ServiceClient {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryService queries the service edge of a ServiceClient.
+func (c *ServiceClientClient) QueryService(_m *ServiceClient) *ServiceQuery {
+	query := (&ServiceClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(serviceclient.Table, serviceclient.FieldID, id),
+			sqlgraph.To(service.Table, service.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, serviceclient.ServiceTable, serviceclient.ServiceColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ServiceClientClient) Hooks() []Hook {
+	return c.hooks.ServiceClient
+}
+
+// Interceptors returns the client interceptors.
+func (c *ServiceClientClient) Interceptors() []Interceptor {
+	return c.inters.ServiceClient
+}
+
+func (c *ServiceClientClient) mutate(ctx context.Context, m *ServiceClientMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ServiceClientCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ServiceClientUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ServiceClientUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ServiceClientDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown ServiceClient mutation op: %q", m.Op())
+	}
+}
+
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		ClientApp, Service []ent.Hook
+		Service, ServiceClient []ent.Hook
 	}
 	inters struct {
-		ClientApp, Service []ent.Interceptor
+		Service, ServiceClient []ent.Interceptor
 	}
 )

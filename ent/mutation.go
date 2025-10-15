@@ -12,9 +12,9 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
 	"github.com/mandacode-com/mandacode-ssam/ent/predicate"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
+	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
 )
 
 const (
@@ -26,798 +26,9 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeClientApp = "ClientApp"
-	TypeService   = "Service"
+	TypeService       = "Service"
+	TypeServiceClient = "ServiceClient"
 )
-
-// ClientAppMutation represents an operation that mutates the ClientApp nodes in the graph.
-type ClientAppMutation struct {
-	config
-	op             Op
-	typ            string
-	id             *int64
-	public_id      *uuid.UUID
-	secret_hash    *[]byte
-	name           *string
-	description    *string
-	is_active      *bool
-	created_at     *time.Time
-	updated_at     *time.Time
-	clearedFields  map[string]struct{}
-	service        *int64
-	clearedservice bool
-	done           bool
-	oldValue       func(context.Context) (*ClientApp, error)
-	predicates     []predicate.ClientApp
-}
-
-var _ ent.Mutation = (*ClientAppMutation)(nil)
-
-// clientappOption allows management of the mutation configuration using functional options.
-type clientappOption func(*ClientAppMutation)
-
-// newClientAppMutation creates new mutation for the ClientApp entity.
-func newClientAppMutation(c config, op Op, opts ...clientappOption) *ClientAppMutation {
-	m := &ClientAppMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeClientApp,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withClientAppID sets the ID field of the mutation.
-func withClientAppID(id int64) clientappOption {
-	return func(m *ClientAppMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *ClientApp
-		)
-		m.oldValue = func(ctx context.Context) (*ClientApp, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().ClientApp.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withClientApp sets the old ClientApp of the mutation.
-func withClientApp(node *ClientApp) clientappOption {
-	return func(m *ClientAppMutation) {
-		m.oldValue = func(context.Context) (*ClientApp, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m ClientAppMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m ClientAppMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of ClientApp entities.
-func (m *ClientAppMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *ClientAppMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *ClientAppMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().ClientApp.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetServiceID sets the "service_id" field.
-func (m *ClientAppMutation) SetServiceID(i int64) {
-	m.service = &i
-}
-
-// ServiceID returns the value of the "service_id" field in the mutation.
-func (m *ClientAppMutation) ServiceID() (r int64, exists bool) {
-	v := m.service
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldServiceID returns the old "service_id" field's value of the ClientApp entity.
-// If the ClientApp object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ClientAppMutation) OldServiceID(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldServiceID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldServiceID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldServiceID: %w", err)
-	}
-	return oldValue.ServiceID, nil
-}
-
-// ResetServiceID resets all changes to the "service_id" field.
-func (m *ClientAppMutation) ResetServiceID() {
-	m.service = nil
-}
-
-// SetPublicID sets the "public_id" field.
-func (m *ClientAppMutation) SetPublicID(u uuid.UUID) {
-	m.public_id = &u
-}
-
-// PublicID returns the value of the "public_id" field in the mutation.
-func (m *ClientAppMutation) PublicID() (r uuid.UUID, exists bool) {
-	v := m.public_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPublicID returns the old "public_id" field's value of the ClientApp entity.
-// If the ClientApp object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ClientAppMutation) OldPublicID(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPublicID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPublicID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPublicID: %w", err)
-	}
-	return oldValue.PublicID, nil
-}
-
-// ResetPublicID resets all changes to the "public_id" field.
-func (m *ClientAppMutation) ResetPublicID() {
-	m.public_id = nil
-}
-
-// SetSecretHash sets the "secret_hash" field.
-func (m *ClientAppMutation) SetSecretHash(b []byte) {
-	m.secret_hash = &b
-}
-
-// SecretHash returns the value of the "secret_hash" field in the mutation.
-func (m *ClientAppMutation) SecretHash() (r []byte, exists bool) {
-	v := m.secret_hash
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSecretHash returns the old "secret_hash" field's value of the ClientApp entity.
-// If the ClientApp object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ClientAppMutation) OldSecretHash(ctx context.Context) (v []byte, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSecretHash is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSecretHash requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSecretHash: %w", err)
-	}
-	return oldValue.SecretHash, nil
-}
-
-// ResetSecretHash resets all changes to the "secret_hash" field.
-func (m *ClientAppMutation) ResetSecretHash() {
-	m.secret_hash = nil
-}
-
-// SetName sets the "name" field.
-func (m *ClientAppMutation) SetName(s string) {
-	m.name = &s
-}
-
-// Name returns the value of the "name" field in the mutation.
-func (m *ClientAppMutation) Name() (r string, exists bool) {
-	v := m.name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldName returns the old "name" field's value of the ClientApp entity.
-// If the ClientApp object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ClientAppMutation) OldName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
-	}
-	return oldValue.Name, nil
-}
-
-// ResetName resets all changes to the "name" field.
-func (m *ClientAppMutation) ResetName() {
-	m.name = nil
-}
-
-// SetDescription sets the "description" field.
-func (m *ClientAppMutation) SetDescription(s string) {
-	m.description = &s
-}
-
-// Description returns the value of the "description" field in the mutation.
-func (m *ClientAppMutation) Description() (r string, exists bool) {
-	v := m.description
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDescription returns the old "description" field's value of the ClientApp entity.
-// If the ClientApp object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ClientAppMutation) OldDescription(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDescription requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
-	}
-	return oldValue.Description, nil
-}
-
-// ClearDescription clears the value of the "description" field.
-func (m *ClientAppMutation) ClearDescription() {
-	m.description = nil
-	m.clearedFields[clientapp.FieldDescription] = struct{}{}
-}
-
-// DescriptionCleared returns if the "description" field was cleared in this mutation.
-func (m *ClientAppMutation) DescriptionCleared() bool {
-	_, ok := m.clearedFields[clientapp.FieldDescription]
-	return ok
-}
-
-// ResetDescription resets all changes to the "description" field.
-func (m *ClientAppMutation) ResetDescription() {
-	m.description = nil
-	delete(m.clearedFields, clientapp.FieldDescription)
-}
-
-// SetIsActive sets the "is_active" field.
-func (m *ClientAppMutation) SetIsActive(b bool) {
-	m.is_active = &b
-}
-
-// IsActive returns the value of the "is_active" field in the mutation.
-func (m *ClientAppMutation) IsActive() (r bool, exists bool) {
-	v := m.is_active
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldIsActive returns the old "is_active" field's value of the ClientApp entity.
-// If the ClientApp object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ClientAppMutation) OldIsActive(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldIsActive is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldIsActive requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldIsActive: %w", err)
-	}
-	return oldValue.IsActive, nil
-}
-
-// ResetIsActive resets all changes to the "is_active" field.
-func (m *ClientAppMutation) ResetIsActive() {
-	m.is_active = nil
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (m *ClientAppMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *ClientAppMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the ClientApp entity.
-// If the ClientApp object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ClientAppMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *ClientAppMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *ClientAppMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *ClientAppMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the ClientApp entity.
-// If the ClientApp object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ClientAppMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *ClientAppMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
-// ClearService clears the "service" edge to the Service entity.
-func (m *ClientAppMutation) ClearService() {
-	m.clearedservice = true
-	m.clearedFields[clientapp.FieldServiceID] = struct{}{}
-}
-
-// ServiceCleared reports if the "service" edge to the Service entity was cleared.
-func (m *ClientAppMutation) ServiceCleared() bool {
-	return m.clearedservice
-}
-
-// ServiceIDs returns the "service" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// ServiceID instead. It exists only for internal usage by the builders.
-func (m *ClientAppMutation) ServiceIDs() (ids []int64) {
-	if id := m.service; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetService resets all changes to the "service" edge.
-func (m *ClientAppMutation) ResetService() {
-	m.service = nil
-	m.clearedservice = false
-}
-
-// Where appends a list predicates to the ClientAppMutation builder.
-func (m *ClientAppMutation) Where(ps ...predicate.ClientApp) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the ClientAppMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *ClientAppMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.ClientApp, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *ClientAppMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *ClientAppMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (ClientApp).
-func (m *ClientAppMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *ClientAppMutation) Fields() []string {
-	fields := make([]string, 0, 8)
-	if m.service != nil {
-		fields = append(fields, clientapp.FieldServiceID)
-	}
-	if m.public_id != nil {
-		fields = append(fields, clientapp.FieldPublicID)
-	}
-	if m.secret_hash != nil {
-		fields = append(fields, clientapp.FieldSecretHash)
-	}
-	if m.name != nil {
-		fields = append(fields, clientapp.FieldName)
-	}
-	if m.description != nil {
-		fields = append(fields, clientapp.FieldDescription)
-	}
-	if m.is_active != nil {
-		fields = append(fields, clientapp.FieldIsActive)
-	}
-	if m.created_at != nil {
-		fields = append(fields, clientapp.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, clientapp.FieldUpdatedAt)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *ClientAppMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case clientapp.FieldServiceID:
-		return m.ServiceID()
-	case clientapp.FieldPublicID:
-		return m.PublicID()
-	case clientapp.FieldSecretHash:
-		return m.SecretHash()
-	case clientapp.FieldName:
-		return m.Name()
-	case clientapp.FieldDescription:
-		return m.Description()
-	case clientapp.FieldIsActive:
-		return m.IsActive()
-	case clientapp.FieldCreatedAt:
-		return m.CreatedAt()
-	case clientapp.FieldUpdatedAt:
-		return m.UpdatedAt()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *ClientAppMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case clientapp.FieldServiceID:
-		return m.OldServiceID(ctx)
-	case clientapp.FieldPublicID:
-		return m.OldPublicID(ctx)
-	case clientapp.FieldSecretHash:
-		return m.OldSecretHash(ctx)
-	case clientapp.FieldName:
-		return m.OldName(ctx)
-	case clientapp.FieldDescription:
-		return m.OldDescription(ctx)
-	case clientapp.FieldIsActive:
-		return m.OldIsActive(ctx)
-	case clientapp.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case clientapp.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
-	}
-	return nil, fmt.Errorf("unknown ClientApp field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ClientAppMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case clientapp.FieldServiceID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetServiceID(v)
-		return nil
-	case clientapp.FieldPublicID:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPublicID(v)
-		return nil
-	case clientapp.FieldSecretHash:
-		v, ok := value.([]byte)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSecretHash(v)
-		return nil
-	case clientapp.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
-	case clientapp.FieldDescription:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDescription(v)
-		return nil
-	case clientapp.FieldIsActive:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetIsActive(v)
-		return nil
-	case clientapp.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case clientapp.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
-		return nil
-	}
-	return fmt.Errorf("unknown ClientApp field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *ClientAppMutation) AddedFields() []string {
-	var fields []string
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *ClientAppMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ClientAppMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown ClientApp numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *ClientAppMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(clientapp.FieldDescription) {
-		fields = append(fields, clientapp.FieldDescription)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *ClientAppMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *ClientAppMutation) ClearField(name string) error {
-	switch name {
-	case clientapp.FieldDescription:
-		m.ClearDescription()
-		return nil
-	}
-	return fmt.Errorf("unknown ClientApp nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *ClientAppMutation) ResetField(name string) error {
-	switch name {
-	case clientapp.FieldServiceID:
-		m.ResetServiceID()
-		return nil
-	case clientapp.FieldPublicID:
-		m.ResetPublicID()
-		return nil
-	case clientapp.FieldSecretHash:
-		m.ResetSecretHash()
-		return nil
-	case clientapp.FieldName:
-		m.ResetName()
-		return nil
-	case clientapp.FieldDescription:
-		m.ResetDescription()
-		return nil
-	case clientapp.FieldIsActive:
-		m.ResetIsActive()
-		return nil
-	case clientapp.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case clientapp.FieldUpdatedAt:
-		m.ResetUpdatedAt()
-		return nil
-	}
-	return fmt.Errorf("unknown ClientApp field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *ClientAppMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.service != nil {
-		edges = append(edges, clientapp.EdgeService)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *ClientAppMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case clientapp.EdgeService:
-		if id := m.service; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *ClientAppMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *ClientAppMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *ClientAppMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedservice {
-		edges = append(edges, clientapp.EdgeService)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *ClientAppMutation) EdgeCleared(name string) bool {
-	switch name {
-	case clientapp.EdgeService:
-		return m.clearedservice
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *ClientAppMutation) ClearEdge(name string) error {
-	switch name {
-	case clientapp.EdgeService:
-		m.ClearService()
-		return nil
-	}
-	return fmt.Errorf("unknown ClientApp unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *ClientAppMutation) ResetEdge(name string) error {
-	switch name {
-	case clientapp.EdgeService:
-		m.ResetService()
-		return nil
-	}
-	return fmt.Errorf("unknown ClientApp edge %s", name)
-}
 
 // ServiceMutation represents an operation that mutates the Service nodes in the graph.
 type ServiceMutation struct {
@@ -1173,7 +384,7 @@ func (m *ServiceMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// AddClientAppIDs adds the "client_apps" edge to the ClientApp entity by ids.
+// AddClientAppIDs adds the "client_apps" edge to the ServiceClient entity by ids.
 func (m *ServiceMutation) AddClientAppIDs(ids ...int64) {
 	if m.client_apps == nil {
 		m.client_apps = make(map[int64]struct{})
@@ -1183,17 +394,17 @@ func (m *ServiceMutation) AddClientAppIDs(ids ...int64) {
 	}
 }
 
-// ClearClientApps clears the "client_apps" edge to the ClientApp entity.
+// ClearClientApps clears the "client_apps" edge to the ServiceClient entity.
 func (m *ServiceMutation) ClearClientApps() {
 	m.clearedclient_apps = true
 }
 
-// ClientAppsCleared reports if the "client_apps" edge to the ClientApp entity was cleared.
+// ClientAppsCleared reports if the "client_apps" edge to the ServiceClient entity was cleared.
 func (m *ServiceMutation) ClientAppsCleared() bool {
 	return m.clearedclient_apps
 }
 
-// RemoveClientAppIDs removes the "client_apps" edge to the ClientApp entity by IDs.
+// RemoveClientAppIDs removes the "client_apps" edge to the ServiceClient entity by IDs.
 func (m *ServiceMutation) RemoveClientAppIDs(ids ...int64) {
 	if m.removedclient_apps == nil {
 		m.removedclient_apps = make(map[int64]struct{})
@@ -1204,7 +415,7 @@ func (m *ServiceMutation) RemoveClientAppIDs(ids ...int64) {
 	}
 }
 
-// RemovedClientApps returns the removed IDs of the "client_apps" edge to the ClientApp entity.
+// RemovedClientApps returns the removed IDs of the "client_apps" edge to the ServiceClient entity.
 func (m *ServiceMutation) RemovedClientAppsIDs() (ids []int64) {
 	for id := range m.removedclient_apps {
 		ids = append(ids, id)
@@ -1534,4 +745,793 @@ func (m *ServiceMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown Service edge %s", name)
+}
+
+// ServiceClientMutation represents an operation that mutates the ServiceClient nodes in the graph.
+type ServiceClientMutation struct {
+	config
+	op             Op
+	typ            string
+	id             *int64
+	public_id      *uuid.UUID
+	secret_hash    *[]byte
+	name           *string
+	description    *string
+	is_active      *bool
+	created_at     *time.Time
+	updated_at     *time.Time
+	clearedFields  map[string]struct{}
+	service        *int64
+	clearedservice bool
+	done           bool
+	oldValue       func(context.Context) (*ServiceClient, error)
+	predicates     []predicate.ServiceClient
+}
+
+var _ ent.Mutation = (*ServiceClientMutation)(nil)
+
+// serviceclientOption allows management of the mutation configuration using functional options.
+type serviceclientOption func(*ServiceClientMutation)
+
+// newServiceClientMutation creates new mutation for the ServiceClient entity.
+func newServiceClientMutation(c config, op Op, opts ...serviceclientOption) *ServiceClientMutation {
+	m := &ServiceClientMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeServiceClient,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withServiceClientID sets the ID field of the mutation.
+func withServiceClientID(id int64) serviceclientOption {
+	return func(m *ServiceClientMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ServiceClient
+		)
+		m.oldValue = func(ctx context.Context) (*ServiceClient, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ServiceClient.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withServiceClient sets the old ServiceClient of the mutation.
+func withServiceClient(node *ServiceClient) serviceclientOption {
+	return func(m *ServiceClientMutation) {
+		m.oldValue = func(context.Context) (*ServiceClient, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ServiceClientMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ServiceClientMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ServiceClient entities.
+func (m *ServiceClientMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ServiceClientMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ServiceClientMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ServiceClient.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetServiceID sets the "service_id" field.
+func (m *ServiceClientMutation) SetServiceID(i int64) {
+	m.service = &i
+}
+
+// ServiceID returns the value of the "service_id" field in the mutation.
+func (m *ServiceClientMutation) ServiceID() (r int64, exists bool) {
+	v := m.service
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldServiceID returns the old "service_id" field's value of the ServiceClient entity.
+// If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServiceClientMutation) OldServiceID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldServiceID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldServiceID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldServiceID: %w", err)
+	}
+	return oldValue.ServiceID, nil
+}
+
+// ResetServiceID resets all changes to the "service_id" field.
+func (m *ServiceClientMutation) ResetServiceID() {
+	m.service = nil
+}
+
+// SetPublicID sets the "public_id" field.
+func (m *ServiceClientMutation) SetPublicID(u uuid.UUID) {
+	m.public_id = &u
+}
+
+// PublicID returns the value of the "public_id" field in the mutation.
+func (m *ServiceClientMutation) PublicID() (r uuid.UUID, exists bool) {
+	v := m.public_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPublicID returns the old "public_id" field's value of the ServiceClient entity.
+// If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServiceClientMutation) OldPublicID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPublicID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPublicID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPublicID: %w", err)
+	}
+	return oldValue.PublicID, nil
+}
+
+// ResetPublicID resets all changes to the "public_id" field.
+func (m *ServiceClientMutation) ResetPublicID() {
+	m.public_id = nil
+}
+
+// SetSecretHash sets the "secret_hash" field.
+func (m *ServiceClientMutation) SetSecretHash(b []byte) {
+	m.secret_hash = &b
+}
+
+// SecretHash returns the value of the "secret_hash" field in the mutation.
+func (m *ServiceClientMutation) SecretHash() (r []byte, exists bool) {
+	v := m.secret_hash
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSecretHash returns the old "secret_hash" field's value of the ServiceClient entity.
+// If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServiceClientMutation) OldSecretHash(ctx context.Context) (v []byte, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSecretHash is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSecretHash requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSecretHash: %w", err)
+	}
+	return oldValue.SecretHash, nil
+}
+
+// ResetSecretHash resets all changes to the "secret_hash" field.
+func (m *ServiceClientMutation) ResetSecretHash() {
+	m.secret_hash = nil
+}
+
+// SetName sets the "name" field.
+func (m *ServiceClientMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *ServiceClientMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the ServiceClient entity.
+// If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServiceClientMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *ServiceClientMutation) ResetName() {
+	m.name = nil
+}
+
+// SetDescription sets the "description" field.
+func (m *ServiceClientMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *ServiceClientMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the ServiceClient entity.
+// If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServiceClientMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ClearDescription clears the value of the "description" field.
+func (m *ServiceClientMutation) ClearDescription() {
+	m.description = nil
+	m.clearedFields[serviceclient.FieldDescription] = struct{}{}
+}
+
+// DescriptionCleared returns if the "description" field was cleared in this mutation.
+func (m *ServiceClientMutation) DescriptionCleared() bool {
+	_, ok := m.clearedFields[serviceclient.FieldDescription]
+	return ok
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *ServiceClientMutation) ResetDescription() {
+	m.description = nil
+	delete(m.clearedFields, serviceclient.FieldDescription)
+}
+
+// SetIsActive sets the "is_active" field.
+func (m *ServiceClientMutation) SetIsActive(b bool) {
+	m.is_active = &b
+}
+
+// IsActive returns the value of the "is_active" field in the mutation.
+func (m *ServiceClientMutation) IsActive() (r bool, exists bool) {
+	v := m.is_active
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIsActive returns the old "is_active" field's value of the ServiceClient entity.
+// If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServiceClientMutation) OldIsActive(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIsActive is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIsActive requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIsActive: %w", err)
+	}
+	return oldValue.IsActive, nil
+}
+
+// ResetIsActive resets all changes to the "is_active" field.
+func (m *ServiceClientMutation) ResetIsActive() {
+	m.is_active = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ServiceClientMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ServiceClientMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the ServiceClient entity.
+// If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServiceClientMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ServiceClientMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ServiceClientMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ServiceClientMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the ServiceClient entity.
+// If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServiceClientMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ServiceClientMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// ClearService clears the "service" edge to the Service entity.
+func (m *ServiceClientMutation) ClearService() {
+	m.clearedservice = true
+	m.clearedFields[serviceclient.FieldServiceID] = struct{}{}
+}
+
+// ServiceCleared reports if the "service" edge to the Service entity was cleared.
+func (m *ServiceClientMutation) ServiceCleared() bool {
+	return m.clearedservice
+}
+
+// ServiceIDs returns the "service" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ServiceID instead. It exists only for internal usage by the builders.
+func (m *ServiceClientMutation) ServiceIDs() (ids []int64) {
+	if id := m.service; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetService resets all changes to the "service" edge.
+func (m *ServiceClientMutation) ResetService() {
+	m.service = nil
+	m.clearedservice = false
+}
+
+// Where appends a list predicates to the ServiceClientMutation builder.
+func (m *ServiceClientMutation) Where(ps ...predicate.ServiceClient) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ServiceClientMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ServiceClientMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ServiceClient, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ServiceClientMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ServiceClientMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ServiceClient).
+func (m *ServiceClientMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ServiceClientMutation) Fields() []string {
+	fields := make([]string, 0, 8)
+	if m.service != nil {
+		fields = append(fields, serviceclient.FieldServiceID)
+	}
+	if m.public_id != nil {
+		fields = append(fields, serviceclient.FieldPublicID)
+	}
+	if m.secret_hash != nil {
+		fields = append(fields, serviceclient.FieldSecretHash)
+	}
+	if m.name != nil {
+		fields = append(fields, serviceclient.FieldName)
+	}
+	if m.description != nil {
+		fields = append(fields, serviceclient.FieldDescription)
+	}
+	if m.is_active != nil {
+		fields = append(fields, serviceclient.FieldIsActive)
+	}
+	if m.created_at != nil {
+		fields = append(fields, serviceclient.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, serviceclient.FieldUpdatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ServiceClientMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case serviceclient.FieldServiceID:
+		return m.ServiceID()
+	case serviceclient.FieldPublicID:
+		return m.PublicID()
+	case serviceclient.FieldSecretHash:
+		return m.SecretHash()
+	case serviceclient.FieldName:
+		return m.Name()
+	case serviceclient.FieldDescription:
+		return m.Description()
+	case serviceclient.FieldIsActive:
+		return m.IsActive()
+	case serviceclient.FieldCreatedAt:
+		return m.CreatedAt()
+	case serviceclient.FieldUpdatedAt:
+		return m.UpdatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ServiceClientMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case serviceclient.FieldServiceID:
+		return m.OldServiceID(ctx)
+	case serviceclient.FieldPublicID:
+		return m.OldPublicID(ctx)
+	case serviceclient.FieldSecretHash:
+		return m.OldSecretHash(ctx)
+	case serviceclient.FieldName:
+		return m.OldName(ctx)
+	case serviceclient.FieldDescription:
+		return m.OldDescription(ctx)
+	case serviceclient.FieldIsActive:
+		return m.OldIsActive(ctx)
+	case serviceclient.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case serviceclient.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown ServiceClient field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServiceClientMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case serviceclient.FieldServiceID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetServiceID(v)
+		return nil
+	case serviceclient.FieldPublicID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPublicID(v)
+		return nil
+	case serviceclient.FieldSecretHash:
+		v, ok := value.([]byte)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSecretHash(v)
+		return nil
+	case serviceclient.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case serviceclient.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case serviceclient.FieldIsActive:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIsActive(v)
+		return nil
+	case serviceclient.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case serviceclient.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ServiceClient field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ServiceClientMutation) AddedFields() []string {
+	var fields []string
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ServiceClientMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServiceClientMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ServiceClient numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ServiceClientMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(serviceclient.FieldDescription) {
+		fields = append(fields, serviceclient.FieldDescription)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ServiceClientMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ServiceClientMutation) ClearField(name string) error {
+	switch name {
+	case serviceclient.FieldDescription:
+		m.ClearDescription()
+		return nil
+	}
+	return fmt.Errorf("unknown ServiceClient nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ServiceClientMutation) ResetField(name string) error {
+	switch name {
+	case serviceclient.FieldServiceID:
+		m.ResetServiceID()
+		return nil
+	case serviceclient.FieldPublicID:
+		m.ResetPublicID()
+		return nil
+	case serviceclient.FieldSecretHash:
+		m.ResetSecretHash()
+		return nil
+	case serviceclient.FieldName:
+		m.ResetName()
+		return nil
+	case serviceclient.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case serviceclient.FieldIsActive:
+		m.ResetIsActive()
+		return nil
+	case serviceclient.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case serviceclient.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown ServiceClient field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ServiceClientMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.service != nil {
+		edges = append(edges, serviceclient.EdgeService)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ServiceClientMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case serviceclient.EdgeService:
+		if id := m.service; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ServiceClientMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ServiceClientMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ServiceClientMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedservice {
+		edges = append(edges, serviceclient.EdgeService)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ServiceClientMutation) EdgeCleared(name string) bool {
+	switch name {
+	case serviceclient.EdgeService:
+		return m.clearedservice
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ServiceClientMutation) ClearEdge(name string) error {
+	switch name {
+	case serviceclient.EdgeService:
+		m.ClearService()
+		return nil
+	}
+	return fmt.Errorf("unknown ServiceClient unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ServiceClientMutation) ResetEdge(name string) error {
+	switch name {
+	case serviceclient.EdgeService:
+		m.ResetService()
+		return nil
+	}
+	return fmt.Errorf("unknown ServiceClient edge %s", name)
 }

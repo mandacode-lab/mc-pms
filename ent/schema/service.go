@@ -41,7 +41,7 @@ func (Service) Fields() []ent.Field {
 // Edges of the Service.
 func (Service) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("client_apps", ClientApp.Type),
+		edge.To("client_apps", ServiceClient.Type),
 	}
 }
 

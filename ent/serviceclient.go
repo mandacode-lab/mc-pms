@@ -10,12 +10,12 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
-	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
+	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
 )
 
-// ClientApp is the model entity for the ClientApp schema.
-type ClientApp struct {
+// ServiceClient is the model entity for the ServiceClient schema.
+type ServiceClient struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
@@ -36,13 +36,13 @@ type ClientApp struct {
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
-	// The values are being populated by the ClientAppQuery when eager-loading is set.
-	Edges        ClientAppEdges `json:"edges"`
+	// The values are being populated by the ServiceClientQuery when eager-loading is set.
+	Edges        ServiceClientEdges `json:"edges"`
 	selectValues sql.SelectValues
 }
 
-// ClientAppEdges holds the relations/edges for other nodes in the graph.
-type ClientAppEdges struct {
+// ServiceClientEdges holds the relations/edges for other nodes in the graph.
+type ServiceClientEdges struct {
 	// Service holds the value of the service edge.
 	Service *Service `json:"service,omitempty"`
 	// loadedTypes holds the information for reporting if a
@@ -52,7 +52,7 @@ type ClientAppEdges struct {
 
 // ServiceOrErr returns the Service value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e ClientAppEdges) ServiceOrErr() (*Service, error) {
+func (e ServiceClientEdges) ServiceOrErr() (*Service, error) {
 	if e.Service != nil {
 		return e.Service, nil
 	} else if e.loadedTypes[0] {
@@ -62,21 +62,21 @@ func (e ClientAppEdges) ServiceOrErr() (*Service, error) {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*ClientApp) scanValues(columns []string) ([]any, error) {
+func (*ServiceClient) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case clientapp.FieldSecretHash:
+		case serviceclient.FieldSecretHash:
 			values[i] = new([]byte)
-		case clientapp.FieldIsActive:
+		case serviceclient.FieldIsActive:
 			values[i] = new(sql.NullBool)
-		case clientapp.FieldID, clientapp.FieldServiceID:
+		case serviceclient.FieldID, serviceclient.FieldServiceID:
 			values[i] = new(sql.NullInt64)
-		case clientapp.FieldName, clientapp.FieldDescription:
+		case serviceclient.FieldName, serviceclient.FieldDescription:
 			values[i] = new(sql.NullString)
-		case clientapp.FieldCreatedAt, clientapp.FieldUpdatedAt:
+		case serviceclient.FieldCreatedAt, serviceclient.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case clientapp.FieldPublicID:
+		case serviceclient.FieldPublicID:
 			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -86,62 +86,62 @@ func (*ClientApp) scanValues(columns []string) ([]any, error) {
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the ClientApp fields.
-func (_m *ClientApp) assignValues(columns []string, values []any) error {
+// to the ServiceClient fields.
+func (_m *ServiceClient) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case clientapp.FieldID:
+		case serviceclient.FieldID:
 			value, ok := values[i].(*sql.NullInt64)
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
-		case clientapp.FieldServiceID:
+		case serviceclient.FieldServiceID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field service_id", values[i])
 			} else if value.Valid {
 				_m.ServiceID = value.Int64
 			}
-		case clientapp.FieldPublicID:
+		case serviceclient.FieldPublicID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field public_id", values[i])
 			} else if value != nil {
 				_m.PublicID = *value
 			}
-		case clientapp.FieldSecretHash:
+		case serviceclient.FieldSecretHash:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field secret_hash", values[i])
 			} else if value != nil {
 				_m.SecretHash = *value
 			}
-		case clientapp.FieldName:
+		case serviceclient.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				_m.Name = value.String
 			}
-		case clientapp.FieldDescription:
+		case serviceclient.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
 				_m.Description = value.String
 			}
-		case clientapp.FieldIsActive:
+		case serviceclient.FieldIsActive:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field is_active", values[i])
 			} else if value.Valid {
 				_m.IsActive = value.Bool
 			}
-		case clientapp.FieldCreatedAt:
+		case serviceclient.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
 				_m.CreatedAt = value.Time
 			}
-		case clientapp.FieldUpdatedAt:
+		case serviceclient.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
@@ -154,39 +154,39 @@ func (_m *ClientApp) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// Value returns the ent.Value that was dynamically selected and assigned to the ClientApp.
+// Value returns the ent.Value that was dynamically selected and assigned to the ServiceClient.
 // This includes values selected through modifiers, order, etc.
-func (_m *ClientApp) Value(name string) (ent.Value, error) {
+func (_m *ServiceClient) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// QueryService queries the "service" edge of the ClientApp entity.
-func (_m *ClientApp) QueryService() *ServiceQuery {
-	return NewClientAppClient(_m.config).QueryService(_m)
+// QueryService queries the "service" edge of the ServiceClient entity.
+func (_m *ServiceClient) QueryService() *ServiceQuery {
+	return NewServiceClientClient(_m.config).QueryService(_m)
 }
 
-// Update returns a builder for updating this ClientApp.
-// Note that you need to call ClientApp.Unwrap() before calling this method if this ClientApp
+// Update returns a builder for updating this ServiceClient.
+// Note that you need to call ServiceClient.Unwrap() before calling this method if this ServiceClient
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (_m *ClientApp) Update() *ClientAppUpdateOne {
-	return NewClientAppClient(_m.config).UpdateOne(_m)
+func (_m *ServiceClient) Update() *ServiceClientUpdateOne {
+	return NewServiceClientClient(_m.config).UpdateOne(_m)
 }
 
-// Unwrap unwraps the ClientApp entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the ServiceClient entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (_m *ClientApp) Unwrap() *ClientApp {
+func (_m *ServiceClient) Unwrap() *ServiceClient {
 	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: ClientApp is not a transactional entity")
+		panic("ent: ServiceClient is not a transactional entity")
 	}
 	_m.config.driver = _tx.drv
 	return _m
 }
 
 // String implements the fmt.Stringer.
-func (_m *ClientApp) String() string {
+func (_m *ServiceClient) String() string {
 	var builder strings.Builder
-	builder.WriteString("ClientApp(")
+	builder.WriteString("ServiceClient(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("service_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.ServiceID))
@@ -215,5 +215,5 @@ func (_m *ClientApp) String() string {
 	return builder.String()
 }
 
-// ClientApps is a parsable slice of ClientApp.
-type ClientApps []*ClientApp
+// ServiceClients is a parsable slice of ServiceClient.
+type ServiceClients []*ServiceClient
