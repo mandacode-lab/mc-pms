@@ -2,15 +2,15 @@ package clientmgmt
 
 import (
 	"context"
+	"time"
 
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/client"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/tx"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
-	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) CreateClientApp(ctx context.Context, req *in.CreateClientAppRequest) (*in.CreateClientAppResponse, error) {
+func (u *Usecase) CreateClient(ctx context.Context, req *in.CreateClientInput) (*in.CreateClientResult, error) {
 	// Validate service exists
 	service, err := u.serviceQueryRepo.FindByPublicID(ctx, req.ServiceID)
 	if err != nil {
@@ -19,7 +19,7 @@ func (u *Usecase) CreateClientApp(ctx context.Context, req *in.CreateClientAppRe
 
 	// Validate input
 	if req.Name == "" {
-		return nil, merr.New(merr.ErrBadRequest, ErrInvalidClientAppNameMsg, nil)
+		return nil, merr.New(merr.ErrBadRequest, ErrInvalidClientNameMsg, nil)
 	}
 
 	// Generate secret bytes
@@ -41,20 +41,39 @@ func (u *Usecase) CreateClientApp(ctx context.Context, req *in.CreateClientAppRe
 	}
 
 	// Create new client app using domain logic
-	desc, err := vo.NewClientAppDescription(req.Desc)
+	id, err := client.NewID(1) // ID will be set by repository
 	if err != nil {
-		return nil, merr.New(merr.ErrBadRequest, "invalid client app description", err)
+		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
+	publicIDStr, err := u.clientIDGen.Generate()
+	if err != nil {
+		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
+	}
+	publicID, err := client.NewPublicID(publicIDStr)
+	if err != nil {
+		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
+	}
+	now := time.Now().UTC()
 
-	clientAppEntity, err := entity.DraftClientApp(service.ID(), req.Name, desc, hash)
+	svcClient := client.NewClient(
+		id,
+		publicID,
+		req.Name,
+		req.Desc,
+		hash,
+		service.ID(),
+		true,
+		now,
+		now,
+	)
 	if err != nil {
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
 	// Save to repository within transaction
-	var savedClientApp *entity.ClientApp
-	err = u.txManager.WithTx(ctx, func(tx out.Tx) error {
-		savedClientApp, err = u.clientAppRepo.Create(ctx, tx, clientAppEntity)
+	var savedClient *client.Client
+	err = u.txManager.WithTx(ctx, func(tx tx.Tx) error {
+		savedClient, err = u.clientRepo.Create(ctx, tx, svcClient)
 		if err != nil {
 			return merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 		}
@@ -65,8 +84,9 @@ func (u *Usecase) CreateClientApp(ctx context.Context, req *in.CreateClientAppRe
 	}
 
 	// Convert to result
-	return &in.CreateClientAppResponse{
-		ClientAppInfo: toClientAppInfo(savedClientApp, service.PublicID()),
-		Secret:        plainSecret,
+	return &in.CreateClientResult{
+		Secret:         plainSecret,
+		ServiceID:      service.PublicID(),
+		MgmtClientInfo: toClientInfo(savedClient),
 	}, nil
 }

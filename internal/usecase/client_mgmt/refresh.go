@@ -3,16 +3,16 @@ package clientmgmt
 import (
 	"context"
 
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/tx"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
-	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) RefreshSecret(ctx context.Context, req *in.RefreshSecretRequest) (*in.RefreshSecretResponse, error) {
+func (u *Usecase) RefreshSecret(ctx context.Context, req *in.RefreshSecretInput) (*in.RefreshSecretResult, error) {
 	// Find the client app by public ID
-	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, req.ClientAppID)
+	svcClient, err := u.clientQueryRepo.FindByPublicID(ctx, req.ClientID)
 	if err != nil {
-		return nil, merr.New(merr.ErrNotFound, ErrClientAppNotFoundMsg, err)
+		return nil, merr.New(merr.ErrNotFound, ErrClientNotFoundMsg, err)
 	}
 
 	// Generate secret bytes
@@ -34,17 +34,17 @@ func (u *Usecase) RefreshSecret(ctx context.Context, req *in.RefreshSecretReques
 	}
 
 	// Regenerate secret using domain logic
-	clientApp.RegenerateSecret(hash)
+	svcClient.RegenerateSecret(hash)
 
 	// Update in repository within transaction
-	err = u.txManager.WithTx(ctx, func(tx out.Tx) error {
-		return u.clientAppRepo.Update(ctx, tx, clientApp)
+	err = u.txManager.WithTx(ctx, func(tx tx.Tx) error {
+		return u.clientRepo.Update(ctx, tx, svcClient)
 	})
 	if err != nil {
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	return &in.RefreshSecretResponse{
-		Secret: plainSecret,
+	return &in.RefreshSecretResult{
+		RawSecret: plainSecret,
 	}, nil
 }

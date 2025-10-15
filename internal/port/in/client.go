@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
 	"github.com/mandacode-com/mandacode-ssam/internal/domain/client"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
 )
 
 type VerifyClientInput struct {
@@ -32,13 +32,14 @@ type MgmtClientInfo struct {
 
 type CreateClientInput struct {
 	ServiceID service.PublicID
-	Name      service.Name
-	Desc      service.Description
+	Name      client.Name
+	Desc      client.Description
 }
 
 type CreateClientResult struct {
 	MgmtClientInfo
-	Secret []byte
+	Secret    []byte
+	ServiceID service.PublicID
 }
 
 type DeleteClientInput struct {
@@ -55,8 +56,8 @@ type RefreshSecretResult struct {
 
 type UpdateClientInput struct {
 	ClientID    client.PublicID
-	NewName     *string
-	NewDesc     *string
+	NewName     *client.Name
+	NewDesc     *client.Description
 	NewIsActive *bool
 }
 
@@ -70,20 +71,20 @@ type FindClientInput struct {
 }
 
 type FindClientResult struct {
+	ServiceID service.PublicID
 	MgmtClientInfo
 }
 
-type ListClientInput struct {
-	ServiceID    service.PublicID
+type ListClientsInput struct {
+	ServiceID    *service.PublicID
 	NameContains *string
 	IsActive     *bool
 	Limit        int
 	Offset       int
 }
 
-type ListClientResult struct {
-	ServiceID service.PublicID
-	Clients   []MgmtClientInfo
+type ListClientsResult struct {
+	Clients []MgmtClientInfo
 }
 
 type ClientMgmtUsecase interface {
@@ -92,5 +93,5 @@ type ClientMgmtUsecase interface {
 	RefreshSecret(ctx context.Context, req *RefreshSecretInput) (*RefreshSecretResult, error)
 	UpdateClient(ctx context.Context, req *UpdateClientInput) (*UpdateClientResult, error)
 	FindClient(ctx context.Context, req *FindClientInput) (*FindClientResult, error)
-	ListClients(ctx context.Context, req *ListClientInput) (*ListClientResult, error)
+	ListClients(ctx context.Context, req *ListClientsInput) (*ListClientsResult, error)
 }

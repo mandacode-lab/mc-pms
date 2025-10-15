@@ -3,56 +3,45 @@ package clientmgmt
 import (
 	"context"
 
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/tx"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
-	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) UpdateClientApp(ctx context.Context, req *in.UpdateClientAppRequest) (*in.UpdateClientAppResponse, error) {
+func (u *Usecase) UpdateClient(ctx context.Context, req *in.UpdateClientInput) (*in.UpdateClientResult, error) {
 	// Find the client app by public ID
-	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, req.ClientAppID)
+	svcClient, err := u.clientQueryRepo.FindByPublicID(ctx, req.ClientID)
 	if err != nil {
-		return nil, merr.New(merr.ErrNotFound, ErrClientAppNotFoundMsg, err)
-	}
-
-	// Get service for public ID conversion
-	service, err := u.serviceQueryRepo.FindByID(ctx, clientApp.ServiceID())
-	if err != nil {
-		return nil, merr.New(merr.ErrNotFound, ErrServiceNotFoundMsg, err)
+		return nil, merr.New(merr.ErrNotFound, ErrClientNotFoundMsg, err)
 	}
 
 	// Apply updates using domain logic
 	if req.NewName != nil {
-		clientApp.UpdateName(*req.NewName)
+		svcClient.UpdateName(*req.NewName)
 	}
 
 	if req.NewDesc != nil {
-		desc, err := vo.NewClientAppDescription(*req.NewDesc)
-		if err != nil {
-			return nil, merr.New(merr.ErrBadRequest, "invalid client app description", err)
-		}
-		clientApp.UpdateDescription(desc)
+		svcClient.UpdateDescription(*req.NewDesc)
 	}
 
 	if req.NewIsActive != nil {
 		if *req.NewIsActive {
-			clientApp.Activate()
+			svcClient.Activate()
 		} else {
-			clientApp.Deactivate()
+			svcClient.Deactivate()
 		}
 	}
 
 	// Update in repository within transaction
-	err = u.txManager.WithTx(ctx, func(tx out.Tx) error {
-		return u.clientAppRepo.Update(ctx, tx, clientApp)
+	err = u.txManager.WithTx(ctx, func(tx tx.Tx) error {
+		return u.clientRepo.Update(ctx, tx, svcClient)
 	})
 	if err != nil {
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
 	// Convert to result
-	return &in.UpdateClientAppResponse{
-		ClientAppInfo: toClientAppInfo(clientApp, service.PublicID()),
+	return &in.UpdateClientResult{
+		MgmtClientInfo: toClientInfo(svcClient),
 	}, nil
 }

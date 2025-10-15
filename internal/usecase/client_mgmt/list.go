@@ -3,13 +3,13 @@ package clientmgmt
 import (
 	"context"
 
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/client"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
-	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) ListClientApps(ctx context.Context, req *in.ListClientAppsRequest) (*in.ListClientAppsResponse, error) {
+func (u *Usecase) ListClients(ctx context.Context, req *in.ListClientsInput) (*in.ListClientsResult, error) {
 	if req == nil {
 		return nil, merr.New(merr.ErrBadRequest, "invalid request", nil)
 	}
@@ -22,8 +22,8 @@ func (u *Usecase) ListClientApps(ctx context.Context, req *in.ListClientAppsRequ
 		req.Offset = 0
 	}
 
-	var serviceID vo.ServicePublicID
-	var serviceInternalID *vo.ServiceID
+	// var serviceID service.PublicID
+	var serviceInternalID *service.ID
 
 	// Convert PublicID to internal ID for repository query
 	if req.ServiceID != nil {
@@ -33,30 +33,28 @@ func (u *Usecase) ListClientApps(ctx context.Context, req *in.ListClientAppsRequ
 		}
 		internalID := serviceEntity.ID()
 		serviceInternalID = &internalID
-		serviceID = *req.ServiceID
 	}
 
-	filter := &out.ClientAppListFilter{
-		ServiceID: serviceInternalID,
-		Name:      req.NameContains,
-		IsActive:  req.IsActive,
+	filter := &client.ClientListFilter{
+		ServiceID:    serviceInternalID,
+		NameContains: req.NameContains,
+		IsActive:     req.IsActive,
 	}
 
-	options := &out.ClientAppListOptions{
+	options := &client.ClientListOptions{
 		Limit:  req.Limit,
 		Offset: req.Offset,
-		Order:  out.ClientAppListOrderNameAsc,
+		Order:  client.ClientListOrderNameAsc,
 	}
 
-	clientApps, total, err := u.clientAppQueryRepo.List(ctx, filter, options)
+	result, total, err := u.clientQueryRepo.List(ctx, filter, options)
 	if err != nil {
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
 	_ = total // We can use this for pagination info later
 
-	return &in.ListClientAppsResponse{
-		ServiceID:  serviceID,
-		ClientApps: toClientAppInfos(clientApps, serviceID),
+	return &in.ListClientsResult{
+		Clients: toClientInfos(result),
 	}, nil
 }
