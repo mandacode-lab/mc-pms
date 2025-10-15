@@ -1,15 +1,15 @@
 package servicemgmt
 
 import (
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
-func toServiceInfo(s *entity.Service) in.ServiceInfo {
-	return in.ServiceInfo{
+func toServiceInfo(s *service.Service) in.MgmtServiceInfo {
+	return in.MgmtServiceInfo{
 		ServiceID: s.PublicID(),
-		Name:      s.Name().String(),
-		Desc:      s.Description().String(),
+		Name:      s.Name(),
+		Desc:      s.Description(),
 		IsActive:  s.IsActive(),
 		CreatedAt: s.CreatedAt(),
 		UpdatedAt: s.UpdatedAt(),

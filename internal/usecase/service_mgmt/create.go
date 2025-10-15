@@ -2,41 +2,48 @@ package servicemgmt
 
 import (
 	"context"
+	"time"
 
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/tx"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
-	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) CreateService(ctx context.Context, req *in.CreateServiceRequest) (*in.CreateServiceResponse, error) {
-	// Parse service name
-	serviceName, err := vo.NewServiceName(req.Name)
-	if err != nil {
-		return nil, merr.New(merr.ErrBadRequest, ErrInvalidServiceNameMsg, err)
-	}
-
+func (u *Usecase) CreateService(ctx context.Context, req *in.CreateServiceInput) (*in.CreateServiceResult, error) {
 	// Check if service with same name already exists
-	existing, err := u.serviceQueryRepo.FindByName(ctx, serviceName)
+	existing, err := u.serviceQueryRepo.FindByName(ctx, req.Name)
 	if err == nil && existing != nil {
 		return nil, merr.New(merr.ErrConflict, ErrServiceAlreadyExistsMsg, nil)
 	}
 
-	// Create new service using domain logic
-	desc, err := vo.NewServiceDescription(req.Description)
-	if err != nil {
-		return nil, merr.New(merr.ErrBadRequest, "invalid service description", err)
-	}
-	serviceEntity, err := entity.DraftService(serviceName, desc)
+	id, err := service.NewID(1) // ID will be set by repository
 	if err != nil {
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
+	publicIDStr, err := u.serviceIDGen.Generate()
+	if err != nil {
+		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
+	}
+	publicID, err := service.NewPublicID(publicIDStr)
+	if err != nil {
+		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
+	}
+	now := time.Now().UTC()
+	serviceModel := service.NewService(
+		id,
+		publicID,
+		req.Name,
+		req.Description,
+		true, // isActive
+		now,
+		now,
+	)
 
 	// Save to repository within transaction
-	var savedService *entity.Service
-	err = u.txManager.WithTx(ctx, func(tx out.Tx) error {
-		saved, err := u.serviceRepo.Create(ctx, tx, serviceEntity)
+	var savedService *service.Service
+	err = u.txManager.WithTx(ctx, func(tx tx.Tx) error {
+		saved, err := u.serviceRepo.Create(ctx, tx, serviceModel)
 		if err != nil {
 			return merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 		}
@@ -48,7 +55,7 @@ func (u *Usecase) CreateService(ctx context.Context, req *in.CreateServiceReques
 	}
 
 	// Convert to result
-	return &in.CreateServiceResponse{
-		ServiceInfo: toServiceInfo(savedService),
+	return &in.CreateServiceResult{
+		MgmtServiceInfo: toServiceInfo(savedService),
 	}, nil
 }

@@ -3,12 +3,12 @@ package servicemgmt
 import (
 	"context"
 
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
-	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
 	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) ListServices(ctx context.Context, req *in.ListServicesRequest) (*in.ListServicesResponse, error) {
+func (u *Usecase) ListServices(ctx context.Context, req *in.ListServicesInput) (*in.ListServicesResult, error) {
 	if req == nil {
 		return nil, merr.New(merr.ErrBadRequest, "invalid request", nil)
 	}
@@ -21,15 +21,15 @@ func (u *Usecase) ListServices(ctx context.Context, req *in.ListServicesRequest)
 		req.Offset = 0
 	}
 
-	filter := &out.ServiceListFilter{
+	filter := &service.ServiceListFilter{
 		Name:     req.NameContains,
 		IsActive: req.IsActive,
 	}
 
-	options := &out.ServiceListOptions{
+	options := &service.ServiceListOptions{
 		Limit:  req.Limit,
 		Offset: req.Offset,
-		Order:  out.ServiceListOrderNameAsc,
+		Order:  service.ServiceListOrderNameAsc,
 	}
 
 	services, total, err := u.serviceQueryRepo.List(ctx, filter, options)
@@ -39,12 +39,12 @@ func (u *Usecase) ListServices(ctx context.Context, req *in.ListServicesRequest)
 
 	_ = total // We can use this for pagination info later
 
-	serviceInfos := make([]in.ServiceInfo, len(services))
+	serviceInfos := make([]in.MgmtServiceInfo, len(services))
 	for i, svc := range services {
 		serviceInfos[i] = toServiceInfo(svc)
 	}
 
-	return &in.ListServicesResponse{
+	return &in.ListServicesResult{
 		Services: serviceInfos,
 	}, nil
 }

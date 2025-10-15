@@ -8,9 +8,9 @@ import (
 )
 
 type ClientListFilter struct {
-	ServiceID *service.ID
-	Name      *Name
-	IsActive  *bool
+	ServiceID    *service.ID
+	NameContains *string
+	IsActive     *bool
 }
 
 type ClientListOrder string
