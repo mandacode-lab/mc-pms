@@ -6,6 +6,7 @@ type ManagementConfig struct {
 	Postgres PostgresConfig `envPrefix:""`
 	Redis    RedisConfig    `envPrefix:""`
 	IAM      IAMConfig      `envPrefix:"IAM_"`
+	IDPrefix IDPrefixConfig `envPrefix:"ID_PREFIX_"`
 }
 
 func LoadManagementConfig() (*ManagementConfig, error) {
