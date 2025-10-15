@@ -5,36 +5,25 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/client"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
 )
 
-type UpdateClientAppRequest struct {
-	Name        string `json:"name" binding:"required"`
-	Description string `json:"description"`
+type UpdateClientRequest struct {
+	Name        *string `json:"name" binding:"required"`
+	Description *string `json:"description"`
+	IsActive    *bool   `json:"is_active"`
 }
 
-type UpdateClientAppResponse struct {
-	ServiceID   string    `json:"service_id"`
-	ClientAppID string    `json:"client_app_id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	IsActive    bool      `json:"is_active"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+type UpdateClientResponse struct {
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func toUpdateClientAppResponse(result *in.UpdateClientAppResponse) *UpdateClientAppResponse {
-	return &UpdateClientAppResponse{
-		ServiceID:   result.ServiceID.String(),
-		ClientAppID: result.ClientAppID.String(),
-		Name:        result.Name,
-		Description: result.Desc,
-		IsActive:    result.IsActive,
-		CreatedAt:   result.CreatedAt,
-		UpdatedAt:   result.UpdatedAt,
+func toUpdateClientResponse(result *in.UpdateClientResult) *UpdateClientResponse {
+	return &UpdateClientResponse{
+		UpdatedAt: result.UpdatedAt,
 	}
 }
 
@@ -53,35 +42,60 @@ func toUpdateClientAppResponse(result *in.UpdateClientAppResponse) *UpdateClient
 func (h *Handler) UpdateClientApp(c *gin.Context) {
 	ctx := c.Request.Context()
 
-	clientAppIDStr := c.Param("id")
+	clientIDStr := c.Param("id")
 
 	// Parse client app ID
-	clientAppID, err := vo.ParseClientAppPublicID(clientAppIDStr)
+	clientID, err := client.NewPublicID(clientIDStr)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid client app ID", err)
 		_ = c.Error(err)
 		return
 	}
 
-	var req UpdateClientAppRequest
+	var req UpdateClientRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid request body", err)
 		_ = c.Error(err)
 		return
 	}
 
-	usecaseReq := &in.UpdateClientAppRequest{
-		ClientAppID: clientAppID,
-		NewName:     &req.Name,
-		NewDesc:     &req.Description,
+	var newName *client.Name
+	if req.Name != nil {
+		name, err := client.NewName(*req.Name)
+		if err != nil {
+			err := merr.New(merr.ErrBadRequest, "invalid client name", err)
+			_ = c.Error(err)
+			return
+		}
+		newName = &name
 	}
 
-	result, err := h.clientAppMgmt.UpdateClientApp(ctx, usecaseReq)
+	var newDesc *client.Description
+	if req.Description != nil {
+		if *req.Description != "" {
+			desc, err := client.NewDescription(*req.Description)
+			if err != nil {
+				err := merr.New(merr.ErrBadRequest, "invalid client description", err)
+				_ = c.Error(err)
+				return
+			}
+			newDesc = &desc
+		}
+	}
+
+	input := &in.UpdateClientInput{
+		ClientID:    clientID,
+		NewName:     newName,
+		NewDesc:     newDesc,
+		NewIsActive: req.IsActive,
+	}
+
+	result, err := h.clientMgmt.UpdateClient(ctx, input)
 	if err != nil {
 		_ = c.Error(err)
 		return
 	}
 
-	response := toUpdateClientAppResponse(result)
+	response := toUpdateClientResponse(result)
 	c.JSON(http.StatusOK, response)
 }

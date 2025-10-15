@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/client"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
@@ -14,9 +14,9 @@ type VerifyClientResponse struct {
 	ServiceID string `json:"service_id"`
 }
 
-func toVerifyClientResponse(result *in.VerifyClientResponse) *VerifyClientResponse {
+func toVerifyClientResponse(result *in.VerifyClientResult) *VerifyClientResponse {
 	return &VerifyClientResponse{
-		ServiceID: result.ServiceID.String(),
+		ServiceID: result.ServiceID.Value(),
 	}
 }
 
@@ -39,27 +39,27 @@ func (h *Handler) VerifyClient(c *gin.Context) {
 
 	// Parse Basic Auth credentials
 	// Authorization: Basic base64(client_id:client_secret)
-	username, password, hasAuth := c.Request.BasicAuth()
+	clientIDStr, clientSecretStr, hasAuth := c.Request.BasicAuth()
 	if !hasAuth {
 		err := merr.New(merr.ErrUnauthorized, "Basic Auth credentials required", nil)
 		_ = c.Error(err)
 		return
 	}
 
-	if username == "" {
+	if clientIDStr == "" {
 		err := merr.New(merr.ErrBadRequest, "client_id cannot be empty", nil)
 		_ = c.Error(err)
 		return
 	}
 
-	if password == "" {
+	if clientSecretStr == "" {
 		err := merr.New(merr.ErrBadRequest, "client_secret cannot be empty", nil)
 		_ = c.Error(err)
 		return
 	}
 
 	// Parse client ID
-	clientID, err := vo.ParseClientAppPublicID(username)
+	clientID, err := client.NewPublicID(clientIDStr)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid client_id format", err)
 		_ = c.Error(err)
@@ -67,13 +67,13 @@ func (h *Handler) VerifyClient(c *gin.Context) {
 	}
 
 	// Create usecase request
-	usecaseReq := &in.VerifyClientRequest{
-		ClientID:     clientID,         // client_id from Basic Auth username
-		ClientSecret: []byte(password), // client_secret from Basic Auth password (base64 encoded)
+	input := &in.VerifyClientInput{
+		ClientID:     clientID,                // client_id from Basic Auth username
+		ClientSecret: []byte(clientSecretStr), // client_secret from Basic Auth password (base64 encoded)
 	}
 
 	// Call usecase
-	result, err := h.clientAccess.VerifyClient(ctx, usecaseReq)
+	result, err := h.clientAccess.VerifyClient(ctx, input)
 	if err != nil {
 		_ = c.Error(err)
 		return

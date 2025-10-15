@@ -2,9 +2,9 @@ package servicemgmt
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
@@ -16,22 +16,12 @@ type CreateServiceRequest struct {
 }
 
 type CreateServiceResponse struct {
-	ServiceID   string    `json:"service_id" example:"srv_1234567890abcdef"`
-	Name        string    `json:"name" example:"My Service"`
-	Description string    `json:"description" example:"Service description"`
-	IsActive    bool      `json:"is_active" example:"true"`
-	CreatedAt   time.Time `json:"created_at" example:"2023-01-01T00:00:00Z"`
-	UpdatedAt   time.Time `json:"updated_at" example:"2023-01-01T00:00:00Z"`
+	ServiceResponse
 }
 
-func toCreateServiceResponse(result *in.CreateServiceResponse) *CreateServiceResponse {
+func toCreateServiceResponse(result *in.CreateServiceResult) *CreateServiceResponse {
 	return &CreateServiceResponse{
-		ServiceID:   result.ServiceID.String(),
-		Name:        result.Name,
-		Description: result.Desc,
-		IsActive:    result.IsActive,
-		CreatedAt:   result.CreatedAt,
-		UpdatedAt:   result.UpdatedAt,
+		ServiceResponse: toServiceResponse(&result.ServiceView),
 	}
 }
 
@@ -57,12 +47,26 @@ func (h *Handler) CreateService(c *gin.Context) {
 		return
 	}
 
-	usecaseReq := &in.CreateServiceRequest{
-		Name:        req.Name,
-		Description: req.Description,
+	name, err := service.NewName(req.Name)
+	if err != nil {
+		err := merr.New(merr.ErrBadRequest, "invalid service name", err)
+		_ = c.Error(err)
+		return
 	}
 
-	result, err := h.serviceMgmt.CreateService(ctx, usecaseReq)
+	desc, err := service.NewDescription(req.Description)
+	if err != nil {
+		err := merr.New(merr.ErrBadRequest, "invalid service description", err)
+		_ = c.Error(err)
+		return
+	}
+
+	input := &in.CreateServiceInput{
+		Name:        name,
+		Description: desc,
+	}
+
+	result, err := h.serviceMgmt.CreateService(ctx, input)
 	if err != nil {
 		_ = c.Error(err)
 		return

@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
@@ -25,25 +25,25 @@ import (
 func (h *Handler) DeleteService(c *gin.Context) {
 	ctx := c.Request.Context()
 
-	serviceID := c.Param("id")
-	if serviceID == "" {
-		err := merr.New(merr.ErrBadRequest, "service_id is required", nil)
+	serviceIDStr := c.Param("id")
+	if serviceIDStr == "" {
+		err := merr.New(merr.ErrBadRequest, "service ID is required", nil)
 		_ = c.Error(err)
 		return
 	}
 
-	publicID, err := vo.NewServicePublicID(serviceID)
+	serviceID, err := service.NewPublicID(serviceIDStr)
 	if err != nil {
-		err := merr.New(merr.ErrBadRequest, "invalid service_id", err)
+		err := merr.New(merr.ErrBadRequest, "invalid service ID", err)
 		_ = c.Error(err)
 		return
 	}
 
-	usecaseReq := &in.DeleteServiceRequest{
-		ServiceID: publicID,
+	input := &in.DeleteServiceInput{
+		ServiceID: serviceID,
 	}
 
-	if err := h.serviceMgmt.DeleteService(ctx, usecaseReq); err != nil {
+	if err := h.serviceMgmt.DeleteService(ctx, input); err != nil {
 		_ = c.Error(err)
 		return
 	}

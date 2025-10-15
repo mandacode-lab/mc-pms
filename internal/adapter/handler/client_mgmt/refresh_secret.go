@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/client"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
@@ -14,9 +14,9 @@ type RefreshSecretResponse struct {
 	Secret string `json:"secret"`
 }
 
-func toRefreshSecretResponse(result *in.RefreshSecretResponse) *RefreshSecretResponse {
+func toRefreshSecretResponse(result *in.RefreshSecretResult) *RefreshSecretResponse {
 	return &RefreshSecretResponse{
-		Secret: string(result.Secret),
+		Secret: string(result.RawSecret),
 	}
 }
 
@@ -33,21 +33,25 @@ func toRefreshSecretResponse(result *in.RefreshSecretResponse) *RefreshSecretRes
 func (h *Handler) RefreshSecret(c *gin.Context) {
 	ctx := c.Request.Context()
 
-	clientAppIDStr := c.Param("id")
-
-	// Parse client app ID
-	clientAppID, err := vo.ParseClientAppPublicID(clientAppIDStr)
-	if err != nil {
-		err := merr.New(merr.ErrBadRequest, "invalid client app ID", err)
+	clientIDStr := c.Param("id")
+	if clientIDStr == "" {
+		err := merr.New(merr.ErrBadRequest, "client_app_id is required", nil)
 		_ = c.Error(err)
 		return
 	}
 
-	usecaseReq := &in.RefreshSecretRequest{
-		ClientAppID: clientAppID,
+	clientID, err := client.NewPublicID(clientIDStr)
+	if err != nil {
+		err := merr.New(merr.ErrBadRequest, "invalid client_app_id", err)
+		_ = c.Error(err)
+		return
 	}
 
-	result, err := h.clientAppMgmt.RefreshSecret(ctx, usecaseReq)
+	input := &in.RefreshSecretInput{
+		ClientID: clientID,
+	}
+
+	result, err := h.clientMgmt.RefreshSecret(ctx, input)
 	if err != nil {
 		_ = c.Error(err)
 		return

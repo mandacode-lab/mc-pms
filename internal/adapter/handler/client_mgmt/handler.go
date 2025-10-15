@@ -8,13 +8,13 @@ import (
 )
 
 type Handler struct {
-	permission    *middleware.PermissionMiddleware
-	clientAppMgmt in.ClientAppMgmtUsecase
+	permission *middleware.PermissionMiddleware
+	clientMgmt in.ClientMgmtUsecase
 }
 
-func NewHandler(clientAppMgmt in.ClientAppMgmtUsecase) *Handler {
+func NewHandler(clientAppMgmt in.ClientMgmtUsecase) *Handler {
 	return &Handler{
-		clientAppMgmt: clientAppMgmt,
+		clientMgmt: clientAppMgmt,
 	}
 }
 

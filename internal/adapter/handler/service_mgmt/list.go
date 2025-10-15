@@ -3,7 +3,6 @@ package servicemgmt
 import (
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
@@ -11,29 +10,9 @@ import (
 	_ "github.com/mandacode-com/merr/middleware"
 )
 
-type ServiceResponse struct {
-	ServiceID   string    `json:"service_id" example:"srv_1234567890abcdef"`
-	Name        string    `json:"name" example:"My Service"`
-	Description string    `json:"description" example:"Service description"`
-	IsActive    bool      `json:"is_active" example:"true"`
-	CreatedAt   time.Time `json:"created_at" example:"2023-01-01T00:00:00Z"`
-	UpdatedAt   time.Time `json:"updated_at" example:"2023-01-01T00:00:00Z"`
-}
-
 type ListServicesResponse struct {
 	Services []ServiceResponse `json:"services"`
 	Total    int               `json:"total"`
-}
-
-func toServiceResponse(svc *in.ServiceInfo) ServiceResponse {
-	return ServiceResponse{
-		ServiceID:   svc.ServiceID.String(),
-		Name:        svc.Name,
-		Description: svc.Desc,
-		IsActive:    svc.IsActive,
-		CreatedAt:   svc.CreatedAt,
-		UpdatedAt:   svc.UpdatedAt,
-	}
 }
 
 // ListServices lists all services
@@ -92,14 +71,14 @@ func (h *Handler) ListServices(c *gin.Context) {
 		offset = parsedOffset
 	}
 
-	usecaseReq := &in.ListServicesRequest{
+	input := &in.ListServicesInput{
 		NameContains: nameContains,
 		IsActive:     isActive,
 		Limit:        limit,
 		Offset:       offset,
 	}
 
-	result, err := h.serviceMgmt.ListServices(ctx, usecaseReq)
+	result, err := h.serviceMgmt.ListServices(ctx, input)
 	if err != nil {
 		_ = c.Error(err)
 		return

@@ -5,34 +5,25 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
 )
 
 type UpdateServiceRequest struct {
-	Name        string `json:"name" binding:"required"`
-	Description string `json:"description"`
+	Name        *string `json:"name" binding:"required"`
+	Description *string `json:"description"`
+	IsActive    *bool   `json:"is_active"`
 }
 
 type UpdateServiceResponse struct {
-	ServiceID   string    `json:"service_id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	IsActive    bool      `json:"is_active"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func toUpdateServiceResponse(result *in.UpdateServiceResponse) *UpdateServiceResponse {
+func toUpdateServiceResponse(result *in.UpdateServiceResult) *UpdateServiceResponse {
 	return &UpdateServiceResponse{
-		ServiceID:   result.ServiceID.String(),
-		Name:        result.Name,
-		Description: result.Desc,
-		IsActive:    result.IsActive,
-		CreatedAt:   result.CreatedAt,
-		UpdatedAt:   result.UpdatedAt,
+		UpdatedAt: result.UpdatedAt,
 	}
 }
 
@@ -55,7 +46,7 @@ func (h *Handler) UpdateService(c *gin.Context) {
 	serviceIDStr := c.Param("id")
 
 	// Parse service ID
-	serviceID, err := vo.NewServicePublicID(serviceIDStr)
+	serviceID, err := service.NewPublicID(serviceIDStr)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid service ID", err)
 		_ = c.Error(err)
@@ -69,13 +60,36 @@ func (h *Handler) UpdateService(c *gin.Context) {
 		return
 	}
 
-	usecaseReq := &in.UpdateServiceRequest{
-		ServiceID: serviceID,
-		NewName:   &req.Name,
-		NewDesc:   &req.Description,
+	var name *service.Name
+	if req.Name != nil {
+		n, err := service.NewName(*req.Name)
+		if err != nil {
+			err := merr.New(merr.ErrBadRequest, "invalid service name", err)
+			_ = c.Error(err)
+			return
+		}
+		name = &n
 	}
 
-	result, err := h.serviceMgmt.UpdateService(ctx, usecaseReq)
+	var desc *service.Description
+	if req.Description != nil {
+		d, err := service.NewDescription(*req.Description)
+		if err != nil {
+			err := merr.New(merr.ErrBadRequest, "invalid service description", err)
+			_ = c.Error(err)
+			return
+		}
+		desc = &d
+	}
+
+	input := &in.UpdateServiceInput{
+		ServiceID:   serviceID,
+		NewName:     name,
+		NewDesc:     desc,
+		NewIsActive: req.IsActive,
+	}
+
+	result, err := h.serviceMgmt.UpdateService(ctx, input)
 	if err != nil {
 		_ = c.Error(err)
 		return

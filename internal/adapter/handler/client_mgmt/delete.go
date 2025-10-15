@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/client"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/merr"
 	_ "github.com/mandacode-com/merr/middleware"
@@ -25,25 +25,25 @@ import (
 func (h *Handler) DeleteClientApp(c *gin.Context) {
 	ctx := c.Request.Context()
 
-	clientAppID := c.Param("id")
-	if clientAppID == "" {
+	clientIDStr := c.Param("id")
+	if clientIDStr == "" {
 		err := merr.New(merr.ErrBadRequest, "client_app_id is required", nil)
 		_ = c.Error(err)
 		return
 	}
 
-	publicID, err := vo.ParseClientAppPublicID(clientAppID)
+	clientID, err := client.NewPublicID(clientIDStr)
 	if err != nil {
 		err := merr.New(merr.ErrBadRequest, "invalid client_app_id", err)
 		_ = c.Error(err)
 		return
 	}
 
-	usecaseReq := &in.DeleteClientAppRequest{
-		ClientAppID: publicID,
+	input := &in.DeleteClientInput{
+		ClientID: clientID,
 	}
 
-	if err := h.clientAppMgmt.DeleteClientApp(ctx, usecaseReq); err != nil {
+	if err := h.clientMgmt.DeleteClient(ctx, input); err != nil {
 		_ = c.Error(err)
 		return
 	}
