@@ -11,7 +11,6 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/google/uuid"
 	"github.com/mandacode-com/mandacode-ssam/ent/predicate"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
 	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
@@ -36,7 +35,7 @@ type ServiceMutation struct {
 	op                 Op
 	typ                string
 	id                 *int64
-	public_id          *uuid.UUID
+	public_id          *string
 	name               *string
 	description        *string
 	is_active          *bool
@@ -156,12 +155,12 @@ func (m *ServiceMutation) IDs(ctx context.Context) ([]int64, error) {
 }
 
 // SetPublicID sets the "public_id" field.
-func (m *ServiceMutation) SetPublicID(u uuid.UUID) {
-	m.public_id = &u
+func (m *ServiceMutation) SetPublicID(s string) {
+	m.public_id = &s
 }
 
 // PublicID returns the value of the "public_id" field in the mutation.
-func (m *ServiceMutation) PublicID() (r uuid.UUID, exists bool) {
+func (m *ServiceMutation) PublicID() (r string, exists bool) {
 	v := m.public_id
 	if v == nil {
 		return
@@ -172,7 +171,7 @@ func (m *ServiceMutation) PublicID() (r uuid.UUID, exists bool) {
 // OldPublicID returns the old "public_id" field's value of the Service entity.
 // If the Service object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServiceMutation) OldPublicID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *ServiceMutation) OldPublicID(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPublicID is only allowed on UpdateOne operations")
 	}
@@ -542,7 +541,7 @@ func (m *ServiceMutation) OldField(ctx context.Context, name string) (ent.Value,
 func (m *ServiceMutation) SetField(name string, value ent.Value) error {
 	switch name {
 	case service.FieldPublicID:
-		v, ok := value.(uuid.UUID)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -753,7 +752,7 @@ type ServiceClientMutation struct {
 	op             Op
 	typ            string
 	id             *int64
-	public_id      *uuid.UUID
+	public_id      *string
 	secret_hash    *[]byte
 	name           *string
 	description    *string
@@ -909,12 +908,12 @@ func (m *ServiceClientMutation) ResetServiceID() {
 }
 
 // SetPublicID sets the "public_id" field.
-func (m *ServiceClientMutation) SetPublicID(u uuid.UUID) {
-	m.public_id = &u
+func (m *ServiceClientMutation) SetPublicID(s string) {
+	m.public_id = &s
 }
 
 // PublicID returns the value of the "public_id" field in the mutation.
-func (m *ServiceClientMutation) PublicID() (r uuid.UUID, exists bool) {
+func (m *ServiceClientMutation) PublicID() (r string, exists bool) {
 	v := m.public_id
 	if v == nil {
 		return
@@ -925,7 +924,7 @@ func (m *ServiceClientMutation) PublicID() (r uuid.UUID, exists bool) {
 // OldPublicID returns the old "public_id" field's value of the ServiceClient entity.
 // If the ServiceClient object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServiceClientMutation) OldPublicID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *ServiceClientMutation) OldPublicID(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPublicID is only allowed on UpdateOne operations")
 	}
@@ -1325,7 +1324,7 @@ func (m *ServiceClientMutation) SetField(name string, value ent.Value) error {
 		m.SetServiceID(v)
 		return nil
 	case serviceclient.FieldPublicID:
-		v, ok := value.(uuid.UUID)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

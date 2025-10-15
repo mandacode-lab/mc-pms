@@ -299,7 +299,7 @@ func (_q *ServiceQuery) WithClientApps(opts ...func(*ServiceClientQuery)) *Servi
 // Example:
 //
 //	var v []struct {
-//		PublicID uuid.UUID `json:"public_id,omitempty"`
+//		PublicID string `json:"public_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -322,7 +322,7 @@ func (_q *ServiceQuery) GroupBy(field string, fields ...string) *ServiceGroupBy 
 // Example:
 //
 //	var v []struct {
-//		PublicID uuid.UUID `json:"public_id,omitempty"`
+//		PublicID string `json:"public_id,omitempty"`
 //	}
 //
 //	client.Service.Query().

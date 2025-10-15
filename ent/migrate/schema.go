@@ -11,7 +11,7 @@ var (
 	// ServicesColumns holds the columns for the "services" table.
 	ServicesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "public_id", Type: field.TypeUUID, Unique: true},
+		{Name: "public_id", Type: field.TypeString, Unique: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString, Nullable: true},
 		{Name: "is_active", Type: field.TypeBool, Default: true},
@@ -39,7 +39,7 @@ var (
 	// ServiceClientsColumns holds the columns for the "service_clients" table.
 	ServiceClientsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "public_id", Type: field.TypeUUID, Unique: true},
+		{Name: "public_id", Type: field.TypeString, Unique: true},
 		{Name: "secret_hash", Type: field.TypeBytes},
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString, Nullable: true},

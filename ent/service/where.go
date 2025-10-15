@@ -7,7 +7,6 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/google/uuid"
 	"github.com/mandacode-com/mandacode-ssam/ent/predicate"
 )
 
@@ -57,7 +56,7 @@ func IDLTE(id int64) predicate.Service {
 }
 
 // PublicID applies equality check predicate on the "public_id" field. It's identical to PublicIDEQ.
-func PublicID(v uuid.UUID) predicate.Service {
+func PublicID(v string) predicate.Service {
 	return predicate.Service(sql.FieldEQ(FieldPublicID, v))
 }
 
@@ -87,43 +86,68 @@ func UpdatedAt(v time.Time) predicate.Service {
 }
 
 // PublicIDEQ applies the EQ predicate on the "public_id" field.
-func PublicIDEQ(v uuid.UUID) predicate.Service {
+func PublicIDEQ(v string) predicate.Service {
 	return predicate.Service(sql.FieldEQ(FieldPublicID, v))
 }
 
 // PublicIDNEQ applies the NEQ predicate on the "public_id" field.
-func PublicIDNEQ(v uuid.UUID) predicate.Service {
+func PublicIDNEQ(v string) predicate.Service {
 	return predicate.Service(sql.FieldNEQ(FieldPublicID, v))
 }
 
 // PublicIDIn applies the In predicate on the "public_id" field.
-func PublicIDIn(vs ...uuid.UUID) predicate.Service {
+func PublicIDIn(vs ...string) predicate.Service {
 	return predicate.Service(sql.FieldIn(FieldPublicID, vs...))
 }
 
 // PublicIDNotIn applies the NotIn predicate on the "public_id" field.
-func PublicIDNotIn(vs ...uuid.UUID) predicate.Service {
+func PublicIDNotIn(vs ...string) predicate.Service {
 	return predicate.Service(sql.FieldNotIn(FieldPublicID, vs...))
 }
 
 // PublicIDGT applies the GT predicate on the "public_id" field.
-func PublicIDGT(v uuid.UUID) predicate.Service {
+func PublicIDGT(v string) predicate.Service {
 	return predicate.Service(sql.FieldGT(FieldPublicID, v))
 }
 
 // PublicIDGTE applies the GTE predicate on the "public_id" field.
-func PublicIDGTE(v uuid.UUID) predicate.Service {
+func PublicIDGTE(v string) predicate.Service {
 	return predicate.Service(sql.FieldGTE(FieldPublicID, v))
 }
 
 // PublicIDLT applies the LT predicate on the "public_id" field.
-func PublicIDLT(v uuid.UUID) predicate.Service {
+func PublicIDLT(v string) predicate.Service {
 	return predicate.Service(sql.FieldLT(FieldPublicID, v))
 }
 
 // PublicIDLTE applies the LTE predicate on the "public_id" field.
-func PublicIDLTE(v uuid.UUID) predicate.Service {
+func PublicIDLTE(v string) predicate.Service {
 	return predicate.Service(sql.FieldLTE(FieldPublicID, v))
+}
+
+// PublicIDContains applies the Contains predicate on the "public_id" field.
+func PublicIDContains(v string) predicate.Service {
+	return predicate.Service(sql.FieldContains(FieldPublicID, v))
+}
+
+// PublicIDHasPrefix applies the HasPrefix predicate on the "public_id" field.
+func PublicIDHasPrefix(v string) predicate.Service {
+	return predicate.Service(sql.FieldHasPrefix(FieldPublicID, v))
+}
+
+// PublicIDHasSuffix applies the HasSuffix predicate on the "public_id" field.
+func PublicIDHasSuffix(v string) predicate.Service {
+	return predicate.Service(sql.FieldHasSuffix(FieldPublicID, v))
+}
+
+// PublicIDEqualFold applies the EqualFold predicate on the "public_id" field.
+func PublicIDEqualFold(v string) predicate.Service {
+	return predicate.Service(sql.FieldEqualFold(FieldPublicID, v))
+}
+
+// PublicIDContainsFold applies the ContainsFold predicate on the "public_id" field.
+func PublicIDContainsFold(v string) predicate.Service {
+	return predicate.Service(sql.FieldContainsFold(FieldPublicID, v))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.

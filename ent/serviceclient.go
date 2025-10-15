@@ -9,7 +9,6 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/google/uuid"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
 	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
 )
@@ -22,7 +21,7 @@ type ServiceClient struct {
 	// ServiceID holds the value of the "service_id" field.
 	ServiceID int64 `json:"service_id,omitempty"`
 	// PublicID holds the value of the "public_id" field.
-	PublicID uuid.UUID `json:"public_id,omitempty"`
+	PublicID string `json:"public_id,omitempty"`
 	// SecretHash holds the value of the "secret_hash" field.
 	SecretHash []byte `json:"secret_hash,omitempty"`
 	// Name holds the value of the "name" field.
@@ -72,12 +71,10 @@ func (*ServiceClient) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case serviceclient.FieldID, serviceclient.FieldServiceID:
 			values[i] = new(sql.NullInt64)
-		case serviceclient.FieldName, serviceclient.FieldDescription:
+		case serviceclient.FieldPublicID, serviceclient.FieldName, serviceclient.FieldDescription:
 			values[i] = new(sql.NullString)
 		case serviceclient.FieldCreatedAt, serviceclient.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case serviceclient.FieldPublicID:
-			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -106,10 +103,10 @@ func (_m *ServiceClient) assignValues(columns []string, values []any) error {
 				_m.ServiceID = value.Int64
 			}
 		case serviceclient.FieldPublicID:
-			if value, ok := values[i].(*uuid.UUID); !ok {
+			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field public_id", values[i])
-			} else if value != nil {
-				_m.PublicID = *value
+			} else if value.Valid {
+				_m.PublicID = value.String
 			}
 		case serviceclient.FieldSecretHash:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -192,7 +189,7 @@ func (_m *ServiceClient) String() string {
 	builder.WriteString(fmt.Sprintf("%v", _m.ServiceID))
 	builder.WriteString(", ")
 	builder.WriteString("public_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.PublicID))
+	builder.WriteString(_m.PublicID)
 	builder.WriteString(", ")
 	builder.WriteString("secret_hash=")
 	builder.WriteString(fmt.Sprintf("%v", _m.SecretHash))

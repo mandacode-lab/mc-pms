@@ -9,7 +9,6 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/google/uuid"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
 )
 
@@ -19,7 +18,7 @@ type Service struct {
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
 	// PublicID holds the value of the "public_id" field.
-	PublicID uuid.UUID `json:"public_id,omitempty"`
+	PublicID string `json:"public_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
@@ -63,12 +62,10 @@ func (*Service) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case service.FieldID:
 			values[i] = new(sql.NullInt64)
-		case service.FieldName, service.FieldDescription:
+		case service.FieldPublicID, service.FieldName, service.FieldDescription:
 			values[i] = new(sql.NullString)
 		case service.FieldCreatedAt, service.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case service.FieldPublicID:
-			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -91,10 +88,10 @@ func (_m *Service) assignValues(columns []string, values []any) error {
 			}
 			_m.ID = int64(value.Int64)
 		case service.FieldPublicID:
-			if value, ok := values[i].(*uuid.UUID); !ok {
+			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field public_id", values[i])
-			} else if value != nil {
-				_m.PublicID = *value
+			} else if value.Valid {
+				_m.PublicID = value.String
 			}
 		case service.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -168,7 +165,7 @@ func (_m *Service) String() string {
 	builder.WriteString("Service(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("public_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.PublicID))
+	builder.WriteString(_m.PublicID)
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(_m.Name)

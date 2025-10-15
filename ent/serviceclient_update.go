@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/google/uuid"
 	"github.com/mandacode-com/mandacode-ssam/ent/predicate"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
 	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
@@ -45,13 +44,13 @@ func (_u *ServiceClientUpdate) SetNillableServiceID(v *int64) *ServiceClientUpda
 }
 
 // SetPublicID sets the "public_id" field.
-func (_u *ServiceClientUpdate) SetPublicID(v uuid.UUID) *ServiceClientUpdate {
+func (_u *ServiceClientUpdate) SetPublicID(v string) *ServiceClientUpdate {
 	_u.mutation.SetPublicID(v)
 	return _u
 }
 
 // SetNillablePublicID sets the "public_id" field if the given value is not nil.
-func (_u *ServiceClientUpdate) SetNillablePublicID(v *uuid.UUID) *ServiceClientUpdate {
+func (_u *ServiceClientUpdate) SetNillablePublicID(v *string) *ServiceClientUpdate {
 	if v != nil {
 		_u.SetPublicID(*v)
 	}
@@ -201,7 +200,7 @@ func (_u *ServiceClientUpdate) sqlSave(ctx context.Context) (_node int, err erro
 		}
 	}
 	if value, ok := _u.mutation.PublicID(); ok {
-		_spec.SetField(serviceclient.FieldPublicID, field.TypeUUID, value)
+		_spec.SetField(serviceclient.FieldPublicID, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.SecretHash(); ok {
 		_spec.SetField(serviceclient.FieldSecretHash, field.TypeBytes, value)
@@ -285,13 +284,13 @@ func (_u *ServiceClientUpdateOne) SetNillableServiceID(v *int64) *ServiceClientU
 }
 
 // SetPublicID sets the "public_id" field.
-func (_u *ServiceClientUpdateOne) SetPublicID(v uuid.UUID) *ServiceClientUpdateOne {
+func (_u *ServiceClientUpdateOne) SetPublicID(v string) *ServiceClientUpdateOne {
 	_u.mutation.SetPublicID(v)
 	return _u
 }
 
 // SetNillablePublicID sets the "public_id" field if the given value is not nil.
-func (_u *ServiceClientUpdateOne) SetNillablePublicID(v *uuid.UUID) *ServiceClientUpdateOne {
+func (_u *ServiceClientUpdateOne) SetNillablePublicID(v *string) *ServiceClientUpdateOne {
 	if v != nil {
 		_u.SetPublicID(*v)
 	}
@@ -471,7 +470,7 @@ func (_u *ServiceClientUpdateOne) sqlSave(ctx context.Context) (_node *ServiceCl
 		}
 	}
 	if value, ok := _u.mutation.PublicID(); ok {
-		_spec.SetField(serviceclient.FieldPublicID, field.TypeUUID, value)
+		_spec.SetField(serviceclient.FieldPublicID, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.SecretHash(); ok {
 		_spec.SetField(serviceclient.FieldSecretHash, field.TypeBytes, value)

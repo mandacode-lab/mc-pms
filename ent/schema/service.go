@@ -7,7 +7,6 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
-	"github.com/google/uuid"
 )
 
 // Service holds the schema definition for the Service entity.
@@ -20,8 +19,7 @@ func (Service) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").
 			Unique(),
-		field.UUID("public_id", uuid.UUID{}).
-			Default(uuid.New).
+		field.String("public_id").
 			Unique(),
 		field.String("name").
 			NotEmpty(),

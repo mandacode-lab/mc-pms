@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/google/uuid"
 	"github.com/mandacode-com/mandacode-ssam/ent/predicate"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
 	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
@@ -31,13 +30,13 @@ func (_u *ServiceUpdate) Where(ps ...predicate.Service) *ServiceUpdate {
 }
 
 // SetPublicID sets the "public_id" field.
-func (_u *ServiceUpdate) SetPublicID(v uuid.UUID) *ServiceUpdate {
+func (_u *ServiceUpdate) SetPublicID(v string) *ServiceUpdate {
 	_u.mutation.SetPublicID(v)
 	return _u
 }
 
 // SetNillablePublicID sets the "public_id" field if the given value is not nil.
-func (_u *ServiceUpdate) SetNillablePublicID(v *uuid.UUID) *ServiceUpdate {
+func (_u *ServiceUpdate) SetNillablePublicID(v *string) *ServiceUpdate {
 	if v != nil {
 		_u.SetPublicID(*v)
 	}
@@ -198,7 +197,7 @@ func (_u *ServiceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 	}
 	if value, ok := _u.mutation.PublicID(); ok {
-		_spec.SetField(service.FieldPublicID, field.TypeUUID, value)
+		_spec.SetField(service.FieldPublicID, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(service.FieldName, field.TypeString, value)
@@ -281,13 +280,13 @@ type ServiceUpdateOne struct {
 }
 
 // SetPublicID sets the "public_id" field.
-func (_u *ServiceUpdateOne) SetPublicID(v uuid.UUID) *ServiceUpdateOne {
+func (_u *ServiceUpdateOne) SetPublicID(v string) *ServiceUpdateOne {
 	_u.mutation.SetPublicID(v)
 	return _u
 }
 
 // SetNillablePublicID sets the "public_id" field if the given value is not nil.
-func (_u *ServiceUpdateOne) SetNillablePublicID(v *uuid.UUID) *ServiceUpdateOne {
+func (_u *ServiceUpdateOne) SetNillablePublicID(v *string) *ServiceUpdateOne {
 	if v != nil {
 		_u.SetPublicID(*v)
 	}
@@ -478,7 +477,7 @@ func (_u *ServiceUpdateOne) sqlSave(ctx context.Context) (_node *Service, err er
 		}
 	}
 	if value, ok := _u.mutation.PublicID(); ok {
-		_spec.SetField(service.FieldPublicID, field.TypeUUID, value)
+		_spec.SetField(service.FieldPublicID, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(service.FieldName, field.TypeString, value)

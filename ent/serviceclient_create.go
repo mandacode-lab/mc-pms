@@ -10,7 +10,6 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/google/uuid"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
 	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
 )
@@ -29,16 +28,8 @@ func (_c *ServiceClientCreate) SetServiceID(v int64) *ServiceClientCreate {
 }
 
 // SetPublicID sets the "public_id" field.
-func (_c *ServiceClientCreate) SetPublicID(v uuid.UUID) *ServiceClientCreate {
+func (_c *ServiceClientCreate) SetPublicID(v string) *ServiceClientCreate {
 	_c.mutation.SetPublicID(v)
-	return _c
-}
-
-// SetNillablePublicID sets the "public_id" field if the given value is not nil.
-func (_c *ServiceClientCreate) SetNillablePublicID(v *uuid.UUID) *ServiceClientCreate {
-	if v != nil {
-		_c.SetPublicID(*v)
-	}
 	return _c
 }
 
@@ -156,10 +147,6 @@ func (_c *ServiceClientCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (_c *ServiceClientCreate) defaults() {
-	if _, ok := _c.mutation.PublicID(); !ok {
-		v := serviceclient.DefaultPublicID()
-		_c.mutation.SetPublicID(v)
-	}
 	if _, ok := _c.mutation.IsActive(); !ok {
 		v := serviceclient.DefaultIsActive
 		_c.mutation.SetIsActive(v)
@@ -243,7 +230,7 @@ func (_c *ServiceClientCreate) createSpec() (*ServiceClient, *sqlgraph.CreateSpe
 		_spec.ID.Value = id
 	}
 	if value, ok := _c.mutation.PublicID(); ok {
-		_spec.SetField(serviceclient.FieldPublicID, field.TypeUUID, value)
+		_spec.SetField(serviceclient.FieldPublicID, field.TypeString, value)
 		_node.PublicID = value
 	}
 	if value, ok := _c.mutation.SecretHash(); ok {

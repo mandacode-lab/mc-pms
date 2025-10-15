@@ -5,7 +5,6 @@ package ent
 import (
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/mandacode-com/mandacode-ssam/ent/schema"
 	"github.com/mandacode-com/mandacode-ssam/ent/service"
 	"github.com/mandacode-com/mandacode-ssam/ent/serviceclient"
@@ -17,10 +16,6 @@ import (
 func init() {
 	serviceFields := schema.Service{}.Fields()
 	_ = serviceFields
-	// serviceDescPublicID is the schema descriptor for public_id field.
-	serviceDescPublicID := serviceFields[1].Descriptor()
-	// service.DefaultPublicID holds the default value on creation for the public_id field.
-	service.DefaultPublicID = serviceDescPublicID.Default.(func() uuid.UUID)
 	// serviceDescName is the schema descriptor for name field.
 	serviceDescName := serviceFields[2].Descriptor()
 	// service.NameValidator is a validator for the "name" field. It is called by the builders before save.
@@ -41,10 +36,6 @@ func init() {
 	service.UpdateDefaultUpdatedAt = serviceDescUpdatedAt.UpdateDefault.(func() time.Time)
 	serviceclientFields := schema.ServiceClient{}.Fields()
 	_ = serviceclientFields
-	// serviceclientDescPublicID is the schema descriptor for public_id field.
-	serviceclientDescPublicID := serviceclientFields[2].Descriptor()
-	// serviceclient.DefaultPublicID holds the default value on creation for the public_id field.
-	serviceclient.DefaultPublicID = serviceclientDescPublicID.Default.(func() uuid.UUID)
 	// serviceclientDescSecretHash is the schema descriptor for secret_hash field.
 	serviceclientDescSecretHash := serviceclientFields[3].Descriptor()
 	// serviceclient.SecretHashValidator is a validator for the "secret_hash" field. It is called by the builders before save.

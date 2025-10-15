@@ -7,7 +7,6 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/google/uuid"
 )
 
 const (
@@ -62,8 +61,6 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// DefaultPublicID holds the default value on creation for the "public_id" field.
-	DefaultPublicID func() uuid.UUID
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
 	// DefaultIsActive holds the default value on creation for the "is_active" field.

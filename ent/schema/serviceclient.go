@@ -7,7 +7,6 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
-	"github.com/google/uuid"
 )
 
 // ServiceClient holds the schema definition for the ServiceClient entity.
@@ -21,8 +20,7 @@ func (ServiceClient) Fields() []ent.Field {
 		field.Int64("id").
 			Unique(),
 		field.Int64("service_id"),
-		field.UUID("public_id", uuid.UUID{}).
-			Default(uuid.New).
+		field.String("public_id").
 			Unique(),
 		field.Bytes("secret_hash").
 			NotEmpty(),
