@@ -184,3 +184,19 @@ func (mr *MockClientQueryRepositoryMockRecorder) List(ctx, filter, options any) 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockClientQueryRepository)(nil).List), ctx, filter, options)
 }
+
+// ListWithServicePublicID mocks base method.
+func (m *MockClientQueryRepository) ListWithServicePublicID(ctx context.Context, filter *client.ClientListFilter, options *client.ClientListOptions) ([]*client.ClientWthService, int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListWithServicePublicID", ctx, filter, options)
+	ret0, _ := ret[0].([]*client.ClientWthService)
+	ret1, _ := ret[1].(int)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListWithServicePublicID indicates an expected call of ListWithServicePublicID.
+func (mr *MockClientQueryRepositoryMockRecorder) ListWithServicePublicID(ctx, filter, options any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListWithServicePublicID", reflect.TypeOf((*MockClientQueryRepository)(nil).ListWithServicePublicID), ctx, filter, options)
+}
