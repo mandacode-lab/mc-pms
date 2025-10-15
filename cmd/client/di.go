@@ -17,6 +17,8 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/handler/client_access"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/hasher"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/repository"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/client"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
 	redisinfra "github.com/mandacode-com/mandacode-ssam/internal/infra/redis"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
@@ -34,8 +36,8 @@ type Adapter struct {
 	cacheStore  out.CacheStore
 
 	// Repositories
-	serviceQueryRepo   out.ServiceQueryRepository
-	clientAppQueryRepo out.ClientAppQueryRepository
+	serviceQueryRepo   service.ServiceQueryRepository
+	clientAppQueryRepo client.ClientQueryRepository
 
 	// Services
 	hasher  out.Hasher

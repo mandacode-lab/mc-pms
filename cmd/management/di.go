@@ -18,8 +18,12 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/handler/service_mgmt"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/hasher"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/iam"
+	"github.com/mandacode-com/mandacode-ssam/internal/adapter/idgen"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/random"
 	"github.com/mandacode-com/mandacode-ssam/internal/adapter/repository"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/client"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/tx"
 	redisinfra "github.com/mandacode-com/mandacode-ssam/internal/infra/redis"
 	"github.com/mandacode-com/mandacode-ssam/internal/middleware"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
@@ -39,17 +43,19 @@ type Adapter struct {
 	cacheStore  out.CacheStore
 
 	// Repositories
-	serviceRepo        out.ServiceRepository
-	serviceQueryRepo   out.ServiceQueryRepository
-	clientAppRepo      out.ClientAppRepository
-	clientAppQueryRepo out.ClientAppQueryRepository
-	txManager          out.TransactionManager
+	serviceRepo        service.ServiceRepository
+	serviceQueryRepo   service.ServiceQueryRepository
+	clientAppRepo      client.ClientRepository
+	clientAppQueryRepo client.ClientQueryRepository
+	txManager          tx.TxManager
 
 	// Services
-	hasher     out.Hasher
-	secretGen  out.ByteRandGen
-	encoder    out.Encoder
-	iamService out.IAMService
+	hasher             out.Hasher
+	secretGen          out.ByteRandGen
+	encoder            out.Encoder
+	iamService         out.IAMService
+	serviceIDGenerator out.IDGenerator
+	clientIDGenerator  out.IDGenerator
 
 	// Middleware
 	permissionMiddleware *middleware.PermissionMiddleware
@@ -95,6 +101,8 @@ func NewAdapter(ctx context.Context, cfg *configs.ManagementConfig) (*Adapter, e
 	secretGen := random.NewCryptoByteRandGen()
 	encoderSvc := encoder.NewBase64Encoder()
 	txManager := repository.NewEntTransactionManager(client)
+	serviceIDGenerator := idgen.NewPrefixedULIDGenerator(cfg.IDPrefix.Service)
+	clientIDGenerator := idgen.NewUUIDGenerator()
 
 	// IAM Service - choose based on configuration
 	var iamSvc out.IAMService
@@ -132,6 +140,8 @@ func NewAdapter(ctx context.Context, cfg *configs.ManagementConfig) (*Adapter, e
 		encoder:              encoderSvc,
 		iamService:           iamSvc,
 		permissionMiddleware: permissionMiddleware,
+		serviceIDGenerator:   serviceIDGenerator,
+		clientIDGenerator:    clientIDGenerator,
 	}, nil
 }
 
@@ -139,6 +149,7 @@ func (a *Adapter) ProvideServiceMgmtUsecase() in.ServiceMgmtUsecase {
 	return service_usecase.NewUsecase(
 		a.serviceRepo,
 		a.serviceQueryRepo,
+		a.serviceIDGenerator,
 		a.txManager,
 	)
 }
@@ -149,11 +160,12 @@ func (a *Adapter) ProvideServiceMgmtHandler() *servicemgmt.Handler {
 	return handler
 }
 
-func (a *Adapter) ProvideClientAppMgmtUsecase() in.ClientAppMgmtUsecase {
+func (a *Adapter) ProvideClientAppMgmtUsecase() in.ClientMgmtUsecase {
 	return client_usecase.NewUsecase(
 		a.clientAppRepo,
 		a.clientAppQueryRepo,
 		a.serviceQueryRepo,
+		a.clientIDGenerator,
 		a.txManager,
 		a.secretGen,
 		a.hasher,
