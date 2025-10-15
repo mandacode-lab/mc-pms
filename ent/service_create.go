@@ -56,16 +56,16 @@ func (_c *ServiceCreate) SetNillableDescription(v *string) *ServiceCreate {
 	return _c
 }
 
-// SetIsActive sets the "is_active" field.
-func (_c *ServiceCreate) SetIsActive(v bool) *ServiceCreate {
-	_c.mutation.SetIsActive(v)
+// SetActive sets the "active" field.
+func (_c *ServiceCreate) SetActive(v bool) *ServiceCreate {
+	_c.mutation.SetActive(v)
 	return _c
 }
 
-// SetNillableIsActive sets the "is_active" field if the given value is not nil.
-func (_c *ServiceCreate) SetNillableIsActive(v *bool) *ServiceCreate {
+// SetNillableActive sets the "active" field if the given value is not nil.
+func (_c *ServiceCreate) SetNillableActive(v *bool) *ServiceCreate {
 	if v != nil {
-		_c.SetIsActive(*v)
+		_c.SetActive(*v)
 	}
 	return _c
 }
@@ -158,9 +158,9 @@ func (_c *ServiceCreate) defaults() {
 		v := service.DefaultPublicID()
 		_c.mutation.SetPublicID(v)
 	}
-	if _, ok := _c.mutation.IsActive(); !ok {
-		v := service.DefaultIsActive
-		_c.mutation.SetIsActive(v)
+	if _, ok := _c.mutation.Active(); !ok {
+		v := service.DefaultActive
+		_c.mutation.SetActive(v)
 	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := service.DefaultCreatedAt()
@@ -185,8 +185,8 @@ func (_c *ServiceCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Service.name": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.IsActive(); !ok {
-		return &ValidationError{Name: "is_active", err: errors.New(`ent: missing required field "Service.is_active"`)}
+	if _, ok := _c.mutation.Active(); !ok {
+		return &ValidationError{Name: "active", err: errors.New(`ent: missing required field "Service.active"`)}
 	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Service.created_at"`)}
@@ -238,9 +238,9 @@ func (_c *ServiceCreate) createSpec() (*Service, *sqlgraph.CreateSpec) {
 		_spec.SetField(service.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := _c.mutation.IsActive(); ok {
-		_spec.SetField(service.FieldIsActive, field.TypeBool, value)
-		_node.IsActive = value
+	if value, ok := _c.mutation.Active(); ok {
+		_spec.SetField(service.FieldActive, field.TypeBool, value)
+		_node.Active = value
 	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(service.FieldCreatedAt, field.TypeTime, value)

@@ -71,9 +71,9 @@ func Description(v string) predicate.Service {
 	return predicate.Service(sql.FieldEQ(FieldDescription, v))
 }
 
-// IsActive applies equality check predicate on the "is_active" field. It's identical to IsActiveEQ.
-func IsActive(v bool) predicate.Service {
-	return predicate.Service(sql.FieldEQ(FieldIsActive, v))
+// Active applies equality check predicate on the "active" field. It's identical to ActiveEQ.
+func Active(v bool) predicate.Service {
+	return predicate.Service(sql.FieldEQ(FieldActive, v))
 }
 
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
@@ -266,14 +266,14 @@ func DescriptionContainsFold(v string) predicate.Service {
 	return predicate.Service(sql.FieldContainsFold(FieldDescription, v))
 }
 
-// IsActiveEQ applies the EQ predicate on the "is_active" field.
-func IsActiveEQ(v bool) predicate.Service {
-	return predicate.Service(sql.FieldEQ(FieldIsActive, v))
+// ActiveEQ applies the EQ predicate on the "active" field.
+func ActiveEQ(v bool) predicate.Service {
+	return predicate.Service(sql.FieldEQ(FieldActive, v))
 }
 
-// IsActiveNEQ applies the NEQ predicate on the "is_active" field.
-func IsActiveNEQ(v bool) predicate.Service {
-	return predicate.Service(sql.FieldNEQ(FieldIsActive, v))
+// ActiveNEQ applies the NEQ predicate on the "active" field.
+func ActiveNEQ(v bool) predicate.Service {
+	return predicate.Service(sql.FieldNEQ(FieldActive, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
