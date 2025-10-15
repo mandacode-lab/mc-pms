@@ -26,6 +26,7 @@ CREATE UNIQUE INDEX "svcclient_service_id_name" ON "public"."svc_clients" ("serv
 INSERT INTO "public"."svc_clients" ("public_id", "secret_hash", "name", "description", "is_active", "created_at", "updated_at", "service_id")
 SELECT "public_id", "secret_hash", "name", "description", "is_active", "created_at", "updated_at", "service_id"
 FROM "public"."client_apps";
+
 -- Remove foreign key constraint from "client_apps" table
 ALTER TABLE "public"."client_apps" DROP CONSTRAINT "client_apps_services_service_id_fkey";
 -- Remove index "client_apps_public_id_key" from "client_apps" table
