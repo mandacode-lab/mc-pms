@@ -3,12 +3,13 @@ package clientaccess
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
-	"github.com/mandacode-com/mandacode-ssam/internal/domain/entity"
-	vo "github.com/mandacode-com/mandacode-ssam/internal/domain/vo"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/client"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
-	"github.com/mandacode-com/mandacode-ssam/internal/test/mock"
+	"github.com/mandacode-com/mandacode-ssam/test/mock"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
@@ -18,29 +19,48 @@ func TestVerifyClient_ComparesWithRawSecretBytes(t *testing.T) {
 	defer ctrl.Finish()
 
 	ctx := context.Background()
-	clientAppID, _ := vo.NewClientAppPublicID(uuid.New().String())
-	serviceID, _ := vo.NewServiceID(1)
 
-	// Simulate the flow:
-	// 1. During creation: secretBytes -> Hash(secretBytes) -> hashedSecret (stored in DB)
-	// 2. During creation: secretBytes -> Encode(secretBytes) -> encodedSecret (returned to user)
-	// 3. During verify: user sends encodedSecret in Basic Auth password
-	// 4. Usecase: Decode(encodedSecret) -> secretBytes
-	// 5. Compare(hashedSecret, secretBytes) should succeed
+	// Setup test data
+	serviceID, _ := service.NewID(1)
+	servicePublicID, _ := service.NewPublicID(uuid.New().String())
+	serviceName, _ := service.NewName("Test Service")
+	serviceDesc, _ := service.NewDescription("A test service")
+	service := service.NewService(
+		serviceID,
+		servicePublicID,
+		serviceName,
+		serviceDesc,
+		true, // isActive
+		time.Now().UTC(),
+		time.Now().UTC(),
+	)
+
+	clientID, _ := client.NewID(1)
+	clientPublicID, _ := client.NewPublicID(uuid.New().String())
+	clientName, _ := client.NewName("Test Client")
+	clientDesc, _ := client.NewDescription("A test client application")
 	secretBytes := []byte("raw-secret-bytes")
-	encodedSecret := []byte("base64-encoded-secret")
 	hashedSecret := []byte("hashed-from-raw-bytes")
+	encodedSecret := []byte("encoded-secret") // Simulate base64 encoded secret
 
-	desc, _ := vo.NewClientAppDescription("")
-	clientApp, _ := entity.DraftClientApp(serviceID, "Test Client", desc, hashedSecret)
+	now := time.Now().UTC()
 
-	serviceName, _ := vo.NewServiceName("Test Service")
-	serviceDesc, _ := vo.NewServiceDescription("")
-	service, _ := entity.DraftService(serviceName, serviceDesc)
-	servicePublicID := service.PublicID()
+	// desc, _ := vo.NewClientAppDescription("")
+	// clientApp, _ := entity.DraftClientApp(serviceID, "Test Client", desc, hashedSecret)
+	client := client.NewClient(
+		clientID,
+		clientPublicID,
+		clientName,
+		clientDesc,
+		hashedSecret,
+		serviceID,
+		true, // isActive
+		now,
+		now,
+	)
 
 	// Create mocks
-	mockClientAppQueryRepo := mock.NewMockClientAppQueryRepository(ctrl)
+	mockClientAppQueryRepo := mock.NewMockClientQueryRepository(ctrl)
 	mockServiceQueryRepo := mock.NewMockServiceQueryRepository(ctrl)
 	mockHasher := mock.NewMockHasher(ctrl)
 	mockEncoder := mock.NewMockEncoder(ctrl)
@@ -52,13 +72,13 @@ func TestVerifyClient_ComparesWithRawSecretBytes(t *testing.T) {
 		mockEncoder,
 	)
 
-	req := &in.VerifyClientRequest{
-		ClientID:     clientAppID,
+	req := &in.VerifyClientInput{
+		ClientID:     clientPublicID,
 		ClientSecret: encodedSecret, // User sends base64 encoded secret
 	}
 
 	// Set expectations
-	mockClientAppQueryRepo.EXPECT().FindByPublicID(ctx, clientAppID).Return(clientApp, nil)
+	mockClientAppQueryRepo.EXPECT().FindByPublicID(ctx, clientPublicID).Return(client, nil)
 
 	// CRITICAL: Decode the encoded secret to get raw bytes
 	mockEncoder.EXPECT().Decode(encodedSecret).Return(secretBytes, nil)
@@ -82,18 +102,34 @@ func TestVerifyClient_FailsWithWrongSecret(t *testing.T) {
 	defer ctrl.Finish()
 
 	ctx := context.Background()
-	clientAppID, _ := vo.NewClientAppPublicID(uuid.New().String())
-	serviceID, _ := vo.NewServiceID(1)
 
-	wrongEncodedSecret := []byte("wrong-encoded-secret")
-	wrongSecretBytes := []byte("wrong-secret-bytes")
-	hashedSecret := []byte("hashed-from-correct-secret")
+	// Setup test data
+	serviceID, _ := service.NewID(1)
 
-	desc, _ := vo.NewClientAppDescription("")
-	clientApp, _ := entity.DraftClientApp(serviceID, "Test Client", desc, hashedSecret)
+	clientID, _ := client.NewID(1)
+	clientPublicID, _ := client.NewPublicID(uuid.New().String())
+	clientName, _ := client.NewName("Test Client")
+	clientDesc, _ := client.NewDescription("A test client application")
+	secretBytes := []byte("raw-secret-bytes")
+	hashedSecret := []byte("hashed-from-raw-bytes")
+	encodedSecret := []byte("encoded-secret") // Simulate base64 encoded secret
+
+	now := time.Now().UTC()
+
+	client := client.NewClient(
+		clientID,
+		clientPublicID,
+		clientName,
+		clientDesc,
+		hashedSecret,
+		serviceID,
+		true, // isActive
+		now,
+		now,
+	)
 
 	// Create mocks
-	mockClientAppQueryRepo := mock.NewMockClientAppQueryRepository(ctrl)
+	mockClientAppQueryRepo := mock.NewMockClientQueryRepository(ctrl)
 	mockServiceQueryRepo := mock.NewMockServiceQueryRepository(ctrl)
 	mockHasher := mock.NewMockHasher(ctrl)
 	mockEncoder := mock.NewMockEncoder(ctrl)
@@ -105,19 +141,19 @@ func TestVerifyClient_FailsWithWrongSecret(t *testing.T) {
 		mockEncoder,
 	)
 
-	req := &in.VerifyClientRequest{
-		ClientID:     clientAppID,
-		ClientSecret: wrongEncodedSecret,
+	req := &in.VerifyClientInput{
+		ClientID:     clientPublicID,
+		ClientSecret: encodedSecret, // User sends base64 encoded secret
 	}
 
 	// Set expectations
-	mockClientAppQueryRepo.EXPECT().FindByPublicID(ctx, clientAppID).Return(clientApp, nil)
+	mockClientAppQueryRepo.EXPECT().FindByPublicID(ctx, clientPublicID).Return(client, nil)
 
-	// Decode the wrong encoded secret
-	mockEncoder.EXPECT().Decode(wrongEncodedSecret).Return(wrongSecretBytes, nil)
+	// CRITICAL: Decode the encoded secret to get raw bytes
+	mockEncoder.EXPECT().Decode(encodedSecret).Return(secretBytes, nil)
 
-	// Compare should fail with wrong secret
-	mockHasher.EXPECT().Compare(ctx, hashedSecret, wrongSecretBytes).Return(assert.AnError)
+	// CRITICAL: Compare should be called with hashedSecret and decoded raw secretBytes
+	mockHasher.EXPECT().Compare(ctx, hashedSecret, secretBytes).Return(assert.AnError)
 
 	// Execute
 	result, err := usecase.VerifyClient(ctx, req)

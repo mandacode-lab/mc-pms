@@ -7,9 +7,9 @@ import (
 	"github.com/mandacode-com/merr"
 )
 
-func (u *Usecase) VerifyClient(ctx context.Context, req *in.VerifyClientRequest) (*in.VerifyClientResponse, error) {
+func (u *Usecase) VerifyClient(ctx context.Context, req *in.VerifyClientInput) (*in.VerifyClientResult, error) {
 	// Find client app by public ID
-	clientApp, err := u.clientAppQueryRepo.FindByPublicID(ctx, req.ClientID)
+	clientApp, err := u.clientQueryRepo.FindByPublicID(ctx, req.ClientID)
 	if err != nil {
 		return nil, merr.New(merr.ErrNotFound, ErrClientAppNotFoundMsg, err)
 	}
@@ -22,7 +22,7 @@ func (u *Usecase) VerifyClient(ctx context.Context, req *in.VerifyClientRequest)
 	// Decode the base64-encoded client secret to get original secret bytes
 	secretBytes, err := u.encoder.Decode(req.ClientSecret)
 	if err != nil {
-		return nil, merr.New(merr.ErrBadRequest, "invalid client_secret format", err)
+		return nil, merr.New(merr.ErrBadRequest, ErrInvalidClientSecretMsg, err)
 	}
 
 	// Verify secret: compare hash with decoded secret bytes
@@ -43,7 +43,7 @@ func (u *Usecase) VerifyClient(ctx context.Context, req *in.VerifyClientRequest)
 	}
 
 	// Return valid result with service ID
-	return &in.VerifyClientResponse{
+	return &in.VerifyClientResult{
 		ServiceID: service.PublicID(),
 	}, nil
 }

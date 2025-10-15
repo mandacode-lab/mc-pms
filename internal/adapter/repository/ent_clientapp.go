@@ -16,7 +16,7 @@ type EntClientAppRepository struct {
 	client *ent.Client
 }
 
-func NewEntClientAppRepository(client *ent.Client) out.ClientAppRepository {
+func NewEntClientAppRepository(client *ent.Client) out.ClientRepository {
 	return &EntClientAppRepository{
 		client: client,
 	}
@@ -137,7 +137,7 @@ type EntClientAppQueryRepository struct {
 	client *ent.Client
 }
 
-func NewEntClientAppQueryRepository(client *ent.Client) out.ClientAppQueryRepository {
+func NewEntClientAppQueryRepository(client *ent.Client) out.ClientQueryRepository {
 	return &EntClientAppQueryRepository{
 		client: client,
 	}
@@ -189,7 +189,7 @@ func (r *EntClientAppQueryRepository) FindByName(ctx context.Context, name strin
 	return r.toDomain(entClient)
 }
 
-func (r *EntClientAppQueryRepository) List(ctx context.Context, filter *out.ClientAppListFilter, options *out.ClientAppListOptions) ([]*entity.ClientApp, int, error) {
+func (r *EntClientAppQueryRepository) List(ctx context.Context, filter *out.ClientListFilter, options *out.ClientAppListOptions) ([]*entity.ClientApp, int, error) {
 	query := r.client.ClientApp.Query().WithService()
 
 	if filter != nil {
@@ -206,9 +206,9 @@ func (r *EntClientAppQueryRepository) List(ctx context.Context, filter *out.Clie
 
 	if options != nil {
 		switch options.Order {
-		case out.ClientAppListOrderNameAsc:
+		case out.ClientListOrderNameAsc:
 			query = query.Order(ent.Asc(entclientapp.FieldName))
-		case out.ClientAppListOrderNameDesc:
+		case out.ClientListOrderNameDesc:
 			query = query.Order(ent.Desc(entclientapp.FieldName))
 		}
 
