@@ -72,18 +72,20 @@ func (n Name) IsValid() (bool, error) {
 }
 
 // Description
-type Description string
-
-func NewDescription(value string) (Description, error) {
-	description := Description(value)
-	if valid, err := description.IsValid(); !valid {
-		return "", err
-	}
-	return description, nil
+type Description struct {
+	value *string
 }
 
-func (d Description) Value() string {
-	return string(d)
+func NewDescription(value string) (Description, error) {
+	desc := Description{value: &value}
+	if valid, err := desc.IsValid(); !valid {
+		return Description{}, err
+	}
+	return desc, nil
+}
+
+func (d Description) Value() *string {
+	return d.value
 }
 
 func (d Description) IsValid() (bool, error) {
