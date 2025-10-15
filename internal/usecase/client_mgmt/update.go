@@ -42,6 +42,6 @@ func (u *Usecase) UpdateClient(ctx context.Context, req *in.UpdateClientInput) (
 
 	// Convert to result
 	return &in.UpdateClientResult{
-		MgmtClientInfo: toClientInfo(svcClient),
+		UpdatedAt: svcClient.UpdatedAt(),
 	}, nil
 }

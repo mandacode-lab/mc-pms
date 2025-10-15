@@ -85,8 +85,7 @@ func (u *Usecase) CreateClient(ctx context.Context, req *in.CreateClientInput) (
 
 	// Convert to result
 	return &in.CreateClientResult{
-		Secret:         plainSecret,
-		ServiceID:      service.PublicID(),
-		MgmtClientInfo: toClientInfo(savedClient),
+		ClientView: toClientView(savedClient, service.PublicID()),
+		Secret:     plainSecret,
 	}, nil
 }

@@ -35,6 +35,6 @@ func (u *Usecase) FindService(ctx context.Context, req *in.FindServiceInput) (*i
 	}
 
 	return &in.FindServiceByNameResult{
-		MgmtServiceInfo: toServiceInfo(service),
+		ServiceView: toServiceInfo(service),
 	}, nil
 }

@@ -39,7 +39,7 @@ func (u *Usecase) ListServices(ctx context.Context, req *in.ListServicesInput) (
 
 	_ = total // We can use this for pagination info later
 
-	serviceInfos := make([]in.MgmtServiceInfo, len(services))
+	serviceInfos := make([]in.ServiceView, len(services))
 	for i, svc := range services {
 		serviceInfos[i] = toServiceInfo(svc)
 	}

@@ -56,6 +56,6 @@ func (u *Usecase) CreateService(ctx context.Context, req *in.CreateServiceInput)
 
 	// Convert to result
 	return &in.CreateServiceResult{
-		MgmtServiceInfo: toServiceInfo(savedService),
+		ServiceView: toServiceInfo(savedService),
 	}, nil
 }

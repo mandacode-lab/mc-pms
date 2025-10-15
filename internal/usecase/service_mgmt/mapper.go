@@ -5,8 +5,8 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/internal/port/in"
 )
 
-func toServiceInfo(s *service.Service) in.MgmtServiceInfo {
-	return in.MgmtServiceInfo{
+func toServiceInfo(s *service.Service) in.ServiceView {
+	return in.ServiceView{
 		ServiceID: s.PublicID(),
 		Name:      s.Name(),
 		Desc:      s.Description(),

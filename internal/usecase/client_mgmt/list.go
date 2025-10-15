@@ -47,14 +47,17 @@ func (u *Usecase) ListClients(ctx context.Context, req *in.ListClientsInput) (*i
 		Order:  client.ClientListOrderNameAsc,
 	}
 
-	result, total, err := u.clientQueryRepo.List(ctx, filter, options)
+	result, _, err := u.clientQueryRepo.ListWithServicePublicID(ctx, filter, options)
 	if err != nil {
 		return nil, merr.New(merr.ErrInternalServerError, ErrInternalServerMsg, err)
 	}
 
-	_ = total // We can use this for pagination info later
+	clientViews := make([]*in.ClientView, len(result))
+	for i, c := range result {
+		clientViews[i] = toClientView(c.Client, c.ServiceID)
+	}
 
 	return &in.ListClientsResult{
-		Clients: toClientInfos(result),
+		Clients: clientViews,
 	}, nil
 }

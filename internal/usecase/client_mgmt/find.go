@@ -41,7 +41,6 @@ func (u *Usecase) FindClient(ctx context.Context, req *in.FindClientInput) (*in.
 	}
 
 	return &in.FindClientResult{
-		ServiceID:      service.PublicID(),
-		MgmtClientInfo: toClientInfo(svcClient),
+		ClientView: toClientView(svcClient, service.PublicID()),
 	}, nil
 }

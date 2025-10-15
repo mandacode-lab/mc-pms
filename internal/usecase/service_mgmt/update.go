@@ -17,18 +17,30 @@ func (u *Usecase) UpdateService(ctx context.Context, req *in.UpdateServiceInput)
 
 	// Apply updates using domain logic
 	if req.NewName != nil {
-		serviceModel.Rename(*req.NewName)
+		err := serviceModel.Rename(*req.NewName)
+		if err != nil {
+			return nil, merr.New(merr.ErrBadRequest, "invalid service name", err)
+		}
 	}
 
 	if req.NewDesc != nil {
-		serviceModel.UpdateDescription(*req.NewDesc)
+		err := serviceModel.UpdateDescription(*req.NewDesc)
+		if err != nil {
+			return nil, merr.New(merr.ErrBadRequest, "invalid service description", err)
+		}
 	}
 
 	if req.NewIsActive != nil {
 		if *req.NewIsActive {
-			serviceModel.Activate()
+			err := serviceModel.Activate()
+			if err != nil {
+				return nil, merr.New(merr.ErrBadRequest, "invalid service state", err)
+			}
 		} else {
-			serviceModel.Deactivate()
+			err := serviceModel.Deactivate()
+			if err != nil {
+				return nil, merr.New(merr.ErrBadRequest, "invalid service state", err)
+			}
 		}
 	}
 
@@ -42,6 +54,6 @@ func (u *Usecase) UpdateService(ctx context.Context, req *in.UpdateServiceInput)
 
 	// Convert to result
 	return &in.UpdateServiceResult{
-		MgmtServiceInfo: toServiceInfo(serviceModel),
+		UpdatedAt: serviceModel.UpdatedAt(),
 	}, nil
 }
