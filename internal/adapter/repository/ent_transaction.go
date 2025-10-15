@@ -6,10 +6,10 @@ import (
 	"fmt"
 
 	"github.com/mandacode-com/mandacode-ssam/ent"
-	"github.com/mandacode-com/mandacode-ssam/internal/port/out"
+	"github.com/mandacode-com/mandacode-ssam/internal/domain/tx"
 )
 
-func asEntTx(tx out.Tx) (*ent.Tx, error) {
+func asEntTx(tx tx.Tx) (*ent.Tx, error) {
 	if tx == nil {
 		return nil, errors.New("transaction is nil")
 	}
@@ -24,13 +24,13 @@ type EntTransactionManager struct {
 	client *ent.Client
 }
 
-func NewEntTransactionManager(client *ent.Client) out.TransactionManager {
+func NewEntTransactionManager(client *ent.Client) tx.TxManager {
 	return &EntTransactionManager{
 		client: client,
 	}
 }
 
-func (tm *EntTransactionManager) WithTx(ctx context.Context, fn func(tx out.Tx) error) error {
+func (tm *EntTransactionManager) WithTx(ctx context.Context, fn func(tx tx.Tx) error) error {
 	tx, err := tm.client.Tx(ctx)
 	if err != nil {
 		return err
