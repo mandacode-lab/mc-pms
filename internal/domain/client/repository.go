@@ -33,9 +33,15 @@ type ClientRepository interface {
 	FindByID(ctx context.Context, id ID) (*Client, error)
 }
 
+type ClientWthService struct {
+	*Client
+	ServiceID service.PublicID
+}
+
 type ClientQueryRepository interface {
 	FindByID(ctx context.Context, id ID) (*Client, error)
 	FindByPublicID(ctx context.Context, publicID PublicID) (*Client, error)
 	FindByName(ctx context.Context, name Name) (*Client, error)
 	List(ctx context.Context, filter *ClientListFilter, options *ClientListOptions) ([]*Client, int, error)
+	ListWithServicePublicID(ctx context.Context, filter *ClientListFilter, options *ClientListOptions) ([]*ClientWthService, int, error)
 }

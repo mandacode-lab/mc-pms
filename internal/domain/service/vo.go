@@ -88,6 +88,13 @@ func (d Description) Value() *string {
 	return d.value
 }
 
+func (d Description) String() string {
+	if d.value == nil {
+		return ""
+	}
+	return *d.value
+}
+
 func (d Description) IsValid() (bool, error) {
 	return true, nil
 }
