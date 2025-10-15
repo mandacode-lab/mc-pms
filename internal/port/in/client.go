@@ -21,7 +21,8 @@ type ClientAccessUsecase interface {
 	VerifyClient(ctx context.Context, req *VerifyClientInput) (*VerifyClientResult, error)
 }
 
-type MgmtClientInfo struct {
+type ClientView struct {
+	ServiceID service.PublicID
 	ClientID  client.PublicID
 	Name      client.Name
 	Desc      client.Description
@@ -37,9 +38,8 @@ type CreateClientInput struct {
 }
 
 type CreateClientResult struct {
-	MgmtClientInfo
+	*ClientView
 	Secret    []byte
-	ServiceID service.PublicID
 }
 
 type DeleteClientInput struct {
@@ -62,7 +62,7 @@ type UpdateClientInput struct {
 }
 
 type UpdateClientResult struct {
-	MgmtClientInfo
+	UpdatedAt time.Time
 }
 
 type FindClientInput struct {
@@ -71,8 +71,8 @@ type FindClientInput struct {
 }
 
 type FindClientResult struct {
+	*ClientView
 	ServiceID service.PublicID
-	MgmtClientInfo
 }
 
 type ListClientsInput struct {
@@ -84,7 +84,7 @@ type ListClientsInput struct {
 }
 
 type ListClientsResult struct {
-	Clients []MgmtClientInfo
+	Clients []*ClientView
 }
 
 type ClientMgmtUsecase interface {

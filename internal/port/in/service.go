@@ -7,7 +7,7 @@ import (
 	"github.com/mandacode-com/mandacode-ssam/internal/domain/service"
 )
 
-type MgmtServiceInfo struct {
+type ServiceView struct {
 	ServiceID service.PublicID
 	Name      service.Name
 	Desc      service.Description
@@ -22,7 +22,7 @@ type CreateServiceInput struct {
 }
 
 type CreateServiceResult struct {
-	MgmtServiceInfo
+	ServiceView
 }
 
 type DeleteServiceInput struct {
@@ -37,7 +37,7 @@ type UpdateServiceInput struct {
 }
 
 type UpdateServiceResult struct {
-	MgmtServiceInfo
+	UpdatedAt time.Time
 }
 
 type FindServiceInput struct {
@@ -46,7 +46,7 @@ type FindServiceInput struct {
 }
 
 type FindServiceByNameResult struct {
-	MgmtServiceInfo
+	ServiceView
 }
 
 type ListServicesInput struct {
@@ -57,7 +57,7 @@ type ListServicesInput struct {
 }
 
 type ListServicesResult struct {
-	Services []MgmtServiceInfo
+	Services []ServiceView
 }
 
 type ServiceMgmtUsecase interface {
