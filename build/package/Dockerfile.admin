@@ -26,7 +26,7 @@ ARG TARGETARCH
 RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
     go build -a \
     -ldflags="-w -s" \
-    -o server ./cmd/client
+    -o server ./cmd/admin
 
 ############################
 # 2. Dependencies Stage
