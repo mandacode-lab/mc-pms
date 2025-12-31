@@ -1,4 +1,4 @@
-module github.com/mandacode-com/mandacode-ssam
+module github.com/mandacode-com/mandacode-project
 
 go 1.25.0
 
