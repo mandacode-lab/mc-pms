@@ -15,7 +15,7 @@ type ClientRouterConfig struct {
 
 func SetupClientRouter(r *gin.Engine, config *ClientRouterConfig) {
 	// Apply auth middleware to all clientv1 routes
-	clientv1 := r.Group("/client/v1")
+	clientv1 := r.Group("/v1")
 	clientv1.Use(config.AuthMiddleware.RequireAuth())
 
 	// Namespace routes

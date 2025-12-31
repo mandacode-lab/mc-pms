@@ -16,7 +16,7 @@ type AdminRouterConfig struct {
 
 func SetupAdminRouter(r *gin.Engine, config *AdminRouterConfig) {
 	// Apply auth middleware to all adminv1 routes
-	adminv1 := r.Group("/admin/v1")
+	adminv1 := r.Group("/v1")
 	adminv1.Use(config.AuthMiddleware.RequireAuth())
 
 	// Namespace routes
