@@ -15,12 +15,12 @@ type AdminRouterConfig struct {
 }
 
 func SetupAdminRouter(r *gin.Engine, config *AdminRouterConfig) {
-	// Apply auth middleware to all admin routes
-	admin := r.Group("/admin")
-	admin.Use(config.AuthMiddleware.RequireAuth())
+	// Apply auth middleware to all adminv1 routes
+	adminv1 := r.Group("/admin/v1")
+	adminv1.Use(config.AuthMiddleware.RequireAuth())
 
 	// Namespace routes
-	namespaces := admin.Group("/namespaces")
+	namespaces := adminv1.Group("/namespaces")
 	{
 		// Create namespace - requires permission for all namespaces
 		namespaces.POST("",
@@ -81,7 +81,7 @@ func SetupAdminRouter(r *gin.Engine, config *AdminRouterConfig) {
 	}
 
 	// Project routes
-	projects := admin.Group("/projects")
+	projects := adminv1.Group("/projects")
 	{
 		// Create project
 		projects.POST("",

@@ -14,19 +14,19 @@ type ClientRouterConfig struct {
 }
 
 func SetupClientRouter(r *gin.Engine, config *ClientRouterConfig) {
-	// Apply auth middleware to all client routes
-	client := r.Group("/client")
-	client.Use(config.AuthMiddleware.RequireAuth())
+	// Apply auth middleware to all clientv1 routes
+	clientv1 := r.Group("/client/v1")
+	clientv1.Use(config.AuthMiddleware.RequireAuth())
 
 	// Namespace routes
-	namespaces := client.Group("/namespaces")
+	namespaces := clientv1.Group("/namespaces")
 	{
 		// Get namespace by ID
 		namespaces.GET("/:id", config.NSHandler.GetByID)
 	}
 
 	// Project routes
-	projects := client.Group("/projects")
+	projects := clientv1.Group("/projects")
 	{
 		// Get project by ID
 		projects.GET("/:id", config.ProjectHandler.GetByID)
