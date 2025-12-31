@@ -5,6 +5,7 @@ import (
 
 	"github.com/mandacode-com/mandacode-pms/internal/port/app"
 	"github.com/mandacode-com/mandacode-pms/internal/port/repo"
+	"github.com/mandacode-com/merr"
 )
 
 func (a *Application) Find(ctx context.Context, input app.FindNamespaceInput) ([]*app.AdminNamespaceResult, error) {
@@ -12,7 +13,7 @@ func (a *Application) Find(ctx context.Context, input app.FindNamespaceInput) ([
 		NameContains: input.NameContains,
 	})
 	if err != nil {
-		return nil, err
+		return nil, merr.New(merr.ErrInternalServerError, "Failed to find namespaces", err)
 	}
 
 	results := make([]*app.AdminNamespaceResult, len(namespaces))

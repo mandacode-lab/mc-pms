@@ -4,12 +4,13 @@ import (
 	"context"
 
 	"github.com/mandacode-com/mandacode-pms/internal/port/app"
+	"github.com/mandacode-com/merr"
 )
 
 func (a *Application) ListAll(ctx context.Context) ([]*app.AdminNamespaceResult, error) {
 	namespaces, err := a.nsRepo.ListAll(ctx)
 	if err != nil {
-		return nil, err
+		return nil, merr.New(merr.ErrInternalServerError, "Failed to list namespaces", err)
 	}
 
 	results := make([]*app.AdminNamespaceResult, len(namespaces))

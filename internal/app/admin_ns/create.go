@@ -6,12 +6,13 @@ import (
 
 	"github.com/mandacode-com/mandacode-pms/internal/domain/ns"
 	"github.com/mandacode-com/mandacode-pms/internal/port/app"
+	"github.com/mandacode-com/merr"
 )
 
 func (a *Application) Create(ctx context.Context, input app.CreateNamespaceInput) (*app.AdminNamespaceResult, error) {
 	id, err := a.nsIDGenerator.Generate()
 	if err != nil {
-		return nil, err
+		return nil, merr.New(merr.ErrInternalServerError, "Failed to generate namespace ID", err)
 	}
 
 	now := time.Now()
@@ -24,7 +25,7 @@ func (a *Application) Create(ctx context.Context, input app.CreateNamespaceInput
 	)
 
 	if err := a.nsRepo.Upsert(ctx, namespace); err != nil {
-		return nil, err
+		return nil, merr.New(merr.ErrInternalServerError, "Failed to create namespace", err)
 	}
 
 	return &app.AdminNamespaceResult{

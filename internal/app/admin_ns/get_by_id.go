@@ -5,12 +5,13 @@ import (
 
 	"github.com/mandacode-com/mandacode-pms/internal/domain/ns"
 	"github.com/mandacode-com/mandacode-pms/internal/port/app"
+	"github.com/mandacode-com/merr"
 )
 
 func (a *Application) GetByID(ctx context.Context, namespaceID string) (*app.AdminNamespaceResult, error) {
 	namespace, err := a.nsRepo.GetByID(ctx, ns.NewNamespaceID(namespaceID))
 	if err != nil {
-		return nil, err
+		return nil, merr.New(merr.ErrNotFound, "Namespace not found", err)
 	}
 
 	return &app.AdminNamespaceResult{

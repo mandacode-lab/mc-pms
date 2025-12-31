@@ -6,6 +6,7 @@ import (
 	"github.com/mandacode-com/mandacode-pms/internal/domain/ns"
 	"github.com/mandacode-com/mandacode-pms/internal/port/app"
 	"github.com/mandacode-com/mandacode-pms/internal/port/repo"
+	"github.com/mandacode-com/merr"
 )
 
 func (a *Application) Find(ctx context.Context, input app.FindProjectInput) ([]*app.AdminProjectResult, error) {
@@ -14,7 +15,7 @@ func (a *Application) Find(ctx context.Context, input app.FindProjectInput) ([]*
 		NamespaceID:  ns.NewNamespaceID(input.NamespaceID),
 	})
 	if err != nil {
-		return nil, err
+		return nil, merr.New(merr.ErrInternalServerError, "Failed to find projects", err)
 	}
 
 	results := make([]*app.AdminProjectResult, len(projects))

@@ -5,12 +5,13 @@ import (
 
 	"github.com/mandacode-com/mandacode-pms/internal/domain/ns"
 	"github.com/mandacode-com/mandacode-pms/internal/port/app"
+	"github.com/mandacode-com/merr"
 )
 
 func (a *Application) Update(ctx context.Context, input app.UpdateNamespaceInput) (*app.AdminNamespaceResult, error) {
 	namespace, err := a.nsRepo.GetByID(ctx, ns.NewNamespaceID(input.NamespaceID))
 	if err != nil {
-		return nil, err
+		return nil, merr.New(merr.ErrNotFound, "Namespace not found", err)
 	}
 
 	if input.Name != nil {
@@ -22,7 +23,7 @@ func (a *Application) Update(ctx context.Context, input app.UpdateNamespaceInput
 	}
 
 	if err := a.nsRepo.Upsert(ctx, namespace); err != nil {
-		return nil, err
+		return nil, merr.New(merr.ErrInternalServerError, "Failed to update namespace", err)
 	}
 
 	return &app.AdminNamespaceResult{
