@@ -1,0 +1,229 @@
+basePath: /api/client/v1
+definitions:
+  internal_adapter_http_handler_client_ns.GetByIDResponse:
+    properties:
+      namespace:
+        $ref: '#/definitions/internal_adapter_http_handler_client_ns.NamespaceResponse'
+    type: object
+  internal_adapter_http_handler_client_ns.NamespaceResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      namespace_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  internal_adapter_http_handler_client_project.GetByIDResponse:
+    properties:
+      project:
+        $ref: '#/definitions/internal_adapter_http_handler_client_project.ProjectResponse'
+    type: object
+  internal_adapter_http_handler_client_project.IsValidProjectNamespaceResponse:
+    properties:
+      valid:
+        type: boolean
+    type: object
+  internal_adapter_http_handler_client_project.ProjectResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      namespace_id:
+        type: string
+      project_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  merr.ErrCode:
+    enum:
+    - unknown
+    - not_found
+    - invalid_input
+    - permission_denied
+    - internal_server_error
+    - timeout
+    - conflict
+    - unauthorized
+    - bad_request
+    - service_unavailable
+    - too_many_requests
+    - gateway_timeout
+    - unprocessable_entity
+    - not_implemented
+    - method_not_allowed
+    - forbidden
+    - precondition_failed
+    - expectation_failed
+    - bad_gateway
+    - length_required
+    - unsupported_media_type
+    - range_not_satisfiable
+    - insufficient_storage
+    - loop_detected
+    - not_acceptable
+    - too_early
+    - request_header_fields_too_large
+    type: string
+    x-enum-varnames:
+    - ErrUnknown
+    - ErrNotFound
+    - ErrInvalidInput
+    - ErrPermissionDenied
+    - ErrInternalServerError
+    - ErrTimeout
+    - ErrConflict
+    - ErrUnauthorized
+    - ErrBadRequest
+    - ErrServiceUnavailable
+    - ErrTooManyRequests
+    - ErrGatewayTimeout
+    - ErrUnprocessableEntity
+    - ErrNotImplemented
+    - ErrMethodNotAllowed
+    - ErrForbidden
+    - ErrPreconditionFailed
+    - ErrExpectationFailed
+    - ErrBadGateway
+    - ErrLengthRequired
+    - ErrUnsupportedMediaType
+    - ErrRangeNotSatisfiable
+    - ErrInsufficientStorage
+    - ErrLoopDetected
+    - ErrNotAcceptable
+    - ErrTooEarly
+    - ErrRequestHeaderFieldsTooLarge
+  merrmid.ErrorResponse:
+    properties:
+      code:
+        $ref: '#/definitions/merr.ErrCode'
+      error:
+        type: string
+    type: object
+host: pms.mandacode.com
+info:
+  contact:
+    email: support@mandacode.com
+    name: API Support
+    url: https://mandacode.com/support
+  description: Client API for MandaCode Project Management System - read-only access
+    to namespaces and projects
+  termsOfService: https://mandacode.com/terms
+  title: MandaCode PMS Client API
+  version: "1.0"
+paths:
+  /namespaces/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a namespace by its ID (read-only)
+      parameters:
+      - description: Namespace ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Namespace found
+          schema:
+            $ref: '#/definitions/internal_adapter_http_handler_client_ns.GetByIDResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "404":
+          description: Namespace not found
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: Get namespace by ID
+      tags:
+      - client
+  /projects/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a project by its ID (read-only)
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Project found
+          schema:
+            $ref: '#/definitions/internal_adapter_http_handler_client_project.GetByIDResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "404":
+          description: Project not found
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: Get project by ID
+      tags:
+      - client
+  /projects/validate:
+    get:
+      consumes:
+      - application/json
+      description: Check if a project belongs to a specific namespace
+      parameters:
+      - description: Project ID
+        in: query
+        name: project_id
+        required: true
+        type: string
+      - description: Namespace ID
+        in: query
+        name: namespace_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Validation result
+          schema:
+            $ref: '#/definitions/internal_adapter_http_handler_client_project.IsValidProjectNamespaceResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: Validate project-namespace relationship
+      tags:
+      - client
+schemes:
+- http
+- https
+swagger: "2.0"
+tags:
+- description: Client read-only operations for namespace and project access
+  name: client
