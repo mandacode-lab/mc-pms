@@ -1,0 +1,80 @@
+name: Main CI/CD
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+  push:
+    tags:
+      - "v*.*.*"
+      - "mig-v*.*.*"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  actions: read
+  contents: write
+  packages: write
+  pull-requests: read
+  security-events: write
+  id-token: write
+  attestations: write
+
+jobs:
+  pull-request-check:
+    name: Pull Request Check
+    if: github.event_name == 'pull_request'
+    uses: mandacode-com/mandacode-workflows/.github/workflows/go_project_pull_request.yml@v0.1.3
+    with:
+      go-version: "1.25.5"
+      build-path: "./..."
+      test-path: "./..."
+      test-flags: "-v -race -coverprofile=coverage.out"
+      enable-coverage: true
+      coverage-threshold: 0
+      lint-version: "latest"
+      lint-args: "./..."
+      enable-security-scan: true
+      images: |
+        [
+          {"name": "admin", "dockerfile": "Dockerfile.admin"},
+          {"name": "client", "dockerfile": "Dockerfile.client"},
+          {"name": "migration", "dockerfile": "Dockerfile.migration"}
+        ]
+      image-base-path: "build"
+      build-context: "."
+      enable-dockerfile-test: true
+      enable-helm-test: true
+      helm-charts: |
+        [
+          {"dir": "."}
+        ]
+      helm-base-path: "deployments/chart"
+
+  release:
+    name: Release
+    if: github.event_name == 'push' && github.ref_type == 'tag'
+    uses: mandacode-com/mandacode-workflows/.github/workflows/go_project_release.yml@v0.1.3
+    with:
+      images: |
+        [
+          {"name": "admin", "dockerfile": "Dockerfile.admin"},
+          {"name": "client", "dockerfile": "Dockerfile.client"},
+        ]
+      migration-images: |
+        [
+          {"name": "migration", "dockerfile": "Dockerfile.migration"}
+        ]
+      image-base-path: "build"
+      build-context: "."
+      registry: "registry.mandacode.com/mandacode-commerce"
+      tag-prefix: "v"
+      migration-tag-prefix: "mig-v"
+      enable-provenance: false
+      enable-sbom: true
+    secrets:
+      registry-username: ${{ secrets.REGISTRY_USERNAME }}
+      registry-password: ${{ secrets.REGISTRY_PASSWORD }}
