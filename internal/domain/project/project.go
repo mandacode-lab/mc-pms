@@ -1,6 +1,10 @@
 package project
 
-import "time"
+import (
+	"time"
+
+	"github.com/mandacode-com/mandacode-project/internal/domain/ns"
+)
 
 type Project struct {
 	id          ProjectID
@@ -8,6 +12,8 @@ type Project struct {
 	description ProjectDescription
 	createdAt   time.Time
 	updatedAt   time.Time
+	// Relations
+	namespaceID ns.NamespaceID
 }
 
 func NewProject(
@@ -16,6 +22,7 @@ func NewProject(
 	description ProjectDescription,
 	createdAt time.Time,
 	updatedAt time.Time,
+	namespaceID ns.NamespaceID,
 ) *Project {
 	return &Project{
 		id:          id,
@@ -23,6 +30,7 @@ func NewProject(
 		description: description,
 		createdAt:   createdAt,
 		updatedAt:   updatedAt,
+		namespaceID: namespaceID,
 	}
 }
 
@@ -31,3 +39,4 @@ func (p *Project) Name() ProjectName               { return p.name }
 func (p *Project) Description() ProjectDescription { return p.description }
 func (p *Project) CreatedAt() time.Time            { return p.createdAt }
 func (p *Project) UpdatedAt() time.Time            { return p.updatedAt }
+func (p *Project) NamespaceID() ns.NamespaceID     { return p.namespaceID }
