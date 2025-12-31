@@ -3,7 +3,7 @@ package client_project
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-project/internal/domain/project"
+	"github.com/mandacode-com/mandacode-pms/internal/domain/project"
 )
 
 func (a *Application) IsValidProjectNamespace(ctx context.Context, projectID string, namespaceID string) (bool, error) {

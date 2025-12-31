@@ -3,7 +3,7 @@ package iam
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-project/internal/port/iam"
+	"github.com/mandacode-com/mandacode-pms/internal/port/iam"
 )
 
 // NoopIAMService is a no-operation IAM service that always allows access

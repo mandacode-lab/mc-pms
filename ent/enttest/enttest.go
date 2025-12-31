@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-project/ent"
+	"github.com/mandacode-com/mandacode-pms/ent"
 	// required by schema hooks.
-	_ "github.com/mandacode-com/mandacode-project/ent/runtime"
+	_ "github.com/mandacode-com/mandacode-pms/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"github.com/mandacode-com/mandacode-project/ent/migrate"
+	"github.com/mandacode-com/mandacode-pms/ent/migrate"
 )
 
 type (

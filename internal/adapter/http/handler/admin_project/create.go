@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mandacode-com/mandacode-project/internal/port/app"
+	"github.com/mandacode-com/mandacode-pms/internal/port/app"
 )
 
 type CreateRequest struct {

@@ -2,9 +2,9 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/mandacode-com/mandacode-project/internal/adapter/http/handler/client_ns"
-	"github.com/mandacode-com/mandacode-project/internal/adapter/http/handler/client_project"
-	"github.com/mandacode-com/mandacode-project/internal/adapter/http/middleware"
+	"github.com/mandacode-com/mandacode-pms/internal/adapter/http/handler/client_ns"
+	"github.com/mandacode-com/mandacode-pms/internal/adapter/http/handler/client_project"
+	"github.com/mandacode-com/mandacode-pms/internal/adapter/http/middleware"
 )
 
 type ClientRouterConfig struct {

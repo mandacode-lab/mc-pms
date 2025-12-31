@@ -2,10 +2,10 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/mandacode-com/mandacode-project/internal/adapter/http/handler/admin_ns"
-	"github.com/mandacode-com/mandacode-project/internal/adapter/http/handler/admin_project"
-	"github.com/mandacode-com/mandacode-project/internal/adapter/http/middleware"
-	"github.com/mandacode-com/mandacode-project/internal/port/iam"
+	"github.com/mandacode-com/mandacode-pms/internal/adapter/http/handler/admin_ns"
+	"github.com/mandacode-com/mandacode-pms/internal/adapter/http/handler/admin_project"
+	"github.com/mandacode-com/mandacode-pms/internal/adapter/http/middleware"
+	"github.com/mandacode-com/mandacode-pms/internal/port/iam"
 )
 
 type AdminRouterConfig struct {

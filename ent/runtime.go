@@ -5,9 +5,9 @@ package ent
 import (
 	"time"
 
-	"github.com/mandacode-com/mandacode-project/ent/namespace"
-	"github.com/mandacode-com/mandacode-project/ent/project"
-	"github.com/mandacode-com/mandacode-project/ent/schema"
+	"github.com/mandacode-com/mandacode-pms/ent/namespace"
+	"github.com/mandacode-com/mandacode-pms/ent/project"
+	"github.com/mandacode-com/mandacode-pms/ent/schema"
 )
 
 // The init function reads all schema descriptors with runtime code

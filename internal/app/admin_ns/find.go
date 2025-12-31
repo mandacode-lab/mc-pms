@@ -3,8 +3,8 @@ package admin_ns
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-project/internal/port/app"
-	"github.com/mandacode-com/mandacode-project/internal/port/repo"
+	"github.com/mandacode-com/mandacode-pms/internal/port/app"
+	"github.com/mandacode-com/mandacode-pms/internal/port/repo"
 )
 
 func (a *Application) Find(ctx context.Context, input app.FindNamespaceInput) ([]*app.AdminNamespaceResult, error) {

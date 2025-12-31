@@ -3,9 +3,9 @@ package admin_project
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-project/internal/domain/ns"
-	"github.com/mandacode-com/mandacode-project/internal/port/app"
-	"github.com/mandacode-com/mandacode-project/internal/port/repo"
+	"github.com/mandacode-com/mandacode-pms/internal/domain/ns"
+	"github.com/mandacode-com/mandacode-pms/internal/port/app"
+	"github.com/mandacode-com/mandacode-pms/internal/port/repo"
 )
 
 func (a *Application) Find(ctx context.Context, input app.FindProjectInput) ([]*app.AdminProjectResult, error) {

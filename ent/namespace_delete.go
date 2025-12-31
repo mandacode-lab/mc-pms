@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/mandacode-com/mandacode-project/ent/namespace"
-	"github.com/mandacode-com/mandacode-project/ent/predicate"
+	"github.com/mandacode-com/mandacode-pms/ent/namespace"
+	"github.com/mandacode-com/mandacode-pms/ent/predicate"
 )
 
 // NamespaceDelete is the builder for deleting a Namespace entity.

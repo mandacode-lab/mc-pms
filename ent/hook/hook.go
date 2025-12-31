@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mandacode-com/mandacode-project/ent"
+	"github.com/mandacode-com/mandacode-pms/ent"
 )
 
 // The NamespaceFunc type is an adapter to allow the use of ordinary

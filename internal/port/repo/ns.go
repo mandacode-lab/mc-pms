@@ -3,7 +3,7 @@ package repo
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-project/internal/domain/ns"
+	"github.com/mandacode-com/mandacode-pms/internal/domain/ns"
 )
 
 type NamespaceFilter struct {

@@ -1,8 +1,8 @@
 package admin_project
 
 import (
-	"github.com/mandacode-com/mandacode-project/internal/port/rand"
-	"github.com/mandacode-com/mandacode-project/internal/port/repo"
+	"github.com/mandacode-com/mandacode-pms/internal/port/rand"
+	"github.com/mandacode-com/mandacode-pms/internal/port/repo"
 )
 
 type Application struct {

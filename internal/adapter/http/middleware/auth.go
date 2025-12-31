@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mandacode-com/mandacode-project/internal/port/iam"
+	"github.com/mandacode-com/mandacode-pms/internal/port/iam"
 )
 
 const (

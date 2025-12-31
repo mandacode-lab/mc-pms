@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/mandacode-com/mandacode-project/internal/domain/ns"
-	"github.com/mandacode-com/mandacode-project/internal/port/app"
+	"github.com/mandacode-com/mandacode-pms/internal/domain/ns"
+	"github.com/mandacode-com/mandacode-pms/internal/port/app"
 )
 
 func (a *Application) Create(ctx context.Context, input app.CreateNamespaceInput) (*app.AdminNamespaceResult, error) {

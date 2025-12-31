@@ -3,8 +3,8 @@ package admin_ns
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-project/internal/domain/ns"
-	"github.com/mandacode-com/mandacode-project/internal/port/app"
+	"github.com/mandacode-com/mandacode-pms/internal/domain/ns"
+	"github.com/mandacode-com/mandacode-pms/internal/port/app"
 )
 
 func (a *Application) Update(ctx context.Context, input app.UpdateNamespaceInput) (*app.AdminNamespaceResult, error) {

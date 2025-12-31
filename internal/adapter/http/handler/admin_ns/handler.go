@@ -1,7 +1,7 @@
 package admin_ns
 
 import (
-	"github.com/mandacode-com/mandacode-project/internal/port/app"
+	"github.com/mandacode-com/mandacode-pms/internal/port/app"
 )
 
 type Handler struct {
