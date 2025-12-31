@@ -1,5 +1,11 @@
 package project
 
+import (
+	"time"
+
+	"github.com/mandacode-com/mandacode-project/internal/domain/ns"
+)
+
 func (p *Project) UpdateName(name ProjectName) {
 	p.name = name
 	p.updatedAt = time.Now()
