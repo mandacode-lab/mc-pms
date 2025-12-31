@@ -10,6 +10,18 @@ type GetByIDResponse struct {
 	Namespace *NamespaceResponse `json:"namespace"`
 }
 
+// GetByID godoc
+// @Summary Get namespace by ID
+// @Description Get a namespace by its ID (read-only)
+// @Tags client
+// @Accept json
+// @Produce json
+// @Param id path string true "Namespace ID"
+// @Success 200 {object} GetByIDResponse "Namespace found"
+// @Failure 400 {object} merrmid.ErrorResponse "Bad request"
+// @Failure 404 {object} merrmid.ErrorResponse "Namespace not found"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
+// @Router /namespaces/{id} [get]
 func (h *Handler) GetByID(c *gin.Context) {
 	namespaceID := c.Param("id")
 	if namespaceID == "" {

@@ -16,6 +16,17 @@ type CreateResponse struct {
 	Namespace *NamespaceResponse `json:"namespace"`
 }
 
+// Create godoc
+// @Summary Create namespace
+// @Description Create a new namespace
+// @Tags admin
+// @Accept json
+// @Produce json
+// @Param request body CreateRequest true "Create namespace request"
+// @Success 201 {object} CreateResponse "Namespace created successfully"
+// @Failure 400 {object} merrmid.ErrorResponse "Bad request"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
+// @Router /namespaces [post]
 func (h *Handler) Create(c *gin.Context) {
 	var req CreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

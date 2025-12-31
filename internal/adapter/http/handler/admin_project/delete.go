@@ -6,6 +6,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Delete godoc
+// @Summary Delete project
+// @Description Delete a project by ID
+// @Tags admin
+// @Accept json
+// @Produce json
+// @Param id path string true "Project ID"
+// @Success 204 "Project deleted successfully"
+// @Failure 400 {object} merrmid.ErrorResponse "Bad request"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
+// @Router /projects/{id} [delete]
 func (h *Handler) Delete(c *gin.Context) {
 	projectID := c.Param("id")
 	if projectID == "" {

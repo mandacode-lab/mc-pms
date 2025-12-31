@@ -10,6 +10,15 @@ type ListAllResponse struct {
 	Projects []*ProjectResponse `json:"projects"`
 }
 
+// ListAll godoc
+// @Summary List all projects
+// @Description List all projects without filters
+// @Tags admin
+// @Accept json
+// @Produce json
+// @Success 200 {object} ListAllResponse "Projects listed successfully"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
+// @Router /projects/all [get]
 func (h *Handler) ListAll(c *gin.Context) {
 	results, err := h.adminProject.ListAll(c.Request.Context())
 	if err != nil {

@@ -10,6 +10,18 @@ type GetByIDResponse struct {
 	Project *ProjectResponse `json:"project"`
 }
 
+// GetByID godoc
+// @Summary Get project by ID
+// @Description Get a project by its ID (read-only)
+// @Tags client
+// @Accept json
+// @Produce json
+// @Param id path string true "Project ID"
+// @Success 200 {object} GetByIDResponse "Project found"
+// @Failure 400 {object} merrmid.ErrorResponse "Bad request"
+// @Failure 404 {object} merrmid.ErrorResponse "Project not found"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
+// @Router /projects/{id} [get]
 func (h *Handler) GetByID(c *gin.Context) {
 	projectID := c.Param("id")
 	if projectID == "" {

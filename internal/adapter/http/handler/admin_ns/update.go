@@ -16,6 +16,19 @@ type UpdateResponse struct {
 	Namespace *NamespaceResponse `json:"namespace"`
 }
 
+// Update godoc
+// @Summary Update namespace
+// @Description Update an existing namespace
+// @Tags admin
+// @Accept json
+// @Produce json
+// @Param id path string true "Namespace ID"
+// @Param request body UpdateRequest true "Update namespace request"
+// @Success 200 {object} UpdateResponse "Namespace updated successfully"
+// @Failure 400 {object} merrmid.ErrorResponse "Bad request"
+// @Failure 404 {object} merrmid.ErrorResponse "Namespace not found"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
+// @Router /namespaces/{id} [post]
 func (h *Handler) Update(c *gin.Context) {
 	namespaceID := c.Param("id")
 	if namespaceID == "" {

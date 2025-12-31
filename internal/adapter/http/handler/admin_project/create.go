@@ -17,6 +17,17 @@ type CreateResponse struct {
 	Project *ProjectResponse `json:"project"`
 }
 
+// Create godoc
+// @Summary Create project
+// @Description Create a new project
+// @Tags admin
+// @Accept json
+// @Produce json
+// @Param request body CreateRequest true "Create project request"
+// @Success 201 {object} CreateResponse "Project created successfully"
+// @Failure 400 {object} merrmid.ErrorResponse "Bad request"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
+// @Router /projects [post]
 func (h *Handler) Create(c *gin.Context) {
 	var req CreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

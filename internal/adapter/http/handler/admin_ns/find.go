@@ -11,6 +11,16 @@ type FindResponse struct {
 	Namespaces []*NamespaceResponse `json:"namespaces"`
 }
 
+// Find godoc
+// @Summary Find namespaces
+// @Description Find namespaces with optional filters
+// @Tags admin
+// @Accept json
+// @Produce json
+// @Param name query string false "Filter by name contains"
+// @Success 200 {object} FindResponse "Namespaces found"
+// @Failure 500 {object} merrmid.ErrorResponse "Internal server error"
+// @Router /namespaces [get]
 func (h *Handler) Find(c *gin.Context) {
 	nameContains := c.Query("name")
 
