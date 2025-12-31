@@ -6,11 +6,14 @@ import (
 	"os/signal"
 	"syscall"
 
+	_ "github.com/mandacode-com/mandacode-pms/docs/admin"
 	"github.com/mandacode-com/mandacode-pms/internal/adapter/http/router"
 	"github.com/mandacode-com/mandacode-pms/internal/config"
 	infrahttp "github.com/mandacode-com/mandacode-pms/internal/infra/http"
 	"github.com/mandacode-com/merver"
 	"github.com/rs/zerolog"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/files"
 )
 
 // @title MandaCode PMS Admin API
@@ -64,6 +67,9 @@ func main() {
 		ProjectHandler: container.ProjectHandler,
 		AuthMiddleware: container.AuthMiddleware,
 	})
+
+	// Setup Swagger UI
+	httpServer.GetEngine().GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	logger.Info().Msg("routes configured")
 
