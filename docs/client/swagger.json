@@ -1,22 +1,26 @@
 {
+    "schemes": [
+        "http",
+        "https"
+    ],
     "swagger": "2.0",
     "info": {
-        "description": "Basic Authentication using ClientAppID as username and ClientSecret as password",
-        "title": "MandaCode Service Hub Client API",
+        "description": "Client API for MandaCode Project Management System - read-only access to namespaces and projects",
+        "title": "MandaCode PMS Client API",
+        "termsOfService": "https://mandacode.com/terms",
         "contact": {
-            "name": "API Support"
+            "name": "API Support",
+            "url": "https://mandacode.com/support",
+            "email": "support@mandacode.com"
         },
         "version": "1.0"
     },
+    "host": "pms.mandacode.com",
+    "basePath": "/api/client/v1",
     "paths": {
-        "/client-access/verify": {
-            "post": {
-                "security": [
-                    {
-                        "BasicAuth": []
-                    }
-                ],
-                "description": "Verify client application credentials using Basic Authentication (client_id:client_secret)",
+        "/namespaces/{id}": {
+            "get": {
+                "description": "Get a namespace by its ID (read-only)",
                 "consumes": [
                     "application/json"
                 ],
@@ -24,36 +28,134 @@
                     "application/json"
                 ],
                 "tags": [
-                    "client-access"
+                    "client"
                 ],
-                "summary": "Verify client credentials",
+                "summary": "Get namespace by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Namespace ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Client verification successful - returns service_id",
+                        "description": "Namespace found",
                         "schema": {
-                            "$ref": "#/definitions/internal_adapter_handler_client_access.VerifyClientResponse"
+                            "$ref": "#/definitions/internal_adapter_http_handler_client_ns.GetByIDResponse"
                         }
                     },
                     "400": {
-                        "description": "Bad request - Invalid client_id format",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized - Invalid client_secret",
-                        "schema": {
-                            "$ref": "#/definitions/merrmid.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden - Client or service inactive",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
                     },
                     "404": {
-                        "description": "Not found - Client or service not found",
+                        "description": "Namespace not found",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/validate": {
+            "get": {
+                "description": "Check if a project belongs to a specific namespace",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "client"
+                ],
+                "summary": "Validate project-namespace relationship",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Project ID",
+                        "name": "project_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Namespace ID",
+                        "name": "namespace_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Validation result",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_http_handler_client_project.IsValidProjectNamespaceResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{id}": {
+            "get": {
+                "description": "Get a project by its ID (read-only)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "client"
+                ],
+                "summary": "Get project by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Project ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Project found",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapter_http_handler_client_project.GetByIDResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/merrmid.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Project not found",
                         "schema": {
                             "$ref": "#/definitions/merrmid.ErrorResponse"
                         }
@@ -69,10 +171,69 @@
         }
     },
     "definitions": {
-        "internal_adapter_handler_client_access.VerifyClientResponse": {
+        "internal_adapter_http_handler_client_ns.GetByIDResponse": {
             "type": "object",
             "properties": {
-                "service_id": {
+                "namespace": {
+                    "$ref": "#/definitions/internal_adapter_http_handler_client_ns.NamespaceResponse"
+                }
+            }
+        },
+        "internal_adapter_http_handler_client_ns.NamespaceResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "namespace_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapter_http_handler_client_project.GetByIDResponse": {
+            "type": "object",
+            "properties": {
+                "project": {
+                    "$ref": "#/definitions/internal_adapter_http_handler_client_project.ProjectResponse"
+                }
+            }
+        },
+        "internal_adapter_http_handler_client_project.IsValidProjectNamespaceResponse": {
+            "type": "object",
+            "properties": {
+                "valid": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "internal_adapter_http_handler_client_project.ProjectResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "namespace_id": {
+                    "type": "string"
+                },
+                "project_id": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }
@@ -150,9 +311,10 @@
             }
         }
     },
-    "securityDefinitions": {
-        "BasicAuth": {
-            "type": "basic"
+    "tags": [
+        {
+            "description": "Client read-only operations for namespace and project access",
+            "name": "client"
         }
-    }
+    ]
 }

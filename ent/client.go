@@ -9,14 +9,14 @@ import (
 	"log"
 	"reflect"
 
-	"github.com/mandacode-com/mandacode-ssam/ent/migrate"
+	"github.com/mandacode-com/mandacode-pms/ent/migrate"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
-	"github.com/mandacode-com/mandacode-ssam/ent/service"
+	"github.com/mandacode-com/mandacode-pms/ent/namespace"
+	"github.com/mandacode-com/mandacode-pms/ent/project"
 )
 
 // Client is the client that holds all ent builders.
@@ -24,10 +24,10 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// ClientApp is the client for interacting with the ClientApp builders.
-	ClientApp *ClientAppClient
-	// Service is the client for interacting with the Service builders.
-	Service *ServiceClient
+	// Namespace is the client for interacting with the Namespace builders.
+	Namespace *NamespaceClient
+	// Project is the client for interacting with the Project builders.
+	Project *ProjectClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -39,8 +39,8 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.ClientApp = NewClientAppClient(c.config)
-	c.Service = NewServiceClient(c.config)
+	c.Namespace = NewNamespaceClient(c.config)
+	c.Project = NewProjectClient(c.config)
 }
 
 type (
@@ -133,8 +133,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:       ctx,
 		config:    cfg,
-		ClientApp: NewClientAppClient(cfg),
-		Service:   NewServiceClient(cfg),
+		Namespace: NewNamespaceClient(cfg),
+		Project:   NewProjectClient(cfg),
 	}, nil
 }
 
@@ -154,15 +154,15 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:       ctx,
 		config:    cfg,
-		ClientApp: NewClientAppClient(cfg),
-		Service:   NewServiceClient(cfg),
+		Namespace: NewNamespaceClient(cfg),
+		Project:   NewProjectClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		ClientApp.
+//		Namespace.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -184,130 +184,130 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.ClientApp.Use(hooks...)
-	c.Service.Use(hooks...)
+	c.Namespace.Use(hooks...)
+	c.Project.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.ClientApp.Intercept(interceptors...)
-	c.Service.Intercept(interceptors...)
+	c.Namespace.Intercept(interceptors...)
+	c.Project.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
-	case *ClientAppMutation:
-		return c.ClientApp.mutate(ctx, m)
-	case *ServiceMutation:
-		return c.Service.mutate(ctx, m)
+	case *NamespaceMutation:
+		return c.Namespace.mutate(ctx, m)
+	case *ProjectMutation:
+		return c.Project.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
 }
 
-// ClientAppClient is a client for the ClientApp schema.
-type ClientAppClient struct {
+// NamespaceClient is a client for the Namespace schema.
+type NamespaceClient struct {
 	config
 }
 
-// NewClientAppClient returns a client for the ClientApp from the given config.
-func NewClientAppClient(c config) *ClientAppClient {
-	return &ClientAppClient{config: c}
+// NewNamespaceClient returns a client for the Namespace from the given config.
+func NewNamespaceClient(c config) *NamespaceClient {
+	return &NamespaceClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `clientapp.Hooks(f(g(h())))`.
-func (c *ClientAppClient) Use(hooks ...Hook) {
-	c.hooks.ClientApp = append(c.hooks.ClientApp, hooks...)
+// A call to `Use(f, g, h)` equals to `namespace.Hooks(f(g(h())))`.
+func (c *NamespaceClient) Use(hooks ...Hook) {
+	c.hooks.Namespace = append(c.hooks.Namespace, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `clientapp.Intercept(f(g(h())))`.
-func (c *ClientAppClient) Intercept(interceptors ...Interceptor) {
-	c.inters.ClientApp = append(c.inters.ClientApp, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `namespace.Intercept(f(g(h())))`.
+func (c *NamespaceClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Namespace = append(c.inters.Namespace, interceptors...)
 }
 
-// Create returns a builder for creating a ClientApp entity.
-func (c *ClientAppClient) Create() *ClientAppCreate {
-	mutation := newClientAppMutation(c.config, OpCreate)
-	return &ClientAppCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a Namespace entity.
+func (c *NamespaceClient) Create() *NamespaceCreate {
+	mutation := newNamespaceMutation(c.config, OpCreate)
+	return &NamespaceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of ClientApp entities.
-func (c *ClientAppClient) CreateBulk(builders ...*ClientAppCreate) *ClientAppCreateBulk {
-	return &ClientAppCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Namespace entities.
+func (c *NamespaceClient) CreateBulk(builders ...*NamespaceCreate) *NamespaceCreateBulk {
+	return &NamespaceCreateBulk{config: c.config, builders: builders}
 }
 
 // MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
 // a builder and applies setFunc on it.
-func (c *ClientAppClient) MapCreateBulk(slice any, setFunc func(*ClientAppCreate, int)) *ClientAppCreateBulk {
+func (c *NamespaceClient) MapCreateBulk(slice any, setFunc func(*NamespaceCreate, int)) *NamespaceCreateBulk {
 	rv := reflect.ValueOf(slice)
 	if rv.Kind() != reflect.Slice {
-		return &ClientAppCreateBulk{err: fmt.Errorf("calling to ClientAppClient.MapCreateBulk with wrong type %T, need slice", slice)}
+		return &NamespaceCreateBulk{err: fmt.Errorf("calling to NamespaceClient.MapCreateBulk with wrong type %T, need slice", slice)}
 	}
-	builders := make([]*ClientAppCreate, rv.Len())
+	builders := make([]*NamespaceCreate, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		builders[i] = c.Create()
 		setFunc(builders[i], i)
 	}
-	return &ClientAppCreateBulk{config: c.config, builders: builders}
+	return &NamespaceCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for ClientApp.
-func (c *ClientAppClient) Update() *ClientAppUpdate {
-	mutation := newClientAppMutation(c.config, OpUpdate)
-	return &ClientAppUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Namespace.
+func (c *NamespaceClient) Update() *NamespaceUpdate {
+	mutation := newNamespaceMutation(c.config, OpUpdate)
+	return &NamespaceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *ClientAppClient) UpdateOne(_m *ClientApp) *ClientAppUpdateOne {
-	mutation := newClientAppMutation(c.config, OpUpdateOne, withClientApp(_m))
-	return &ClientAppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *NamespaceClient) UpdateOne(_m *Namespace) *NamespaceUpdateOne {
+	mutation := newNamespaceMutation(c.config, OpUpdateOne, withNamespace(_m))
+	return &NamespaceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *ClientAppClient) UpdateOneID(id int64) *ClientAppUpdateOne {
-	mutation := newClientAppMutation(c.config, OpUpdateOne, withClientAppID(id))
-	return &ClientAppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *NamespaceClient) UpdateOneID(id string) *NamespaceUpdateOne {
+	mutation := newNamespaceMutation(c.config, OpUpdateOne, withNamespaceID(id))
+	return &NamespaceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for ClientApp.
-func (c *ClientAppClient) Delete() *ClientAppDelete {
-	mutation := newClientAppMutation(c.config, OpDelete)
-	return &ClientAppDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Namespace.
+func (c *NamespaceClient) Delete() *NamespaceDelete {
+	mutation := newNamespaceMutation(c.config, OpDelete)
+	return &NamespaceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *ClientAppClient) DeleteOne(_m *ClientApp) *ClientAppDeleteOne {
+func (c *NamespaceClient) DeleteOne(_m *Namespace) *NamespaceDeleteOne {
 	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *ClientAppClient) DeleteOneID(id int64) *ClientAppDeleteOne {
-	builder := c.Delete().Where(clientapp.ID(id))
+func (c *NamespaceClient) DeleteOneID(id string) *NamespaceDeleteOne {
+	builder := c.Delete().Where(namespace.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &ClientAppDeleteOne{builder}
+	return &NamespaceDeleteOne{builder}
 }
 
-// Query returns a query builder for ClientApp.
-func (c *ClientAppClient) Query() *ClientAppQuery {
-	return &ClientAppQuery{
+// Query returns a query builder for Namespace.
+func (c *NamespaceClient) Query() *NamespaceQuery {
+	return &NamespaceQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeClientApp},
+		ctx:    &QueryContext{Type: TypeNamespace},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a ClientApp entity by its id.
-func (c *ClientAppClient) Get(ctx context.Context, id int64) (*ClientApp, error) {
-	return c.Query().Where(clientapp.ID(id)).Only(ctx)
+// Get returns a Namespace entity by its id.
+func (c *NamespaceClient) Get(ctx context.Context, id string) (*Namespace, error) {
+	return c.Query().Where(namespace.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *ClientAppClient) GetX(ctx context.Context, id int64) *ClientApp {
+func (c *NamespaceClient) GetX(ctx context.Context, id string) *Namespace {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -315,15 +315,15 @@ func (c *ClientAppClient) GetX(ctx context.Context, id int64) *ClientApp {
 	return obj
 }
 
-// QueryService queries the service edge of a ClientApp.
-func (c *ClientAppClient) QueryService(_m *ClientApp) *ServiceQuery {
-	query := (&ServiceClient{config: c.config}).Query()
+// QueryProjects queries the projects edge of a Namespace.
+func (c *NamespaceClient) QueryProjects(_m *Namespace) *ProjectQuery {
+	query := (&ProjectClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(clientapp.Table, clientapp.FieldID, id),
-			sqlgraph.To(service.Table, service.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, clientapp.ServiceTable, clientapp.ServiceColumn),
+			sqlgraph.From(namespace.Table, namespace.FieldID, id),
+			sqlgraph.To(project.Table, project.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, namespace.ProjectsTable, namespace.ProjectsColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -332,131 +332,131 @@ func (c *ClientAppClient) QueryService(_m *ClientApp) *ServiceQuery {
 }
 
 // Hooks returns the client hooks.
-func (c *ClientAppClient) Hooks() []Hook {
-	return c.hooks.ClientApp
+func (c *NamespaceClient) Hooks() []Hook {
+	return c.hooks.Namespace
 }
 
 // Interceptors returns the client interceptors.
-func (c *ClientAppClient) Interceptors() []Interceptor {
-	return c.inters.ClientApp
+func (c *NamespaceClient) Interceptors() []Interceptor {
+	return c.inters.Namespace
 }
 
-func (c *ClientAppClient) mutate(ctx context.Context, m *ClientAppMutation) (Value, error) {
+func (c *NamespaceClient) mutate(ctx context.Context, m *NamespaceMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&ClientAppCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&NamespaceCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&ClientAppUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&NamespaceUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&ClientAppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&NamespaceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&ClientAppDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&NamespaceDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown ClientApp mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown Namespace mutation op: %q", m.Op())
 	}
 }
 
-// ServiceClient is a client for the Service schema.
-type ServiceClient struct {
+// ProjectClient is a client for the Project schema.
+type ProjectClient struct {
 	config
 }
 
-// NewServiceClient returns a client for the Service from the given config.
-func NewServiceClient(c config) *ServiceClient {
-	return &ServiceClient{config: c}
+// NewProjectClient returns a client for the Project from the given config.
+func NewProjectClient(c config) *ProjectClient {
+	return &ProjectClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `service.Hooks(f(g(h())))`.
-func (c *ServiceClient) Use(hooks ...Hook) {
-	c.hooks.Service = append(c.hooks.Service, hooks...)
+// A call to `Use(f, g, h)` equals to `project.Hooks(f(g(h())))`.
+func (c *ProjectClient) Use(hooks ...Hook) {
+	c.hooks.Project = append(c.hooks.Project, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `service.Intercept(f(g(h())))`.
-func (c *ServiceClient) Intercept(interceptors ...Interceptor) {
-	c.inters.Service = append(c.inters.Service, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `project.Intercept(f(g(h())))`.
+func (c *ProjectClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Project = append(c.inters.Project, interceptors...)
 }
 
-// Create returns a builder for creating a Service entity.
-func (c *ServiceClient) Create() *ServiceCreate {
-	mutation := newServiceMutation(c.config, OpCreate)
-	return &ServiceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a Project entity.
+func (c *ProjectClient) Create() *ProjectCreate {
+	mutation := newProjectMutation(c.config, OpCreate)
+	return &ProjectCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Service entities.
-func (c *ServiceClient) CreateBulk(builders ...*ServiceCreate) *ServiceCreateBulk {
-	return &ServiceCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Project entities.
+func (c *ProjectClient) CreateBulk(builders ...*ProjectCreate) *ProjectCreateBulk {
+	return &ProjectCreateBulk{config: c.config, builders: builders}
 }
 
 // MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
 // a builder and applies setFunc on it.
-func (c *ServiceClient) MapCreateBulk(slice any, setFunc func(*ServiceCreate, int)) *ServiceCreateBulk {
+func (c *ProjectClient) MapCreateBulk(slice any, setFunc func(*ProjectCreate, int)) *ProjectCreateBulk {
 	rv := reflect.ValueOf(slice)
 	if rv.Kind() != reflect.Slice {
-		return &ServiceCreateBulk{err: fmt.Errorf("calling to ServiceClient.MapCreateBulk with wrong type %T, need slice", slice)}
+		return &ProjectCreateBulk{err: fmt.Errorf("calling to ProjectClient.MapCreateBulk with wrong type %T, need slice", slice)}
 	}
-	builders := make([]*ServiceCreate, rv.Len())
+	builders := make([]*ProjectCreate, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		builders[i] = c.Create()
 		setFunc(builders[i], i)
 	}
-	return &ServiceCreateBulk{config: c.config, builders: builders}
+	return &ProjectCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Service.
-func (c *ServiceClient) Update() *ServiceUpdate {
-	mutation := newServiceMutation(c.config, OpUpdate)
-	return &ServiceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Project.
+func (c *ProjectClient) Update() *ProjectUpdate {
+	mutation := newProjectMutation(c.config, OpUpdate)
+	return &ProjectUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *ServiceClient) UpdateOne(_m *Service) *ServiceUpdateOne {
-	mutation := newServiceMutation(c.config, OpUpdateOne, withService(_m))
-	return &ServiceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *ProjectClient) UpdateOne(_m *Project) *ProjectUpdateOne {
+	mutation := newProjectMutation(c.config, OpUpdateOne, withProject(_m))
+	return &ProjectUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *ServiceClient) UpdateOneID(id int64) *ServiceUpdateOne {
-	mutation := newServiceMutation(c.config, OpUpdateOne, withServiceID(id))
-	return &ServiceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *ProjectClient) UpdateOneID(id string) *ProjectUpdateOne {
+	mutation := newProjectMutation(c.config, OpUpdateOne, withProjectID(id))
+	return &ProjectUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Service.
-func (c *ServiceClient) Delete() *ServiceDelete {
-	mutation := newServiceMutation(c.config, OpDelete)
-	return &ServiceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Project.
+func (c *ProjectClient) Delete() *ProjectDelete {
+	mutation := newProjectMutation(c.config, OpDelete)
+	return &ProjectDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *ServiceClient) DeleteOne(_m *Service) *ServiceDeleteOne {
+func (c *ProjectClient) DeleteOne(_m *Project) *ProjectDeleteOne {
 	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *ServiceClient) DeleteOneID(id int64) *ServiceDeleteOne {
-	builder := c.Delete().Where(service.ID(id))
+func (c *ProjectClient) DeleteOneID(id string) *ProjectDeleteOne {
+	builder := c.Delete().Where(project.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &ServiceDeleteOne{builder}
+	return &ProjectDeleteOne{builder}
 }
 
-// Query returns a query builder for Service.
-func (c *ServiceClient) Query() *ServiceQuery {
-	return &ServiceQuery{
+// Query returns a query builder for Project.
+func (c *ProjectClient) Query() *ProjectQuery {
+	return &ProjectQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeService},
+		ctx:    &QueryContext{Type: TypeProject},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a Service entity by its id.
-func (c *ServiceClient) Get(ctx context.Context, id int64) (*Service, error) {
-	return c.Query().Where(service.ID(id)).Only(ctx)
+// Get returns a Project entity by its id.
+func (c *ProjectClient) Get(ctx context.Context, id string) (*Project, error) {
+	return c.Query().Where(project.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *ServiceClient) GetX(ctx context.Context, id int64) *Service {
+func (c *ProjectClient) GetX(ctx context.Context, id string) *Project {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -464,15 +464,15 @@ func (c *ServiceClient) GetX(ctx context.Context, id int64) *Service {
 	return obj
 }
 
-// QueryClientApps queries the client_apps edge of a Service.
-func (c *ServiceClient) QueryClientApps(_m *Service) *ClientAppQuery {
-	query := (&ClientAppClient{config: c.config}).Query()
+// QueryNamespace queries the namespace edge of a Project.
+func (c *ProjectClient) QueryNamespace(_m *Project) *NamespaceQuery {
+	query := (&NamespaceClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(service.Table, service.FieldID, id),
-			sqlgraph.To(clientapp.Table, clientapp.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, service.ClientAppsTable, service.ClientAppsColumn),
+			sqlgraph.From(project.Table, project.FieldID, id),
+			sqlgraph.To(namespace.Table, namespace.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, project.NamespaceTable, project.NamespaceColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -481,36 +481,36 @@ func (c *ServiceClient) QueryClientApps(_m *Service) *ClientAppQuery {
 }
 
 // Hooks returns the client hooks.
-func (c *ServiceClient) Hooks() []Hook {
-	return c.hooks.Service
+func (c *ProjectClient) Hooks() []Hook {
+	return c.hooks.Project
 }
 
 // Interceptors returns the client interceptors.
-func (c *ServiceClient) Interceptors() []Interceptor {
-	return c.inters.Service
+func (c *ProjectClient) Interceptors() []Interceptor {
+	return c.inters.Project
 }
 
-func (c *ServiceClient) mutate(ctx context.Context, m *ServiceMutation) (Value, error) {
+func (c *ProjectClient) mutate(ctx context.Context, m *ProjectMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&ServiceCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&ProjectCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&ServiceUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&ProjectUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&ServiceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&ProjectUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&ServiceDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&ProjectDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown Service mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown Project mutation op: %q", m.Op())
 	}
 }
 
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		ClientApp, Service []ent.Hook
+		Namespace, Project []ent.Hook
 	}
 	inters struct {
-		ClientApp, Service []ent.Interceptor
+		Namespace, Project []ent.Interceptor
 	}
 )

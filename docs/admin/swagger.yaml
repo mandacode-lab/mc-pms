@@ -1,0 +1,547 @@
+basePath: /api/admin/v1
+definitions:
+  internal_adapter_http_handler_admin_ns.CreateRequest:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  internal_adapter_http_handler_admin_ns.CreateResponse:
+    properties:
+      namespace:
+        $ref: '#/definitions/internal_adapter_http_handler_admin_ns.NamespaceResponse'
+    type: object
+  internal_adapter_http_handler_admin_ns.FindResponse:
+    properties:
+      namespaces:
+        items:
+          $ref: '#/definitions/internal_adapter_http_handler_admin_ns.NamespaceResponse'
+        type: array
+    type: object
+  internal_adapter_http_handler_admin_ns.GetByIDResponse:
+    properties:
+      namespace:
+        $ref: '#/definitions/internal_adapter_http_handler_admin_ns.NamespaceResponse'
+    type: object
+  internal_adapter_http_handler_admin_ns.ListAllResponse:
+    properties:
+      namespaces:
+        items:
+          $ref: '#/definitions/internal_adapter_http_handler_admin_ns.NamespaceResponse'
+        type: array
+    type: object
+  internal_adapter_http_handler_admin_ns.NamespaceResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      namespace_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  internal_adapter_http_handler_admin_ns.UpdateRequest:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  internal_adapter_http_handler_admin_ns.UpdateResponse:
+    properties:
+      namespace:
+        $ref: '#/definitions/internal_adapter_http_handler_admin_ns.NamespaceResponse'
+    type: object
+  internal_adapter_http_handler_admin_project.CreateRequest:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      namespace_id:
+        type: string
+    required:
+    - name
+    - namespace_id
+    type: object
+  internal_adapter_http_handler_admin_project.CreateResponse:
+    properties:
+      project:
+        $ref: '#/definitions/internal_adapter_http_handler_admin_project.ProjectResponse'
+    type: object
+  internal_adapter_http_handler_admin_project.FindResponse:
+    properties:
+      projects:
+        items:
+          $ref: '#/definitions/internal_adapter_http_handler_admin_project.ProjectResponse'
+        type: array
+    type: object
+  internal_adapter_http_handler_admin_project.GetByIDResponse:
+    properties:
+      project:
+        $ref: '#/definitions/internal_adapter_http_handler_admin_project.ProjectResponse'
+    type: object
+  internal_adapter_http_handler_admin_project.ListAllResponse:
+    properties:
+      projects:
+        items:
+          $ref: '#/definitions/internal_adapter_http_handler_admin_project.ProjectResponse'
+        type: array
+    type: object
+  internal_adapter_http_handler_admin_project.ProjectResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      project_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  internal_adapter_http_handler_admin_project.UpdateRequest:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  internal_adapter_http_handler_admin_project.UpdateResponse:
+    properties:
+      project:
+        $ref: '#/definitions/internal_adapter_http_handler_admin_project.ProjectResponse'
+    type: object
+  merr.ErrCode:
+    enum:
+    - unknown
+    - not_found
+    - invalid_input
+    - permission_denied
+    - internal_server_error
+    - timeout
+    - conflict
+    - unauthorized
+    - bad_request
+    - service_unavailable
+    - too_many_requests
+    - gateway_timeout
+    - unprocessable_entity
+    - not_implemented
+    - method_not_allowed
+    - forbidden
+    - precondition_failed
+    - expectation_failed
+    - bad_gateway
+    - length_required
+    - unsupported_media_type
+    - range_not_satisfiable
+    - insufficient_storage
+    - loop_detected
+    - not_acceptable
+    - too_early
+    - request_header_fields_too_large
+    type: string
+    x-enum-varnames:
+    - ErrUnknown
+    - ErrNotFound
+    - ErrInvalidInput
+    - ErrPermissionDenied
+    - ErrInternalServerError
+    - ErrTimeout
+    - ErrConflict
+    - ErrUnauthorized
+    - ErrBadRequest
+    - ErrServiceUnavailable
+    - ErrTooManyRequests
+    - ErrGatewayTimeout
+    - ErrUnprocessableEntity
+    - ErrNotImplemented
+    - ErrMethodNotAllowed
+    - ErrForbidden
+    - ErrPreconditionFailed
+    - ErrExpectationFailed
+    - ErrBadGateway
+    - ErrLengthRequired
+    - ErrUnsupportedMediaType
+    - ErrRangeNotSatisfiable
+    - ErrInsufficientStorage
+    - ErrLoopDetected
+    - ErrNotAcceptable
+    - ErrTooEarly
+    - ErrRequestHeaderFieldsTooLarge
+  merrmid.ErrorResponse:
+    properties:
+      code:
+        $ref: '#/definitions/merr.ErrCode'
+      error:
+        type: string
+    type: object
+host: pms.mandacode.com
+info:
+  contact:
+    email: support@mandacode.com
+    name: API Support
+    url: https://mandacode.com/support
+  description: Admin API for MandaCode Project Management System - manages namespaces
+    and projects
+  termsOfService: https://mandacode.com/terms
+  title: MandaCode PMS Admin API
+  version: "1.0"
+paths:
+  /namespaces:
+    get:
+      consumes:
+      - application/json
+      description: Find namespaces with optional filters
+      parameters:
+      - description: Filter by name contains
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Namespaces found
+          schema:
+            $ref: '#/definitions/internal_adapter_http_handler_admin_ns.FindResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: Find namespaces
+      tags:
+      - admin
+    post:
+      consumes:
+      - application/json
+      description: Create a new namespace
+      parameters:
+      - description: Create namespace request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_adapter_http_handler_admin_ns.CreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Namespace created successfully
+          schema:
+            $ref: '#/definitions/internal_adapter_http_handler_admin_ns.CreateResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: Create namespace
+      tags:
+      - admin
+  /namespaces/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a namespace by ID
+      parameters:
+      - description: Namespace ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Namespace deleted successfully
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: Delete namespace
+      tags:
+      - admin
+    get:
+      consumes:
+      - application/json
+      description: Get a namespace by its ID
+      parameters:
+      - description: Namespace ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Namespace found
+          schema:
+            $ref: '#/definitions/internal_adapter_http_handler_admin_ns.GetByIDResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "404":
+          description: Namespace not found
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: Get namespace by ID
+      tags:
+      - admin
+    post:
+      consumes:
+      - application/json
+      description: Update an existing namespace
+      parameters:
+      - description: Namespace ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update namespace request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_adapter_http_handler_admin_ns.UpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Namespace updated successfully
+          schema:
+            $ref: '#/definitions/internal_adapter_http_handler_admin_ns.UpdateResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "404":
+          description: Namespace not found
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: Update namespace
+      tags:
+      - admin
+  /namespaces/all:
+    get:
+      consumes:
+      - application/json
+      description: List all namespaces without filters
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Namespaces listed successfully
+          schema:
+            $ref: '#/definitions/internal_adapter_http_handler_admin_ns.ListAllResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: List all namespaces
+      tags:
+      - admin
+  /projects:
+    get:
+      consumes:
+      - application/json
+      description: Find projects with optional filters
+      parameters:
+      - description: Filter by name contains
+        in: query
+        name: name
+        type: string
+      - description: Filter by namespace ID
+        in: query
+        name: namespace_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Projects found
+          schema:
+            $ref: '#/definitions/internal_adapter_http_handler_admin_project.FindResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: Find projects
+      tags:
+      - admin
+    post:
+      consumes:
+      - application/json
+      description: Create a new project
+      parameters:
+      - description: Create project request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_adapter_http_handler_admin_project.CreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Project created successfully
+          schema:
+            $ref: '#/definitions/internal_adapter_http_handler_admin_project.CreateResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: Create project
+      tags:
+      - admin
+  /projects/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a project by ID
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Project deleted successfully
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: Delete project
+      tags:
+      - admin
+    get:
+      consumes:
+      - application/json
+      description: Get a project by its ID
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Project found
+          schema:
+            $ref: '#/definitions/internal_adapter_http_handler_admin_project.GetByIDResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "404":
+          description: Project not found
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: Get project by ID
+      tags:
+      - admin
+    post:
+      consumes:
+      - application/json
+      description: Update an existing project
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update project request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_adapter_http_handler_admin_project.UpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Project updated successfully
+          schema:
+            $ref: '#/definitions/internal_adapter_http_handler_admin_project.UpdateResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "404":
+          description: Project not found
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: Update project
+      tags:
+      - admin
+  /projects/all:
+    get:
+      consumes:
+      - application/json
+      description: List all projects without filters
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Projects listed successfully
+          schema:
+            $ref: '#/definitions/internal_adapter_http_handler_admin_project.ListAllResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/merrmid.ErrorResponse'
+      summary: List all projects
+      tags:
+      - admin
+schemes:
+- http
+- https
+swagger: "2.0"
+tags:
+- description: Admin operations for namespace and project management
+  name: admin

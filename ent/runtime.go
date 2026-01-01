@@ -5,66 +5,37 @@ package ent
 import (
 	"time"
 
-	"github.com/google/uuid"
-	"github.com/mandacode-com/mandacode-ssam/ent/clientapp"
-	"github.com/mandacode-com/mandacode-ssam/ent/schema"
-	"github.com/mandacode-com/mandacode-ssam/ent/service"
+	"github.com/mandacode-com/mandacode-pms/ent/namespace"
+	"github.com/mandacode-com/mandacode-pms/ent/project"
+	"github.com/mandacode-com/mandacode-pms/ent/schema"
 )
 
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	clientappFields := schema.ClientApp{}.Fields()
-	_ = clientappFields
-	// clientappDescPublicID is the schema descriptor for public_id field.
-	clientappDescPublicID := clientappFields[2].Descriptor()
-	// clientapp.DefaultPublicID holds the default value on creation for the public_id field.
-	clientapp.DefaultPublicID = clientappDescPublicID.Default.(func() uuid.UUID)
-	// clientappDescSecretHash is the schema descriptor for secret_hash field.
-	clientappDescSecretHash := clientappFields[3].Descriptor()
-	// clientapp.SecretHashValidator is a validator for the "secret_hash" field. It is called by the builders before save.
-	clientapp.SecretHashValidator = clientappDescSecretHash.Validators[0].(func([]byte) error)
-	// clientappDescName is the schema descriptor for name field.
-	clientappDescName := clientappFields[4].Descriptor()
-	// clientapp.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	clientapp.NameValidator = clientappDescName.Validators[0].(func(string) error)
-	// clientappDescIsActive is the schema descriptor for is_active field.
-	clientappDescIsActive := clientappFields[6].Descriptor()
-	// clientapp.DefaultIsActive holds the default value on creation for the is_active field.
-	clientapp.DefaultIsActive = clientappDescIsActive.Default.(bool)
-	// clientappDescCreatedAt is the schema descriptor for created_at field.
-	clientappDescCreatedAt := clientappFields[7].Descriptor()
-	// clientapp.DefaultCreatedAt holds the default value on creation for the created_at field.
-	clientapp.DefaultCreatedAt = clientappDescCreatedAt.Default.(func() time.Time)
-	// clientappDescUpdatedAt is the schema descriptor for updated_at field.
-	clientappDescUpdatedAt := clientappFields[8].Descriptor()
-	// clientapp.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	clientapp.DefaultUpdatedAt = clientappDescUpdatedAt.Default.(func() time.Time)
-	// clientapp.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	clientapp.UpdateDefaultUpdatedAt = clientappDescUpdatedAt.UpdateDefault.(func() time.Time)
-	serviceFields := schema.Service{}.Fields()
-	_ = serviceFields
-	// serviceDescPublicID is the schema descriptor for public_id field.
-	serviceDescPublicID := serviceFields[1].Descriptor()
-	// service.DefaultPublicID holds the default value on creation for the public_id field.
-	service.DefaultPublicID = serviceDescPublicID.Default.(func() uuid.UUID)
-	// serviceDescName is the schema descriptor for name field.
-	serviceDescName := serviceFields[2].Descriptor()
-	// service.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	service.NameValidator = serviceDescName.Validators[0].(func(string) error)
-	// serviceDescIsActive is the schema descriptor for is_active field.
-	serviceDescIsActive := serviceFields[4].Descriptor()
-	// service.DefaultIsActive holds the default value on creation for the is_active field.
-	service.DefaultIsActive = serviceDescIsActive.Default.(bool)
-	// serviceDescCreatedAt is the schema descriptor for created_at field.
-	serviceDescCreatedAt := serviceFields[5].Descriptor()
-	// service.DefaultCreatedAt holds the default value on creation for the created_at field.
-	service.DefaultCreatedAt = serviceDescCreatedAt.Default.(func() time.Time)
-	// serviceDescUpdatedAt is the schema descriptor for updated_at field.
-	serviceDescUpdatedAt := serviceFields[6].Descriptor()
-	// service.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	service.DefaultUpdatedAt = serviceDescUpdatedAt.Default.(func() time.Time)
-	// service.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	service.UpdateDefaultUpdatedAt = serviceDescUpdatedAt.UpdateDefault.(func() time.Time)
+	namespaceFields := schema.Namespace{}.Fields()
+	_ = namespaceFields
+	// namespaceDescCreatedAt is the schema descriptor for created_at field.
+	namespaceDescCreatedAt := namespaceFields[3].Descriptor()
+	// namespace.DefaultCreatedAt holds the default value on creation for the created_at field.
+	namespace.DefaultCreatedAt = namespaceDescCreatedAt.Default.(func() time.Time)
+	// namespaceDescUpdatedAt is the schema descriptor for updated_at field.
+	namespaceDescUpdatedAt := namespaceFields[4].Descriptor()
+	// namespace.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	namespace.DefaultUpdatedAt = namespaceDescUpdatedAt.Default.(func() time.Time)
+	// namespace.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	namespace.UpdateDefaultUpdatedAt = namespaceDescUpdatedAt.UpdateDefault.(func() time.Time)
+	projectFields := schema.Project{}.Fields()
+	_ = projectFields
+	// projectDescCreatedAt is the schema descriptor for created_at field.
+	projectDescCreatedAt := projectFields[3].Descriptor()
+	// project.DefaultCreatedAt holds the default value on creation for the created_at field.
+	project.DefaultCreatedAt = projectDescCreatedAt.Default.(func() time.Time)
+	// projectDescUpdatedAt is the schema descriptor for updated_at field.
+	projectDescUpdatedAt := projectFields[4].Descriptor()
+	// project.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	project.DefaultUpdatedAt = projectDescUpdatedAt.Default.(func() time.Time)
+	// project.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	project.UpdateDefaultUpdatedAt = projectDescUpdatedAt.UpdateDefault.(func() time.Time)
 }

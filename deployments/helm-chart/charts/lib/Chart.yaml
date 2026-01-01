@@ -1,0 +1,5 @@
+apiVersion: v2
+name: pms-lib
+description: Library chart for MandaCode PMS services
+type: library
+version: 0.1.0

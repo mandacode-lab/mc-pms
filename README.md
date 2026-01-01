@@ -1,8 +1,3 @@
-# MandaCode SSAM
+# MandaCode Project
 
-Service & Service Access Management (SSAM)
-
-## Features
-- Service registration and discovery
-- Service client management
-- Service client verification
+MandaCode Project Management System

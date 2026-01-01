@@ -1,0 +1,35 @@
+############################
+# Migration Job 
+############################
+FROM alpine:3.22.1
+
+# Install atlas CLI
+RUN apk add --no-cache curl tar && \
+    curl -sSf https://atlasgo.sh | sh
+
+# Create non-root user
+RUN adduser -D -u 1001 migrations
+
+WORKDIR /app
+
+# Copy migration files
+COPY ent/migrate/migrations ./migrations
+
+# Set ownership
+RUN chown -R 1001:1001 /app
+
+USER 1001
+
+ENTRYPOINT ["/bin/sh", "-c", "\
+  if [ -z \"$DATABASE_URL\" ]; then \
+    echo '❌ DATABASE_URL is not set'; \
+    exit 1; \
+  fi && \
+  echo '🚀 Running migrations...' && \
+  echo \"Target: $DATABASE_URL\" && \
+  atlas migrate apply \
+    --dir file://migrations \
+    --url \"$DATABASE_URL\" \
+    --allow-dirty \
+  && echo '✅ Migrations completed successfully' \
+  "]

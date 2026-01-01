@@ -8,79 +8,50 @@ import (
 )
 
 var (
-	// ClientAppsColumns holds the columns for the "client_apps" table.
-	ClientAppsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "public_id", Type: field.TypeUUID, Unique: true},
-		{Name: "secret_hash", Type: field.TypeBytes},
+	// NamespacesColumns holds the columns for the "namespaces" table.
+	NamespacesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString, Nullable: true},
-		{Name: "is_active", Type: field.TypeBool, Default: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "service_id", Type: field.TypeInt64},
 	}
-	// ClientAppsTable holds the schema information for the "client_apps" table.
-	ClientAppsTable = &schema.Table{
-		Name:       "client_apps",
-		Columns:    ClientAppsColumns,
-		PrimaryKey: []*schema.Column{ClientAppsColumns[0]},
+	// NamespacesTable holds the schema information for the "namespaces" table.
+	NamespacesTable = &schema.Table{
+		Name:       "namespaces",
+		Columns:    NamespacesColumns,
+		PrimaryKey: []*schema.Column{NamespacesColumns[0]},
+	}
+	// ProjectsColumns holds the columns for the "projects" table.
+	ProjectsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "namespace_projects", Type: field.TypeString, Nullable: true},
+	}
+	// ProjectsTable holds the schema information for the "projects" table.
+	ProjectsTable = &schema.Table{
+		Name:       "projects",
+		Columns:    ProjectsColumns,
+		PrimaryKey: []*schema.Column{ProjectsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "client_apps_services_client_apps",
-				Columns:    []*schema.Column{ClientAppsColumns[8]},
-				RefColumns: []*schema.Column{ServicesColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "clientapp_public_id",
-				Unique:  true,
-				Columns: []*schema.Column{ClientAppsColumns[1]},
-			},
-			{
-				Name:    "clientapp_service_id_name",
-				Unique:  true,
-				Columns: []*schema.Column{ClientAppsColumns[8], ClientAppsColumns[3]},
-			},
-		},
-	}
-	// ServicesColumns holds the columns for the "services" table.
-	ServicesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "public_id", Type: field.TypeUUID, Unique: true},
-		{Name: "name", Type: field.TypeString},
-		{Name: "description", Type: field.TypeString, Nullable: true},
-		{Name: "is_active", Type: field.TypeBool, Default: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-	}
-	// ServicesTable holds the schema information for the "services" table.
-	ServicesTable = &schema.Table{
-		Name:       "services",
-		Columns:    ServicesColumns,
-		PrimaryKey: []*schema.Column{ServicesColumns[0]},
-		Indexes: []*schema.Index{
-			{
-				Name:    "service_public_id",
-				Unique:  true,
-				Columns: []*schema.Column{ServicesColumns[1]},
-			},
-			{
-				Name:    "service_name",
-				Unique:  true,
-				Columns: []*schema.Column{ServicesColumns[2]},
+				Symbol:     "projects_namespaces_projects",
+				Columns:    []*schema.Column{ProjectsColumns[5]},
+				RefColumns: []*schema.Column{NamespacesColumns[0]},
+				OnDelete:   schema.SetNull,
 			},
 		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		ClientAppsTable,
-		ServicesTable,
+		NamespacesTable,
+		ProjectsTable,
 	}
 )
 
 func init() {
-	ClientAppsTable.ForeignKeys[0].RefTable = ServicesTable
+	ProjectsTable.ForeignKeys[0].RefTable = NamespacesTable
 }

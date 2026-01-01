@@ -6,82 +6,87 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/joho/godotenv"
-	"github.com/mandacode-com/mandacode-ssam/cmd/shared"
-	"github.com/mandacode-com/mandacode-ssam/configs"
-	_ "github.com/mandacode-com/mandacode-ssam/docs/client"
+	_ "github.com/mandacode-com/mandacode-pms/docs/client"
+	"github.com/mandacode-com/mandacode-pms/internal/adapter/http/router"
+	"github.com/mandacode-com/mandacode-pms/internal/config"
+	infrahttp "github.com/mandacode-com/mandacode-pms/internal/infra/http"
 	"github.com/mandacode-com/merver"
-	"github.com/rs/zerolog/log"
-	swaggerFiles "github.com/swaggo/files"
+	"github.com/rs/zerolog"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/files"
 )
 
-// @title           MandaCode Service Hub Client API
-// @version         1.0
-// @description     Client authentication and access verification API
+// @title MandaCode PMS Client API
+// @version 1.0
+// @description Client API for MandaCode Project Management System - read-only access to namespaces and projects
+// @termsOfService https://mandacode.com/terms
 
-// @contact.name   API Support
+// @contact.name API Support
+// @contact.url https://mandacode.com/support
+// @contact.email support@mandacode.com
 
-// @securityDefinitions.basic BasicAuth
-// @description Basic Authentication using ClientAppID as username and ClientSecret as password
+// @host pms.mandacode.com
+// @BasePath /api/client/v1
+// @schemes http https
+
+// @tag.name client
+// @tag.description Client read-only operations for namespace and project access
 
 func main() {
+	// Setup context for graceful shutdown
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	// Load .env file if not production
-	if os.Getenv("ENV") != "prod" {
-		if err := godotenv.Load(".env.dev.client"); err != nil {
-			log.Warn().Err(err).Msg("Could not load .env.dev.client file, using system environment variables")
-		}
-	}
-
-	// Load configuration
-	cfg, err := configs.LoadClientConfig()
-	if err != nil {
-		panic("Failed to load config: " + err.Error())
-	}
-
 	// Setup logger
-	logger := shared.SetupLogger(cfg.Env)
-	logger.Info().Msg("Starting client service")
+	logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
+	logger.Info().Msg("starting client server")
 
-	// Setup dependencies
-	adapter, err := NewAdapter(ctx, cfg)
+	// Load configuration from environment variables
+	cfg := &Config{}
+	if err := config.Load(cfg); err != nil {
+		logger.Fatal().Err(err).Msg("failed to load configuration")
+	}
+
+	// Initialize dependency container
+	container, err := NewContainer(cfg, &logger)
 	if err != nil {
-		logger.Fatal().Err(err).Msg("Failed to create adapter")
+		logger.Fatal().Err(err).Msg("failed to initialize container")
 	}
 	defer func() {
-		if closeErr := adapter.Close(); closeErr != nil {
-			logger.Error().Err(closeErr).Msg("Failed to close adapter")
+		if err := container.Close(); err != nil {
+			logger.Error().Err(err).Msg("failed to close container")
 		}
 	}()
 
-	// Setup server
-	server := shared.SetupServer(&cfg.Server, &logger)
+	// Create HTTP server
+	httpServer := infrahttp.New(&cfg.HTTP, &logger)
 
-	// Register routes
-	engine := server.GetEngine()
+	// Setup routes
+	router.SetupClientRouter(httpServer.GetEngine(), &router.ClientRouterConfig{
+		NSHandler:      container.NSHandler,
+		ProjectHandler: container.ProjectHandler,
+		AuthMiddleware: container.AuthMiddleware,
+	})
 
-	// Client access routes
-	clientAccessGroup := engine.Group("/client-access")
-	clientAccessHandler := adapter.ProvideClientAccessHandler()
-	clientAccessHandler.RegisterRoutes(clientAccessGroup)
+	// Setup Swagger UI
+	httpServer.GetEngine().GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	// Swagger documentation
-	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	logger.Info().Msg("routes configured")
 
 	// Setup graceful shutdown
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		sig := <-signalChan
-		log.WithLevel(shared.SystemLevel).Msgf("received shutdown signal: %s", sig.String())
+		logger.Info().Msgf("received shutdown signal: %s", sig.String())
 		cancel()
 	}()
 
-	srvGroup := merver.NewServerGroup(server)
+	// Create server group and run
+	srvGroup := merver.NewServerGroup(httpServer)
 	if err := srvGroup.Run(ctx); err != nil {
-		logger.Fatal().Str("error", err.Error()).Msg("failed to run server group")
+		logger.Fatal().Err(err).Msg("failed to run server group")
 	}
+
+	logger.Info().Msg("client server stopped")
 }

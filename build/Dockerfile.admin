@@ -1,0 +1,69 @@
+############################
+# 1. Build Stage
+############################
+FROM golang:1.25.5-alpine3.23 AS builder
+
+# Install build dependencies
+RUN apk add --no-cache \
+    git=2.52.0-r0 \
+    gcc \
+    musl-dev
+
+WORKDIR /build
+
+# Copy go mod files first for better caching
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+
+# Copy source code
+COPY . .
+
+# Accept build args from buildx for multi-platform builds
+ARG TARGETOS
+ARG TARGETARCH
+
+# Build with optimizations
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
+    go build -a \
+    -ldflags="-w -s" \
+    -o server ./cmd/admin
+
+############################
+# 2. Dependencies Stage
+############################
+FROM alpine:3.23.0 AS deps
+
+RUN apk add --no-cache \
+    ca-certificates=20251003-r0 \
+    tzdata && \
+    adduser -D -u 1001 appuser
+
+############################
+# 3. Runtime Stage
+############################
+FROM scratch AS prod
+
+# Copy timezone data
+COPY --from=deps /usr/share/zoneinfo /usr/share/zoneinfo
+
+# Copy CA certificates
+COPY --from=deps /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+# Copy user/group files
+COPY --from=deps /etc/passwd /etc/passwd
+COPY --from=deps /etc/group /etc/group
+
+# Copy binary
+COPY --from=builder /build/server /app/server
+
+# Set user
+USER 1001
+
+# Expose port
+EXPOSE 8080
+
+# Set working directory
+WORKDIR /app
+
+# Run
+ENTRYPOINT ["/app/server"]

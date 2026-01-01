@@ -6,31 +6,31 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mandacode-com/mandacode-ssam/ent"
+	"github.com/mandacode-com/mandacode-pms/ent"
 )
 
-// The ClientAppFunc type is an adapter to allow the use of ordinary
-// function as ClientApp mutator.
-type ClientAppFunc func(context.Context, *ent.ClientAppMutation) (ent.Value, error)
+// The NamespaceFunc type is an adapter to allow the use of ordinary
+// function as Namespace mutator.
+type NamespaceFunc func(context.Context, *ent.NamespaceMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f ClientAppFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.ClientAppMutation); ok {
+func (f NamespaceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.NamespaceMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ClientAppMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NamespaceMutation", m)
 }
 
-// The ServiceFunc type is an adapter to allow the use of ordinary
-// function as Service mutator.
-type ServiceFunc func(context.Context, *ent.ServiceMutation) (ent.Value, error)
+// The ProjectFunc type is an adapter to allow the use of ordinary
+// function as Project mutator.
+type ProjectFunc func(context.Context, *ent.ProjectMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f ServiceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.ServiceMutation); ok {
+func (f ProjectFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ProjectMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ServiceMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ProjectMutation", m)
 }
 
 // Condition is a hook condition function.
