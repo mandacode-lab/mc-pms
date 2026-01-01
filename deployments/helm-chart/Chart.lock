@@ -1,12 +1,12 @@
 dependencies:
-- name: pms-lib
+- name: lib
   repository: file://charts/lib
-  version: 0.1.0
+  version: 0.1.1
 - name: admin
   repository: file://charts/admin
-  version: 0.1.0
+  version: 0.1.1
 - name: client
   repository: file://charts/client
-  version: 0.1.0
-digest: sha256:3e7df6f0b29226b0e66f4df5c399492357f9b591feef9fe57561546c21cad65e
-generated: "2026-01-01T11:13:19.651859867+09:00"
+  version: 0.1.1
+digest: sha256:e603263ac29a88e5da578d3c43072c9f0a2384a29fa7477e19e24e9237067061
+generated: "2026-01-01T23:07:21.177506793+09:00"
