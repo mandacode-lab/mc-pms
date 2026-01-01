@@ -12,8 +12,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/mandacode-com/mandacode-pms/ent/namespace"
-	"github.com/mandacode-com/mandacode-pms/ent/project"
+	"github.com/mandacode-lab/mc-pms/ent/namespace"
+	"github.com/mandacode-lab/mc-pms/ent/project"
 )
 
 // ent aliases to avoid import conflicts in user's code.

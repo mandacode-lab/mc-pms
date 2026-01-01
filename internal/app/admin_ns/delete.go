@@ -3,8 +3,8 @@ package admin_ns
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-pms/internal/domain/ns"
-	"github.com/mandacode-com/merr"
+	"github.com/mandacode-lab/mc-pms/internal/domain/ns"
+	"github.com/go-mandacode/merr"
 )
 
 func (a *Application) Delete(ctx context.Context, namespaceID string) error {

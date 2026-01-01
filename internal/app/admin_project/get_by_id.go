@@ -3,9 +3,9 @@ package admin_project
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-pms/internal/domain/project"
-	"github.com/mandacode-com/mandacode-pms/internal/port/app"
-	"github.com/mandacode-com/merr"
+	"github.com/mandacode-lab/mc-pms/internal/domain/project"
+	"github.com/mandacode-lab/mc-pms/internal/port/app"
+	"github.com/go-mandacode/merr"
 )
 
 func (a *Application) GetByID(ctx context.Context, projectID string) (*app.AdminProjectResult, error) {
