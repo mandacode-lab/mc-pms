@@ -27,7 +27,7 @@ jobs:
   pull-request-check:
     name: Pull Request Check
     if: github.event_name == 'pull_request'
-    uses: mandacode-com/mandacode-workflows/.github/workflows/go_project_pull_request.yml@v0.1.3
+    uses: mandacode-com/mandacode-workflows/.github/workflows/go_project_pull_request.yml@develop
     with:
       go-version: "1.25.5"
       build-path: "./..."
@@ -48,11 +48,11 @@ jobs:
       build-context: "."
       enable-dockerfile-test: true
       enable-helm-test: true
-      helm-charts: |
+      charts: |
         [
           {"dir": "."}
         ]
-      helm-base-path: "deployments/chart"
+      chart-base-path: "deployments/helm-chart"
 
   release:
     name: Release
@@ -70,11 +70,17 @@ jobs:
         ]
       image-base-path: "build"
       build-context: "."
-      registry: "registry.mandacode.com/mandacode-commerce"
+      registry: "registry.mandacode.com"
+      repository: "mandacode-pms"
       tag-prefix: "v"
       migration-tag-prefix: "mig-v"
       enable-provenance: false
       enable-sbom: true
+      charts: |
+        [
+          {"dir": "."}
+        ]
+      chart-base-path: "deployments/helm-chart"
     secrets:
       registry-username: ${{ secrets.REGISTRY_USERNAME }}
       registry-password: ${{ secrets.REGISTRY_PASSWORD }}
