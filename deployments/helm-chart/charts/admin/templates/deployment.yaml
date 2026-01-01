@@ -1,25 +1,25 @@
 {{- $configRefs := list -}}
 {{- $configRefs = append $configRefs (dict
   "type" "configMap"
-  "name" (include "pms-lib.configs.http.configMapName" (dict "component" "admin" "root" $))
-  "template" "pms-lib.config.http"
+  "name" (include "lib.configs.http.configMapName" (dict "component" "admin" "root" $))
+  "template" "lib.config.http"
   "params" (dict "component" "admin" "prefix" "HTTP_" "config" .Values "root" $)
 ) -}}
 {{- if .Values.database.enabled -}}
 {{- $configRefs = append $configRefs (dict
   "type" "configMap"
-  "name" (include "pms-lib.configs.db.configMapName" (dict "component" "admin" "root" $))
-  "template" "pms-lib.config.db"
+  "name" (include "lib.configs.db.configMapName" (dict "component" "admin" "root" $))
+  "template" "lib.config.db"
   "params" (dict "component" "admin" "prefix" "DB_" "config" .Values "root" $)
 ) -}}
 {{- $configRefs = append $configRefs (dict
   "type" "secret"
-  "name" (include "pms-lib.configs.db.secretName" (dict "component" "admin" "config" .Values "root" $))
-  "template" "pms-lib.config.db"
+  "name" (include "lib.configs.db.secretName" (dict "component" "admin" "config" .Values "root" $))
+  "template" "lib.config.db"
   "params" (dict "component" "admin" "prefix" "DB_" "config" .Values "root" $)
 ) -}}
 {{- end -}}
-{{- include "pms-lib.deployment" (dict
+{{- include "mc-helm-lib.deployment" (dict
   "component" "admin"
   "config" .Values
   "configRefs" $configRefs

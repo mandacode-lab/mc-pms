@@ -1,4 +1,4 @@
-{{- include "pms-lib.hpa" (dict
+{{- include "mc-helm-lib.hpa" (dict
   "component" "admin"
   "config" .Values
   "root" $

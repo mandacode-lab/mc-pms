@@ -1,10 +1,10 @@
-{{- include "pms-lib.config.http" (dict
+{{- include "lib.config.http" (dict
   "component" "admin"
   "prefix" "HTTP_"
   "config" .Values
   "root" $
 ) }}
-{{- include "pms-lib.config.db" (dict
+{{- include "lib.config.db" (dict
   "component" "admin"
   "prefix" "DB_"
   "config" .Values

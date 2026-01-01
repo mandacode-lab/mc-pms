@@ -1,4 +1,4 @@
-{{- include "pms-lib.httproute" (dict
+{{- include "mc-helm-lib.httproute" (dict
   "component" "admin"
   "config" .Values
   "root" $
