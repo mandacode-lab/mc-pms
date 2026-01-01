@@ -3,8 +3,8 @@ package repo
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-pms/internal/domain/ns"
-	"github.com/mandacode-com/mandacode-pms/internal/domain/project"
+	"github.com/mandacode-lab/mc-pms/internal/domain/ns"
+	"github.com/mandacode-lab/mc-pms/internal/domain/project"
 )
 
 type ProjectFilter struct {

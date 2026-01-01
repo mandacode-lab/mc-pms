@@ -3,7 +3,7 @@ package project
 import (
 	"time"
 
-	"github.com/mandacode-com/mandacode-pms/internal/domain/ns"
+	"github.com/mandacode-lab/mc-pms/internal/domain/ns"
 )
 
 func (p *Project) UpdateName(name ProjectName) {
