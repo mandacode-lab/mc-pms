@@ -1,0 +1,266 @@
+# MandaCode PMS Umbrella Chart Values
+# Override subchart values here
+
+# Global values shared across all services
+global:
+  # Global HTTP configuration
+  http:
+    host: "0.0.0.0"
+    port: "8080"
+    readTimeout: "10s"
+    writeTimeout: "10s"
+    idleTimeout: "60s"
+    shutdownTimeout: "5s"
+    cors:
+      enabled: true
+      allowedOrigins:
+      - "*"
+      allowedMethods:
+      - GET
+      - POST
+      - PUT
+      - PATCH
+      - DELETE
+      - OPTIONS
+      allowedHeaders:
+      - Origin
+      - Content-Length
+      - Content-Type
+      - Authorization
+      - Accept
+      - X-Requested-With
+      exposeHeaders: []
+      allowCredentials: false
+      maxAge: 43200
+
+  # Global database configuration
+  database:
+    host: "postgres"
+    port: "5432"
+    username: "postgres"
+    password: "postgres"
+    database: "mandacode_pms"
+    sslMode: "disable"
+    # existingSecret: "global-db-secret"  # Use existing secret for all services
+
+# Parent chart values
+nameOverride: ""
+fullnameOverride: ""
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+# Admin subchart values override
+admin:
+  enabled: true
+
+  replicaCount: 1
+
+  image:
+    repository: mandacode-pms-admin
+    pullPolicy: IfNotPresent
+    tag: "0.1.0"
+
+  podAnnotations: {}
+  podLabels: {}
+
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 1000
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+
+  # HTTP configuration (overrides global.http)
+  http: {}
+    # host: "0.0.0.0"
+    # port: "8080"
+    # cors:
+    #   enabled: true
+    #   allowedOrigins:
+    #   - "https://admin.example.com"
+
+  # Database configuration (overrides global.database)
+  database:
+    enabled: true
+    # existingSecret: "my-db-secret"  # Use existing secret instead of creating one
+    # host: "postgres-primary"
+    # port: "5432"
+    # username: "admin_user"
+    # password: "admin_password"
+    # database: "mandacode_pms"
+    # sslMode: "require"
+
+  env: []
+
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+    annotations: {}
+
+  httpRoute:
+    enabled: false
+    annotations: {}
+    parentRefs:
+    - name: gateway
+      namespace: default
+    hostnames:
+    - pms.mandacode.com
+    rules:
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /api/admin
+
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: http
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+  volumes: []
+  volumeMounts: []
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# Client subchart values override
+client:
+  enabled: true
+
+  replicaCount: 1
+
+  image:
+    repository: mandacode-pms-client
+    pullPolicy: IfNotPresent
+    tag: "0.1.0"
+
+  podAnnotations: {}
+  podLabels: {}
+
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 1000
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+
+  # HTTP configuration (overrides global.http)
+  http: {}
+    # cors:
+    #   allowedMethods:
+    #   - GET
+    #   - OPTIONS
+
+  # Database configuration (overrides global.database)
+  database:
+    enabled: true
+    # existingSecret: "my-db-secret"  # Use existing secret instead of creating one
+    # host: "postgres-replica"  # Use read replica for client
+    # username: "readonly_user"
+
+  env: []
+
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+    annotations: {}
+
+  httpRoute:
+    enabled: false
+    annotations: {}
+    parentRefs:
+    - name: gateway
+      namespace: default
+    hostnames:
+    - pms.mandacode.com
+    rules:
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /api/client
+
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: http
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+  volumes: []
+  volumeMounts: []
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
