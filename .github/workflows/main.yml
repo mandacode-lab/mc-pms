@@ -57,7 +57,7 @@ jobs:
   release:
     name: Release
     if: github.event_name == 'push' && github.ref_type == 'tag'
-    uses: mandacode-com/mandacode-workflows/.github/workflows/go_project_release.yml@v0.1.3
+    uses: mandacode-com/mandacode-workflows/.github/workflows/go_project_release.yml@develop
     with:
       images: |
         [
