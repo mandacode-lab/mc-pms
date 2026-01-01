@@ -38,9 +38,6 @@ helm.sh/chart: {{ include "pms-lib.chart" .root }}
 app.kubernetes.io/version: {{ .root.Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .root.Release.Service }}
-{{- if .component }}
-app.kubernetes.io/component: {{ .component }}
-{{- end }}
 {{- end }}
 
 {{/*
