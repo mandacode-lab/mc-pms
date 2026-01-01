@@ -27,7 +27,7 @@ jobs:
   pull-request-check:
     name: Pull Request Check
     if: github.event_name == 'pull_request'
-    uses: mandacode-com/mandacode-workflows/.github/workflows/go_project_pull_request.yml@v0.1.4
+    uses: mandacode-com/mandacode-workflows/.github/workflows/go_project_pull_request.yml@v0.1.5
     with:
       go-version: "1.25.5"
       build-path: "./..."
@@ -57,7 +57,7 @@ jobs:
   release:
     name: Release
     if: github.event_name == 'push' && github.ref_type == 'tag'
-    uses: mandacode-com/mandacode-workflows/.github/workflows/go_project_release.yml@v0.1.4
+    uses: mandacode-com/mandacode-workflows/.github/workflows/go_project_release.yml@v0.1.5
     with:
       images: |
         [
