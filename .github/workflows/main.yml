@@ -72,6 +72,7 @@ jobs:
       build-context: "."
       registry: "registry.mandacode.com"
       repository: "mandacode-pms"
+      helm-repository: "charts"
       tag-prefix: "v"
       migration-tag-prefix: "mig-v"
       enable-provenance: false
@@ -85,3 +86,5 @@ jobs:
     secrets:
       registry-username: ${{ secrets.REGISTRY_USERNAME }}
       registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+      helm-registry-username: ${{ secrets.HELM_REGISTRY_USERNAME }}
+      helm-registry-password: ${{ secrets.HELM_REGISTRY_PASSWORD }}
