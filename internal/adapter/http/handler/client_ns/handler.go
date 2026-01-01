@@ -1,7 +1,7 @@
 package client_ns
 
 import (
-	"github.com/mandacode-com/mandacode-pms/internal/port/app"
+	"github.com/mandacode-lab/mc-pms/internal/port/app"
 )
 
 type Handler struct {

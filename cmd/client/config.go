@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/mandacode-com/mandacode-pms/internal/config"
+	"github.com/mandacode-lab/mc-pms/internal/config"
 )
 
 // Config represents the client service configuration

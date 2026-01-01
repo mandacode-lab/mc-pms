@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/mandacode-com/mandacode-pms/ent/predicate"
-	"github.com/mandacode-com/mandacode-pms/ent/project"
+	"github.com/mandacode-lab/mc-pms/ent/predicate"
+	"github.com/mandacode-lab/mc-pms/ent/project"
 )
 
 // ProjectDelete is the builder for deleting a Project entity.
