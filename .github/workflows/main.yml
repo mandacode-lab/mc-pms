@@ -76,6 +76,7 @@ jobs:
       migration-tag-prefix: "mig-v"
       enable-provenance: false
       enable-sbom: true
+      enable-helm-release: true
       charts: |
         [
           {"dir": "."}
