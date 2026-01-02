@@ -4,6 +4,8 @@ metadata:
   name: {{ include "mc-pms.fullname" . }}-admin
   labels:
     {{- include "mc-pms.componentLabels" (dict "root" . "component" "admin") | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   {{- if not .Values.admin.autoscaling.enabled }}
   replicas: {{ .Values.admin.replicaCount }}

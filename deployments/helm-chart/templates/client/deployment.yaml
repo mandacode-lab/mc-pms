@@ -4,6 +4,8 @@ metadata:
   name: {{ include "mc-pms.fullname" . }}-client
   labels:
     {{- include "mc-pms.componentLabels" (dict "root" . "component" "client") | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   {{- if not .Values.client.autoscaling.enabled }}
   replicas: {{ .Values.client.replicaCount }}
