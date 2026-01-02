@@ -4,6 +4,7 @@
   "config" .Values.admin
   "root" .
 ) }}
+---
 {{- include "mc-pms.dbConfig" (dict
   "component" "admin"
   "prefix" "DB_"
