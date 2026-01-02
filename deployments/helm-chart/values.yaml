@@ -55,16 +55,25 @@ serviceAccount:
   annotations: {}
   name: ""
 
-# Admin subchart values override
+# HTTPRoute configuration (shared across all services)
+httpRoute:
+  enabled: false
+  annotations: {}
+  parentRefs:
+  - name: gateway
+    namespace: default
+  hostnames:
+  - pms.mandacode.com
+
+# Admin service configuration
 admin:
   enabled: true
-
   replicaCount: 1
 
   image:
-    repository: mandacode-pms-admin
+    repository: registry.mandacode.com/mandacode-pms
     pullPolicy: IfNotPresent
-    tag: "0.1.0"
+    tag: "0.1.2"
 
   podAnnotations: {}
   podLabels: {}
@@ -109,20 +118,6 @@ admin:
     targetPort: 8080
     annotations: {}
 
-  httpRoute:
-    enabled: false
-    annotations: {}
-    parentRefs:
-    - name: gateway
-      namespace: default
-    hostnames:
-    - pms.mandacode.com
-    rules:
-    - matches:
-      - path:
-          type: PathPrefix
-          value: /api/admin
-
   livenessProbe:
     httpGet:
       path: /health
@@ -163,10 +158,9 @@ admin:
   tolerations: []
   affinity: {}
 
-# Client subchart values override
+# Client service configuration
 client:
   enabled: true
-
   replicaCount: 1
 
   image:
@@ -210,20 +204,6 @@ client:
     port: 80
     targetPort: 8080
     annotations: {}
-
-  httpRoute:
-    enabled: false
-    annotations: {}
-    parentRefs:
-    - name: gateway
-      namespace: default
-    hostnames:
-    - pms.mandacode.com
-    rules:
-    - matches:
-      - path:
-          type: PathPrefix
-          value: /api/client
 
   livenessProbe:
     httpGet:

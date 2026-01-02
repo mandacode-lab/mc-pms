@@ -1,0 +1,27 @@
+{{- $configRefs := list -}}
+{{- $configRefs = append $configRefs (dict
+  "type" "configMap"
+  "name" (include "mc-pms.configs.http.configMapName" (dict "component" "admin" "root" $))
+  "template" "mc-pms.config.http"
+  "params" (dict "component" "admin" "prefix" "HTTP_" "config" .Values.admin "root" $)
+) -}}
+{{- if .Values.admin.database.enabled -}}
+{{- $configRefs = append $configRefs (dict
+  "type" "configMap"
+  "name" (include "mc-pms.configs.db.configMapName" (dict "component" "admin" "root" $))
+  "template" "mc-pms.config.db"
+  "params" (dict "component" "admin" "prefix" "DB_" "config" .Values.admin "root" $)
+) -}}
+{{- $configRefs = append $configRefs (dict
+  "type" "secret"
+  "name" (include "mc-pms.configs.db.secretName" (dict "component" "admin" "config" .Values.admin "root" $))
+  "template" "mc-pms.config.db"
+  "params" (dict "component" "admin" "prefix" "DB_" "config" .Values.admin "root" $)
+) -}}
+{{- end -}}
+{{- include "mc-helm-lib.deployment" (dict
+  "component" "admin"
+  "config" .Values.admin
+  "configRefs" $configRefs
+  "root" $
+) }}

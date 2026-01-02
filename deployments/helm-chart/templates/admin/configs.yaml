@@ -1,0 +1,12 @@
+{{- include "mc-pms.config.http" (dict
+  "component" "admin"
+  "prefix" "HTTP_"
+  "config" .Values.admin
+  "root" $
+) }}
+{{- include "mc-pms.config.db" (dict
+  "component" "admin"
+  "prefix" "DB_"
+  "config" .Values.admin
+  "root" $
+) }}

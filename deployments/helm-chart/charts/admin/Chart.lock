@@ -1,9 +1,0 @@
-dependencies:
-- name: mc-helm-lib
-  repository: oci://registry.mandacode.com/lib-charts
-  version: 0.1.0
-- name: lib
-  repository: file://../lib
-  version: 0.1.1
-digest: sha256:d9baabf6d6d45f5b68febb54848b293ed2a4df05fef5de87bcd1315ebf993baf
-generated: "2026-01-01T22:52:41.814574577+09:00"

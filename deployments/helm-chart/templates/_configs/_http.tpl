@@ -1,14 +1,14 @@
 {{/*
 HTTP ConfigMap Name
 */}}
-{{- define "lib.configs.http.configMapName" -}}
+{{- define "mc-pms.configs.http.configMapName" -}}
 {{- printf "%s-%s-http-config" (include "mc-helm-lib.fullname" .root) .component | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 HTTP ConfigMap
 */}}
-{{- define "lib.config.http" -}}
+{{- define "mc-pms.config.http" -}}
 {{- $component := .component -}}
 {{- $prefix := .prefix -}}
 {{- $config := .config -}}
@@ -21,7 +21,7 @@ HTTP ConfigMap
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "lib.configs.http.configMapName" (dict "component" $component "root" $root) }}
+  name: {{ include "mc-pms.configs.http.configMapName" (dict "component" $component "root" $root) }}
   labels:
     {{- include "mc-helm-lib.labels" (dict "component" $component "root" $root) | nindent 4 }}
 data:

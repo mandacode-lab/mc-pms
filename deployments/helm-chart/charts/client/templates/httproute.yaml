@@ -1,5 +1,0 @@
-{{- include "mc-helm-lib.httproute" (dict
-  "component" "client"
-  "config" .Values
-  "root" $
-) }}

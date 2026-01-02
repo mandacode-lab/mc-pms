@@ -1,0 +1,27 @@
+{{- $configRefs := list -}}
+{{- $configRefs = append $configRefs (dict
+  "type" "configMap"
+  "name" (include "mc-pms.configs.http.configMapName" (dict "component" "client" "root" $))
+  "template" "mc-pms.config.http"
+  "params" (dict "component" "client" "prefix" "HTTP_" "config" .Values.client "root" $)
+) -}}
+{{- if .Values.client.database.enabled -}}
+{{- $configRefs = append $configRefs (dict
+  "type" "configMap"
+  "name" (include "mc-pms.configs.db.configMapName" (dict "component" "client" "root" $))
+  "template" "mc-pms.config.db"
+  "params" (dict "component" "client" "prefix" "DB_" "config" .Values.client "root" $)
+) -}}
+{{- $configRefs = append $configRefs (dict
+  "type" "secret"
+  "name" (include "mc-pms.configs.db.secretName" (dict "component" "client" "config" .Values.client "root" $))
+  "template" "mc-pms.config.db"
+  "params" (dict "component" "client" "prefix" "DB_" "config" .Values.client "root" $)
+) -}}
+{{- end -}}
+{{- include "mc-helm-lib.deployment" (dict
+  "component" "client"
+  "config" .Values.client
+  "configRefs" $configRefs
+  "root" $
+) }}

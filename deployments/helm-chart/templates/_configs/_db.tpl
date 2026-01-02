@@ -1,7 +1,7 @@
 {{/*
 Database ConfigMap Name
 */}}
-{{- define "lib.configs.db.configMapName" -}}
+{{- define "mc-pms.configs.db.configMapName" -}}
 {{- printf "%s-%s-db-config" (include "mc-helm-lib.fullname" .root) .component | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -9,7 +9,7 @@ Database ConfigMap Name
 Database Secret Name
 Uses existingSecret if provided (component > global)
 */}}
-{{- define "lib.configs.db.secretName" -}}
+{{- define "mc-pms.configs.db.secretName" -}}
 {{- $global := .root.Values.global | default dict -}}
 {{- $existingSecret := .config.database.existingSecret | default $global.existingSecret | default "" -}}
 {{- if $existingSecret -}}
@@ -22,7 +22,7 @@ Uses existingSecret if provided (component > global)
 {{/*
 Database ConfigMap & Secret
 */}}
-{{- define "lib.config.db" -}}
+{{- define "mc-pms.config.db" -}}
 {{- $component := .component -}}
 {{- $prefix := .prefix -}}
 {{- $config := .config -}}
@@ -36,7 +36,7 @@ Database ConfigMap & Secret
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "lib.configs.db.configMapName" (dict "component" $component "root" $root) }}
+  name: {{ include "mc-pms.configs.db.configMapName" (dict "component" $component "root" $root) }}
   labels:
     {{- include "mc-helm-lib.labels" (dict "component" $component "root" $root) | nindent 4 }}
 data:
@@ -51,7 +51,7 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ include "lib.configs.db.secretName" (dict "component" $component "config" $config "root" $root) }}
+  name: {{ include "mc-pms.configs.db.secretName" (dict "component" $component "config" $config "root" $root) }}
   labels:
     {{- include "mc-helm-lib.labels" (dict "component" $component "root" $root) | nindent 4 }}
 type: Opaque

@@ -1,5 +1,5 @@
 {{- include "mc-helm-lib.hpa" (dict
   "component" "client"
-  "config" .Values
+  "config" .Values.client
   "root" $
 ) }}

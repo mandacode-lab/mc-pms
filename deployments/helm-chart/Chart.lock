@@ -1,12 +1,6 @@
 dependencies:
-- name: lib
-  repository: file://charts/lib
-  version: 0.1.1
-- name: admin
-  repository: file://charts/admin
-  version: 0.1.1
-- name: client
-  repository: file://charts/client
-  version: 0.1.1
-digest: sha256:e603263ac29a88e5da578d3c43072c9f0a2384a29fa7477e19e24e9237067061
-generated: "2026-01-01T23:07:21.177506793+09:00"
+- name: mc-helm-lib
+  repository: oci://registry.mandacode.com/lib-charts
+  version: 0.1.0
+digest: sha256:8e5d9a0a08531db6b354642f24cc8a8324c174c22ac58dc8e3c1c76d68050d57
+generated: "2026-01-02T12:52:25.970854452+09:00"

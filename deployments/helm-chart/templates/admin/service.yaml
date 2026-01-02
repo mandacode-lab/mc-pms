@@ -1,5 +1,5 @@
 {{- include "mc-helm-lib.service" (dict
-  "component" "client"
-  "config" .Values
+  "component" "admin"
+  "config" .Values.admin
   "root" $
 ) }}
