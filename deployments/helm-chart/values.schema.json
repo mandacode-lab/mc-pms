@@ -1,11 +1,16 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["database"],
+  "required": [
+    "database"
+  ],
   "properties": {
     "database": {
       "type": "object",
-      "required": ["host", "name", "user"],
+      "required": [
+        "host",
+        "name"
+      ],
       "properties": {
         "host": {
           "type": "string",
@@ -24,10 +29,9 @@
           "description": "Database name",
           "minLength": 1
         },
-        "user": {
+        "username": {
           "type": "string",
-          "description": "Database username",
-          "minLength": 1
+          "description": "Database username"
         },
         "password": {
           "type": "string",
@@ -36,7 +40,14 @@
         "sslMode": {
           "type": "string",
           "description": "PostgreSQL SSL mode",
-          "enum": ["disable", "allow", "prefer", "require", "verify-ca", "verify-full"],
+          "enum": [
+            "disable",
+            "allow",
+            "prefer",
+            "require",
+            "verify-ca",
+            "verify-full"
+          ],
           "default": "require"
         },
         "existingSecret": {

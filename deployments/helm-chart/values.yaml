@@ -122,7 +122,7 @@ database:
   host: "db-host"
   port: 5432
   name: dbname
-  user: dbuser
+  username: dbuser
   password: "dbpassword"
   # existingSecret: ""
 
