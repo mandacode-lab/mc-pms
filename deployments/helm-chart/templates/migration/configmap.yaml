@@ -1,0 +1,22 @@
+{{- if .Values.migration.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mc-pms.fullname" . }}-migration
+  labels:
+    {{- include "mc-pms.componentLabels" (dict "root" . "component" "migration") | nindent 4 }}
+data:
+  # Database connection parameters (non-sensitive)
+  HOST: {{ include "mc-pms.database.host" . | quote }}
+  PORT: {{ include "mc-pms.database.port" . | quote }}
+  DB_NAME: {{ include "mc-pms.database.name" . | quote }}
+  SSL_MODE: {{ include "mc-pms.database.sslMode" . | quote }}
+
+  # Migration options
+  {{- if .Values.migration.allowDirty }}
+  ALLOW_DIRTY: "true"
+  {{- end }}
+  {{- if .Values.migration.dryRun }}
+  DRY_RUN: "true"
+  {{- end }}
+{{- end }}

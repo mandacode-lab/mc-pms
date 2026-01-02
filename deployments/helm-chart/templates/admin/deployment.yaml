@@ -1,27 +1,114 @@
-{{- $configRefs := list -}}
-{{- $configRefs = append $configRefs (dict
-  "type" "configMap"
-  "name" (include "mc-pms.configs.http.configMapName" (dict "component" "admin" "root" $))
-  "template" "mc-pms.config.http"
-  "params" (dict "component" "admin" "prefix" "HTTP_" "config" .Values.admin "root" $)
-) -}}
-{{- if .Values.admin.database.enabled -}}
-{{- $configRefs = append $configRefs (dict
-  "type" "configMap"
-  "name" (include "mc-pms.configs.db.configMapName" (dict "component" "admin" "root" $))
-  "template" "mc-pms.config.db"
-  "params" (dict "component" "admin" "prefix" "DB_" "config" .Values.admin "root" $)
-) -}}
-{{- $configRefs = append $configRefs (dict
-  "type" "secret"
-  "name" (include "mc-pms.configs.db.secretName" (dict "component" "admin" "config" .Values.admin "root" $))
-  "template" "mc-pms.config.db"
-  "params" (dict "component" "admin" "prefix" "DB_" "config" .Values.admin "root" $)
-) -}}
-{{- end -}}
-{{- include "mc-helm-lib.deployment" (dict
-  "component" "admin"
-  "config" .Values.admin
-  "configRefs" $configRefs
-  "root" $
-) }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mc-pms.fullname" . }}-admin
+  labels:
+    {{- include "mc-pms.componentLabels" (dict "root" . "component" "admin") | nindent 4 }}
+spec:
+  {{- if not .Values.admin.autoscaling.enabled }}
+  replicas: {{ .Values.admin.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "mc-pms.componentSelectorLabels" (dict "root" . "component" "admin") | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/http-config: {{ include "mc-pms.httpConfigMap" (dict "component" "admin" "prefix" "HTTP_" "config" .Values.admin "root" .) | sha256sum }}
+        checksum/db-config: {{ include "mc-pms.dbConfig" (dict "component" "admin" "prefix" "DB_" "root" .) | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "mc-pms.componentLabels" (dict "root" . "component" "admin") | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "mc-pms.serviceAccountName" . }}
+
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      containers:
+      - name: admin
+        image: {{ include "mc-pms.image" (dict "image" .Values.admin.image "chart" .Chart) }}
+        imagePullPolicy: {{ .Values.admin.image.pullPolicy }}
+
+        {{- with .Values.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+
+        ports:
+        - name: http
+          containerPort: {{ .Values.admin.http.port | default 8080 }}
+          protocol: TCP
+
+        envFrom:
+        # Load HTTP configuration from ConfigMap (with HTTP_ prefix)
+        - configMapRef:
+            name: {{ include "mc-pms.httpConfigMapName" (dict "root" . "component" "admin") }}
+        # Load Database configuration from ConfigMap (with DB_ prefix)
+        - configMapRef:
+            name: {{ include "mc-pms.dbConfigMapName" (dict "root" . "component" "admin") }}
+
+        env:
+        # Map database credentials from Secret (with DB_ prefix)
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "mc-pms.database.secretName" . }}
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "mc-pms.database.secretName" . }}
+              key: password
+        {{- with .Values.admin.env }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+
+        {{- with .Values.admin.livenessProbe }}
+        livenessProbe:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+
+        {{- with .Values.admin.readinessProbe }}
+        readinessProbe:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+
+        resources:
+          {{- toYaml .Values.admin.resources | nindent 10 }}
+
+        {{- with .Values.admin.volumeMounts }}
+        volumeMounts:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+
+      {{- with .Values.admin.volumes }}
+      volumes:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+
+      {{- with .Values.admin.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .Values.admin.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .Values.admin.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

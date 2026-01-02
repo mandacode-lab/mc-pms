@@ -1,5 +1,15 @@
-{{- include "mc-helm-lib.service" (dict
-  "component" "client"
-  "config" .Values.client
-  "root" $
-) }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "mc-pms.fullname" . }}-client
+  labels:
+    {{- include "mc-pms.componentLabels" (dict "root" . "component" "client") | nindent 4 }}
+spec:
+  type: {{ .Values.client.service.type }}
+  ports:
+  - port: {{ .Values.client.service.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    {{- include "mc-pms.componentSelectorLabels" (dict "root" . "component" "client") | nindent 4 }}

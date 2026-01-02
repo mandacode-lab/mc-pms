@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["database"],
+  "properties": {
+    "database": {
+      "type": "object",
+      "required": ["host", "name", "user"],
+      "properties": {
+        "host": {
+          "type": "string",
+          "description": "Database host",
+          "minLength": 1
+        },
+        "port": {
+          "type": "integer",
+          "description": "Database port",
+          "default": 5432,
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "name": {
+          "type": "string",
+          "description": "Database name",
+          "minLength": 1
+        },
+        "user": {
+          "type": "string",
+          "description": "Database username",
+          "minLength": 1
+        },
+        "password": {
+          "type": "string",
+          "description": "Database password (ignored if existingSecret is set)"
+        },
+        "sslMode": {
+          "type": "string",
+          "description": "PostgreSQL SSL mode",
+          "enum": ["disable", "allow", "prefer", "require", "verify-ca", "verify-full"],
+          "default": "require"
+        },
+        "existingSecret": {
+          "type": "string",
+          "description": "Name of existing secret containing database credentials"
+        }
+      }
+    },
+    "migration": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "allowDirty": {
+          "type": "boolean",
+          "description": "Allow migration on dirty database state",
+          "default": false
+        },
+        "dryRun": {
+          "type": "boolean",
+          "description": "Run migration in dry-run mode (no changes applied)",
+          "default": false
+        }
+      }
+    }
+  }
+}

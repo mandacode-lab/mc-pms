@@ -1,0 +1,3 @@
+{{- if .Values.migration.enabled }}
+{{- include "mc-pms.migrationConfig" . }}
+{{- end }}

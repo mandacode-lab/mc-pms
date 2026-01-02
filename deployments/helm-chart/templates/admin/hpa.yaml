@@ -1,5 +1,0 @@
-{{- include "mc-helm-lib.hpa" (dict
-  "component" "admin"
-  "config" .Values.admin
-  "root" $
-) }}
