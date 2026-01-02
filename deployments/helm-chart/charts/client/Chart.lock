@@ -2,8 +2,8 @@ dependencies:
 - name: mc-helm-lib
   repository: oci://registry.mandacode.com/lib-charts
   version: 0.1.0
-- name: pms-lib
+- name: lib
   repository: file://../lib
-  version: 0.1.0
-digest: sha256:17b1a864434c01383b42dda947835f8e206c40bd6f00cba02e142ac5425761ce
-generated: "2026-01-01T22:45:10.015141433+09:00"
+  version: 0.1.1
+digest: sha256:d9baabf6d6d45f5b68febb54848b293ed2a4df05fef5de87bcd1315ebf993baf
+generated: "2026-01-01T23:52:23.234325351+09:00"
