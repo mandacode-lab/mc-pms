@@ -1,35 +1,56 @@
-############################
-# Migration Job 
-############################
-FROM alpine:3.22.1
+FROM alpine:3.23.0
 
-# Install atlas CLI
-RUN apk add --no-cache curl tar && \
-    curl -sSf https://atlasgo.sh | sh
+# Build argument for Atlas version
+ARG ATLAS_VERSION=v1.0.0
 
-# Create non-root user
-RUN adduser -D -u 1001 migrations
+# Metadata labels
+LABEL org.opencontainers.image.title="Mandacode PMS Migration"
+LABEL org.opencontainers.image.description="Database migration container using Atlas CLI"
+LABEL org.opencontainers.image.version="${ATLAS_VERSION}"
+LABEL org.opencontainers.image.vendor="Mandacode"
+
+# Install dependencies in a single layer
+RUN apk add --no-cache \
+    ca-certificates \
+    curl \
+    bash \
+    coreutils \
+    && rm -rf /var/cache/apk/*
+
+# Install Atlas CLI with architecture detection
+RUN ARCH=$(uname -m) && \
+    case ${ARCH} in \
+        x86_64) ARCH="amd64" ;; \
+        aarch64) ARCH="arm64" ;; \
+        *) echo "Unsupported architecture: ${ARCH}" && exit 1 ;; \
+    esac && \
+    echo "Installing Atlas CLI ${ATLAS_VERSION} for ${ARCH}..." && \
+    curl -fsSL \
+      "https://release.ariga.io/atlas/atlas-linux-${ARCH}-${ATLAS_VERSION}" \
+      -o /usr/local/bin/atlas && \
+    chmod +x /usr/local/bin/atlas && \
+    atlas version
+
+# Create non-root user for security
+RUN adduser -D -u 1001 -s /bin/bash migrations && \
+    mkdir -p /app /tmp && \
+    chown -R 1001:1001 /app /tmp
 
 WORKDIR /app
 
 # Copy migration files
-COPY ent/migrate/migrations ./migrations
+COPY --chown=1001:1001 ent/migrate/migrations ./migrations
 
-# Set ownership
-RUN chown -R 1001:1001 /app
+# Copy and setup entrypoint script
+COPY --chown=1001:1001 scripts/mig-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
+# Switch to non-root user
 USER 1001
 
-ENTRYPOINT ["/bin/sh", "-c", "\
-  if [ -z \"$DATABASE_URL\" ]; then \
-    echo '❌ DATABASE_URL is not set'; \
-    exit 1; \
-  fi && \
-  echo '🚀 Running migrations...' && \
-  echo \"Target: $DATABASE_URL\" && \
-  atlas migrate apply \
-    --dir file://migrations \
-    --url \"$DATABASE_URL\" \
-    --allow-dirty \
-  && echo '✅ Migrations completed successfully' \
-  "]
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=1 \
+  CMD atlas version || exit 1
+
+# Set entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
