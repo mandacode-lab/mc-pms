@@ -18,8 +18,7 @@ Usage: {{ include "mc-pms.httpConfigMap" (dict "root" $ "component" "admin" "pre
 {{- $root := .root -}}
 {{- $http := $config.http | default dict -}}
 {{- $cors := $http.cors | default dict -}}
-{{- $corsPrefix := printf "%sCORS_" $prefix -}}
----
+{{- $corsPrefix := printf "%sCORS_" $prefix }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

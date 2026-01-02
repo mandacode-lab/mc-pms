@@ -27,8 +27,7 @@ Usage: {{ include "mc-pms.dbConfig" (dict "root" $ "component" "admin" "prefix" 
 {{- define "mc-pms.dbConfig" -}}
 {{- $component := .component -}}
 {{- $prefix := .prefix -}}
-{{- $root := .root -}}
----
+{{- $root := .root }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

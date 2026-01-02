@@ -4,7 +4,6 @@
   "config" .Values.client
   "root" .
 ) }}
----
 {{- include "mc-pms.dbConfig" (dict
   "component" "client"
   "prefix" "DB_"
