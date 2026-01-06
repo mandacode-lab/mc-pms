@@ -11,10 +11,10 @@ LABEL org.opencontainers.image.vendor="Mandacode"
 
 # Install dependencies in a single layer
 RUN apk add --no-cache \
-    ca-certificates \
-    curl \
-    bash \
-    coreutils \
+    ca-certificates=20251003-r0 \
+    curl=8.17.0-r1 \
+    bash=5.3.3-r1 \
+    coreutils=9.8-r1 \
     && rm -rf /var/cache/apk/*
 
 # Install Atlas CLI with architecture detection
