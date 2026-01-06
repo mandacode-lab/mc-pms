@@ -15,7 +15,7 @@ name: Migration Image Release
 on:
   push:
     tags:
-      - 'migration-v*'
+      - "migration-v*"
 
 permissions:
   contents: read
@@ -36,7 +36,7 @@ jobs:
       ecr-repository-prefix: ${{ vars.REPOSITORY }}
       tag: ${{ github.ref_name }}
       tag-prefix: "migration-v"
-      platforms: "linux/amd64,linux/arm64"
+      platforms: "linux/amd64"
       create-repository: true
     secrets:
       # Option 1: OIDC (Recommended)
