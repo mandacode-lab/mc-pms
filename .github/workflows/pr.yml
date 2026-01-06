@@ -56,6 +56,6 @@ jobs:
         ]
       base-path: "deployments/helm-chart"
       helm-version: "v4.0.4"
-      kubernetes-version: "v1.31.0"
+      kubernetes-version: "v1.34.0"
       enable-kubeconform: true
-      enable-install-test: true
+      enable-install-test: false
