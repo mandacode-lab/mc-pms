@@ -38,7 +38,15 @@ admin:
       path: /
       port: http
 
+  # Resource requests and limits
+  # Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
   resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 250m
+    #   memory: 256Mi
 
   http:
     host: ""
@@ -56,6 +64,18 @@ admin:
     minReplicas: 1
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
+
+  # Additional environment variables
+  env: []
+
+  # Volume mounts and volumes
+  volumeMounts: []
+  volumes: []
+
+  # Node selection and scheduling
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
 
 # Client
 client:
@@ -79,7 +99,15 @@ client:
       path: /
       port: http
 
+  # Resource requests and limits
+  # Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
   resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 250m
+    #   memory: 256Mi
 
   http:
     host: ""
@@ -98,6 +126,18 @@ client:
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
 
+  # Additional environment variables
+  env: []
+
+  # Volume mounts and volumes
+  volumeMounts: []
+  volumes: []
+
+  # Node selection and scheduling
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
 # Migration
 migration:
   image: 
@@ -107,8 +147,33 @@ migration:
 
   enabled: true
   backoffLimit: 4
+  activeDeadlineSeconds: 600
+  ttlSecondsAfterFinished: 86400
 
+  # Migration options
+  allowDirty: false
+  dryRun: false
+
+  # Additional environment variables
+  env: []
+
+  # Resource requests and limits for migration job
+  # Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
   resources: {}
+    # limits:
+    #   cpu: 200m
+    #   memory: 256Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  # Pod configuration
+  podAnnotations: {}
+
+  # Node selection and scheduling
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
 
 # Database
 database:
@@ -117,6 +182,7 @@ database:
   name: dbname
   username: dbuser
   password: "dbpassword"
+  sslMode: "require"
   # existingSecret: ""
 
 # This is for setting Kubernetes Annotations to a Pod.

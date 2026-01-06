@@ -9,10 +9,10 @@ metadata:
     argocd.argoproj.io/sync-wave: "-3"
 data:
   # Database connection parameters (non-sensitive)
-  HOST: {{ include "mc-pms.database.host" . | quote }}
-  PORT: {{ include "mc-pms.database.port" . | quote }}
-  DB_NAME: {{ include "mc-pms.database.name" . | quote }}
-  SSL_MODE: {{ include "mc-pms.database.sslMode" . | quote }}
+  HOST: {{ .Values.database.host | quote }}
+  PORT: {{ .Values.database.port | quote }}
+  DB_NAME: {{ .Values.database.name | quote }}
+  SSL_MODE: {{ .Values.database.sslMode | quote }}
 
   # Migration options
   {{- if .Values.migration.allowDirty }}

@@ -53,13 +53,13 @@ spec:
         env:
         # Database connection parameters
         - name: HOST
-          value: {{ include "mc-pms.database.host" . | quote }}
+          value: {{ .Values.database.host | quote }}
         - name: PORT
-          value: {{ include "mc-pms.database.port" . | quote }}
+          value: {{ .Values.database.port | quote }}
         - name: DB_NAME
-          value: {{ include "mc-pms.database.name" . | quote }}
+          value: {{ .Values.database.name | quote }}
         - name: SSL_MODE
-          value: {{ include "mc-pms.database.sslMode" . | quote }}
+          value: {{ .Values.database.sslMode | quote }}
 
         # Database credentials from secret
         - name: USERNAME

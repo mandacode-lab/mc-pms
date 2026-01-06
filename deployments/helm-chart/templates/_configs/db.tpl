@@ -35,8 +35,8 @@ metadata:
   labels:
     {{- include "mc-pms.componentLabels" (dict "root" $root "component" $component) | nindent 4 }}
 data:
-  {{ $prefix }}HOST: {{ include "mc-pms.database.host" $root | quote }}
-  {{ $prefix }}PORT: {{ include "mc-pms.database.port" $root | quote }}
-  {{ $prefix }}DATABASE: {{ include "mc-pms.database.name" $root | quote }}
-  {{ $prefix }}SSL_MODE: {{ include "mc-pms.database.sslMode" $root | quote }}
+  {{ $prefix }}HOST: {{ $root.Values.database.host | quote }}
+  {{ $prefix }}PORT: {{ $root.Values.database.port | quote }}
+  {{ $prefix }}DATABASE: {{ $root.Values.database.name | quote }}
+  {{ $prefix }}SSL_MODE: {{ $root.Values.database.sslMode | quote }}
 {{- end }}

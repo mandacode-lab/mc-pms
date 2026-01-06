@@ -78,30 +78,7 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
-Database configuration helpers
-*/}}
-{{- define "mc-pms.database.host" -}}
-{{- .Values.database.host | required "database.host is required" }}
-{{- end }}
-
-{{- define "mc-pms.database.port" -}}
-{{- .Values.database.port | default 5432 }}
-{{- end }}
-
-{{- define "mc-pms.database.name" -}}
-{{- .Values.database.name | required "database.name is required" }}
-{{- end }}
-
-{{- define "mc-pms.database.user" -}}
-{{- .Values.database.user | required "database.user is required" }}
-{{- end }}
-
-{{- define "mc-pms.database.sslMode" -}}
-{{- .Values.database.sslMode | default "require" }}
-{{- end }}
-
-{{/*
-Global database secret name (for migration job)
+Database secret name helper
 Returns existingSecret if provided, otherwise generates a global secret name
 */}}
 {{- define "mc-pms.database.secretName" -}}
