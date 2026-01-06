@@ -58,7 +58,7 @@ jobs:
       base-path: "deployments/helm-chart"
       aws-region: ap-northeast-2
       ecr-registry: ${{ vars.REGISTRY }}
-      ecr-repository-prefix: ${{ vars.REPOSITORY }}
+      ecr-repository-prefix: ${{ vars.HELM_REPOSITORY }}
       helm-version: "v4.0.4"
       skip-existing: true
       create-repository: true
