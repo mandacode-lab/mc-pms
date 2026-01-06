@@ -45,27 +45,3 @@ jobs:
       # Option 2: Access Keys (comment out if using OIDC)
       # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-  helm-package-ecr:
-    name: Package and Push Helm Charts to ECR
-    needs: docker-build-ecr
-    uses: mandacode-lab/workflows/.github/workflows/helm-package-ecr.yml@develop
-    with:
-      charts: |
-        [
-          {"dir": "."}
-        ]
-      base-path: "deployments/helm-chart"
-      aws-region: ap-northeast-2
-      ecr-registry: ${{ vars.REGISTRY }}
-      ecr-repository-prefix: ${{ vars.HELM_REPOSITORY }}
-      helm-version: "v4.0.4"
-      skip-existing: true
-      create-repository: true
-    secrets:
-      # Option 1: OIDC (Recommended)
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-
-      # Option 2: Access Keys (comment out if using OIDC)
-      # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
