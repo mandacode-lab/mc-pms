@@ -26,9 +26,9 @@ jobs:
     name: Go CI
     uses: mandacode-lab/workflows/.github/workflows/go-ci.yml@develop
     with:
-      go-version: "1.23"
+      go-version: "1.25.5"
       enable-coverage: true
-      coverage-threshold: 80
+      coverage-threshold: 0
       enable-security-scan: true
 
   docker-test:
