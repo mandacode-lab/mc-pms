@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mandacode-com/mandacode-pms/ent"
-	entNamespace "github.com/mandacode-com/mandacode-pms/ent/namespace"
-	"github.com/mandacode-com/mandacode-pms/internal/domain/ns"
-	"github.com/mandacode-com/mandacode-pms/internal/port/repo"
+	"github.com/mandacode-lab/mc-pms/ent"
+	entNamespace "github.com/mandacode-lab/mc-pms/ent/namespace"
+	"github.com/mandacode-lab/mc-pms/internal/domain/ns"
+	"github.com/mandacode-lab/mc-pms/internal/port/repo"
 )
 
 type NamespaceRepository struct {

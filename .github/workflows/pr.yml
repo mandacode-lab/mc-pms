@@ -1,0 +1,61 @@
+# Template: Common Go Project - Pull Request
+#
+# Complete PR validation workflow for Go projects with Docker and Helm
+# Includes: Go CI, Docker testing, and Helm chart testing
+#
+# Usage:
+#   1. Copy this file to your project's .github/workflows/pr.yml
+#   2. Update configurations below to match your project structure
+#   3. Remove docker-test or helm-test sections if not needed
+
+name: Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+  pull-requests: read
+  security-events: write
+
+jobs:
+  go-ci:
+    name: Go CI
+    uses: mandacode-lab/workflows/.github/workflows/go-ci.yml@v0.2.0
+    with:
+      go-version: "1.25.5"
+      enable-coverage: true
+      coverage-threshold: 0
+      enable-security-scan: true
+
+  docker-test:
+    name: Docker Test
+    needs: go-ci
+    uses: mandacode-lab/workflows/.github/workflows/docker-test.yml@v0.2.0
+    with:
+      images: |
+        [
+          {"dockerfile": "Dockerfile.admin"},
+          {"dockerfile": "Dockerfile.client"},
+        ]
+      base-path: "build"
+      enable-hadolint: true
+      enable-trivy: true
+      trivy-severity: "HIGH,CRITICAL"
+
+  helm-test:
+    name: Helm Test
+    uses: mandacode-lab/workflows/.github/workflows/helm-test.yml@v0.2.0
+    with:
+      charts: |
+        [
+          {"dir": "."}
+        ]
+      base-path: "deployments/helm-chart"
+      helm-version: "v4.0.4"
+      kubernetes-version: "v1.34.0"
+      enable-kubeconform: true
+      enable-install-test: false

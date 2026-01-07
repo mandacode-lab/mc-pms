@@ -11,9 +11,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/mandacode-com/mandacode-pms/ent/namespace"
-	"github.com/mandacode-com/mandacode-pms/ent/predicate"
-	"github.com/mandacode-com/mandacode-pms/ent/project"
+	"github.com/mandacode-lab/mc-pms/ent/namespace"
+	"github.com/mandacode-lab/mc-pms/ent/predicate"
+	"github.com/mandacode-lab/mc-pms/ent/project"
 )
 
 const (

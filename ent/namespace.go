@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/mandacode-com/mandacode-pms/ent/namespace"
+	"github.com/mandacode-lab/mc-pms/ent/namespace"
 )
 
 // Namespace is the model entity for the Namespace schema.

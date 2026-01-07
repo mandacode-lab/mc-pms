@@ -7,9 +7,9 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/mandacode-com/mandacode-pms/internal/config"
-	merrmid "github.com/mandacode-com/merr/middleware"
-	mervermid "github.com/mandacode-com/merver/middleware"
+	"github.com/mandacode-lab/mc-pms/internal/config"
+	merrmid "github.com/go-mandacode/merr/middleware"
+	mervermid "github.com/go-mandacode/merver/middleware"
 	"github.com/rs/zerolog"
 )
 

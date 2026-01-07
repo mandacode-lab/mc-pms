@@ -1,7 +1,7 @@
 package client_ns
 
 import (
-	"github.com/mandacode-com/mandacode-pms/internal/port/repo"
+	"github.com/mandacode-lab/mc-pms/internal/port/repo"
 )
 
 type Application struct {

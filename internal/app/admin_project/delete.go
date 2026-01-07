@@ -3,8 +3,8 @@ package admin_project
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-pms/internal/domain/project"
-	"github.com/mandacode-com/merr"
+	"github.com/mandacode-lab/mc-pms/internal/domain/project"
+	"github.com/go-mandacode/merr"
 )
 
 func (a *Application) Delete(ctx context.Context, projectID string) error {

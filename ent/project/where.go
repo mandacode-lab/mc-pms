@@ -7,7 +7,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/mandacode-com/mandacode-pms/ent/predicate"
+	"github.com/mandacode-lab/mc-pms/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.

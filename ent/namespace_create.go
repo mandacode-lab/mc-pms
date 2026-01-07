@@ -12,8 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/mandacode-com/mandacode-pms/ent/namespace"
-	"github.com/mandacode-com/mandacode-pms/ent/project"
+	"github.com/mandacode-lab/mc-pms/ent/namespace"
+	"github.com/mandacode-lab/mc-pms/ent/project"
 )
 
 // NamespaceCreate is the builder for creating a Namespace entity.

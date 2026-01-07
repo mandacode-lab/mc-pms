@@ -1,4 +1,4 @@
-module github.com/mandacode-com/mandacode-pms
+module github.com/mandacode-lab/mc-pms
 
 go 1.25.5
 
@@ -7,9 +7,9 @@ require (
 	github.com/caarlos0/env/v11 v11.3.1
 	github.com/gin-contrib/cors v1.7.6
 	github.com/gin-gonic/gin v1.10.1
+	github.com/go-mandacode/merr v0.2.4
+	github.com/go-mandacode/merver v0.1.3
 	github.com/lib/pq v1.10.9
-	github.com/mandacode-com/merr v0.2.3
-	github.com/mandacode-com/merver v0.1.2
 	github.com/oklog/ulid/v2 v2.1.1
 	github.com/rs/zerolog v1.34.0
 	github.com/swaggo/files v1.0.1

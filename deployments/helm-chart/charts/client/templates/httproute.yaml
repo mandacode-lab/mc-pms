@@ -1,5 +1,0 @@
-{{- include "pms-lib.httproute" (dict
-  "component" "client"
-  "config" .Values
-  "root" $
-) }}

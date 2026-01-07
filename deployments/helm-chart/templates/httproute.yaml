@@ -1,0 +1,60 @@
+{{- if .Values.httpRoute.admin.enabled }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "mc-pms.fullname" . }}-admin
+  labels:
+    {{- include "mc-pms.componentLabels" (dict "root" . "component" "admin") | nindent 4 }}
+  {{- with .Values.httpRoute.admin.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.httpRoute.admin.parentRefs }}
+  parentRefs:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.httpRoute.admin.hostnames }}
+  hostnames:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: {{ .Values.httpRoute.admin.pathPrefix | default "/" }}
+    backendRefs:
+    - name: {{ include "mc-pms.fullname" . }}-admin
+      port: {{ .Values.admin.service.port }}
+{{- end }}
+{{- if .Values.httpRoute.client.enabled }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "mc-pms.fullname" . }}-client
+  labels:
+    {{- include "mc-pms.componentLabels" (dict "root" . "component" "client") | nindent 4 }}
+  {{- with .Values.httpRoute.client.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.httpRoute.client.parentRefs }}
+  parentRefs:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.httpRoute.client.hostnames }}
+  hostnames:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: {{ .Values.httpRoute.client.pathPrefix | default "/" }}
+    backendRefs:
+    - name: {{ include "mc-pms.fullname" . }}-client
+      port: {{ .Values.client.service.port }}
+{{- end }}

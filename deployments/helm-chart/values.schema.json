@@ -1,0 +1,321 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "database"
+  ],
+  "properties": {
+    "database": {
+      "type": "object",
+      "required": [
+        "host",
+        "name"
+      ],
+      "properties": {
+        "host": {
+          "type": "string",
+          "description": "Database host",
+          "minLength": 1
+        },
+        "port": {
+          "type": "integer",
+          "description": "Database port",
+          "default": 5432,
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "name": {
+          "type": "string",
+          "description": "Database name",
+          "minLength": 1
+        },
+        "username": {
+          "type": "string",
+          "description": "Database username"
+        },
+        "password": {
+          "type": "string",
+          "description": "Database password (ignored if existingSecret is set)"
+        },
+        "sslMode": {
+          "type": "string",
+          "description": "PostgreSQL SSL mode",
+          "enum": [
+            "disable",
+            "allow",
+            "prefer",
+            "require",
+            "verify-ca",
+            "verify-full"
+          ],
+          "default": "require"
+        },
+        "existingSecret": {
+          "type": "string",
+          "description": "Name of existing secret containing database credentials"
+        }
+      }
+    },
+    "migration": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "allowDirty": {
+          "type": "boolean",
+          "description": "Allow migration on dirty database state",
+          "default": false
+        },
+        "dryRun": {
+          "type": "boolean",
+          "description": "Run migration in dry-run mode (no changes applied)",
+          "default": false
+        }
+      }
+    },
+    "httpRoute": {
+      "type": "object",
+      "description": "Gateway API HTTPRoute configuration",
+      "properties": {
+        "admin": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable HTTPRoute for admin service",
+              "default": false
+            },
+            "annotations": {
+              "type": "object",
+              "description": "Annotations to add to the HTTPRoute",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "parentRefs": {
+              "type": "array",
+              "description": "Gateway references this route attaches to",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Gateway name"
+                  },
+                  "namespace": {
+                    "type": "string",
+                    "description": "Gateway namespace"
+                  },
+                  "sectionName": {
+                    "type": "string",
+                    "description": "Gateway listener name"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "hostnames": {
+              "type": "array",
+              "description": "Hostnames for the HTTPRoute",
+              "items": {
+                "type": "string"
+              }
+            },
+            "pathPrefix": {
+              "type": "string",
+              "description": "Path prefix for routing",
+              "default": "/"
+            }
+          }
+        },
+        "client": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable HTTPRoute for client service",
+              "default": false
+            },
+            "annotations": {
+              "type": "object",
+              "description": "Annotations to add to the HTTPRoute",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "parentRefs": {
+              "type": "array",
+              "description": "Gateway references this route attaches to",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Gateway name"
+                  },
+                  "namespace": {
+                    "type": "string",
+                    "description": "Gateway namespace"
+                  },
+                  "sectionName": {
+                    "type": "string",
+                    "description": "Gateway listener name"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "hostnames": {
+              "type": "array",
+              "description": "Hostnames for the HTTPRoute",
+              "items": {
+                "type": "string"
+              }
+            },
+            "pathPrefix": {
+              "type": "string",
+              "description": "Path prefix for routing",
+              "default": "/"
+            }
+          }
+        }
+      }
+    },
+    "securityPolicy": {
+      "type": "object",
+      "description": "Envoy Gateway SecurityPolicy configuration",
+      "properties": {
+        "admin": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable SecurityPolicy for admin service",
+              "default": false
+            },
+            "annotations": {
+              "type": "object",
+              "description": "Annotations to add to the SecurityPolicy",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "jwt": {
+              "type": "object",
+              "description": "JWT authentication configuration",
+              "properties": {
+                "providers": {
+                  "type": "array",
+                  "description": "JWT providers",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Provider name"
+                      },
+                      "issuer": {
+                        "type": "string",
+                        "description": "JWT issuer"
+                      },
+                      "audiences": {
+                        "type": "array",
+                        "description": "Valid audiences",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "remoteJWKS": {
+                        "type": "object",
+                        "properties": {
+                          "uri": {
+                            "type": "string",
+                            "description": "JWKS URI"
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    }
+                  ,
+                    "additionalProperties": true
+                  }
+                }
+              }
+            },
+            "oidc": {
+              "type": "object",
+              "description": "OIDC authentication configuration",
+              "additionalProperties": true
+            }
+          }
+        },
+        "client": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable SecurityPolicy for client service",
+              "default": false
+            },
+            "annotations": {
+              "type": "object",
+              "description": "Annotations to add to the SecurityPolicy",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "jwt": {
+              "type": "object",
+              "description": "JWT authentication configuration",
+              "properties": {
+                "providers": {
+                  "type": "array",
+                  "description": "JWT providers",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Provider name"
+                      },
+                      "issuer": {
+                        "type": "string",
+                        "description": "JWT issuer"
+                      },
+                      "audiences": {
+                        "type": "array",
+                        "description": "Valid audiences",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "remoteJWKS": {
+                        "type": "object",
+                        "properties": {
+                          "uri": {
+                            "type": "string",
+                            "description": "JWKS URI"
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    }
+                  ,
+                    "additionalProperties": true
+                  }
+                }
+              }
+            },
+            "oidc": {
+              "type": "object",
+              "description": "OIDC authentication configuration",
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    }
+  }
+}

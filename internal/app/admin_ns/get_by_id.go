@@ -3,9 +3,9 @@ package admin_ns
 import (
 	"context"
 
-	"github.com/mandacode-com/mandacode-pms/internal/domain/ns"
-	"github.com/mandacode-com/mandacode-pms/internal/port/app"
-	"github.com/mandacode-com/merr"
+	"github.com/mandacode-lab/mc-pms/internal/domain/ns"
+	"github.com/mandacode-lab/mc-pms/internal/port/app"
+	"github.com/go-mandacode/merr"
 )
 
 func (a *Application) GetByID(ctx context.Context, namespaceID string) (*app.AdminNamespaceResult, error) {
