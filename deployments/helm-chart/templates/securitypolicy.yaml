@@ -1,0 +1,54 @@
+{{- if .Values.securityPolicy.admin.enabled }}
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: {{ include "mc-pms.fullname" . }}-admin
+  labels:
+    {{- include "mc-pms.componentLabels" (dict "root" . "component" "admin") | nindent 4 }}
+  {{- with .Values.securityPolicy.admin.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: {{ include "mc-pms.fullname" . }}-admin
+  {{- if .Values.securityPolicy.admin.jwt.providers }}
+  jwt:
+    providers:
+      {{- toYaml .Values.securityPolicy.admin.jwt.providers | nindent 6 }}
+  {{- end }}
+  {{- with .Values.securityPolicy.admin.oidc }}
+  oidc:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- if .Values.securityPolicy.client.enabled }}
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: {{ include "mc-pms.fullname" . }}-client
+  labels:
+    {{- include "mc-pms.componentLabels" (dict "root" . "component" "client") | nindent 4 }}
+  {{- with .Values.securityPolicy.client.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: {{ include "mc-pms.fullname" . }}-client
+  {{- if .Values.securityPolicy.client.jwt.providers }}
+  jwt:
+    providers:
+      {{- toYaml .Values.securityPolicy.client.jwt.providers | nindent 6 }}
+  {{- end }}
+  {{- with .Values.securityPolicy.client.oidc }}
+  oidc:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

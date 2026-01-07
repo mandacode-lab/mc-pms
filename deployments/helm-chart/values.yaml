@@ -203,40 +203,94 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-# -- Expose the service via gateway-api HTTPRoute
-# Requires Gateway API resources and suitable controller installed within the cluster
-# (see: https://gateway-api.sigs.k8s.io/guides/)
+# Expose the service via gateway-api HTTPRoute
 httpRoute:
-  # HTTPRoute enabled.
-  enabled: false
-  # HTTPRoute annotations.
-  annotations: {}
-  # Which Gateways this Route is attached to.
-  parentRefs:
-  - name: gateway
-    sectionName: http
-    # namespace: default
-  # Hostnames matching HTTP header.
-  hostnames:
-  - chart-example.local
-  # List of rules and filters applied.
-  rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /headers
-  #   filters:
-  #   - type: RequestHeaderModifier
-  #     requestHeaderModifier:
-  #       set:
-  #       - name: My-Overwrite-Header
-  #         value: this-is-the-only-value
-  #       remove:
-  #       - User-Agent
-  # - matches:
-  #   - path:
-  #       type: PathPrefix
-  #       value: /echo
-  #     headers:
-  #     - name: version
-  #       value: v2
+  # admin httpRoute
+  admin:
+    enabled: false
+    annotations: {}
+    parentRefs: 
+    - name: gateway
+      sectionName: http
+    hostnames: []
+    # - admin.example.com
+    # Path prefix for routing (default: "/")
+    pathPrefix: "/"
+  
+  # client httpRoute
+  client:
+    enabled: false
+    annotations: {}
+    parentRefs:
+    - name: gateway
+      sectionName: http
+    hostnames: []
+    # - client.example.com
+    # Path prefix for routing (default: "/")
+    pathPrefix: "/"
+
+# Envoy Gateway Security Policy Configuration
+# Requires Envoy Gateway to be installed
+# Ref: https://gateway.envoyproxy.io/latest/api/extension_types/#securitypolicy
+securityPolicy:
+  # admin securityPolicy
+  admin:
+    enabled: false
+    annotations: {}
+    # JWT authentication configuration
+    jwt:
+      providers: []
+      # Example:
+      # - name: example
+      #   issuer: https://example.com
+      #   audiences:
+      #   - example-audience
+      #   remoteJWKS:
+      #     uri: https://example.com/.well-known/jwks.json
+    # OIDC authentication configuration
+    oidc: {}
+      # Example:
+      # provider:
+      #   issuer: https://example.com
+      #   authorizationEndpoint: https://example.com/oauth2/authorize
+      #   tokenEndpoint: https://example.com/oauth2/token
+      # clientID: client-id
+      # clientSecret:
+      #   name: oidc-client-secret
+      #   key: client-secret
+      # redirectURL: https://admin.example.com/oauth2/callback
+      # scopes:
+      # - openid
+      # - profile
+      # - email
+  
+  # client securityPolicy
+  client:
+    enabled: false
+    annotations: {}
+    # JWT authentication configuration
+    jwt:
+      providers: []
+      # Example:
+      # - name: example
+      #   issuer: https://example.com
+      #   audiences:
+      #   - example-audience
+      #   remoteJWKS:
+      #     uri: https://example.com/.well-known/jwks.json
+    # OIDC authentication configuration
+    oidc: {}
+      # Example:
+      # provider:
+      #   issuer: https://example.com
+      #   authorizationEndpoint: https://example.com/oauth2/authorize
+      #   tokenEndpoint: https://example.com/oauth2/token
+      # clientID: client-id
+      # clientSecret:
+      #   name: oidc-client-secret
+      #   key: client-secret
+      # redirectURL: https://client.example.com/oauth2/callback
+      # scopes:
+      # - openid
+      # - profile
+      # - email
