@@ -24,7 +24,7 @@ permissions:
 jobs:
   go-ci:
     name: Go CI
-    uses: mandacode-lab/workflows/.github/workflows/go-ci.yml@develop
+    uses: mandacode-lab/workflows/.github/workflows/go-ci.yml@v0.2.0
     with:
       go-version: "1.25.5"
       enable-coverage: true
@@ -34,7 +34,7 @@ jobs:
   docker-test:
     name: Docker Test
     needs: go-ci
-    uses: mandacode-lab/workflows/.github/workflows/docker-test.yml@develop
+    uses: mandacode-lab/workflows/.github/workflows/docker-test.yml@v0.2.0
     with:
       images: |
         [
@@ -48,7 +48,7 @@ jobs:
 
   helm-test:
     name: Helm Test
-    uses: mandacode-lab/workflows/.github/workflows/helm-test.yml@develop
+    uses: mandacode-lab/workflows/.github/workflows/helm-test.yml@v0.2.0
     with:
       charts: |
         [

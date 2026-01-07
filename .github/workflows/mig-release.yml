@@ -24,7 +24,7 @@ permissions:
 jobs:
   docker-build-ecr:
     name: Build and Push Migration Image to ECR
-    uses: mandacode-lab/workflows/.github/workflows/docker-build-ecr.yml@develop
+    uses: mandacode-lab/workflows/.github/workflows/docker-build-ecr.yml@v0.2.0
     with:
       images: |
         [

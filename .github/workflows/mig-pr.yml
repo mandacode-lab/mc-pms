@@ -31,7 +31,7 @@ jobs:
     name: Test Migration Docker Image
     # Only run if migration files changed or manually triggered
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request
-    uses: mandacode-lab/workflows/.github/workflows/docker-test.yml@develop
+    uses: mandacode-lab/workflows/.github/workflows/docker-test.yml@v0.2.0
     with:
       images: |
         [
