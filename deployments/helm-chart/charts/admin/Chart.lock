@@ -1,6 +1,0 @@
-dependencies:
-- name: pms-lib
-  repository: file://../lib
-  version: 0.1.0
-digest: sha256:bd2d5a100e394d2a8e373217e3ef5fdd3d18d9ab5459b8a3428e15f6d2897990
-generated: "2026-01-01T11:09:32.360143447+09:00"

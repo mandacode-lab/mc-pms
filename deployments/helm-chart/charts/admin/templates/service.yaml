@@ -1,5 +1,0 @@
-{{- include "pms-lib.service" (dict
-  "component" "admin"
-  "config" .Values
-  "root" $
-) }}

@@ -1,0 +1,116 @@
+{{- if .Values.migration.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "mc-pms.fullname" . }}-migration-{{ .Release.Revision | default "1" }}
+  labels:
+    {{- include "mc-pms.componentLabels" (dict "root" . "component" "migration") | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+    {{- with .Values.migration.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  backoffLimit: {{ .Values.migration.backoffLimit | default 3 }}
+  activeDeadlineSeconds: {{ .Values.migration.activeDeadlineSeconds | default 600 }}
+  ttlSecondsAfterFinished: {{ .Values.migration.ttlSecondsAfterFinished | default 86400 }}
+  template:
+    metadata:
+      labels:
+        {{- include "mc-pms.componentLabels" (dict "root" . "component" "migration") | nindent 8 }}
+      {{- with .Values.migration.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      restartPolicy: Never
+      serviceAccountName: {{ include "mc-pms.serviceAccountName" . }}
+
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+      - name: migration
+        image: {{ include "mc-pms.image" (dict "image" .Values.migration.image "chart" .Chart) }}
+        imagePullPolicy: {{ .Values.migration.image.pullPolicy }}
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+
+        env:
+        # Database connection parameters
+        - name: HOST
+          value: {{ .Values.database.host | quote }}
+        - name: PORT
+          value: {{ .Values.database.port | quote }}
+        - name: DB_NAME
+          value: {{ .Values.database.name | quote }}
+        - name: SSL_MODE
+          value: {{ .Values.database.sslMode | quote }}
+
+        # Database credentials from secret
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "mc-pms.database.secretName" . }}
+              key: username
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "mc-pms.database.secretName" . }}
+              key: password
+
+        # Migration options
+        {{- if .Values.migration.allowDirty }}
+        - name: ALLOW_DIRTY
+          value: "true"
+        {{- end }}
+
+        {{- if .Values.migration.dryRun }}
+        - name: DRY_RUN
+          value: "true"
+        {{- end }}
+
+        {{- with .Values.migration.env }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+
+        resources:
+          {{- toYaml .Values.migration.resources | nindent 10 }}
+
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+
+      volumes:
+      - name: tmp
+        emptyDir: {}
+
+      {{- with .Values.migration.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .Values.migration.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .Values.migration.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
