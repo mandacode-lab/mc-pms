@@ -35,7 +35,7 @@ admin:
       port: http
   readinessProbe:
     httpGet:
-      path: /
+      path: /ready
       port: http
 
   # Resource requests and limits
@@ -51,10 +51,10 @@ admin:
   http:
     host: ""
     port: 8080
-    readTimeout: 60
-    writeTimeout: 60
-    idleTimeout: 120
-    shutdownTimeout: 20
+    readTimeout: 60s
+    writeTimeout: 60s
+    idleTimeout: 120s
+    shutdownTimeout: 20s
     cors:
       enabled: false
       allowedOrigins: []
@@ -96,7 +96,7 @@ client:
       port: http
   readinessProbe:
     httpGet:
-      path: /
+      path: /ready
       port: http
 
   # Resource requests and limits
@@ -112,10 +112,10 @@ client:
   http:
     host: ""
     port: 8080
-    readTimeout: 60
-    writeTimeout: 60
-    idleTimeout: 120
-    shutdownTimeout: 20
+    readTimeout: 60s
+    writeTimeout: 60s
+    idleTimeout: 120s
+    shutdownTimeout: 20s
     cors:
       enabled: false
       allowedOrigins: []
