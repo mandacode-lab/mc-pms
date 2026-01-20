@@ -40,3 +40,23 @@ data:
   {{ $prefix }}DATABASE: {{ $root.Values.database.name | quote }}
   {{ $prefix }}SSL_MODE: {{ $root.Values.database.sslMode | quote }}
 {{- end }}
+{{/*
+Database Secret Template
+Creates a Secret with database credentials using prefix
+Usage: {{ include "mc-pms.dbSecret" (dict "root" $ "component" "admin" "prefix" "DB_") }}
+*/}}
+{{- if not .Values.database.existingSecret }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "mc-pms.fullname" . }}-db
+  labels:
+    {{- include "mc-pms.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-3"
+type: Opaque
+stringData:
+  username: {{ .Values.database.username | required "database.username is required when database.existingSecret is not set" | quote }}
+  password: {{ .Values.database.password | required "database.password is required when database.existingSecret is not set" | quote }}
+{{- end }}
